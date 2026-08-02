@@ -183,6 +183,11 @@
       let entries = [];
 
       noticeFrame.src = NOTICE_URL;
+      try {
+        window.sessionStorage.setItem("nyanko-db:last-page:v1", window.location.pathname);
+      } catch {
+        // 검색은 세션 저장소가 차단되어도 정상적으로 동작합니다.
+      }
 
       const compact = value => String(value || "").toLowerCase().replace(/[\s\p{P}\p{S}_]/gu, "");
       const isSubsequence = (needle, haystack) => {
@@ -229,8 +234,8 @@
           .map(item => item.entry);
       }
 
-      function unitUrl(id) {
-        return `unit/unit${String(id).padStart(3, "0")}.html`;
+      function unitUrl(id, selectedForm = 1) {
+        return `unit/unit${String(id).padStart(3, "0")}.html?form=${selectedForm}`;
       }
 
       function render(query) {
@@ -249,7 +254,7 @@
         matches.forEach(entry => {
           const link = document.createElement("a");
           link.className = "search-result";
-          link.href = unitUrl(entry.id);
+          link.href = unitUrl(entry.id, entry.form || 1);
           link.setAttribute("role", "option");
           const image = document.createElement("img");
           image.src = String(entry.icon || "").replace(/^\.\.\//, "");
@@ -296,7 +301,9 @@
       form.addEventListener("submit", event => {
         event.preventDefault();
         const matches = render(input.value);
-        if (matches.length) window.location.href = unitUrl(matches[0].id);
+        if (matches.length) {
+          window.location.href = unitUrl(matches[0].id, matches[0].form || 1);
+        }
       });
       loadCatalog();
     })();

@@ -4374,6 +4374,11 @@
     );
     const viewStateStorageKey =
       `nyanko-db:unit:${unitData.unitId}:display-state:v1`;
+    const sharedSettingsStorageKey =
+      "nyanko-db:shared-settings:v1";
+    const pagePanelStateStorageKey =
+      `nyanko-db:page-panels:${window.location.pathname}:v1`;
+    const lastPageStorageKey = "nyanko-db:last-page:v1";
     const treasureState = new Map();
     unitData.treasures.categories.forEach((category) => {
       category.items.forEach((item) => {
@@ -8773,12 +8778,205 @@
       );
     }
 
+    function collectTreasureState() {
+      const treasures = {};
+      treasureState.forEach((chapters, itemKey) => {
+        treasures[itemKey] = chapters.map((slots) => slots.slice());
+      });
+      return treasures;
+    }
+
+    function applySavedTreasureState(savedTreasures) {
+      if (!savedTreasures || typeof savedTreasures !== "object") return;
+      treasureState.forEach((chapters, itemKey) => {
+        const savedChapters = savedTreasures[itemKey];
+        if (!Array.isArray(savedChapters)) return;
+        chapters.forEach((slots, chapterIndex) => {
+          const savedSlots = savedChapters[chapterIndex];
+          if (!Array.isArray(savedSlots)) return;
+          slots.forEach((_, slotIndex) => {
+            const quality = savedSlots[slotIndex];
+            if (Number.isInteger(quality) && quality >= 0 && quality <= 3) {
+              slots[slotIndex] = quality;
+            }
+          });
+        });
+      });
+    }
+
+    function persistSharedSettings(treasures = collectTreasureState()) {
+      try {
+        window.localStorage.setItem(
+          sharedSettingsStorageKey,
+          JSON.stringify({
+            treasures,
+            passives: {
+              research: {
+                baseLevel: passiveState.research.baseLevel,
+                plusLevel: passiveState.research.plusLevel,
+              },
+            },
+            highlights: {
+              enabled: { ...highlightEnabled },
+              priority: highlightPriority.slice(),
+            },
+            treasureCategory: currentTreasureCategory,
+            barScales: {
+              hp: positiveScale(hpScaleInput, 150000),
+              attack: positiveScale(attackScaleInput, 100000),
+            },
+          }),
+        );
+      } catch {
+        // Shared settings are optional when storage is unavailable.
+      }
+    }
+
+    function restoreSharedSettings() {
+      try {
+        const rawState = window.localStorage.getItem(sharedSettingsStorageKey);
+        if (!rawState) {
+          persistSharedSettings();
+          return;
+        }
+        const savedState = JSON.parse(rawState);
+        applySavedTreasureState(savedState.treasures);
+
+        const savedResearch = savedState.passives?.research;
+        if (savedResearch && typeof savedResearch === "object") {
+          passiveState.research.baseLevel = clampLevel(
+            savedResearch.baseLevel,
+            1,
+            researchPassive.maxBaseLevel,
+            researchPassive.defaultBaseLevel,
+          );
+          passiveState.research.plusLevel = clampLevel(
+            savedResearch.plusLevel,
+            0,
+            researchPassive.maxPlusLevel,
+            researchPassive.defaultPlusLevel,
+          );
+        }
+
+        const savedHighlights = savedState.highlights;
+        if (savedHighlights && typeof savedHighlights === "object") {
+          const savedEnabled = savedHighlights.enabled;
+          if (savedEnabled && typeof savedEnabled === "object") {
+            highlightKinds.forEach((kind) => {
+              if (typeof savedEnabled[kind] === "boolean") {
+                highlightEnabled[kind] = savedEnabled[kind];
+              }
+            });
+          }
+          const savedPriority = savedHighlights.priority;
+          if (
+            Array.isArray(savedPriority)
+            && savedPriority.length === highlightKinds.length
+            && new Set(savedPriority).size === highlightKinds.length
+            && savedPriority.every((kind) => highlightKinds.includes(kind))
+          ) {
+            highlightPriority = savedPriority.slice();
+          }
+        }
+
+        if (
+          unitData.treasures.categories.some(
+            (category) => category.key === savedState.treasureCategory
+          )
+        ) {
+          currentTreasureCategory = savedState.treasureCategory;
+        }
+
+        const savedScales = savedState.barScales;
+        if (savedScales && typeof savedScales === "object") {
+          if (Number(savedScales.hp) > 0) {
+            hpScaleInput.value = String(savedScales.hp);
+          }
+          if (Number(savedScales.attack) > 0) {
+            attackScaleInput.value = String(savedScales.attack);
+          }
+        }
+      } catch {
+        // Keep the current page defaults when shared state is invalid.
+      }
+    }
+
+    function pagePanelElements() {
+      return {
+        treasureOpen: treasureSettings,
+        miscOpen: miscSettings,
+        talentOpen: talentSettings,
+        counterOpen: counterSettings,
+        hpDamageOpen: hpDamageDetails,
+        attackDamageOpen: attackDamageDetails,
+        attackTimingOpen: attackTimingDetails,
+      };
+    }
+
+    function syncPanelToggleLabels() {
+      treasureToggleLabel.textContent = treasureSettings.open ? "접기" : "펼치기";
+      miscToggleLabel.textContent = miscSettings.open ? "접기" : "펼치기";
+      talentToggleLabel.textContent = talentSettings.open ? "접기" : "펼치기";
+    }
+
+    function restorePagePanelState() {
+      const panels = pagePanelElements();
+      Object.values(panels).forEach((panel) => {
+        if (panel) panel.open = false;
+      });
+      try {
+        const currentPage = window.location.pathname;
+        const previousPage = window.sessionStorage.getItem(lastPageStorageKey);
+        if (previousPage === currentPage) {
+          const savedPanels = JSON.parse(
+            window.sessionStorage.getItem(pagePanelStateStorageKey) || "{}"
+          );
+          Object.entries(panels).forEach(([key, panel]) => {
+            if (panel && typeof savedPanels[key] === "boolean") {
+              panel.open = savedPanels[key];
+            }
+          });
+        } else {
+          window.sessionStorage.removeItem(pagePanelStateStorageKey);
+        }
+        window.sessionStorage.setItem(lastPageStorageKey, currentPage);
+      } catch {
+        // Closed defaults are still correct when session storage is blocked.
+      }
+      syncPanelToggleLabels();
+    }
+
+    function persistPagePanelState() {
+      try {
+        const savedPanels = {};
+        Object.entries(pagePanelElements()).forEach(([key, panel]) => {
+          if (panel) savedPanels[key] = panel.open;
+        });
+        window.sessionStorage.setItem(
+          pagePanelStateStorageKey,
+          JSON.stringify(savedPanels),
+        );
+        window.sessionStorage.setItem(
+          lastPageStorageKey,
+          window.location.pathname,
+        );
+      } catch {
+        // Panel persistence is optional when session storage is unavailable.
+      }
+    }
+
+    function requestedFormFromLocation() {
+      const requestedForm = Number(
+        new URLSearchParams(window.location.search).get("form")
+      );
+      return unitData.forms[String(requestedForm)] ? requestedForm : null;
+    }
+
     function restoreViewState() {
       let restoredForm = unitData.initialForm;
       try {
         const rawState = window.localStorage.getItem(viewStateStorageKey);
-        if (!rawState) return restoredForm;
-        const savedState = JSON.parse(rawState);
+        const savedState = rawState ? JSON.parse(rawState) : {};
         const savedForm = Number(savedState.form);
         if (unitData.forms[String(savedForm)]) restoredForm = savedForm;
 
@@ -8972,8 +9170,12 @@
         miscToggleLabel.textContent = miscSettings.open ? "접기" : "펼치기";
         talentToggleLabel.textContent = talentSettings.open ? "접기" : "펼치기";
       } catch {
-        return restoredForm;
+        // Unit-specific state is optional.
       }
+      restoreSharedSettings();
+      restorePagePanelState();
+      const requestedForm = requestedFormFromLocation();
+      if (requestedForm !== null) restoredForm = requestedForm;
       return restoredForm;
     }
 
@@ -8986,6 +9188,8 @@
       selectedTalentLevels.forEach((level, group) => {
         talents[group] = level;
       });
+      persistSharedSettings(treasures);
+      persistPagePanelState();
       try {
         window.localStorage.setItem(
           viewStateStorageKey,
@@ -10059,15 +10263,23 @@
       renderCounterSettings();
       updateStats(baseLevelNumber.value, plusLevelNumber.value);
     });
-    hpScaleInput.addEventListener("input", updateBars);
-    attackScaleInput.addEventListener("input", updateBars);
+    hpScaleInput.addEventListener("input", () => {
+      updateBars();
+      persistSharedSettings();
+    });
+    attackScaleInput.addEventListener("input", () => {
+      updateBars();
+      persistSharedSettings();
+    });
     hpScaleInput.addEventListener("blur", () => {
       if (Number(hpScaleInput.value) <= 0) hpScaleInput.value = "150000";
       updateBars();
+      persistSharedSettings();
     });
     attackScaleInput.addEventListener("blur", () => {
       if (Number(attackScaleInput.value) <= 0) attackScaleInput.value = "100000";
       updateBars();
+      persistSharedSettings();
     });
     formTabs.forEach((tab) => {
       tab.addEventListener("click", () => selectForm(Number(tab.dataset.form)));
@@ -10160,7 +10372,7 @@
         // Navigation still works when local storage is unavailable.
       }
       const filenameId = String(entry.id).padStart(3, "0");
-      window.location.href = `unit${filenameId}.html`;
+      window.location.href = `unit${filenameId}.html?form=${entry.form}`;
     }
 
     function renderUnitSearchResults() {
@@ -10337,6 +10549,9 @@
       persistViewState();
       updateStats(baseLevelNumber.value, plusLevelNumber.value);
     });
+    hpDamageDetails.addEventListener("toggle", persistPagePanelState);
+    attackDamageDetails.addEventListener("toggle", persistPagePanelState);
+    attackTimingDetails.addEventListener("toggle", persistPagePanelState);
     window.addEventListener("resize", () => {
       if (!attackTimingDetails.open) {
         requestAnimationFrame(lockAttackTimingPeerHeights);
