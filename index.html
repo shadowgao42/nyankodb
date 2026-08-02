@@ -180,7 +180,7 @@
       noticeFrame.src = NOTICE_URL;
       noticeLink.href = NOTICE_URL;
 
-      const compact = value => String(value || "").toLowerCase().replace(/[\s\W_]/g, "");
+      const compact = value => String(value || "").toLowerCase().replace(/[\s\p{P}\p{S}_]/gu, "");
       const isSubsequence = (needle, haystack) => {
         let position = 0;
         for (const letter of needle) {
