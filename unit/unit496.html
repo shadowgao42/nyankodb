@@ -10088,7 +10088,7 @@
     let activeUnitSearchResultIndex = -1;
 
     function normalizeUnitSearchText(value) {
-      return value.toLocaleLowerCase("ko-KR").replace(/\s+/g, "");
+      return value.toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
     }
 
     function orderedCharacterMatchPosition(name, query) {
@@ -10117,19 +10117,18 @@
     }
 
     function unitSearchMatch(normalizedName, query) {
-      if (normalizedName.startsWith(query)) {
-        return { rank: 0, position: 0 };
+      if (normalizedName === query) {
+        return { rank: 0 };
       }
-      const contiguousPosition = normalizedName.indexOf(query);
-      if (contiguousPosition >= 0) {
-        return { rank: 1, position: contiguousPosition };
+      if (normalizedName.includes(query)) {
+        return { rank: 1 };
       }
       const orderedPosition = orderedCharacterMatchPosition(normalizedName, query);
       if (orderedPosition >= 0) {
-        return { rank: 2, position: orderedPosition };
+        return { rank: 2 };
       }
       return containsAllSearchCharacters(normalizedName, query)
-        ? { rank: 3, position: 0 }
+        ? { rank: 3 }
         : null;
     }
 
@@ -10197,7 +10196,6 @@
         .filter(({ match }) => match !== null)
         .sort((left, right) => {
           return left.match.rank - right.match.rank
-            || left.match.position - right.match.position
             || left.entry.id - right.entry.id
             || left.entry.form - right.entry.form;
         })
