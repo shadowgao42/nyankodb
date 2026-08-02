@@ -7646,11 +7646,12 @@
             const generationEnd = (
               generationStart + (Number(ability.span) || 0)
             );
-            detail.textContent += ` · 생성 ${formatter.format(
-              Math.min(generationStart, generationEnd)
-            )}~${formatter.format(
-              Math.max(generationStart, generationEnd)
-            )}`;
+            const generationMinimum = Math.min(generationStart, generationEnd);
+            const generationMaximum = Math.max(generationStart, generationEnd);
+            const generationText = generationMinimum === generationMaximum
+              ? formatter.format(generationMinimum)
+              : `${formatter.format(generationMinimum)}~${formatter.format(generationMaximum)}`;
+            detail.textContent += ` · 생성 ${generationText}`;
           }
           if (["mini_wave", "mini_surge"].includes(ability.key)) {
             detail.textContent += " · 주는 피해 20%";
