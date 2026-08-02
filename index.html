@@ -44,6 +44,7 @@
     }
 
     .brand:hover { color: #fff; }
+    .brand .db { color: #ffad3d; }
 
     .search-card,
     .notice-card {
@@ -114,8 +115,6 @@
     }
 
     h2 { font-size: 19px; letter-spacing: -.04em; }
-    .notice-heading a { color: var(--muted); font-size: 13px; font-weight: 700; text-decoration: none; white-space: nowrap; }
-    .notice-heading a:hover { color: var(--text); text-decoration: underline; }
     .notice-note { padding: 12px 20px 0; color: var(--muted); font-size: 13px; }
 
     iframe {
@@ -142,7 +141,7 @@
 </head>
 <body>
   <main class="page">
-    <a class="brand" href="index.html" aria-label="냥코DB 홈">냥코DB</a>
+    <a class="brand" href="index.html" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
 
     <section class="search-card" aria-labelledby="unit-search-title">
       <h1 id="unit-search-title">유닛 검색</h1>
@@ -158,7 +157,6 @@
     <section class="notice-card" aria-labelledby="notice-title">
       <div class="notice-heading">
         <h2 id="notice-title">공식 공지</h2>
-        <a id="notice-link" target="_blank" rel="noopener noreferrer">PONOS 공지 열기</a>
       </div>
       <p class="notice-note">냥코 대전쟁 공식 공지입니다.</p>
       <iframe id="notice-frame" title="냥코 대전쟁 공식 공지" loading="lazy" referrerpolicy="no-referrer"></iframe>
@@ -174,11 +172,9 @@
       const status = document.getElementById("search-status");
       const results = document.getElementById("search-results");
       const noticeFrame = document.getElementById("notice-frame");
-      const noticeLink = document.getElementById("notice-link");
       let entries = [];
 
       noticeFrame.src = NOTICE_URL;
-      noticeLink.href = NOTICE_URL;
 
       const compact = value => String(value || "").toLowerCase().replace(/[\s\p{P}\p{S}_]/gu, "");
       const isSubsequence = (needle, haystack) => {
@@ -247,7 +243,7 @@
           name.textContent = entry.name;
           const formLabel = document.createElement("span");
           formLabel.className = "result-form";
-          formLabel.textContent = `${entry.form || 1}단`;
+          formLabel.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           link.append(image, name, formLabel);
           fragment.append(link);
         });
