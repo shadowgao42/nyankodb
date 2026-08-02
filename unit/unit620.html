@@ -4137,6 +4137,10 @@
                   <strong class="hp-efficiency-value" id="attackPerCostValue">—</strong>
                 </div>
                 <div class="range-row">
+                  <span id="hpDpsLabel">체력×DPS</span>
+                  <strong class="hp-efficiency-value" id="hpDpsValue">—</strong>
+                </div>
+                <div class="range-row">
                   <span id="hpDpsPerCooldownLabel">체력×DPS/재생산</span>
                   <strong class="hp-efficiency-value" id="hpDpsPerCooldownValue">—</strong>
                 </div>
@@ -7436,12 +7440,13 @@
 
     function renderAttackEfficiency(view) {
       const dpsLabel = view.counter.active ? "대항 DPS" : "DPS";
-      const hpDpsLabel = view.counter.active ? "대항 체력×DPS" : "체력×DPS";
+      const hpDpsMetricLabel = view.counter.active ? "대항 체력×DPS" : "체력×DPS";
       const cooldownUnitLabel = currentTimeUnit === "frames" ? "f" : "s";
       attackPerCooldownLabel.textContent = `${dpsLabel}/재생산(${cooldownUnitLabel})`;
       attackPerCostLabel.textContent = `${dpsLabel}/코스트`;
-      hpDpsPerCooldownLabel.textContent = `${hpDpsLabel}/재생산(${cooldownUnitLabel})`;
-      hpDpsPerCostLabel.textContent = `${hpDpsLabel}/코스트`;
+      hpDpsLabel.textContent = hpDpsMetricLabel;
+      hpDpsPerCooldownLabel.textContent = `${hpDpsMetricLabel}/재생산(${cooldownUnitLabel})`;
+      hpDpsPerCostLabel.textContent = `${hpDpsMetricLabel}/코스트`;
       const cooldownMeasure = currentCooldownMeasure(view);
       const dps = Number.isFinite(view.dps) ? view.dps : null;
       const dpsPerCooldown = dps !== null && cooldownMeasure.value > 0
@@ -7462,10 +7467,12 @@
       };
       setEfficiencyValue(attackPerCooldownValue, dpsPerCooldown);
       setEfficiencyValue(attackPerCostValue, dpsPerCost);
+      setLargeEfficiencyValue(hpDpsValue, hpDps);
       setLargeEfficiencyValue(hpDpsPerCooldownValue, hpDpsPerCooldown);
       setLargeEfficiencyValue(hpDpsPerCostValue, hpDpsPerCost);
       attackPerCooldownValue.title = "";
       attackPerCostValue.title = "";
+      hpDpsValue.title = "";
       hpDpsPerCooldownValue.title = "";
       hpDpsPerCostValue.title = "";
       setProvenance(
@@ -7477,6 +7484,11 @@
         attackPerCostValue,
         view.statKinds.dps,
         view.statKinds.cost,
+      );
+      setProvenance(
+        hpDpsValue,
+        view.statKinds.hp,
+        view.statKinds.dps,
       );
       setProvenance(
         hpDpsPerCooldownValue,
