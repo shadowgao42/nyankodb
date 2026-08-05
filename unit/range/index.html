@@ -105,6 +105,7 @@
       margin-top: 9px;
       color: var(--muted);
       font-size: 14px;
+      font-weight: 800;
       line-height: 1.65;
     }
 
@@ -189,7 +190,8 @@
       align-items: center;
       min-height: 92px;
       padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,.055);
+      border-bottom: 2px solid rgba(115,129,149,.34);
+      box-shadow: inset 0 -1px rgba(0,0,0,.45);
       content-visibility: auto;
       contain-intrinsic-size: auto 108px;
     }
@@ -551,7 +553,6 @@
     <section class="panel chart-panel" aria-labelledby="chart-title">
       <div class="chart-heading">
         <h2 class="chart-title" id="chart-title">인식 사거리</h2>
-        <p class="status" id="rangeStatus" role="status" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
       </div>
       <div class="range-chart" id="rangeChart" aria-busy="true"></div>
     </section>
@@ -570,7 +571,6 @@
         ? catalogData
         : (Array.isArray(catalogData?.entries) ? catalogData.entries : []);
       const chart = document.getElementById("rangeChart");
-      const status = document.getElementById("rangeStatus");
       const search = document.getElementById("rangeSearch");
       let pendingRender = 0;
 
@@ -817,10 +817,6 @@
           chart.append(empty);
         }
         chart.setAttribute("aria-busy", "false");
-        const unitCount = new Set(visibleEntries.map((entry) => entry.id)).size;
-        status.textContent = entries.length
-          ? `${formatNumber(visibleEntries.length)}개 형태 · ${formatNumber(unitCount)}개 유닛 · ${formatNumber(rangeGroups.size)}개 사거리`
-          : "유닛 카탈로그를 확인해 주세요.";
       }
 
       function scheduleRender() {

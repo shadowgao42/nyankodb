@@ -1020,7 +1020,9 @@
       renderFilterGroup(sections.ability, "ability");
       renderFilterGroup(sections.immunity, "immunity");
       renderFilterGroup(sections.resistance, "resistance");
-      renderFilterGroup(sections.attack, "attack");
+      renderFilterGroup(sections.attack
+        .filter((item) => item.key !== "timed_life")
+        .map((item) => (item.key === "limited_attacks" ? { ...item, label: "1회 공격" } : item)), "attack");
 
       function updateResults({ resetScroll = false } = {}) {
         const filtered = filterEntries(entries, rarities);
