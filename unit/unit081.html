@@ -123,6 +123,7 @@
       background: #080d14;
       box-shadow: 0 16px 42px rgba(0,0,0,.52);
       scrollbar-width: thin;
+      touch-action: pan-y;
     }
 
     .unit-search-results[hidden] {
@@ -144,6 +145,7 @@
       background: #27313e;
       text-align: left;
       cursor: pointer;
+      touch-action: pan-y;
     }
 
     .unit-search .unit-search-result:last-child {
@@ -10625,8 +10627,45 @@
           name.className = "unit-search-result-name";
           name.textContent = entry.name;
           result.append(name);
+          // Do not navigate on pointerdown.  On a touch screen that fires
+          // before the browser has determined whether the gesture is a
+          // vertical scroll, which used to open a unit while scrolling the
+          // result list.  Keep the normal click activation, but discard it
+          // after a meaningful drag.
+          let searchGestureStart = null;
+          let suppressSearchResultClick = false;
           result.addEventListener("pointerdown", (event) => {
-            event.preventDefault();
+            if (event.pointerType !== "mouse") {
+              searchGestureStart = {
+                pointerId: event.pointerId,
+                x: event.clientX,
+                y: event.clientY,
+              };
+            }
+          });
+          result.addEventListener("pointermove", (event) => {
+            if (!searchGestureStart
+                || event.pointerId !== searchGestureStart.pointerId) return;
+            if (Math.hypot(
+              event.clientX - searchGestureStart.x,
+              event.clientY - searchGestureStart.y,
+            ) > 8) {
+              suppressSearchResultClick = true;
+            }
+          });
+          result.addEventListener("pointercancel", () => {
+            searchGestureStart = null;
+            suppressSearchResultClick = false;
+          });
+          result.addEventListener("click", (event) => {
+            if (suppressSearchResultClick) {
+              event.preventDefault();
+              event.stopPropagation();
+              suppressSearchResultClick = false;
+              searchGestureStart = null;
+              return;
+            }
+            searchGestureStart = null;
             navigateToUnitSearchResult(entry);
           });
           result.addEventListener("mousemove", () => {
@@ -10837,6 +10876,7 @@
     renderTalentSettings();
     renderCounterSettings();
     selectForm(restoredForm, true);
+    requestAnimationFrame(lockAttackTimingPeerHeights);
     // Restore the saved level after the form limits are active.
     if (restoredLevelState) {
       updateStats(
