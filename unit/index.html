@@ -177,14 +177,14 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
-      min-height: 42px;
-      padding: 7px 12px;
-      border: 1px solid #596777;
-      border-radius: 9px;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 8px;
+      border: 1px solid #526071;
+      border-radius: 6px;
       color: #dce3ed;
       background: #202a36;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 900;
       cursor: pointer;
       user-select: none;
@@ -205,10 +205,10 @@
       display: grid;
       place-items: center;
       order: 2;
-      width: 21px;
-      height: 21px;
+      width: 15px;
+      height: 15px;
       border: 1px solid #697789;
-      border-radius: 5px;
+      border-radius: 4px;
       color: transparent;
       background: #101721;
       line-height: 1;
@@ -230,17 +230,46 @@
     .filter-panel { overflow: visible; }
 
     .filter-panel > .section-heading {
-      padding: 16px 18px;
+      padding: 13px 15px;
       border-bottom: 1px solid var(--line);
     }
 
-    .filter-body { padding: 2px 18px 18px; }
+    .filter-body { padding: 1px 15px 15px; }
+
+    .filter-logic {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .logic-button {
+      min-width: 36px;
+      min-height: 28px;
+      padding: 3px 7px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #dce5ef;
+      background: #27313d;
+      font-size: 11px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .logic-button[aria-pressed="true"] {
+      border-color: #ff784f;
+      color: #fff;
+      background: #bd421f;
+    }
 
     .filter-group {
       display: grid;
-      grid-template-columns: 116px minmax(0, 1fr);
-      gap: 14px;
-      padding: 16px 0;
+      grid-template-columns: 100px minmax(0, 1fr);
+      gap: 11px;
+      padding: 12px 0;
       border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
@@ -250,16 +279,16 @@
     }
 
     .filter-label {
-      padding-top: 9px;
+      padding-top: 7px;
       color: #e6ecf4;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 950;
     }
 
     .filter-chip-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
       min-width: 0;
     }
 
@@ -268,9 +297,9 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 42px;
+      min-height: 36px;
       border: 1px solid #526071;
-      border-radius: 9px;
+      border-radius: 7px;
       color: #e9eef5;
       background: linear-gradient(180deg, #394552, #242e3a);
       font-weight: 900;
@@ -295,22 +324,33 @@
     }
 
     .text-chip {
-      min-width: 126px;
-      padding: 8px 15px;
-      font-size: 13px;
+      min-width: 112px;
+      padding: 6px 11px;
+      font-size: 12px;
+    }
+
+    #rarityFilters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(108px, 112px));
+      gap: 6px;
+    }
+
+    #rarityFilters .text-chip {
+      min-width: 0;
+      white-space: nowrap;
     }
 
     .icon-chip {
-      width: 58px;
-      height: 58px;
-      min-height: 58px;
-      padding: 5px;
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 3px;
     }
 
     .icon-chip img {
       display: block;
-      width: 46px;
-      height: 46px;
+      width: 34px;
+      height: 34px;
       object-fit: contain;
       image-rendering: pixelated;
     }
@@ -318,12 +358,12 @@
     .icon-fallback {
       display: grid;
       place-items: center;
-      width: 44px;
-      height: 44px;
+      width: 32px;
+      height: 32px;
       border: 1px dashed rgba(255,255,255,.32);
-      border-radius: 7px;
+      border-radius: 5px;
       color: #f4f7fb;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 950;
       text-align: center;
       line-height: 1.1;
@@ -470,7 +510,7 @@
       .db-toolbar { padding: 12px 14px; }
       .search-panel { padding: 15px; }
       .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
-      .talent-toggle { grid-column: 1 / -1; justify-self: stretch; }
+      .talent-toggle { grid-column: 1 / -1; justify-self: start; }
       .filter-panel > .section-heading,
       .results-panel > .section-heading { padding-inline: 15px; }
       .filter-body { padding-inline: 15px; }
@@ -487,8 +527,10 @@
       .search-controls { grid-template-columns: minmax(0, 1fr) 72px; }
       .reset-button { padding-inline: 10px; }
       .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
-      .icon-chip { width: 54px; height: 54px; min-height: 54px; }
-      .icon-chip img { width: 43px; height: 43px; }
+      #rarityFilters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #rarityFilters .text-chip { padding-inline: 4px; font-size: 11px; }
+      .icon-chip { width: 40px; height: 40px; min-height: 40px; }
+      .icon-chip img { width: 32px; height: 32px; }
       .unit-grid { grid-template-columns: 1fr; }
       .unit-card,
       .unit-card:nth-child(2n),
@@ -534,6 +576,11 @@
     <section class="filter-panel" aria-labelledby="filterTitle">
       <div class="section-heading">
         <h2 id="filterTitle">검색 필터</h2>
+        <div class="filter-logic" role="group" aria-label="필터 조건 결합">
+          <span>조건</span>
+          <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="true">AND</button>
+          <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="false">OR</button>
+        </div>
       </div>
       <div class="filter-body">
         <div class="filter-group">
@@ -585,6 +632,7 @@
         nameSearch: document.getElementById("nameSearch"),
         reset: document.getElementById("resetFilters"),
         includeTalents: document.getElementById("includeTalents"),
+        logicButtons: [...document.querySelectorAll("[data-filter-logic]")],
         results: document.getElementById("unitResults"),
         resultsScroll: document.getElementById("resultsScroll"),
         status: document.getElementById("resultStatus"),
@@ -600,6 +648,7 @@
       const selected = Object.fromEntries(
         Object.keys(groupTargets).map((group) => [group, new Set()]),
       );
+      let filterLogic = "and";
       const numberFormatter = new Intl.NumberFormat("ko-KR");
 
       function asList(value) {
@@ -780,6 +829,12 @@
         elements.reset.disabled = !hasActiveFilters();
       }
 
+      function syncFilterLogic() {
+        elements.logicButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.filterLogic === filterLogic));
+        });
+      }
+
       function unitUrl(entry) {
         return `unit${String(entry.id).padStart(3, "0")}.html?form=${Number(entry.form) || 1}`;
       }
@@ -848,14 +903,23 @@
               entryKeys(entry.maxAbilities).forEach((key) => abilities.add(key));
             }
 
-            if (selected.rarity.size && !selected.rarity.has(rarityKey(entry, rarities))) {
-              return null;
+            const conditions = [
+              {
+                active: selected.rarity.size > 0,
+                matches: selected.rarity.has(rarityKey(entry, rarities)),
+              },
+              { active: selected.trait.size > 0, matches: categoryMatches(traits, selected.trait) },
+              { active: selected.ability.size > 0, matches: categoryMatches(abilities, selected.ability) },
+              { active: selected.immunity.size > 0, matches: categoryMatches(abilities, selected.immunity) },
+              { active: selected.resistance.size > 0, matches: categoryMatches(abilities, selected.resistance) },
+              { active: selected.attack.size > 0, matches: categoryMatches(abilities, selected.attack) },
+            ].filter((condition) => condition.active);
+            if (conditions.length) {
+              const matched = filterLogic === "and"
+                ? conditions.every((condition) => condition.matches)
+                : conditions.some((condition) => condition.matches);
+              if (!matched) return null;
             }
-            if (!categoryMatches(traits, selected.trait)) return null;
-            if (!categoryMatches(abilities, selected.ability)) return null;
-            if (!categoryMatches(abilities, selected.immunity)) return null;
-            if (!categoryMatches(abilities, selected.resistance)) return null;
-            if (!categoryMatches(abilities, selected.attack)) return null;
             return { entry, rank };
           })
           .filter(Boolean)
@@ -892,7 +956,7 @@
       }));
 
       renderFilterGroup(rarities, "rarity", false);
-      renderFilterGroup(traits, "trait");
+      renderFilterGroup(traits.filter((trait) => !["witch", "eva"].includes(trait.key)), "trait");
       renderFilterGroup(sections.ability, "ability");
       renderFilterGroup(sections.immunity, "immunity");
       renderFilterGroup(sections.resistance, "resistance");
@@ -917,6 +981,14 @@
         updateResults({ resetScroll: true });
       });
 
+      elements.logicButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterLogic = button.dataset.filterLogic === "or" ? "or" : "and";
+          syncFilterLogic();
+          updateResults({ resetScroll: true });
+        });
+      });
+
       elements.nameSearch.addEventListener("input", () => {
         updateResults({ resetScroll: true });
       });
@@ -931,6 +1003,8 @@
       elements.reset.addEventListener("click", () => {
         elements.nameSearch.value = "";
         elements.includeTalents.checked = false;
+        filterLogic = "and";
+        syncFilterLogic();
         Object.values(selected).forEach((values) => values.clear());
         document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
           .forEach((button) => button.setAttribute("aria-pressed", "false"));
