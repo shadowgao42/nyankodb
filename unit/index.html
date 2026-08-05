@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>유닛 상세검색 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --surface-3: #212b37;
+      --line: #293645;
+      --line-strong: #46566a;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-soft: rgba(255, 91, 45, .18);
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button,
+    input { font: inherit; }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 42px;
+    }
+
+    .db-toolbar,
+    .search-panel,
+    .filter-panel,
+    .results-panel {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+    }
+
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+    }
+
+    .db-brand {
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 950;
+      letter-spacing: -.05em;
+      text-decoration: none;
+    }
+
+    .db-brand span { color: var(--accent-2); }
+
+    .toolbar-title {
+      color: #dce3ed;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .search-panel,
+    .filter-panel,
+    .results-panel { margin-top: 12px; }
+
+    .search-panel { padding: 18px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 29px);
+      letter-spacing: -.045em;
+    }
+
+    h2 {
+      font-size: 18px;
+      letter-spacing: -.035em;
+    }
+
+    .search-description,
+    .result-status {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .search-description { margin-top: 6px; }
+
+    .search-controls {
+      display: grid;
+      grid-template-columns: minmax(210px, 1fr) auto auto;
+      align-items: center;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 8px 13px;
+      border: 1px solid #4d5a69;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #788697;
+      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
+    }
+
+    .reset-button {
+      min-height: 42px;
+      padding: 8px 16px;
+      border: 1px solid #596777;
+      border-radius: 9px;
+      color: var(--text);
+      background: #303a47;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .reset-button:hover:not(:disabled) {
+      border-color: #718094;
+      background: #3a4655;
+    }
+
+    .reset-button:disabled {
+      color: #7d8998;
+      background: #202833;
+      cursor: default;
+      opacity: .62;
+    }
+
+    .talent-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 42px;
+      padding: 7px 12px;
+      border: 1px solid #596777;
+      border-radius: 9px;
+      color: #dce3ed;
+      background: #202a36;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .talent-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+    }
+
+    .talent-check {
+      display: grid;
+      place-items: center;
+      order: 2;
+      width: 21px;
+      height: 21px;
+      border: 1px solid #697789;
+      border-radius: 5px;
+      color: transparent;
+      background: #101721;
+      line-height: 1;
+      transition: .15s ease;
+    }
+
+    .talent-toggle input:checked + .talent-check {
+      border-color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18);
+    }
+
+    .talent-toggle:has(input:focus-visible) {
+      outline: 2px solid rgba(255,173,61,.72);
+      outline-offset: 2px;
+    }
+
+    .filter-panel { overflow: visible; }
+
+    .filter-panel > .section-heading {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-body { padding: 2px 18px 18px; }
+
+    .filter-group {
+      display: grid;
+      grid-template-columns: 116px minmax(0, 1fr);
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .filter-group:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .filter-label {
+      padding-top: 9px;
+      color: #e6ecf4;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .filter-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .filter-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 1px solid #526071;
+      border-radius: 9px;
+      color: #e9eef5;
+      background: linear-gradient(180deg, #394552, #242e3a);
+      font-weight: 900;
+      cursor: pointer;
+      transition: border-color .13s ease, background .13s ease, box-shadow .13s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: #758396;
+      background: linear-gradient(180deg, #465363, #2d3947);
+    }
+
+    .filter-chip[aria-pressed="true"] {
+      border-color: #ff784f;
+      background: linear-gradient(180deg, #fa643a, #c83f1c);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18), inset 0 1px rgba(255,255,255,.18);
+    }
+
+    .filter-chip:focus-visible {
+      outline: 2px solid rgba(255,173,61,.85);
+      outline-offset: 2px;
+    }
+
+    .text-chip {
+      min-width: 126px;
+      padding: 8px 15px;
+      font-size: 13px;
+    }
+
+    .icon-chip {
+      width: 58px;
+      height: 58px;
+      min-height: 58px;
+      padding: 5px;
+    }
+
+    .icon-chip img {
+      display: block;
+      width: 46px;
+      height: 46px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .icon-fallback {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px dashed rgba(255,255,255,.32);
+      border-radius: 7px;
+      color: #f4f7fb;
+      font-size: 11px;
+      font-weight: 950;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .icon-chip::after {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 100;
+      width: max-content;
+      max-width: min(230px, 76vw);
+      padding: 8px 11px;
+      border: 1px solid #536174;
+      border-radius: 8px;
+      color: #fff;
+      background: #070b11;
+      box-shadow: 0 12px 30px rgba(0,0,0,.48);
+      content: attr(data-tooltip);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      text-align: center;
+      transform: translate(-50%, 5px);
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
+    }
+
+    .icon-chip:hover::after,
+    .icon-chip:focus-visible::after {
+      transform: translate(-50%, 0);
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .results-panel { overflow: hidden; }
+
+    .results-panel > .section-heading {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-status {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .results-scroll {
+      max-height: min(72vh, 920px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #526174 #111720;
+    }
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .unit-card {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(23,31,41,.64);
+      text-decoration: none;
+    }
+
+    .unit-card:nth-child(4n) { border-right: 0; }
+
+    .unit-card:hover,
+    .unit-card:focus-visible {
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }
+
+    .unit-card img,
+    .unit-image-empty {
+      display: block;
+      width: 78px;
+      height: 60px;
+      object-fit: contain;
+      object-position: center;
+      image-rendering: pixelated;
+    }
+
+    .unit-image-empty {
+      border: 1px dashed #405066;
+      border-radius: 7px;
+    }
+
+    .unit-copy { min-width: 0; }
+
+    .unit-name {
+      display: block;
+      overflow: hidden;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unit-identity {
+      display: block;
+      margin-top: 5px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty-results,
+    .catalog-error {
+      grid-column: 1 / -1;
+      padding: 42px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .catalog-error { color: #ffb199; }
+
+    @media (max-width: 980px) {
+      .unit-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .unit-card:nth-child(4n) { border-right: 1px solid var(--line); }
+      .unit-card:nth-child(3n) { border-right: 0; }
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .db-toolbar { padding: 12px 14px; }
+      .search-panel { padding: 15px; }
+      .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
+      .talent-toggle { grid-column: 1 / -1; justify-self: stretch; }
+      .filter-panel > .section-heading,
+      .results-panel > .section-heading { padding-inline: 15px; }
+      .filter-body { padding-inline: 15px; }
+      .filter-group { grid-template-columns: 1fr; gap: 9px; }
+      .filter-label { padding-top: 0; }
+      .unit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .unit-card:nth-child(3n) { border-right: 1px solid var(--line); }
+      .unit-card:nth-child(2n) { border-right: 0; }
+    }
+
+    @media (max-width: 500px) {
+      .toolbar-title { display: none; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .search-controls { grid-template-columns: minmax(0, 1fr) 72px; }
+      .reset-button { padding-inline: 10px; }
+      .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
+      .icon-chip { width: 54px; height: 54px; min-height: 54px; }
+      .icon-chip img { width: 43px; height: 43px; }
+      .unit-grid { grid-template-columns: 1fr; }
+      .unit-card,
+      .unit-card:nth-child(2n),
+      .unit-card:nth-child(3n),
+      .unit-card:nth-child(4n) { border-right: 0; }
+      .results-scroll { max-height: 68vh; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="db-toolbar">
+      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <span class="toolbar-title">유닛 상세검색</span>
+    </header>
+
+    <section class="search-panel" aria-labelledby="searchTitle">
+      <div class="section-heading">
+        <div>
+          <h1 id="searchTitle">유닛 상세검색</h1>
+          <p class="search-description">이름과 조건을 함께 선택하여 원하는 형태를 찾을 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="search-controls">
+        <input class="search-input" id="nameSearch" type="search" autocomplete="off"
+               spellcheck="false" placeholder="유닛 이름 입력" aria-label="유닛 이름 검색">
+        <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
+        <label class="talent-toggle">
+          <span>본능/초본능 포함</span>
+          <input id="includeTalents" type="checkbox">
+          <span class="talent-check" aria-hidden="true">✓</span>
+        </label>
+      </div>
+    </section>
+
+    <section class="filter-panel" aria-labelledby="filterTitle">
+      <div class="section-heading">
+        <h2 id="filterTitle">검색 필터</h2>
+      </div>
+      <div class="filter-body">
+        <div class="filter-group">
+          <h3 class="filter-label">레어도</h3>
+          <div class="filter-chip-list" id="rarityFilters"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label">타겟</h3>
+          <div class="filter-chip-list" id="traitFilters"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label">효과/능력</h3>
+          <div class="filter-chip-list" id="abilityFilters"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label">무효</h3>
+          <div class="filter-chip-list" id="immunityFilters"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label">내성</h3>
+          <div class="filter-chip-list" id="resistanceFilters"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label">공격 타입</h3>
+          <div class="filter-chip-list" id="attackFilters"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-panel" aria-labelledby="resultsTitle">
+      <div class="section-heading">
+        <h2 id="resultsTitle">모든 유닛</h2>
+        <p class="result-status" id="resultStatus" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
+      </div>
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="유닛 검색 결과">
+        <div class="unit-grid" id="unitResults"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="catalog.js"></script>
+  <script src="icon-runtime.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const catalog = window.NYANKODB_UNIT_CATALOG;
+      const elements = {
+        nameSearch: document.getElementById("nameSearch"),
+        reset: document.getElementById("resetFilters"),
+        includeTalents: document.getElementById("includeTalents"),
+        results: document.getElementById("unitResults"),
+        resultsScroll: document.getElementById("resultsScroll"),
+        status: document.getElementById("resultStatus"),
+      };
+      const groupTargets = {
+        rarity: document.getElementById("rarityFilters"),
+        trait: document.getElementById("traitFilters"),
+        ability: document.getElementById("abilityFilters"),
+        immunity: document.getElementById("immunityFilters"),
+        resistance: document.getElementById("resistanceFilters"),
+        attack: document.getElementById("attackFilters"),
+      };
+      const selected = Object.fromEntries(
+        Object.keys(groupTargets).map((group) => [group, new Set()]),
+      );
+      const numberFormatter = new Intl.NumberFormat("ko-KR");
+
+      function asList(value) {
+        if (Array.isArray(value)) return value;
+        if (value && typeof value === "object") return Object.values(value);
+        return [];
+      }
+
+      function normalizeMetaItem(item, fallbackKey = "") {
+        if (typeof item === "string" || typeof item === "number") {
+          const text = String(item);
+          return { key: text, label: text, icon: "" };
+        }
+        const value = item && typeof item === "object" ? item : {};
+        const key = String(
+          value.key ?? value.id ?? value.value ?? value.label_ko ?? value.label ?? fallbackKey,
+        );
+        return {
+          ...value,
+          key,
+          label: String(value.label_ko ?? value.label ?? value.name ?? key),
+          icon: typeof value.icon === "string" ? value.icon : "",
+        };
+      }
+
+      function normalizeMetaCollection(value) {
+        if (Array.isArray(value)) {
+          return value.map((item, index) => normalizeMetaItem(item, String(index)));
+        }
+        if (value && typeof value === "object") {
+          return Object.entries(value).map(([key, item]) => {
+            if (typeof item === "string" || typeof item === "number") {
+              return { key: String(key), label: String(item), icon: "" };
+            }
+            return normalizeMetaItem(item, key);
+          });
+        }
+        return [];
+      }
+
+      function abilitySections(meta) {
+        const result = { ability: [], immunity: [], resistance: [], attack: [] };
+        const source = meta?.abilities;
+        if (Array.isArray(source)) {
+          source.forEach((item, index) => {
+            const normalized = normalizeMetaItem(item, String(index));
+            const section = String(item?.section || "ability");
+            (result[section] || result.ability).push(normalized);
+          });
+          return result;
+        }
+        Object.keys(result).forEach((section) => {
+          result[section] = normalizeMetaCollection(source?.[section]);
+        });
+        return result;
+      }
+
+      function resolveAssetPath(path) {
+        if (!path || typeof path !== "string") return "";
+        if (path.startsWith("nyanko-imgcut:") || /^(?:data:|https?:|blob:)/i.test(path)) {
+          return path;
+        }
+        const normalized = path.replace(/^\/+/, "");
+        if (normalized.startsWith("img/")) {
+          return new URL(`../${normalized}`, window.location.href).href;
+        }
+        return new URL(path, window.location.href).href;
+      }
+
+      function entryKeys(value) {
+        return new Set(asList(value).map((item) => String(
+          typeof item === "object" && item !== null ? item.key ?? item.id ?? "" : item,
+        )).filter(Boolean));
+      }
+
+      function compactSearchText(value) {
+        return String(value || "")
+          .toLocaleLowerCase("ko-KR")
+          .replace(/[\s\p{P}\p{S}_]/gu, "");
+      }
+
+      function orderedSubsequenceMatch(name, query) {
+        let cursor = 0;
+        for (const character of query) {
+          const position = name.indexOf(character, cursor);
+          if (position < 0) return false;
+          cursor = position + character.length;
+        }
+        return true;
+      }
+
+      function containsAllLetters(name, query) {
+        const counts = new Map();
+        for (const character of name) {
+          counts.set(character, (counts.get(character) || 0) + 1);
+        }
+        for (const character of query) {
+          const count = counts.get(character) || 0;
+          if (count < 1) return false;
+          counts.set(character, count - 1);
+        }
+        return true;
+      }
+
+      function searchRank(name, query) {
+        if (!query) return 0;
+        if (name === query) return 0;
+        if (name.includes(query)) return 1;
+        if (orderedSubsequenceMatch(name, query)) return 2;
+        if (containsAllLetters(name, query)) return 3;
+        return null;
+      }
+
+      function createFilterChip(item, group, iconMode) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `filter-chip ${iconMode ? "icon-chip" : "text-chip"}`;
+        button.dataset.filterGroup = group;
+        button.dataset.filterKey = item.key;
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-label", item.label);
+        if (iconMode) {
+          button.dataset.tooltip = item.label;
+          if (item.icon) {
+            const image = document.createElement("img");
+            image.src = resolveAssetPath(item.icon);
+            image.alt = "";
+            image.width = 46;
+            image.height = 46;
+            button.append(image);
+          } else {
+            const fallback = document.createElement("span");
+            fallback.className = "icon-fallback";
+            const fixedFallbacks = {
+              multi_hit: "연",
+              limited_attacks: "1회",
+              timed_life: "시",
+              boss_wave_immune: "보",
+              explosion_resist: "폭",
+            };
+            fallback.textContent = fixedFallbacks[item.key]
+              || (item.label.length > 5 ? item.label.slice(0, 4) : item.label);
+            button.append(fallback);
+          }
+        } else {
+          button.textContent = item.label;
+        }
+        return button;
+      }
+
+      function renderFilterGroup(items, group, iconMode = true) {
+        const target = groupTargets[group];
+        const fragment = document.createDocumentFragment();
+        items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
+        target.replaceChildren(fragment);
+      }
+
+      function rarityKey(entry, rarities) {
+        const raw = String(entry.rarity ?? "");
+        const match = rarities.find((item) => (
+          item.key === raw || item.label === raw || String(item.id ?? "") === raw
+        ));
+        return match?.key || raw;
+      }
+
+      function categoryMatches(entryKeysSet, selectedKeys) {
+        if (!selectedKeys.size) return true;
+        return [...selectedKeys].some((key) => entryKeysSet.has(key));
+      }
+
+      function hasActiveFilters() {
+        return elements.nameSearch.value.trim() !== ""
+          || elements.includeTalents.checked
+          || Object.values(selected).some((values) => values.size > 0);
+      }
+
+      function syncResetButton() {
+        elements.reset.disabled = !hasActiveFilters();
+      }
+
+      function unitUrl(entry) {
+        return `unit${String(entry.id).padStart(3, "0")}.html?form=${Number(entry.form) || 1}`;
+      }
+
+      function createUnitCard(entry) {
+        const link = document.createElement("a");
+        link.className = "unit-card";
+        link.href = unitUrl(entry);
+        link.setAttribute("aria-label", `${entry.name}, ${entry.id}-${entry.form}`);
+
+        if (entry.icon) {
+          const image = document.createElement("img");
+          image.src = resolveAssetPath(entry.icon);
+          image.alt = "";
+          image.width = 78;
+          image.height = 60;
+          image.loading = "lazy";
+          image.decoding = "async";
+          link.append(image);
+        } else {
+          const empty = document.createElement("span");
+          empty.className = "unit-image-empty";
+          link.append(empty);
+        }
+
+        const copy = document.createElement("span");
+        copy.className = "unit-copy";
+        const name = document.createElement("span");
+        name.className = "unit-name";
+        name.textContent = entry.name;
+        const identity = document.createElement("span");
+        identity.className = "unit-identity";
+        identity.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form}`;
+        copy.append(name, identity);
+        link.append(copy);
+        return link;
+      }
+
+      function renderResults(entries) {
+        const fragment = document.createDocumentFragment();
+        if (!entries.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-results";
+          empty.textContent = "조건에 맞는 유닛이 없습니다.";
+          fragment.append(empty);
+        } else {
+          entries.forEach((entry) => fragment.append(createUnitCard(entry)));
+        }
+        elements.results.replaceChildren(fragment);
+        elements.status.textContent = `${numberFormatter.format(entries.length)}개 형태`;
+      }
+
+      function filterEntries(entries, rarities) {
+        const query = compactSearchText(elements.nameSearch.value);
+        const includeTalents = elements.includeTalents.checked;
+
+        return entries
+          .map((entry) => {
+            const rank = searchRank(compactSearchText(entry.name), query);
+            if (rank === null) return null;
+
+            const traits = entryKeys(entry.traits);
+            const abilities = entryKeys(entry.abilities);
+            if (includeTalents) {
+              entryKeys(entry.maxTraits).forEach((key) => traits.add(key));
+              entryKeys(entry.maxAbilities).forEach((key) => abilities.add(key));
+            }
+
+            if (selected.rarity.size && !selected.rarity.has(rarityKey(entry, rarities))) {
+              return null;
+            }
+            if (!categoryMatches(traits, selected.trait)) return null;
+            if (!categoryMatches(abilities, selected.ability)) return null;
+            if (!categoryMatches(abilities, selected.immunity)) return null;
+            if (!categoryMatches(abilities, selected.resistance)) return null;
+            if (!categoryMatches(abilities, selected.attack)) return null;
+            return { entry, rank };
+          })
+          .filter(Boolean)
+          .sort((left, right) => (
+            left.rank - right.rank
+            || Number(left.entry.id) - Number(right.entry.id)
+            || Number(left.entry.form) - Number(right.entry.form)
+          ))
+          .map(({ entry }) => entry);
+      }
+
+      function showCatalogError(message) {
+        const error = document.createElement("p");
+        error.className = "catalog-error";
+        error.textContent = message;
+        elements.results.replaceChildren(error);
+        elements.status.textContent = "목록을 불러오지 못했습니다.";
+      }
+
+      if (!catalog || !Array.isArray(catalog.entries)) {
+        showCatalogError("유닛 카탈로그 데이터가 없습니다.");
+        return;
+      }
+
+      const meta = catalog.meta || catalog;
+      const rarities = normalizeMetaCollection(meta.rarities);
+      const traits = normalizeMetaCollection(meta.traits);
+      const sections = abilitySections(meta);
+      const entries = catalog.entries.map((entry) => ({
+        ...entry,
+        id: Number(entry.id),
+        form: Number(entry.form) || 1,
+        name: String(entry.name || `Unit ${entry.id}-${entry.form}`),
+      }));
+
+      renderFilterGroup(rarities, "rarity", false);
+      renderFilterGroup(traits, "trait");
+      renderFilterGroup(sections.ability, "ability");
+      renderFilterGroup(sections.immunity, "immunity");
+      renderFilterGroup(sections.resistance, "resistance");
+      renderFilterGroup(sections.attack, "attack");
+
+      function updateResults({ resetScroll = false } = {}) {
+        const filtered = filterEntries(entries, rarities);
+        renderResults(filtered);
+        syncResetButton();
+        if (resetScroll) elements.resultsScroll.scrollTop = 0;
+      }
+
+      document.querySelector(".filter-body").addEventListener("click", (event) => {
+        const button = event.target.closest(".filter-chip");
+        if (!button) return;
+        const group = button.dataset.filterGroup;
+        const key = button.dataset.filterKey;
+        if (!selected[group] || !key) return;
+        if (selected[group].has(key)) selected[group].delete(key);
+        else selected[group].add(key);
+        button.setAttribute("aria-pressed", String(selected[group].has(key)));
+        updateResults({ resetScroll: true });
+      });
+
+      elements.nameSearch.addEventListener("input", () => {
+        updateResults({ resetScroll: true });
+      });
+      elements.nameSearch.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !elements.nameSearch.value) return;
+        elements.nameSearch.value = "";
+        updateResults({ resetScroll: true });
+      });
+      elements.includeTalents.addEventListener("change", () => {
+        updateResults({ resetScroll: true });
+      });
+      elements.reset.addEventListener("click", () => {
+        elements.nameSearch.value = "";
+        elements.includeTalents.checked = false;
+        Object.values(selected).forEach((values) => values.clear());
+        document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
+          .forEach((button) => button.setAttribute("aria-pressed", "false"));
+        updateResults({ resetScroll: true });
+        elements.nameSearch.focus();
+      });
+
+      updateResults();
+    })();
+  </script>
+</body>
+</html>

@@ -11,9 +11,10 @@
       --surface: #111720;
       --surface-2: #171f29;
       --line: #344252;
+      --line-strong: #526274;
       --text: #f4f7fb;
       --muted: #a5b1c1;
-      --focus: #aeb9c7;
+      --accent: #ffad3d;
       --shadow: 0 24px 70px rgba(0, 0, 0, .34);
     }
 
@@ -31,7 +32,11 @@
         var(--bg);
     }
 
-    .page { width: min(100% - 32px, 1040px); margin: 0 auto; padding: 28px 0 44px; }
+    .page {
+      width: min(100% - 32px, 1040px);
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
 
     .brand {
       display: inline-block;
@@ -44,7 +49,7 @@
     }
 
     .brand:hover { color: #fff; }
-    .brand .db { color: #ffad3d; }
+    .brand .db { color: var(--accent); }
 
     .search-card,
     .notice-card {
@@ -56,25 +61,78 @@
     .search-card { padding: clamp(18px, 3vw, 28px); }
     h1, h2, p { margin: 0; }
     h1 { font-size: clamp(21px, 3vw, 28px); letter-spacing: -.045em; }
+    h2 { font-size: 19px; letter-spacing: -.04em; }
     .intro { margin-top: 8px; color: var(--muted); font-size: 14px; }
+
+    .search-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .search-nav {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 7px;
+    }
+
+    .search-nav a,
+    button {
+      min-height: 42px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      color: var(--text);
+      background: #2b3746;
+      font: inherit;
+      font-weight: 800;
+    }
+
+    .search-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .search-nav a:hover,
+    button:hover { background: #374657; }
 
     form { display: flex; gap: 8px; margin-top: 18px; }
 
-    input,
-    button {
+    input {
+      width: 100%;
       min-height: 46px;
+      padding: 0 14px;
       border: 1px solid var(--line);
       border-radius: 7px;
+      outline: none;
       color: var(--text);
+      background: #0c1118;
       font: inherit;
     }
 
-    input { width: 100%; padding: 0 14px; outline: none; background: #0c1118; }
-    input:focus { border-color: var(--focus); box-shadow: 0 0 0 2px rgba(174,185,199,.18); }
-    button { flex: 0 0 auto; padding: 0 18px; cursor: pointer; background: #2b3746; font-weight: 800; }
-    button:hover { background: #374657; }
+    input:focus {
+      border-color: #aeb9c7;
+      box-shadow: 0 0 0 2px rgba(174,185,199,.18);
+    }
 
-    .search-status { min-height: 20px; margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+    button {
+      flex: 0 0 auto;
+      min-height: 46px;
+      padding: 0 18px;
+      cursor: pointer;
+    }
+
+    .search-status {
+      min-height: 20px;
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
     .search-results {
       display: grid;
       max-height: min(62vh, 620px);
@@ -109,20 +167,22 @@
       background: transparent;
     }
 
-    .result-name { overflow: hidden; font-size: 15px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .result-name {
+      overflow: hidden;
+      font-size: 15px;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .result-form { color: var(--muted); font-size: 13px; white-space: nowrap; }
     .notice-card { margin-top: 24px; overflow: hidden; }
 
     .notice-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
       padding: 17px 20px;
       border-bottom: 1px solid var(--line);
     }
 
-    h2 { font-size: 19px; letter-spacing: -.04em; }
     .notice-note { padding: 12px 20px 0; color: var(--muted); font-size: 13px; }
 
     iframe {
@@ -135,9 +195,12 @@
       background: #fff;
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 650px) {
       .page { width: min(100% - 20px, 1040px); padding-top: 18px; }
       .search-card { padding: 16px; }
+      .search-header { display: grid; }
+      .search-nav { width: 100%; }
+      .search-nav a { flex: 1 1 0; }
       .intro { font-size: 13px; }
       form { gap: 6px; }
       button { padding: 0 13px; }
@@ -149,13 +212,22 @@
 </head>
 <body>
   <main class="page">
-    <a class="brand" href="index.html" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
+    <a class="brand" href="./" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
 
     <section class="search-card" aria-labelledby="unit-search-title">
-      <h1 id="unit-search-title">유닛 검색</h1>
-      <p class="intro">유닛 이름의 일부를 입력해 찾을 수 있습니다.</p>
+      <div class="search-header">
+        <div>
+          <h1 id="unit-search-title">유닛 검색</h1>
+          <p class="intro">유닛 이름의 일부를 입력해 원하는 형태로 이동할 수 있습니다.</p>
+        </div>
+        <nav class="search-nav" aria-label="유닛 도구">
+          <a href="unit/">상세검색</a>
+          <a href="unit/range/">사거리표</a>
+        </nav>
+      </div>
       <form id="unit-search-form" role="search">
-        <input id="unit-search-input" type="search" autocomplete="off" placeholder="유닛 이름 입력" aria-label="유닛 이름">
+        <input id="unit-search-input" type="search" autocomplete="off"
+               placeholder="유닛 이름 입력" aria-label="유닛 이름">
         <button type="submit">검색</button>
       </form>
       <p class="search-status" id="search-status" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
@@ -163,33 +235,34 @@
     </section>
 
     <section class="notice-card" aria-labelledby="notice-title">
-      <div class="notice-heading">
-        <h2 id="notice-title">공식 공지</h2>
-      </div>
+      <div class="notice-heading"><h2 id="notice-title">공식 공지</h2></div>
       <p class="notice-note">냥코 대전쟁 공식 공지입니다.</p>
-      <iframe id="notice-frame" title="냥코 대전쟁 공식 공지" loading="lazy" referrerpolicy="no-referrer"></iframe>
+      <iframe id="notice-frame" title="냥코 대전쟁 공식 공지" loading="lazy"
+              referrerpolicy="no-referrer"></iframe>
     </section>
   </main>
 
+  <script src="unit/catalog.js"></script>
   <script>
     (() => {
-      const CATALOG_PAGE = "unit/unit496.html";
+      "use strict";
       const NOTICE_URL = "https://nyanko-announcement.ponosgames.com/v1/notices?platform=google&clientVersion=100300&countryCode=ko&clearedStageJapan=100&clearedStageFuture=100&clearedUniverse=100&timeDifference=700";
       const input = document.getElementById("unit-search-input");
       const form = document.getElementById("unit-search-form");
       const status = document.getElementById("search-status");
       const results = document.getElementById("search-results");
-      const noticeFrame = document.getElementById("notice-frame");
-      let entries = [];
+      const entries = window.NYANKODB_UNIT_CATALOG?.entries || [];
 
-      noticeFrame.src = NOTICE_URL;
+      document.getElementById("notice-frame").src = NOTICE_URL;
       try {
         window.sessionStorage.setItem("nyanko-db:last-page:v1", window.location.pathname);
       } catch {
-        // 검색은 세션 저장소가 차단되어도 정상적으로 동작합니다.
+        // 저장소가 차단되어도 검색은 정상적으로 동작합니다.
       }
 
-      const compact = value => String(value || "").toLowerCase().replace(/[\s\p{P}\p{S}_]/gu, "");
+      const compact = value => String(value || "").toLowerCase()
+        .replace(/[\s\p{P}\p{S}_]/gu, "");
+
       const isSubsequence = (needle, haystack) => {
         let position = 0;
         for (const letter of needle) {
@@ -199,6 +272,7 @@
         }
         return true;
       };
+
       const containsEveryLetter = (needle, haystack) => {
         const remaining = new Map();
         for (const letter of haystack) {
@@ -230,19 +304,23 @@
             return { entry, rank };
           })
           .filter(item => item.rank < 99)
-          .sort((a, b) => a.rank - b.rank || Number(a.entry.id) - Number(b.entry.id) || Number(a.entry.form) - Number(b.entry.form))
+          .sort((a, b) => a.rank - b.rank
+            || Number(a.entry.id) - Number(b.entry.id)
+            || Number(a.entry.form) - Number(b.entry.form))
           .map(item => item.entry);
       }
 
-      function unitUrl(id, selectedForm = 1) {
-        return `unit/unit${String(id).padStart(3, "0")}.html?form=${selectedForm}`;
+      function unitUrl(entry) {
+        return `unit/unit${String(entry.id).padStart(3, "0")}.html?form=${entry.form || 1}`;
       }
 
       function render(query) {
         const matches = matchingEntries(query);
         results.replaceChildren();
         if (!compact(query)) {
-          status.textContent = entries.length ? "유닛 이름을 입력해 검색하세요." : "유닛 목록을 불러오는 중입니다.";
+          status.textContent = entries.length
+            ? "유닛 이름을 입력해 검색하세요."
+            : "유닛 목록을 불러오지 못했습니다.";
           return matches;
         }
         if (!matches.length) {
@@ -254,10 +332,10 @@
         matches.forEach(entry => {
           const link = document.createElement("a");
           link.className = "search-result";
-          link.href = unitUrl(entry.id, entry.form || 1);
+          link.href = unitUrl(entry);
           link.setAttribute("role", "option");
           const image = document.createElement("img");
-          image.src = String(entry.icon || "").replace(/^\.\.\//, "");
+          image.src = entry.icon || "";
           image.alt = "";
           image.loading = "lazy";
           const name = document.createElement("span");
@@ -273,39 +351,16 @@
         return matches;
       }
 
-      async function loadCatalog() {
-        try {
-          const source = await fetch(CATALOG_PAGE, { cache: "force-cache" }).then(response => {
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.text();
-          });
-          const startMarker = "/* UNIT_NAME_SEARCH_INDEX_START */";
-          const endMarker = "/* UNIT_NAME_SEARCH_INDEX_END */";
-          const start = source.indexOf(startMarker);
-          const end = source.indexOf(endMarker, start);
-          const declaration = "const unitSearchIndex = ";
-          const declarationStart = source.indexOf(declaration, start);
-          const dataStart = declarationStart + declaration.length;
-          if (start < 0 || end < 0 || declarationStart < 0) throw new Error("검색 목록을 찾을 수 없습니다.");
-          const json = source.slice(dataStart, source.indexOf(";", dataStart));
-          entries = JSON.parse(json);
-          status.textContent = "유닛 이름을 입력해 검색하세요.";
-          if (input.value) render(input.value);
-        } catch (error) {
-          console.error(error);
-          status.textContent = "유닛 목록을 불러오지 못했습니다.";
-        }
-      }
-
       input.addEventListener("input", () => render(input.value));
       form.addEventListener("submit", event => {
         event.preventDefault();
         const matches = render(input.value);
-        if (matches.length) {
-          window.location.href = unitUrl(matches[0].id, matches[0].form || 1);
-        }
+        if (matches.length) window.location.href = unitUrl(matches[0]);
       });
-      loadCatalog();
+
+      status.textContent = entries.length
+        ? "유닛 이름을 입력해 검색하세요."
+        : "유닛 목록을 불러오지 못했습니다.";
     })();
   </script>
 </body>

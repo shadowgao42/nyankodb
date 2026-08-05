@@ -1,0 +1,860 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#080b10">
+  <title>사거리표 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --surface-3: #202a36;
+      --line: #344252;
+      --line-strong: #738195;
+      --text: #f4f7fb;
+      --muted: #a5b1c1;
+      --accent: #ffad3d;
+      --focus: #d7e3f1;
+      --shadow: 0 20px 64px rgba(0, 0, 0, .32);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-width: 0;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+      background:
+        linear-gradient(135deg, transparent 0 48%, rgba(255,255,255,.024) 48% 48.2%, transparent 48.2% 100%),
+        var(--bg);
+    }
+
+    button,
+    input,
+    summary { font: inherit; }
+
+    button,
+    summary,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    img { max-width: 100%; }
+
+    .page {
+      width: min(100% - 32px, 1240px);
+      margin: 0 auto;
+      padding: 24px 0 54px;
+    }
+
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      flex: 0 0 auto;
+      color: var(--text);
+      font-size: clamp(25px, 4vw, 32px);
+      font-weight: 900;
+      letter-spacing: -.06em;
+      line-height: 1;
+      text-decoration: none;
+    }
+
+    .brand:hover { color: #fff; }
+    .brand .db { color: var(--accent); }
+
+    .header-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-link {
+      min-height: 40px;
+      padding: 9px 13px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--text);
+      background: var(--surface-2);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .header-link:hover,
+    .header-link:focus-visible {
+      border-color: var(--line-strong);
+      background: var(--surface-3);
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(23,31,41,.98), rgba(14,20,28,.98));
+      box-shadow: var(--shadow);
+    }
+
+    .intro-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(250px, 390px);
+      align-items: end;
+      gap: 22px;
+      padding: clamp(18px, 3vw, 28px);
+    }
+
+    h1,
+    p { margin: 0; }
+
+    h1 {
+      font-size: clamp(23px, 3.4vw, 31px);
+      letter-spacing: -.045em;
+      line-height: 1.18;
+    }
+
+    .intro-copy {
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .search-label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      outline: none;
+      color: var(--text);
+      background: #0c1118;
+      font-size: 15px;
+    }
+
+    .search-input:focus {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 2px rgba(215,227,241,.16);
+    }
+
+    .chart-panel {
+      margin-top: 18px;
+      overflow: clip;
+    }
+
+    .chart-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 54px;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .chart-title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
+    .range-chart {
+      position: relative;
+      min-height: 260px;
+      padding: 24px 18px 34px;
+      isolation: isolate;
+    }
+
+    .range-chart::before {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      border-left: 1px solid rgba(255,255,255,.18);
+      border-right: 1px solid rgba(0,0,0,.5);
+      background: #4c5764;
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .range-row {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
+      align-items: center;
+      min-height: 92px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.055);
+      content-visibility: auto;
+      contain-intrinsic-size: auto 108px;
+    }
+
+    .range-row:last-child { border-bottom: 0; }
+
+    .range-items {
+      grid-column: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 0;
+      padding: 2px 12px 2px 0;
+    }
+
+    .range-marker {
+      position: relative;
+      z-index: 4;
+      grid-column: 2;
+      justify-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      color: #fff;
+      font-size: 15px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 900;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    .range-marker::before {
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 1px solid rgba(255,255,255,.45);
+      border-bottom: 1px solid rgba(0,0,0,.7);
+      background: #6a7685;
+      content: "";
+      transform: translateY(-50%);
+    }
+
+    .range-marker > span {
+      display: inline-flex;
+      min-width: 55px;
+      min-height: 27px;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border: 1px solid #8b97a5;
+      border-radius: 5px;
+      background: #394451;
+    }
+
+    .unit-card,
+    .stack-form-card,
+    .unit-stack {
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 0;
+    }
+
+    .unit-card,
+    .stack-form-card {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+    }
+
+    .unit-card { width: 78px; }
+    .stack-form-card { width: 66px; }
+
+    .unit-link,
+    .unit-stack > summary,
+    .stack-form-link {
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .unit-link {
+      display: grid;
+      grid-template-columns: 70px;
+      justify-items: center;
+      gap: 3px;
+      width: 78px;
+      padding: 5px 4px 4px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+    }
+
+    .unit-card > .attack-badge { width: calc(100% - 8px); }
+
+    .unit-link:hover,
+    .unit-link:focus-visible,
+    .stack-form-link:hover,
+    .stack-form-link:focus-visible {
+      border-color: var(--line-strong);
+      outline: none;
+      background: rgba(255,255,255,.065);
+    }
+
+    .unit-icon {
+      display: block;
+      width: 70px;
+      height: 54px;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+    }
+
+    .unit-icon.is-missing { visibility: hidden; }
+
+    .form-code {
+      overflow: hidden;
+      width: 100%;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.25;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .attack-badge {
+      position: relative;
+      display: block;
+      overflow: hidden;
+      width: 100%;
+      min-height: 18px;
+      padding: 2px 4px;
+      border: 1px solid #6c7b8d;
+      border-radius: 4px;
+      color: #dce7f4;
+      background: #26313e;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    [data-tooltip]::after {
+      position: absolute;
+      z-index: 30;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      width: max-content;
+      max-width: min(290px, 76vw);
+      padding: 8px 10px;
+      border: 1px solid #536174;
+      border-radius: 5px;
+      color: #fff;
+      background: rgba(7,10,15,.97);
+      box-shadow: 0 10px 28px rgba(0,0,0,.4);
+      content: attr(data-tooltip);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+      opacity: 0;
+      pointer-events: none;
+      text-align: left;
+      transform: translate(-50%, 4px);
+      transition: opacity .12s ease, transform .12s ease;
+      white-space: normal;
+    }
+
+    [data-tooltip]:hover::after,
+    [data-tooltip]:focus-visible::after,
+    [data-tooltip]:focus-within::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .unit-stack > summary {
+      display: grid;
+      min-width: 86px;
+      min-height: 75px;
+      cursor: pointer;
+      list-style: none;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 6px;
+    }
+
+    .unit-stack > summary::-webkit-details-marker { display: none; }
+
+    .unit-stack > summary:hover,
+    .unit-stack > summary:focus-visible {
+      border-color: var(--line-strong);
+      outline: none;
+      background: rgba(255,255,255,.06);
+    }
+
+    .stack-preview {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 82px;
+      min-height: 58px;
+      padding-right: 12px;
+    }
+
+    .stack-preview .unit-icon {
+      width: 58px;
+      height: 50px;
+      margin-right: -34px;
+      border: 1px solid rgba(255,255,255,.36);
+      background: #121923;
+      box-shadow: 0 2px 8px rgba(0,0,0,.45);
+    }
+
+    .stack-preview .unit-icon:last-of-type { margin-right: 0; }
+
+    .stack-count {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      min-width: 25px;
+      padding: 2px 5px;
+      border: 1px solid #8794a4;
+      border-radius: 9px;
+      color: #fff;
+      background: #354150;
+      font-size: 10px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .stack-open-label {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .unit-stack[open] {
+      width: min(100%, 334px);
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(11,16,23,.95);
+    }
+
+    .unit-stack[open] > summary {
+      min-height: 31px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .unit-stack[open] .stack-preview { display: none; }
+    .unit-stack[open] .stack-open-label::before { content: "형태 접기"; }
+    .unit-stack[open] .stack-open-label { font-size: 11px; }
+    .unit-stack[open] .stack-open-label > span { display: none; }
+
+    .stack-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding-top: 5px;
+    }
+
+    .stack-form-link {
+      display: grid;
+      grid-template-columns: 58px;
+      justify-items: center;
+      gap: 2px;
+      width: 66px;
+      padding: 4px 3px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+    }
+
+    .stack-form-link .unit-icon {
+      width: 58px;
+      height: 46px;
+    }
+
+    .stack-form-link .attack-badge { font-size: 9px; }
+    .stack-form-card > .attack-badge { width: calc(100% - 6px); font-size: 9px; }
+
+    .empty-state {
+      position: relative;
+      z-index: 2;
+      padding: 70px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .noscript-note {
+      margin-top: 18px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1240px); padding-top: 17px; }
+      .site-header { align-items: flex-start; }
+      .intro-panel { grid-template-columns: 1fr; gap: 17px; }
+      .chart-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+      .status { text-align: left; }
+      .range-chart { padding-right: 8px; padding-left: 8px; }
+      .range-chart::before { left: 72px; }
+      .range-row { grid-template-columns: 72px minmax(0, 1fr); min-height: 90px; }
+      .range-marker { grid-column: 1; grid-row: 1; }
+      .range-items {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: flex-start;
+        padding: 2px 0 2px 11px;
+      }
+      .unit-card { width: 68px; }
+      .unit-link { grid-template-columns: 62px; width: 68px; }
+      .unit-link .unit-icon { width: 62px; height: 50px; }
+      .unit-stack[open] { width: min(100%, 290px); }
+    }
+
+    @media (max-width: 470px) {
+      .site-header { gap: 10px; }
+      .header-links { gap: 5px; }
+      .header-link { min-height: 36px; padding: 7px 9px; font-size: 12px; }
+      .intro-panel { padding: 16px; }
+      .range-chart::before { left: 62px; }
+      .range-row { grid-template-columns: 62px minmax(0, 1fr); }
+      .range-marker { font-size: 13px; }
+      .range-marker > span { min-width: 49px; padding-right: 5px; padding-left: 5px; }
+      .unit-card { width: 62px; }
+      .unit-link { grid-template-columns: 56px; width: 62px; padding-right: 2px; padding-left: 2px; }
+      .unit-link .unit-icon { width: 56px; height: 46px; }
+      .stack-preview { width: 73px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      [data-tooltip]::after { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-header">
+      <a class="brand" href="../../index.html" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
+      <nav class="header-links" aria-label="유닛 메뉴">
+        <a class="header-link" href="../index.html">상세검색</a>
+        <a class="header-link" href="../../index.html">유닛 검색</a>
+      </nav>
+    </header>
+
+    <section class="panel intro-panel" aria-labelledby="range-title">
+      <div>
+        <h1 id="range-title">유닛 사거리표</h1>
+        <p class="intro-copy">인식 사거리 순으로 유닛을 확인할 수 있습니다. 같은 유닛의 형태가 겹쳐 있으면 아이콘을 눌러 펼칠 수 있습니다.</p>
+      </div>
+      <label>
+        <span class="search-label">이름 검색</span>
+        <input class="search-input" id="rangeSearch" type="search" autocomplete="off" placeholder="유닛 이름 입력" aria-controls="rangeChart">
+      </label>
+    </section>
+
+    <section class="panel chart-panel" aria-labelledby="chart-title">
+      <div class="chart-heading">
+        <h2 class="chart-title" id="chart-title">인식 사거리</h2>
+        <p class="status" id="rangeStatus" role="status" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
+      </div>
+      <div class="range-chart" id="rangeChart" aria-busy="true"></div>
+    </section>
+
+    <noscript><p class="noscript-note">사거리표를 보려면 JavaScript를 활성화해 주세요.</p></noscript>
+  </main>
+
+  <script src="../catalog.js"></script>
+  <script src="../icon-runtime.js" data-img-root="../../img"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const catalogData = window.NYANKODB_UNIT_CATALOG;
+      const catalog = Array.isArray(catalogData)
+        ? catalogData
+        : (Array.isArray(catalogData?.entries) ? catalogData.entries : []);
+      const chart = document.getElementById("rangeChart");
+      const status = document.getElementById("rangeStatus");
+      const search = document.getElementById("rangeSearch");
+      let pendingRender = 0;
+
+      const compact = (value) => String(value ?? "")
+        .normalize("NFKC")
+        .toLocaleLowerCase("ko-KR")
+        .replace(/[\s\p{P}\p{S}_]/gu, "");
+
+      const formatNumber = (value) => new Intl.NumberFormat("ko-KR", {
+        maximumFractionDigits: 2,
+      }).format(Number(value));
+
+      function normalizeEntry(rawEntry) {
+        const id = Number(rawEntry?.id);
+        const form = Number(rawEntry?.form) || 1;
+        const recognitionRange = Number(rawEntry?.recognitionRange);
+        const actualRanges = Array.isArray(rawEntry?.actualRanges)
+          ? rawEntry.actualRanges.flatMap((range, index) => {
+            const minimum = Number(range?.minimum);
+            const maximum = Number(range?.maximum);
+            if (!Number.isFinite(minimum) || !Number.isFinite(maximum)) return [];
+            return [{
+              hit: Number(range?.hit) || index + 1,
+              minimum: Math.min(minimum, maximum),
+              maximum: Math.max(minimum, maximum),
+            }];
+          })
+          : [];
+        return {
+          ...rawEntry,
+          id,
+          form,
+          name: String(rawEntry?.name || `유닛 ${String(id).padStart(3, "0")}-${form}`),
+          rarity: String(rawEntry?.rarity || ""),
+          icon: String(rawEntry?.icon || ""),
+          recognitionRange,
+          actualRanges,
+          searchKey: compact(rawEntry?.name || ""),
+        };
+      }
+
+      const entries = catalog
+        .map(normalizeEntry)
+        .filter((entry) => Number.isInteger(entry.id) && Number.isFinite(entry.recognitionRange))
+        .sort((left, right) => (
+          left.recognitionRange - right.recognitionRange
+          || left.id - right.id
+          || left.form - right.form
+        ));
+
+      function iconUrl(value) {
+        const source = String(value || "").trim();
+        if (!source || /^(?:data:|blob:|https?:|nyanko-imgcut:)/i.test(source)) return source;
+        if (source.startsWith("../../")) return source;
+        return `../../${source.replace(/^(?:\.\/|\.\.\/|\/)+/, "")}`;
+      }
+
+      function unitUrl(entry) {
+        return `../unit${String(entry.id).padStart(3, "0")}.html?form=${entry.form}`;
+      }
+
+      function rangesDifferFromDefault(entry) {
+        if (!entry.actualRanges.length) return false;
+        return entry.actualRanges.some((range) => (
+          Math.abs(range.minimum - (-320)) > 1e-9
+          || Math.abs(range.maximum - entry.recognitionRange) > 1e-9
+        ));
+      }
+
+      function rangeSpan(range) {
+        return `${formatNumber(range.minimum)}~${formatNumber(range.maximum)}`;
+      }
+
+      function actualRangeDescription(entry) {
+        if (!entry.actualRanges.length) return "공격 사거리 정보 없음";
+        const multi = entry.actualRanges.length > 1;
+        return entry.actualRanges.map((range, index) => {
+          const hit = Number(range.hit) || index + 1;
+          return `${multi ? `${hit}타 ` : ""}${rangeSpan(range)}`;
+        }).join(" · ");
+      }
+
+      function createIcon(entry, preview = false) {
+        const image = document.createElement("img");
+        image.className = "unit-icon";
+        const source = iconUrl(entry.icon);
+        if (source) image.src = source;
+        else image.classList.add("is-missing");
+        image.alt = preview ? "" : entry.name;
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.addEventListener("error", () => image.classList.add("is-missing"), { once: true });
+        return image;
+      }
+
+      function createFormCode(entry) {
+        const label = document.createElement("span");
+        label.className = "form-code";
+        label.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form}`;
+        return label;
+      }
+
+      function createAttackBadge(entry) {
+        if (!rangesDifferFromDefault(entry)) return null;
+        const fullText = actualRangeDescription(entry);
+        const badge = document.createElement("span");
+        badge.className = "attack-badge";
+        badge.tabIndex = 0;
+        badge.textContent = `공격 ${fullText}`;
+        badge.dataset.tooltip = `실제 공격 사거리: ${fullText}`;
+        badge.title = `실제 공격 사거리: ${fullText}`;
+        badge.setAttribute("aria-label", `실제 공격 사거리 ${fullText}`);
+        return badge;
+      }
+
+      function labelForEntry(entry) {
+        const rarity = entry.rarity ? ` · ${entry.rarity}` : "";
+        const range = rangesDifferFromDefault(entry)
+          ? ` · 실제 공격 ${actualRangeDescription(entry)}`
+          : "";
+        return `${entry.name} · ${entry.id}-${entry.form}${rarity}${range}`;
+      }
+
+      function createSingleLink(entry, compactLayout = false) {
+        const card = document.createElement("div");
+        card.className = compactLayout ? "stack-form-card" : "unit-card";
+        const link = document.createElement("a");
+        link.className = compactLayout ? "stack-form-link" : "unit-link";
+        link.href = unitUrl(entry);
+        link.title = labelForEntry(entry);
+        link.setAttribute("aria-label", `${entry.name}, ${entry.id}-${entry.form} 스펙 보기`);
+        link.append(createIcon(entry), createFormCode(entry));
+        card.append(link);
+        const badge = createAttackBadge(entry);
+        if (badge) card.append(badge);
+        return card;
+      }
+
+      function createStack(unitEntries) {
+        const details = document.createElement("details");
+        details.className = "unit-stack";
+
+        const summary = document.createElement("summary");
+        const preview = document.createElement("span");
+        preview.className = "stack-preview";
+        unitEntries.slice(0, 4).forEach((entry) => preview.append(createIcon(entry, true)));
+        const count = document.createElement("span");
+        count.className = "stack-count";
+        count.textContent = `${unitEntries.length}형태`;
+        preview.append(count);
+        const openLabel = document.createElement("span");
+        openLabel.className = "stack-open-label";
+        const closedText = document.createElement("span");
+        closedText.textContent = "형태 펼치기";
+        openLabel.append(closedText);
+        summary.append(preview, openLabel);
+        summary.dataset.tooltip = `${unitEntries[0].name} 외 ${unitEntries.length - 1}개 형태`;
+        summary.title = `${unitEntries[0].name} 외 ${unitEntries.length - 1}개 형태`;
+        summary.setAttribute("aria-label", `${unitEntries[0].id}번 유닛 ${unitEntries.length}개 형태 펼치기`);
+
+        const links = document.createElement("div");
+        links.className = "stack-links";
+        unitEntries.forEach((entry) => links.append(createSingleLink(entry, true)));
+        details.append(summary, links);
+        details.addEventListener("toggle", () => {
+          summary.setAttribute(
+            "aria-label",
+            `${unitEntries[0].id}번 유닛 ${unitEntries.length}개 형태 ${details.open ? "접기" : "펼치기"}`,
+          );
+        });
+        return details;
+      }
+
+      function groupEntries(filteredEntries) {
+        const rangeGroups = new Map();
+        filteredEntries.forEach((entry) => {
+          const rangeKey = String(entry.recognitionRange);
+          if (!rangeGroups.has(rangeKey)) rangeGroups.set(rangeKey, new Map());
+          const unitGroups = rangeGroups.get(rangeKey);
+          const unitKey = String(entry.id);
+          if (!unitGroups.has(unitKey)) unitGroups.set(unitKey, []);
+          unitGroups.get(unitKey).push(entry);
+        });
+        return rangeGroups;
+      }
+
+      function filteredEntries(query) {
+        const key = compact(query);
+        if (!key) return entries;
+        const numericQuery = /^\d{1,3}$/.test(key) ? Number(key) : null;
+        return entries.filter((entry) => (
+          entry.searchKey.includes(key)
+          || (numericQuery !== null && entry.id === numericQuery)
+        ));
+      }
+
+      function render() {
+        const visibleEntries = filteredEntries(search.value);
+        const rangeGroups = groupEntries(visibleEntries);
+        const fragment = document.createDocumentFragment();
+
+        rangeGroups.forEach((unitGroups, rangeKey) => {
+          const row = document.createElement("section");
+          row.className = "range-row";
+          row.setAttribute("aria-label", `인식 사거리 ${formatNumber(rangeKey)}`);
+
+          const items = document.createElement("div");
+          items.className = "range-items";
+          unitGroups.forEach((unitEntries) => {
+            unitEntries.sort((left, right) => left.form - right.form);
+            items.append(
+              unitEntries.length > 1
+                ? createStack(unitEntries)
+                : createSingleLink(unitEntries[0]),
+            );
+          });
+
+          const marker = document.createElement("div");
+          marker.className = "range-marker";
+          const markerText = document.createElement("span");
+          markerText.textContent = formatNumber(rangeKey);
+          marker.append(markerText);
+          row.append(items, marker);
+          fragment.append(row);
+        });
+
+        chart.replaceChildren();
+        if (rangeGroups.size) {
+          chart.append(fragment);
+        } else {
+          const empty = document.createElement("p");
+          empty.className = "empty-state";
+          empty.textContent = entries.length
+            ? "검색 조건에 맞는 유닛이 없습니다."
+            : "사거리 데이터를 불러오지 못했습니다.";
+          chart.append(empty);
+        }
+        chart.setAttribute("aria-busy", "false");
+        const unitCount = new Set(visibleEntries.map((entry) => entry.id)).size;
+        status.textContent = entries.length
+          ? `${formatNumber(visibleEntries.length)}개 형태 · ${formatNumber(unitCount)}개 유닛 · ${formatNumber(rangeGroups.size)}개 사거리`
+          : "유닛 카탈로그를 확인해 주세요.";
+      }
+
+      function scheduleRender() {
+        window.cancelAnimationFrame(pendingRender);
+        pendingRender = window.requestAnimationFrame(render);
+      }
+
+      search.addEventListener("input", scheduleRender);
+      render();
+    })();
+  </script>
+</body>
+</html>
