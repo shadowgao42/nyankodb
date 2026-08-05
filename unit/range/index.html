@@ -77,30 +77,6 @@
     .brand:hover { color: #fff; }
     .brand .db { color: var(--accent); }
 
-    .header-links {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .header-link {
-      min-height: 40px;
-      padding: 9px 13px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      color: var(--text);
-      background: var(--surface-2);
-      font-size: 14px;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .header-link:hover,
-    .header-link:focus-visible {
-      border-color: var(--line-strong);
-      background: var(--surface-3);
-    }
-
     .panel {
       border: 1px solid var(--line);
       border-radius: 17px;
@@ -435,21 +411,6 @@
 
     .stack-preview .unit-icon:last-of-type { margin-right: 0; }
 
-    .stack-count {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      min-width: 25px;
-      padding: 2px 5px;
-      border: 1px solid #8794a4;
-      border-radius: 9px;
-      color: #fff;
-      background: #354150;
-      font-size: 10px;
-      font-weight: 900;
-      text-align: center;
-    }
-
     .stack-open-label {
       display: none;
     }
@@ -462,6 +423,8 @@
       border-radius: 7px;
       background: rgba(11,16,23,.95);
     }
+
+    .unit-stack[open] > .stack-shared-badge { display: none; }
 
     .unit-stack[open] > summary {
       min-height: 31px;
@@ -549,8 +512,6 @@
 
     @media (max-width: 470px) {
       .site-header { gap: 10px; }
-      .header-links { gap: 5px; }
-      .header-link { min-height: 36px; padding: 7px 9px; font-size: 12px; }
       .intro-panel { padding: 16px; }
       .range-chart::before { left: 62px; }
       .range-row { grid-template-columns: 62px minmax(0, 1fr); }
@@ -574,10 +535,6 @@
   <main class="page">
     <header class="site-header">
       <a class="brand" href="../../index.html" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
-      <nav class="header-links" aria-label="유닛 메뉴">
-        <a class="header-link" href="../index.html">상세검색</a>
-        <a class="header-link" href="../../index.html">유닛 검색</a>
-      </nav>
     </header>
 
     <section class="panel intro-panel" aria-labelledby="range-title">
@@ -706,7 +663,7 @@
       }
 
       function createAttackBadge(entry) {
-        if (!rangesDifferFromDefault(entry)) return null;
+        if (!entry || !rangesDifferFromDefault(entry)) return null;
         const fullText = actualRangeDescription(entry);
         const badge = document.createElement("span");
         badge.className = "attack-badge";
@@ -721,6 +678,18 @@
         badge.title = fullText;
         badge.setAttribute("aria-label", `실제 공격 사거리 ${fullText}`);
         return badge;
+      }
+
+      function sharedRangeEntry(unitEntries) {
+        if (!unitEntries.length || !rangesDifferFromDefault(unitEntries[0])) return null;
+        const signature = (entry) => entry.actualRanges
+          .map((range) => `${range.minimum}:${range.maximum}`)
+          .join("|");
+        const sharedSignature = signature(unitEntries[0]);
+        if (!sharedSignature || !unitEntries.every((entry) => (
+          rangesDifferFromDefault(entry) && signature(entry) === sharedSignature
+        ))) return null;
+        return unitEntries[0];
       }
 
       function labelForEntry(entry) {
@@ -756,10 +725,6 @@
         const previewEntries = unitEntries.slice(0, 4);
         preview.dataset.previewCount = String(previewEntries.length);
         previewEntries.forEach((entry) => preview.append(createIcon(entry, true)));
-        const count = document.createElement("span");
-        count.className = "stack-count";
-        count.textContent = `${unitEntries.length}형태`;
-        preview.append(count);
         const openLabel = document.createElement("span");
         openLabel.className = "stack-open-label";
         const closedText = document.createElement("span");
@@ -773,7 +738,11 @@
         const links = document.createElement("div");
         links.className = "stack-links";
         unitEntries.forEach((entry) => links.append(createSingleLink(entry, true)));
-        details.append(summary, links);
+        const sharedBadge = createAttackBadge(sharedRangeEntry(unitEntries));
+        if (sharedBadge) sharedBadge.classList.add("stack-shared-badge");
+        details.append(summary);
+        if (sharedBadge) details.append(sharedBadge);
+        details.append(links);
         details.addEventListener("toggle", () => {
           summary.setAttribute(
             "aria-label",
