@@ -51,9 +51,9 @@
     img { max-width: 100%; }
 
     .page {
-      width: min(100% - 32px, 1240px);
+      width: min(100% - 32px, 1040px);
       margin: 0 auto;
-      padding: 24px 0 54px;
+      padding: 28px 0 44px;
     }
 
     .site-header {
@@ -67,7 +67,7 @@
     .brand {
       flex: 0 0 auto;
       color: var(--text);
-      font-size: clamp(25px, 4vw, 32px);
+      font-size: clamp(24px, 4vw, 31px);
       font-weight: 900;
       letter-spacing: -.06em;
       line-height: 1;
@@ -103,6 +103,7 @@
 
     .panel {
       border: 1px solid var(--line);
+      border-radius: 17px;
       background: linear-gradient(145deg, rgba(23,31,41,.98), rgba(14,20,28,.98));
       box-shadow: var(--shadow);
     }
@@ -225,7 +226,7 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: flex-end;
-      gap: 11px;
+      gap: 16px;
       min-width: 0;
       padding: 2px 12px 2px 0;
     }
@@ -330,36 +331,24 @@
 
     .unit-icon.is-missing { visibility: hidden; }
 
-    .form-code {
-      overflow: hidden;
-      width: 100%;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.25;
-      text-align: center;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
     .attack-badge {
       position: relative;
-      display: block;
-      overflow: hidden;
+      display: grid;
+      gap: 2px;
       width: 100%;
-      min-height: 18px;
-      padding: 2px 4px;
+      padding: 4px 5px;
       border: 1px solid #6c7b8d;
-      border-radius: 4px;
+      border-radius: 7px;
       color: #dce7f4;
       background: #26313e;
       font-size: 10px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.3;
       text-align: center;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
+
+    .attack-badge-title { color: #fff; font-weight: 900; }
+    .attack-range-line { display: block; white-space: nowrap; }
 
     [data-tooltip]::after {
       position: absolute;
@@ -521,7 +510,7 @@
     }
 
     @media (max-width: 760px) {
-      .page { width: min(100% - 20px, 1240px); padding-top: 17px; }
+      .page { width: min(100% - 20px, 1040px); padding-top: 20px; }
       .site-header { align-items: flex-start; }
       .intro-panel { grid-template-columns: 1fr; gap: 17px; }
       .chart-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
@@ -702,20 +691,24 @@
         return image;
       }
 
-      function createFormCode(entry) {
-        const label = document.createElement("span");
-        label.className = "form-code";
-        label.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form}`;
-        return label;
-      }
-
       function createAttackBadge(entry) {
         if (!rangesDifferFromDefault(entry)) return null;
         const fullText = actualRangeDescription(entry);
         const badge = document.createElement("span");
         badge.className = "attack-badge";
         badge.tabIndex = 0;
-        badge.textContent = `공격 ${fullText}`;
+        const title = document.createElement("strong");
+        title.className = "attack-badge-title";
+        title.textContent = "실제 공격사거리";
+        badge.append(title);
+        const multi = entry.actualRanges.length > 1;
+        entry.actualRanges.forEach((range, index) => {
+          const line = document.createElement("span");
+          line.className = "attack-range-line";
+          const hit = Number(range.hit) || index + 1;
+          line.textContent = `${multi ? `${hit}타 ` : ""}${rangeSpan(range)}`;
+          badge.append(line);
+        });
         badge.dataset.tooltip = `실제 공격 사거리: ${fullText}`;
         badge.title = `실제 공격 사거리: ${fullText}`;
         badge.setAttribute("aria-label", `실제 공격 사거리 ${fullText}`);
@@ -738,7 +731,7 @@
         link.href = unitUrl(entry);
         link.title = labelForEntry(entry);
         link.setAttribute("aria-label", `${entry.name}, ${entry.id}-${entry.form} 스펙 보기`);
-        link.append(createIcon(entry), createFormCode(entry));
+        link.append(createIcon(entry));
         card.append(link);
         const badge = createAttackBadge(entry);
         if (badge) card.append(badge);

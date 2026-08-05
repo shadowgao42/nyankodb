@@ -47,9 +47,9 @@
     a { -webkit-tap-highlight-color: transparent; }
 
     .page {
-      width: min(1220px, calc(100% - 36px));
+      width: min(100% - 32px, 1040px);
       margin: 0 auto;
-      padding: 24px 0 42px;
+      padding: 28px 0 44px;
     }
 
     .db-toolbar,
@@ -67,15 +67,20 @@
       align-items: center;
       justify-content: space-between;
       gap: 18px;
-      margin-bottom: 12px;
-      padding: 14px 18px;
+      margin-bottom: 18px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .db-brand {
+      display: inline-block;
       color: var(--text);
-      font-size: 25px;
-      font-weight: 950;
-      letter-spacing: -.05em;
+      font-size: clamp(24px, 4vw, 31px);
+      font-weight: 900;
+      letter-spacing: -.06em;
       text-decoration: none;
     }
 
@@ -234,6 +239,8 @@
       border-bottom: 1px solid var(--line);
     }
 
+    .filter-panel.is-collapsed > .section-heading { border-bottom: 0; }
+
     .filter-body { padding: 1px 15px 15px; }
 
     .filter-logic {
@@ -245,6 +252,41 @@
       font-weight: 900;
       white-space: nowrap;
     }
+
+    .filter-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .filter-collapse {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      border: 0;
+      color: #dce3ed;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-collapse:hover,
+    .filter-collapse:focus-visible {
+      color: #fff;
+      outline: none;
+    }
+
+    .filter-collapse-arrow {
+      color: var(--accent-2);
+      font-size: 22px;
+      line-height: .8;
+      transition: transform .16s ease;
+    }
+
+    .filter-panel.is-collapsed .filter-collapse-arrow { transform: rotate(180deg); }
 
     .logic-button {
       min-width: 36px;
@@ -506,8 +548,7 @@
     }
 
     @media (max-width: 760px) {
-      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
-      .db-toolbar { padding: 12px 14px; }
+      .page { width: min(100% - 20px, 1040px); padding-top: 20px; }
       .search-panel { padding: 15px; }
       .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
       .talent-toggle { grid-column: 1 / -1; justify-self: start; }
@@ -576,13 +617,18 @@
     <section class="filter-panel" aria-labelledby="filterTitle">
       <div class="section-heading">
         <h2 id="filterTitle">검색 필터</h2>
-        <div class="filter-logic" role="group" aria-label="필터 조건 결합">
-          <span>조건</span>
-          <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="true">AND</button>
-          <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="false">OR</button>
+        <div class="filter-actions">
+          <div class="filter-logic" role="group" aria-label="필터 조건 결합">
+            <span>조건</span>
+            <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="true">OR</button>
+            <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="false">AND</button>
+          </div>
+          <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="true" aria-controls="filterBody">
+            <span id="filterCollapseText">접기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+          </button>
         </div>
       </div>
-      <div class="filter-body">
+      <div class="filter-body" id="filterBody">
         <div class="filter-group">
           <h3 class="filter-label">레어도</h3>
           <div class="filter-chip-list" id="rarityFilters"></div>
@@ -633,6 +679,10 @@
         reset: document.getElementById("resetFilters"),
         includeTalents: document.getElementById("includeTalents"),
         logicButtons: [...document.querySelectorAll("[data-filter-logic]")],
+        filterPanel: document.querySelector(".filter-panel"),
+        filterBody: document.getElementById("filterBody"),
+        filterCollapse: document.getElementById("filterCollapse"),
+        filterCollapseText: document.getElementById("filterCollapseText"),
         results: document.getElementById("unitResults"),
         resultsScroll: document.getElementById("resultsScroll"),
         status: document.getElementById("resultStatus"),
@@ -648,7 +698,7 @@
       const selected = Object.fromEntries(
         Object.keys(groupTargets).map((group) => [group, new Set()]),
       );
-      let filterLogic = "and";
+      let filterLogic = "or";
       const numberFormatter = new Intl.NumberFormat("ko-KR");
 
       function asList(value) {
@@ -816,7 +866,8 @@
 
       function categoryMatches(entryKeysSet, selectedKeys) {
         if (!selectedKeys.size) return true;
-        return [...selectedKeys].some((key) => entryKeysSet.has(key));
+        const matches = [...selectedKeys].map((key) => entryKeysSet.has(key));
+        return filterLogic === "and" ? matches.every(Boolean) : matches.some(Boolean);
       }
 
       function hasActiveFilters() {
@@ -833,6 +884,13 @@
         elements.logicButtons.forEach((button) => {
           button.setAttribute("aria-pressed", String(button.dataset.filterLogic === filterLogic));
         });
+      }
+
+      function syncFilterCollapse() {
+        const collapsed = elements.filterPanel.classList.contains("is-collapsed");
+        elements.filterBody.hidden = collapsed;
+        elements.filterCollapse.setAttribute("aria-expanded", String(!collapsed));
+        elements.filterCollapseText.textContent = collapsed ? "펼치기" : "접기";
       }
 
       function unitUrl(entry) {
@@ -989,6 +1047,11 @@
         });
       });
 
+      elements.filterCollapse.addEventListener("click", () => {
+        elements.filterPanel.classList.toggle("is-collapsed");
+        syncFilterCollapse();
+      });
+
       elements.nameSearch.addEventListener("input", () => {
         updateResults({ resetScroll: true });
       });
@@ -1003,7 +1066,7 @@
       elements.reset.addEventListener("click", () => {
         elements.nameSearch.value = "";
         elements.includeTalents.checked = false;
-        filterLogic = "and";
+        filterLogic = "or";
         syncFilterLogic();
         Object.values(selected).forEach((values) => values.clear());
         document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
@@ -1012,6 +1075,8 @@
         elements.nameSearch.focus();
       });
 
+      syncFilterLogic();
+      syncFilterCollapse();
       updateResults();
     })();
   </script>
