@@ -132,7 +132,7 @@
 
     .search-controls {
       display: grid;
-      grid-template-columns: minmax(210px, 1fr) auto auto;
+      grid-template-columns: minmax(210px, 1fr) auto;
       align-items: center;
       gap: 9px;
       margin-top: 16px;
@@ -257,6 +257,8 @@
       display: inline-flex;
       align-items: center;
       gap: 13px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .filter-collapse {
@@ -551,7 +553,7 @@
       .page { width: min(100% - 20px, 1040px); padding-top: 20px; }
       .search-panel { padding: 15px; }
       .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
-      .talent-toggle { grid-column: 1 / -1; justify-self: start; }
+      .filter-actions { gap: 8px 11px; }
       .filter-panel > .section-heading,
       .results-panel > .section-heading { padding-inline: 15px; }
       .filter-body { padding-inline: 15px; }
@@ -606,11 +608,6 @@
         <input class="search-input" id="nameSearch" type="search" autocomplete="off"
                spellcheck="false" placeholder="유닛 이름 입력" aria-label="유닛 이름 검색">
         <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
-        <label class="talent-toggle">
-          <span>본능/초본능 포함</span>
-          <input id="includeTalents" type="checkbox">
-          <span class="talent-check" aria-hidden="true">✓</span>
-        </label>
       </div>
     </section>
 
@@ -623,6 +620,11 @@
             <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="true">OR</button>
             <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="false">AND</button>
           </div>
+          <label class="talent-toggle">
+            <span>본능/초본능 포함</span>
+            <input id="includeTalents" type="checkbox">
+            <span class="talent-check" aria-hidden="true">✓</span>
+          </label>
           <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="true" aria-controls="filterBody">
             <span id="filterCollapseText">접기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
           </button>

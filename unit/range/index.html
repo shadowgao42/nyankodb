@@ -221,6 +221,7 @@
     .range-row:last-child { border-bottom: 0; }
 
     .range-items {
+      --unit-slot: 78px;
       grid-column: 1;
       display: flex;
       flex-wrap: wrap;
@@ -288,8 +289,16 @@
       gap: 3px;
     }
 
-    .unit-card { width: 78px; }
+    .unit-card {
+      flex-basis: var(--unit-slot);
+      width: var(--unit-slot);
+    }
     .stack-form-card { width: 66px; }
+
+    .unit-stack {
+      flex-basis: var(--unit-slot);
+      width: var(--unit-slot);
+    }
 
     .unit-link,
     .unit-stack > summary,
@@ -303,7 +312,7 @@
       grid-template-columns: 70px;
       justify-items: center;
       gap: 3px;
-      width: 78px;
+      width: var(--unit-slot, 78px);
       padding: 5px 4px 4px;
       border: 1px solid transparent;
       border-radius: 6px;
@@ -347,7 +356,6 @@
       text-align: center;
     }
 
-    .attack-badge-title { color: #fff; font-weight: 900; }
     .attack-range-line { display: block; white-space: nowrap; }
 
     [data-tooltip]::after {
@@ -384,7 +392,8 @@
 
     .unit-stack > summary {
       display: grid;
-      min-width: 86px;
+      width: var(--unit-slot, 78px);
+      min-width: 0;
       min-height: 75px;
       cursor: pointer;
       list-style: none;
@@ -407,19 +416,22 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 82px;
+      width: var(--unit-slot, 78px);
       min-height: 58px;
-      padding-right: 12px;
+      overflow: hidden;
     }
 
     .stack-preview .unit-icon {
-      width: 58px;
+      width: 48px;
       height: 50px;
-      margin-right: -34px;
+      margin-right: -18px;
       border: 1px solid rgba(255,255,255,.36);
       background: #121923;
       box-shadow: 0 2px 8px rgba(0,0,0,.45);
     }
+
+    .stack-preview[data-preview-count="3"] .unit-icon { width: 38px; }
+    .stack-preview[data-preview-count="4"] .unit-icon { width: 33px; }
 
     .stack-preview .unit-icon:last-of-type { margin-right: 0; }
 
@@ -443,6 +455,7 @@
     }
 
     .unit-stack[open] {
+      flex-basis: min(100%, 334px);
       width: min(100%, 334px);
       padding: 5px;
       border: 1px solid var(--line);
@@ -525,9 +538,12 @@
         justify-content: flex-start;
         padding: 2px 0 2px 11px;
       }
-      .unit-card { width: 68px; }
-      .unit-link { grid-template-columns: 62px; width: 68px; }
+      .range-items { --unit-slot: 68px; }
+      .unit-link { grid-template-columns: 62px; }
       .unit-link .unit-icon { width: 62px; height: 50px; }
+      .stack-preview .unit-icon { width: 43px; height: 46px; }
+      .stack-preview[data-preview-count="3"] .unit-icon { width: 35px; }
+      .stack-preview[data-preview-count="4"] .unit-icon { width: 31px; }
       .unit-stack[open] { width: min(100%, 290px); }
     }
 
@@ -540,10 +556,12 @@
       .range-row { grid-template-columns: 62px minmax(0, 1fr); }
       .range-marker { font-size: 13px; }
       .range-marker > span { min-width: 49px; padding-right: 5px; padding-left: 5px; }
-      .unit-card { width: 62px; }
-      .unit-link { grid-template-columns: 56px; width: 62px; padding-right: 2px; padding-left: 2px; }
+      .range-items { --unit-slot: 62px; }
+      .unit-link { grid-template-columns: 56px; padding-right: 2px; padding-left: 2px; }
       .unit-link .unit-icon { width: 56px; height: 46px; }
-      .stack-preview { width: 73px; }
+      .stack-preview .unit-icon { width: 40px; height: 43px; }
+      .stack-preview[data-preview-count="3"] .unit-icon { width: 33px; }
+      .stack-preview[data-preview-count="4"] .unit-icon { width: 29px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -671,11 +689,7 @@
 
       function actualRangeDescription(entry) {
         if (!entry.actualRanges.length) return "공격 사거리 정보 없음";
-        const multi = entry.actualRanges.length > 1;
-        return entry.actualRanges.map((range, index) => {
-          const hit = Number(range.hit) || index + 1;
-          return `${multi ? `${hit}타 ` : ""}${rangeSpan(range)}`;
-        }).join(" · ");
+        return entry.actualRanges.map((range) => rangeSpan(range)).join(" · ");
       }
 
       function createIcon(entry, preview = false) {
@@ -697,20 +711,14 @@
         const badge = document.createElement("span");
         badge.className = "attack-badge";
         badge.tabIndex = 0;
-        const title = document.createElement("strong");
-        title.className = "attack-badge-title";
-        title.textContent = "실제 공격사거리";
-        badge.append(title);
-        const multi = entry.actualRanges.length > 1;
-        entry.actualRanges.forEach((range, index) => {
+        entry.actualRanges.forEach((range) => {
           const line = document.createElement("span");
           line.className = "attack-range-line";
-          const hit = Number(range.hit) || index + 1;
-          line.textContent = `${multi ? `${hit}타 ` : ""}${rangeSpan(range)}`;
+          line.textContent = rangeSpan(range);
           badge.append(line);
         });
-        badge.dataset.tooltip = `실제 공격 사거리: ${fullText}`;
-        badge.title = `실제 공격 사거리: ${fullText}`;
+        badge.dataset.tooltip = fullText;
+        badge.title = fullText;
         badge.setAttribute("aria-label", `실제 공격 사거리 ${fullText}`);
         return badge;
       }
@@ -745,7 +753,9 @@
         const summary = document.createElement("summary");
         const preview = document.createElement("span");
         preview.className = "stack-preview";
-        unitEntries.slice(0, 4).forEach((entry) => preview.append(createIcon(entry, true)));
+        const previewEntries = unitEntries.slice(0, 4);
+        preview.dataset.previewCount = String(previewEntries.length);
+        previewEntries.forEach((entry) => preview.append(createIcon(entry, true)));
         const count = document.createElement("span");
         count.className = "stack-count";
         count.textContent = `${unitEntries.length}형태`;
