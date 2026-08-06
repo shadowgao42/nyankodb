@@ -326,22 +326,22 @@
     .ability-filter-group { align-items: start; }
 
     .ability-filter-sections {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
+      display: block;
       min-width: 0;
     }
 
     .ability-filter-section {
       min-width: 0;
-      padding-right: 10px;
-      border-right: 1px solid rgba(255,255,255,.08);
+      padding: 0 0 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
     .ability-filter-section:last-child {
-      padding-right: 0;
-      border-right: 0;
+      padding-bottom: 0;
+      border-bottom: 0;
     }
+
+    .ability-filter-section + .ability-filter-section { padding-top: 10px; }
 
     .ability-filter-title {
       margin: 0 0 7px;
@@ -540,6 +540,10 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    /* The author-level grid rule can otherwise override the HTML hidden state. */
+    .unit-grid[hidden],
+    .range-chart[hidden] { display: none !important; }
 
     .unit-grid.display-one { grid-template-columns: 1fr; }
     .unit-grid.display-one .unit-card { border-right: 0; }
@@ -866,9 +870,6 @@
       .filter-body { padding-inline: 15px; }
       .filter-group { grid-template-columns: 1fr; gap: 9px; }
       .filter-label { padding-top: 0; }
-      .ability-filter-sections { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .ability-filter-section:nth-child(3n) { padding-right: 0; border-right: 0; }
-      .ability-filter-section:nth-child(n + 4) { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
       .range-chart { padding-right: 8px; padding-left: 8px; }
       .range-chart::before { left: 72px; }
       .range-row { grid-template-columns: 72px minmax(0, 1fr); min-height: 90px; }
@@ -895,10 +896,6 @@
       .unit-grid.display-two .unit-card img,
       .unit-grid.display-two .unit-image-empty { width: 58px; height: 48px; }
       .unit-grid.display-one .unit-card { border-right: 0; }
-      .ability-filter-sections { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .ability-filter-section { padding: 0 8px 8px 0; border-right: 1px solid rgba(255,255,255,.08); border-top: 0; }
-      .ability-filter-section:nth-child(2n) { padding-right: 0; border-right: 0; }
-      .ability-filter-section:nth-child(n + 3) { padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
       .range-chart::before { left: 62px; }
       .range-row { grid-template-columns: 62px minmax(0, 1fr); }
       .range-marker { font-size: 13px; }
