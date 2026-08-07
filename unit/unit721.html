@@ -4110,8 +4110,8 @@
                 <div class="expected-range-query-row">
                   <label class="expected-range-field-label"
                          for="expectedRangeInput">사거리</label>
-                  <input id="expectedRangeInput" type="number" inputmode="numeric"
-                         step="1" placeholder="사거리 입력">
+                  <input id="expectedRangeInput" type="number" min="-1000000"
+                         step="any" placeholder="사거리 입력">
                   <span class="expected-range-result-label"
                         id="expectedRangeResultLabel">공격력 기댓값</span>
                   <output id="expectedRangeResult" for="expectedRangeInput">
@@ -4263,7 +4263,7 @@
                    aria-label="덤벼라냥! 구성 유닛">
                 
                 <a class="nyancombo-member"
-                   href="unit721.html"
+                   href="unit721.html?form=1"
                    data-tooltip="화원고교 번장 리키"
                    aria-label="화원고교 번장 리키 유닛 계산기로 이동">
                   <div class="nyancombo-member-image"><img src="data:image/png;base64,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" alt="" width="104" height="79"></div>
@@ -8633,6 +8633,22 @@
         }
         const tooltip = createAbilityTooltip(ability, spiritView);
         card.setAttribute("aria-describedby", tooltip.id);
+        if (
+          ability.key === "conjure"
+          && Number.isInteger(Number(ability.spirit_unit_id))
+        ) {
+          let summonDetailsOpened = false;
+          card.dataset.spiritUnitId = String(ability.spirit_unit_id);
+          card.addEventListener("click", () => {
+            if (summonDetailsOpened) {
+              const targetId = String(ability.spirit_unit_id).padStart(3, "0");
+              window.location.assign(`unit${targetId}.html`);
+              return;
+            }
+            summonDetailsOpened = true;
+            card.focus({ preventScroll: true });
+          });
+        }
         card.append(iconBox, copy, tooltip);
         container.append(card);
       });

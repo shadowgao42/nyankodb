@@ -4108,8 +4108,8 @@
                 <div class="expected-range-query-row">
                   <label class="expected-range-field-label"
                          for="expectedRangeInput">사거리</label>
-                  <input id="expectedRangeInput" type="number" inputmode="numeric"
-                         step="1" placeholder="사거리 입력">
+                  <input id="expectedRangeInput" type="number" min="-1000000"
+                         step="any" placeholder="사거리 입력">
                   <span class="expected-range-result-label"
                         id="expectedRangeResultLabel">공격력 기댓값</span>
                   <output id="expectedRangeResult" for="expectedRangeInput">
@@ -4283,7 +4283,7 @@
                    aria-label="냥콤보 107 구성 유닛">
                 
                 <a class="nyancombo-member"
-                   href="unit866.html"
+                   href="unit866.html?form=1"
                    data-tooltip="パックマン"
                    aria-label="パックマン 유닛 계산기로 이동">
                   <div class="nyancombo-member-image"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGgAAABPCAYAAAAHtYAvAAAFMElEQVR42u2dv2/kRBTHP/PDs0n2yIEIxw/pEBIgKGhogQZBkQoaJOgp+AtoruCEhEQBFVBfRUN1lFfRohMFDRLVNZyQ0AkCLJvb27E9pnDGsRMT9nbjxV7eV1rNbGxnPfPZmffWfp6ngAJRb6WlC/otGys3btzAOcfOzk65wVqsLTcrpaSnOlBRlJNXlmVkWUae54QQODw8ZH9/vwnIOcdoNMJay9bWFlprrLVorTHGSG92oAgkyzJCCNy7d4/5fI5z7vQISpKE8XiMtRbnHEmSYIzBWkuSJCufTJqma++A8zjvLpWmaTVyYv9YawkhtAPSWuOcYzweo5Sq/qb1aqZKa01iJ1x88JmjoT1GqcPOSoDJ5CbwXKOxvXMAtCZJEtI0rWapEELji1UBijYnSRKUUmxvb1dwVp3m8jxHcfyhsRO7KgFcYgmF7e30HKe3EALWWmazGUmSkGVZZftbARljqpET35/HCKKw6/V+rEXrKXl4qLejpz7N1eG0AooHRSD1+qrfQq3vEnKz9g7QZgeU6bWTYIwhhNDo71Y3O7rSSqmG3YlwVhtFF9Bmvl5Apig/t6e/9EIIDTha6waD1hF0/7oFvA/8tcC+d9f4+2KMUu8BOwvs/QDwCfB0v3+oLqcZ8A0w6VWjSmfh2wX33j1qxxS4IJd6RALo/wrotw3vipPT23Q4Nqj04P4Avj+x5TZFkTPka6nl+X8H/HJiy+tDcxK+BD5sMcjDHjelQ/FumyMsNkgkgASQSAAJIJEAEgkgASTqA6AYCnTqHlBxW3qLHlxJKOMRPkDr3VrwQgLqx0ZQxjD1PBQvLXB54aDf94NGoy/+4bLI0L+Pb4O6KjZIJICW1J8CqN+6KIBkBPUqaGTd+gh4A3h8iWN/BfYEULe6DLyw5LEPi5MgEkACiLUGbIyFQJ9tUHnZ6DXglQWPeJG+RoBusJPwKnBFhorYIAEkEkACSCROwkl9RhlWfJYOKB+0+hR4UwCtV3eOXovsN0GmOJEAEgmgMzRFbFBnug7cBpZd9+dl+vJg1oYC+vrotayuDg6Q2CABhMQkCCDuO6qnXKZsWq041ayLDfoPdKmML1elJxfDzrU+XqKmXu/LPSfbFjw/mdwksY8dLUd2gDZbUHwM6tqAAd0BdY2i+Kpa/A84VadnT3m3Bs+H8CwFjlAYjHq0nAnV5Y0YR22L//X5gQDx4sRJEAkgASQSQCIBJIBEfQG0u6HdsTvk2w0J5cq48cnvJyjvy9zaADAn23UwLEDl2s5XOB2i+wNlXPVk4KPmOvAUsuqvSAAJINEmA9od0LLMA3AS4mJKsYyJIKq7jsUltPkcyBb4qJ9oWzW4O10FnlyoC0J+CVRotLve1i7Kej3P838HFFe5KoqiuvUbM0PF9F2xbow5Sq2yR5q+U3vfXgIY/TvarA9QyN8CHgG1d+a5GWPIQ44xx+li6u3uqqz3Z+zvOoPWEeS9xxiDUqpKMBj/WZ30/ZYhBChy9BpT+ZQNzkEtd85dl/X4hxAC8/mcPM/x3rePoCzLquyDWZZVO3rvcc4xn6+W/yexGYmjkcOuq3rVhnRMmdmkh7bFWrz3aK3x3lfJBuO5twLy3mOtPXNOXFbep2zvHD/ZXX/C+7zrSh3i06zXCQYjFIDZbIb3nhBC4+8NQGmaVlSdc+R5znQ6xTl3Tik2t7k7+3nN3TCDnie6jTNVHU69vxuA6t5aTHjXxWgSNW1lzETsvWc+nzcAKaCItmc0Gq1sa0SrTXtyJaHHqqeIjvoblnMB7BXz9WIAAAAASUVORK5CYII=" alt="" width="104" height="79"></div>
@@ -8653,6 +8653,22 @@
         }
         const tooltip = createAbilityTooltip(ability, spiritView);
         card.setAttribute("aria-describedby", tooltip.id);
+        if (
+          ability.key === "conjure"
+          && Number.isInteger(Number(ability.spirit_unit_id))
+        ) {
+          let summonDetailsOpened = false;
+          card.dataset.spiritUnitId = String(ability.spirit_unit_id);
+          card.addEventListener("click", () => {
+            if (summonDetailsOpened) {
+              const targetId = String(ability.spirit_unit_id).padStart(3, "0");
+              window.location.assign(`unit${targetId}.html`);
+              return;
+            }
+            summonDetailsOpened = true;
+            card.focus({ preventScroll: true });
+          });
+        }
         card.append(iconBox, copy, tooltip);
         container.append(card);
       });

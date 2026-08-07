@@ -4108,8 +4108,8 @@
                 <div class="expected-range-query-row">
                   <label class="expected-range-field-label"
                          for="expectedRangeInput">사거리</label>
-                  <input id="expectedRangeInput" type="number" inputmode="numeric"
-                         step="1" placeholder="사거리 입력">
+                  <input id="expectedRangeInput" type="number" min="-1000000"
+                         step="any" placeholder="사거리 입력">
                   <span class="expected-range-result-label"
                         id="expectedRangeResultLabel">공격력 기댓값</span>
                   <output id="expectedRangeResult" for="expectedRangeInput">
@@ -8640,6 +8640,22 @@
         }
         const tooltip = createAbilityTooltip(ability, spiritView);
         card.setAttribute("aria-describedby", tooltip.id);
+        if (
+          ability.key === "conjure"
+          && Number.isInteger(Number(ability.spirit_unit_id))
+        ) {
+          let summonDetailsOpened = false;
+          card.dataset.spiritUnitId = String(ability.spirit_unit_id);
+          card.addEventListener("click", () => {
+            if (summonDetailsOpened) {
+              const targetId = String(ability.spirit_unit_id).padStart(3, "0");
+              window.location.assign(`unit${targetId}.html`);
+              return;
+            }
+            summonDetailsOpened = true;
+            card.focus({ preventScroll: true });
+          });
+        }
         card.append(iconBox, copy, tooltip);
         container.append(card);
       });
