@@ -4117,8 +4117,8 @@
                 <div class="expected-range-query-row">
                   <label class="expected-range-field-label"
                          for="expectedRangeInput">사거리</label>
-                  <input id="expectedRangeInput" type="number" min="-1000000"
-                         step="any" placeholder="사거리 입력">
+                  <input id="expectedRangeInput" type="text" inputmode="text"
+                         autocomplete="off" spellcheck="false" placeholder="사거리 입력">
                   <span class="expected-range-result-label"
                         id="expectedRangeResultLabel">공격력 기댓값</span>
                   <output id="expectedRangeResult" for="expectedRangeInput">
@@ -8795,6 +8795,12 @@
             summonDetailsOpened = true;
             card.focus({ preventScroll: true });
           });
+          document.addEventListener("click", (event) => {
+      if (!event.target.closest(".unit-search")) {
+        closeUnitSearchResults();
+      }
+            if (!card.contains(event.target)) summonDetailsOpened = false;
+          });
         }
         card.append(iconBox, copy, tooltip);
         container.append(card);
@@ -10831,9 +10837,6 @@
       });
     }
     document.addEventListener("click", (event) => {
-      if (!event.target.closest(".unit-search")) {
-        closeUnitSearchResults();
-      }
       if (!event.target.closest(".trait-chip")) closeTraitTooltips();
       if (!event.target.closest(".evolution-item")) closeEvolutionTooltips();
       if (!event.target.closest(".talent-icon-button")) closeTalentTooltips();
