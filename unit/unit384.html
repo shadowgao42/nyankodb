@@ -3906,7 +3906,7 @@
         <img id="unitPortrait" src="../img/u/384/0.png" alt="히카미 사토리&amp;냥코 유닛 이미지">
       </div>
       <div class="hero-copy">
-        <div class="eyebrow"><span id="formIdentity">384-1</span></div>
+        <div class="eyebrow"><span id="formIdentity">UNIT 384-1</span></div>
         <div class="name-row">
           <h1 id="unitName">히카미 사토리&amp;냥코</h1>
           <span class="rarity-badge" id="unitRarity">EX</span>
@@ -5264,6 +5264,8 @@
               minimum: -67.5,
               maximum: waveMaximum,
               expectedAttack,
+              includeMinimum: false,
+              includeMaximum: true,
             });
           });
         });
@@ -5291,7 +5293,9 @@
             0,
             Math.round((generationMaximum - generationMinimum) * 4),
           );
-          const generationCount = generationStepCount + 1;
+          // Generation candidates are [minimum, maximum) in 1/4 steps.
+          // A fixed generation position still has one candidate.
+          const generationCount = Math.max(1, generationStepCount);
           baseAttackHits.forEach((rawAttack, index) => {
             const baseAttack = Number(rawAttack) || 0;
             const hitNumber = hitNumbers[index] || index + 1;
@@ -5332,15 +5336,15 @@
               riseEnd,
               fallStart,
               maximum: surgeMaximum,
-              edgeValue: expectedAttackPerPosition,
+              edgeValue: 0,
               peakValue: expectedAttackPerPosition * Math.min(
                 generationCount,
-                375 * 4 + 1,
+                375 * 4,
               ),
             });
             for (
               let stepIndex = 0;
-              stepIndex <= generationStepCount;
+              stepIndex < generationCount;
               stepIndex += 1
             ) {
               const generationPosition = (
@@ -5353,6 +5357,8 @@
                 minimum: generationPosition - 250,
                 maximum: generationPosition + 125,
                 expectedAttack: expectedAttackPerPosition,
+                includeMinimum: false,
+                includeMaximum: true,
               });
             }
           });
@@ -5379,7 +5385,9 @@
             0,
             Math.round((generationMaximum - generationMinimum) * 4),
           );
-          const generationCount = generationStepCount + 1;
+          // Generation candidates are [minimum, maximum) in 1/4 steps.
+          // A fixed generation position still has one candidate.
+          const generationCount = Math.max(1, generationStepCount);
           baseAttackHits.forEach((rawAttack, index) => {
             const baseAttack = Number(rawAttack) || 0;
             const hitNumber = hitNumbers[index] || index + 1;
@@ -5444,7 +5452,7 @@
             };
             for (
               let stepIndex = 0;
-              stepIndex <= generationStepCount;
+              stepIndex < generationCount;
               stepIndex += 1
             ) {
               const generationPosition = generationMinimum + stepIndex / 4;
@@ -5454,13 +5462,15 @@
                 generationPosition - 75,
                 generationPosition + 75,
                 centerAttack,
+                false,
+                true,
               );
               addExplosionEntry(
                 generationPosition - 175,
                 generationPosition - 75,
                 middleAttack,
-                true,
                 false,
+                true,
               );
               addExplosionEntry(
                 generationPosition + 75,
@@ -5473,8 +5483,8 @@
                 generationPosition - 275,
                 generationPosition - 175,
                 outerAttack,
-                true,
                 false,
+                true,
               );
               addExplosionEntry(
                 generationPosition + 175,
@@ -5484,13 +5494,13 @@
                 true,
               );
               addSampleRange(
-                generationPosition - 75,
+                generationPosition - 74.75,
                 generationPosition + 75,
                 centerAttack,
               );
               addSampleRange(
-                generationPosition - 175,
-                generationPosition - 75.25,
+                generationPosition - 174.75,
+                generationPosition - 75,
                 middleAttack,
               );
               addSampleRange(
@@ -5499,8 +5509,8 @@
                 middleAttack,
               );
               addSampleRange(
-                generationPosition - 275,
-                generationPosition - 175.25,
+                generationPosition - 274.75,
+                generationPosition - 175,
                 outerAttack,
               );
               addSampleRange(
@@ -10161,7 +10171,7 @@
       formTabs.forEach((tab) => {
         tab.setAttribute("aria-selected", String(Number(tab.dataset.form) === formNumber));
       });
-      formIdentity.textContent = `${unitData.unitId}-${formNumber}`;
+      formIdentity.textContent = `UNIT ${unitData.unitId}-${formNumber}`;
       unitName.textContent = currentData.name;
       unitDescription.textContent = currentData.description || "";
       unitRarity.textContent = currentData.rarity;
