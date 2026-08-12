@@ -10472,9 +10472,7 @@ XP로 써서 다른 캐릭터를 파워 업 시키자냥!</p>
           name.textContent = entry.name;
           const identity = document.createElement("span");
           identity.className = "unit-search-result-identity";
-          identity.textContent = `${entry.kind === "enemy" ? "ENEMY" : "UNIT"} ${
-            String(entry.id).padStart(3, "0")
-          }-${entry.form || 1}`;
+          identity.textContent = entry.kind === "enemy" ? `ENEMY ${String(entry.id).padStart(3, "0")}` : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           const copy = document.createElement("span");
           copy.className = "unit-search-result-copy";
           copy.append(name, identity);
