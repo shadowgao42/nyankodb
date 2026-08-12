@@ -1471,7 +1471,7 @@
       function rangeEffectText(effect) {
         if (effect.minimum === null || effect.maximum === null) return "";
         if (effect.key === "wave" || effect.key === "mini_wave") {
-          return formatRangeNumber(effect.maximum);
+          return `~${formatRangeNumber(effect.maximum)}`;
         }
         return Math.abs(effect.minimum - effect.maximum) < 1e-9
           ? formatRangeNumber(effect.minimum)
