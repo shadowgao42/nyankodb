@@ -811,12 +811,6 @@
       line-height: 1;
     }
 
-    .range-effect-level {
-      color: #d9a64a;
-      font-size: 9px;
-      line-height: 1;
-    }
-
     .range-effect-item img {
       width: 15px;
       height: 15px;
@@ -1501,8 +1495,11 @@
           };
           const item = document.createElement("span");
           item.className = "range-effect-item";
-          const effectName = names[effect.key] || "공격 효과";
-          item.title = `${effectName} ${text}${(effect.key === "surge" || effect.key === "mini_surge") && Number.isFinite(effect.level) ? ` · Lv.${effect.level}` : ""}`;
+          const hasLevel = (effect.key === "surge" || effect.key === "mini_surge")
+            && Number.isFinite(effect.level);
+          const effectName = `${names[effect.key] || "공격 효과"}${hasLevel ? ` Lv.${effect.level}` : ""}`;
+          const tooltipName = names[effect.key] || "공격 효과";
+          item.title = `${tooltipName} ${text}${hasLevel ? ` · Lv.${effect.level}` : ""}`;
           if (effect.icon) {
             const image = document.createElement("img");
             image.src = resolveAssetPath(effect.icon);
@@ -1518,13 +1515,6 @@
           const value = document.createElement("span");
           value.textContent = text;
           copy.append(value);
-          if ((effect.key === "surge" || effect.key === "mini_surge")
-              && Number.isFinite(effect.level)) {
-            const level = document.createElement("span");
-            level.className = "range-effect-level";
-            level.textContent = `Lv.${effect.level}`;
-            copy.append(level);
-          }
           item.append(copy);
           badge.append(item);
         });
