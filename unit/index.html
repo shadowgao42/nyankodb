@@ -774,6 +774,35 @@
 
     .range-attack-line { display: block; white-space: nowrap; }
 
+    .range-effect-badge {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 2px 4px;
+      width: calc(100% - 8px);
+      color: #f3c56a;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .range-effect-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .range-effect-item img {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
     .range-stack > summary {
       display: grid;
       width: var(--range-unit-slot);
@@ -1340,7 +1369,21 @@
             }];
           })
           : [];
-        return { ...entry, recognitionRange, actualRanges };
+        const rangeEffects = Array.isArray(entry.rangeEffects)
+          ? entry.rangeEffects.flatMap((effect) => {
+            const key = String(effect?.key || "");
+            if (!key) return [];
+            const minimum = Number(effect?.minimum);
+            const maximum = Number(effect?.maximum);
+            return [{
+              key,
+              icon: String(effect?.icon || ""),
+              minimum: Number.isFinite(minimum) ? minimum : null,
+              maximum: Number.isFinite(maximum) ? maximum : null,
+            }];
+          })
+          : [];
+        return { ...entry, recognitionRange, actualRanges, rangeEffects };
       }
 
       function rangeSpan(range) {
@@ -1390,6 +1433,41 @@
         return badge;
       }
 
+      function rangeEffectText(effect) {
+        if (effect.key === "wave" || effect.key === "mini_wave") {
+          return `~${formatRangeNumber(effect.maximum)}`;
+        }
+        if (effect.minimum === null || effect.maximum === null) return "";
+        return Math.abs(effect.minimum - effect.maximum) < 1e-9
+          ? formatRangeNumber(effect.minimum)
+          : `${formatRangeNumber(effect.minimum)}~${formatRangeNumber(effect.maximum)}`;
+      }
+
+      function createRangeEffectBadge(entry) {
+        const effects = entry.rangeEffects || [];
+        if (!effects.length) return null;
+        const badge = document.createElement("span");
+        badge.className = "range-effect-badge";
+        effects.forEach((effect) => {
+          const text = rangeEffectText(effect);
+          if (!text) return;
+          const item = document.createElement("span");
+          item.className = "range-effect-item";
+          item.title = text;
+          if (effect.icon) {
+            const image = document.createElement("img");
+            image.src = resolveAssetPath(effect.icon);
+            image.alt = "";
+            item.append(image);
+          }
+          const value = document.createElement("span");
+          value.textContent = text;
+          item.append(value);
+          badge.append(item);
+        });
+        return badge.childElementCount ? badge : null;
+      }
+
       function createRangeLink(entry, compact = false) {
         const card = document.createElement("div");
         card.className = compact ? "range-stack-form" : "range-unit";
@@ -1402,6 +1480,8 @@
         card.append(link);
         const badge = createRangeBadge(entry);
         if (badge) card.append(badge);
+        const effectBadge = createRangeEffectBadge(entry);
+        if (effectBadge) card.append(effectBadge);
         return card;
       }
 
