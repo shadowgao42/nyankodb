@@ -235,16 +235,16 @@
     <section class="search-card" aria-labelledby="unit-search-title">
       <div class="search-header">
         <div>
-          <h1 id="unit-search-title">유닛 검색</h1>
-          <p class="intro">유닛 이름의 일부를 입력해 원하는 형태로 이동할 수 있습니다.</p>
+          <h1 id="unit-search-title">검색</h1>
+          <p class="intro">유닛 또는 적 이름의 일부를 입력해 원하는 스펙으로 이동할 수 있습니다.</p>
         </div>
         <nav class="search-nav" aria-label="유닛 도구">
-          <a href="unit/">상세검색</a>
+          <a href="unit/">유닛 상세검색</a>
         </nav>
       </div>
       <form id="unit-search-form" role="search">
         <input id="unit-search-input" type="search" autocomplete="off"
-               placeholder="유닛 이름 입력" aria-label="유닛 이름">
+               placeholder="이름 입력" aria-label="유닛 또는 적 이름">
         <button type="submit">검색</button>
       </form>
       <p class="search-status" id="search-status" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
@@ -259,7 +259,7 @@
     </section>
   </main>
 
-  <script src="unit/catalog.js"></script>
+  <script src="catalog.js"></script>
   <script>
     (() => {
       "use strict";
@@ -268,7 +268,7 @@
       const form = document.getElementById("unit-search-form");
       const status = document.getElementById("search-status");
       const results = document.getElementById("search-results");
-      const entries = window.NYANKODB_UNIT_CATALOG?.entries || [];
+      const entries = window.NYANKODB_SEARCH_CATALOG?.entries || [];
 
       document.getElementById("notice-frame").src = NOTICE_URL;
       try {
@@ -327,8 +327,11 @@
           .map(item => item.entry);
       }
 
-      function unitUrl(entry) {
-        return `unit/unit${String(entry.id).padStart(3, "0")}.html?form=${entry.form || 1}`;
+      function entryUrl(entry) {
+        const id = String(entry.id).padStart(3, "0");
+        return entry.kind === "enemy"
+          ? `enemy/enemy${id}.html`
+          : `unit/unit${id}.html?form=${entry.form || 1}`;
       }
 
       function render(query) {
@@ -336,20 +339,20 @@
         results.replaceChildren();
         if (!compact(query)) {
           status.textContent = entries.length
-            ? "유닛 이름을 입력해 검색하세요."
-            : "유닛 목록을 불러오지 못했습니다.";
+            ? "유닛 또는 적 이름을 입력해 검색하세요."
+            : "검색 목록을 불러오지 못했습니다.";
           return matches;
         }
         if (!matches.length) {
-          status.textContent = "일치하는 유닛이 없습니다.";
+          status.textContent = "일치하는 결과가 없습니다.";
           return matches;
         }
-        status.textContent = `${matches.length}개의 유닛`;
+        status.textContent = `${matches.length}개의 결과`;
         const fragment = document.createDocumentFragment();
         matches.forEach(entry => {
           const link = document.createElement("a");
           link.className = "search-result";
-          link.href = unitUrl(entry);
+          link.href = entryUrl(entry);
           link.setAttribute("role", "option");
           const image = document.createElement("img");
           image.src = entry.icon || "";
@@ -360,7 +363,7 @@
           name.textContent = entry.name;
           const formLabel = document.createElement("span");
           formLabel.className = "result-form";
-          formLabel.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+          formLabel.textContent = `${entry.kind === "enemy" ? "ENEMY" : "UNIT"} ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           const copy = document.createElement("span");
           copy.className = "search-result-copy";
           copy.append(name, formLabel);
@@ -375,12 +378,12 @@
       form.addEventListener("submit", event => {
         event.preventDefault();
         const matches = render(input.value);
-        if (matches.length) window.location.href = unitUrl(matches[0]);
+        if (matches.length) window.location.href = entryUrl(matches[0]);
       });
 
       status.textContent = entries.length
-        ? "유닛 이름을 입력해 검색하세요."
-        : "유닛 목록을 불러오지 못했습니다.";
+        ? "유닛 또는 적 이름을 입력해 검색하세요."
+        : "검색 목록을 불러오지 못했습니다.";
     })();
   </script>
 </body>
