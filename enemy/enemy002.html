@@ -410,11 +410,14 @@
     .stat-meter { position: relative; height: 18px; margin-top: 13px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 7px; background: #d6e3ef; box-shadow: inset 0 2px 4px rgba(20,31,45,.22); }
     .stat-meter-fill { width: 0; height: 100%; border-radius: 6px; transition: width .18s ease; }
     .hp-fill { background: linear-gradient(90deg,#58a73e,#79bc4b); box-shadow: 0 0 14px rgba(108,180,67,.38); }
-    .hp-health-segments { position:absolute; inset:0; z-index:1; pointer-events:none; }
+    .hp-health-segments { position:absolute; inset:1px; z-index:1; overflow:hidden; border-radius:6px; pointer-events:none; }
     .hp-health-segment { position:absolute; inset-block:0; min-width:0; }
-    .hp-health-segment.health { background:linear-gradient(90deg,#58a73e,#79bc4b); box-shadow:0 0 14px rgba(108,180,67,.38); }
-    .hp-health-segment.shield { background:#5EA0CC; box-shadow:0 0 12px rgba(94,160,204,.42); }
-    .hp-health-segment.barrier { background:#E89090; box-shadow:0 0 12px rgba(232,144,144,.38); }
+    /* A segmented enemy bar must not restart a gradient for every KB.
+       Use the same clean, flat colour treatment as the unit HP meter,
+       then let the white separators communicate individual segments. */
+    .hp-health-segment.health { background:#68ad45; }
+    .hp-health-segment.shield { background:#5EA0CC; }
+    .hp-health-segment.barrier { background:#E89090; }
     .hp-bar-card .attack-breakdown.barrier-breakdown { display:flex; justify-content:flex-end; gap:0; color:var(--accent-text); }
     .hp-bar-card .barrier-health-value { color:#E89090; }
     .attack-fill { background: linear-gradient(90deg,#e6412f,#ff5b2d); box-shadow: 0 0 14px rgba(255,74,44,.38); }
@@ -1115,12 +1118,19 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   const regeneration=Math.max(0,Math.min(100,Number(shieldAbility?.regeneration_percent)||0));
   const regeneratedShield=Math.floor(shield*regeneration/100+1e-9);
   const segments=[];
-  if(barrier>0)segments.push({kind:'barrier',value:barrier});
+  // Keep the body split into its real KB portions even when neither a
+  // barrier nor a shield is selected.  The white markers in the health bar
+  // are KB boundaries, not merely boundaries between optional effects.
+  // Every colour transition is deliberately separated by the same thin
+  // white line used for a unit's KB divisions.  A barrier precedes the
+  // body only once; a shield precedes each body segment as it regenerates
+  // on KB.
+  if(barrier>0)segments.push({kind:'barrier',value:barrier,dividerAfter:true});
   const healthPerKb=stats.hp/stats.kb;
   for(let index=0;index<stats.kb;index++){
     const shieldAmount=index===0?shield:regeneratedShield;
-    if(shieldAmount>0)segments.push({kind:'shield',value:shieldAmount});
-    if(healthPerKb>0)segments.push({kind:'health',value:healthPerKb});
+    if(shieldAmount>0)segments.push({kind:'shield',value:shieldAmount,dividerAfter:true});
+    if(healthPerKb>0)segments.push({kind:'health',value:healthPerKb,dividerAfter:index<stats.kb-1});
   }
   return {
     enabled,
@@ -1129,7 +1139,7 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
     shield,
     regeneratedShield,
     regeneration,
-    segments:(enabled||barrierEnabled)?segments:[{kind:'health',value:stats.hp}],
+    segments:segments.length?segments:[{kind:'health',value:stats.hp,dividerAfter:false}],
     total:stats.hp+barrier+shield+regeneratedShield*Math.max(0,stats.kb-1),
   };
 }
@@ -1480,16 +1490,21 @@ function enemyRenderHealthMeter(card,health){
   dividers.className='kb-markers';
   const max=Math.max(1,Number(state.hpMax)||1);
   let offset=0;
-  health.segments.forEach((segment,index)=>{
+  health.segments.forEach(segment=>{
     const amount=Math.max(0,Number(segment.value)||0);
     if(amount<=0)return;
     const fill=document.createElement('i');
     fill.className=`hp-health-segment ${segment.kind}`;
+    const startsAtLeft=offset<=0;
+    const reachesRight=offset+amount>=max;
     fill.style.left=`${offset/max*100}%`;
     fill.style.width=`${amount/max*100}%`;
+    // Preserve the rounded ends of the unit-style meter even when the
+    // visible portion ends in the middle of a large HP segment.
+    fill.style.borderRadius=`${startsAtLeft?'6px':'0'} ${reachesRight?'6px':'0'} ${reachesRight?'6px':'0'} ${startsAtLeft?'6px':'0'}`;
     segments.append(fill);
     offset+=amount;
-    if(index<health.segments.length-1&&offset>0&&offset<max){
+    if(segment.dividerAfter&&offset>0&&offset<max){
       const divider=document.createElement('i');
       divider.className='kb-marker';
       divider.style.left=`${offset/max*100}%`;
