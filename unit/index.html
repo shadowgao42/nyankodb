@@ -289,7 +289,7 @@
       transition: transform .16s ease;
     }
 
-    .filter-panel.is-collapsed .filter-collapse-arrow { transform: rotate(180deg); }
+    .filter-panel:not(.is-collapsed) .filter-collapse-arrow { transform: rotate(180deg); }
 
     .logic-button {
       min-width: 36px;
