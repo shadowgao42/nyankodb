@@ -363,7 +363,9 @@
           name.textContent = entry.name;
           const formLabel = document.createElement("span");
           formLabel.className = "result-form";
-          formLabel.textContent = `${entry.kind === "enemy" ? "ENEMY" : "UNIT"} ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+          formLabel.textContent = entry.kind === "enemy"
+            ? `ENEMY ${String(entry.id).padStart(3, "0")}`
+            : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           const copy = document.createElement("span");
           copy.className = "search-result-copy";
           copy.append(name, formLabel);
