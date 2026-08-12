@@ -633,7 +633,7 @@
       z-index: 0;
       top: 0;
       bottom: 0;
-      left: 50%;
+      left: 72px;
       width: 4px;
       border-right: 1px solid rgba(0,0,0,.5);
       border-left: 1px solid rgba(255,255,255,.18);
@@ -646,7 +646,7 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
+      grid-template-columns: 72px minmax(0, 1fr);
       align-items: center;
       min-height: 92px;
       padding: 8px 0;
@@ -660,20 +660,22 @@
 
     .range-items {
       --range-unit-slot: 78px;
-      grid-column: 1;
+      grid-column: 2;
+      grid-row: 1;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
       gap: 16px;
       min-width: 0;
-      padding: 2px 12px 2px 0;
+      padding: 2px 0 2px 11px;
     }
 
     .range-marker {
       position: relative;
       z-index: 4;
-      grid-column: 2;
+      grid-column: 1;
+      grid-row: 1;
       justify-self: stretch;
       display: flex;
       align-items: center;
@@ -800,6 +802,13 @@
       display: grid;
       justify-items: center;
       gap: 1px;
+    }
+
+    .range-effect-name {
+      color: #f3c56a;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1;
     }
 
     .range-effect-level {
@@ -1467,6 +1476,9 @@
 
       function rangeEffectText(effect) {
         if (effect.minimum === null || effect.maximum === null) return "";
+        if (effect.key === "wave" || effect.key === "mini_wave") {
+          return formatRangeNumber(effect.maximum);
+        }
         return Math.abs(effect.minimum - effect.maximum) < 1e-9
           ? formatRangeNumber(effect.minimum)
           : `${formatRangeNumber(effect.minimum)}~${formatRangeNumber(effect.maximum)}`;
@@ -1480,9 +1492,17 @@
         effects.forEach((effect) => {
           const text = rangeEffectText(effect);
           if (!text) return;
+          const names = {
+            wave: "파동",
+            mini_wave: "소파동",
+            surge: "열파",
+            mini_surge: "소열파",
+            explosion: "폭파",
+          };
           const item = document.createElement("span");
           item.className = "range-effect-item";
-          item.title = text;
+          const effectName = names[effect.key] || "공격 효과";
+          item.title = `${effectName} ${text}${(effect.key === "surge" || effect.key === "mini_surge") && Number.isFinite(effect.level) ? ` · Lv.${effect.level}` : ""}`;
           if (effect.icon) {
             const image = document.createElement("img");
             image.src = resolveAssetPath(effect.icon);
@@ -1491,6 +1511,10 @@
           }
           const copy = document.createElement("span");
           copy.className = "range-effect-copy";
+          const name = document.createElement("span");
+          name.className = "range-effect-name";
+          name.textContent = effectName;
+          copy.append(name);
           const value = document.createElement("span");
           value.textContent = text;
           copy.append(value);
