@@ -796,6 +796,18 @@
       white-space: nowrap;
     }
 
+    .range-effect-copy {
+      display: grid;
+      justify-items: center;
+      gap: 1px;
+    }
+
+    .range-effect-level {
+      color: #d9a64a;
+      font-size: 9px;
+      line-height: 1;
+    }
+
     .range-effect-item img {
       width: 15px;
       height: 15px;
@@ -880,6 +892,18 @@
     .range-stack-link .range-unit-icon { width: 58px; height: 46px; }
     .range-stack-form > .range-attack-badge,
     .range-stack-link + .range-attack-badge { font-size: 9px; }
+
+    .range-stack-shared-details {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      width: 100%;
+      padding-top: 2px;
+    }
+
+    .range-stack-shared-details > .range-attack-badge { width: calc(100% - 8px); }
+    .range-stack-shared-details > .range-effect-badge { width: calc(100% - 8px); }
+    .range-stack[open] > .range-stack-shared-details { display: none; }
 
     .range-empty {
       position: relative;
@@ -1373,13 +1397,21 @@
           ? entry.rangeEffects.flatMap((effect) => {
             const key = String(effect?.key || "");
             if (!key) return [];
-            const minimum = Number(effect?.minimum);
-            const maximum = Number(effect?.maximum);
+            const rawMinimum = effect?.minimum;
+            const rawMaximum = effect?.maximum;
+            const rawLevel = effect?.level;
+            const minimum = Number(rawMinimum);
+            const maximum = Number(rawMaximum);
             return [{
               key,
               icon: String(effect?.icon || ""),
-              minimum: Number.isFinite(minimum) ? minimum : null,
-              maximum: Number.isFinite(maximum) ? maximum : null,
+              minimum: rawMinimum !== null && rawMinimum !== undefined && Number.isFinite(minimum)
+                ? minimum : null,
+              maximum: rawMaximum !== null && rawMaximum !== undefined && Number.isFinite(maximum)
+                ? maximum : null,
+              level: rawLevel !== null && rawLevel !== undefined && Number.isFinite(Number(rawLevel))
+                ? Math.max(1, Math.trunc(Number(rawLevel)))
+                : null,
             }];
           })
           : [];
@@ -1434,9 +1466,6 @@
       }
 
       function rangeEffectText(effect) {
-        if (effect.key === "wave" || effect.key === "mini_wave") {
-          return `~${formatRangeNumber(effect.maximum)}`;
-        }
         if (effect.minimum === null || effect.maximum === null) return "";
         return Math.abs(effect.minimum - effect.maximum) < 1e-9
           ? formatRangeNumber(effect.minimum)
@@ -1460,9 +1489,19 @@
             image.alt = "";
             item.append(image);
           }
+          const copy = document.createElement("span");
+          copy.className = "range-effect-copy";
           const value = document.createElement("span");
           value.textContent = text;
-          item.append(value);
+          copy.append(value);
+          if ((effect.key === "surge" || effect.key === "mini_surge")
+              && Number.isFinite(effect.level)) {
+            const level = document.createElement("span");
+            level.className = "range-effect-level";
+            level.textContent = `Lv.${effect.level}`;
+            copy.append(level);
+          }
+          item.append(copy);
           badge.append(item);
         });
         return badge.childElementCount ? badge : null;
@@ -1502,10 +1541,18 @@
         summary.append(preview, label);
         summary.title = `${unitEntries[0].name} 외 ${unitEntries.length - 1}개 형태`;
         summary.setAttribute("aria-label", `${unitEntries[0].id}번 유닛 ${unitEntries.length}개 형태 펼치기`);
+        const sharedDetails = document.createElement("div");
+        sharedDetails.className = "range-stack-shared-details";
+        const sharedRange = createRangeBadge(unitEntries[0]);
+        if (sharedRange) sharedDetails.append(sharedRange);
+        const sharedEffects = createRangeEffectBadge(unitEntries[0]);
+        if (sharedEffects) sharedDetails.append(sharedEffects);
         const links = document.createElement("div");
         links.className = "range-stack-links";
         unitEntries.forEach((entry) => links.append(createRangeLink(entry, true)));
-        details.append(summary, links);
+        details.append(summary);
+        if (sharedDetails.childElementCount) details.append(sharedDetails);
+        details.append(links);
         details.addEventListener("toggle", () => {
           summary.setAttribute(
             "aria-label",
@@ -1525,7 +1572,7 @@
             const rangeKey = String(entry.recognitionRange);
             if (!groups.has(rangeKey)) groups.set(rangeKey, new Map());
             const unitGroups = groups.get(rangeKey);
-            const unitKey = String(entry.id);
+            const unitKey = `${entry.id}:${rangeProfileKey(entry)}`;
             if (!unitGroups.has(unitKey)) unitGroups.set(unitKey, []);
             unitGroups.get(unitKey).push(entry);
           });
@@ -1561,6 +1608,21 @@
           empty.textContent = "조건에 맞는 유닛이 없습니다.";
           elements.rangeResults.append(empty);
         }
+      }
+
+      function rangeProfileKey(entry) {
+        const attacks = (entry.actualRanges || []).map((range) => [
+          Number(range.hit) || 0,
+          Number(range.minimum),
+          Number(range.maximum),
+        ]);
+        const effects = (entry.rangeEffects || []).map((effect) => [
+          String(effect.key || ""),
+          Number.isFinite(effect.minimum) ? Number(effect.minimum) : null,
+          Number.isFinite(effect.maximum) ? Number(effect.maximum) : null,
+          Number.isFinite(effect.level) ? Number(effect.level) : null,
+        ]).sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
+        return JSON.stringify({ attacks, effects });
       }
 
       function filterEntries(entries, rarities) {
