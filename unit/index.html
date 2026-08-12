@@ -1676,7 +1676,10 @@
               { active: effectAbilitySelections.size > 0, matches: categoryMatches(abilities, effectAbilitySelections) },
             ].filter((condition) => condition.active);
             if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
-            return { entry, rank };
+            const displayEntry = includeTalents && Array.isArray(entry.maxRangeEffects)
+              ? { ...entry, rangeEffects: entry.maxRangeEffects }
+              : entry;
+            return { entry: displayEntry, rank };
           })
           .filter(Boolean)
           .sort((left, right) => (
@@ -1784,7 +1787,6 @@
         document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
           .forEach((button) => button.setAttribute("aria-pressed", "false"));
         updateResults({ resetScroll: true });
-        elements.nameSearch.focus();
       });
 
       syncFilterLogic();
