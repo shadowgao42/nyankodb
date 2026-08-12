@@ -892,6 +892,7 @@
         <div class="distance-unit-grid">
           <label class="distance-unit-field"><span>&#49324;&#44144;&#47532; &#45800;&#50948;</span><select id="range-unit-select" aria-label="&#49324;&#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
           <label class="distance-unit-field"><span>&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;</span><select id="speed-unit-select" aria-label="&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;"><option value="spu/f">spu/f</option><option value="spu/s">spu/s</option><option value="u/f">u/f</option><option value="u/s">u/s</option><option value="rng/f">rng/f</option><option value="rng/s">rng/s</option></select></label>
+          <label class="distance-unit-field"><span>&#50900;&#54532; &#44144;&#47532; &#45800;&#50948;</span><select id="warp-unit-select" aria-label="&#50900;&#54532; &#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
         </div>
       </section>
     </div>
@@ -1050,7 +1051,7 @@ $('treasure-settings').open=!!state.treasureOpen;$('treasure-toggle').textConten
 /* Unit-calculator-compatible shared settings and page-local open panels. */
 const enemySharedSettingsKey='nyanko-db:enemy-shared-settings:v1';
 const enemyPanelStateKey=`${storeKey}.page-panels`;
-const enemySharedKeys=['hpMax','attackMax','timeUnit','rangeUnit','speedUnit','category','treasures','accounting','treasureOpen','miscOpen'];
+const enemySharedKeys=['hpMax','attackMax','timeUnit','rangeUnit','speedUnit','warpUnit','category','treasures','accounting','treasureOpen','miscOpen'];
 let enemyShared={};let enemyPanels={};
 try{enemyShared=JSON.parse(localStorage.getItem(enemySharedSettingsKey)||'{}')||{}}catch(_){}
 try{enemyPanels=JSON.parse(sessionStorage.getItem(enemyPanelStateKey)||'{}')||{}}catch(_){}
@@ -1069,6 +1070,7 @@ state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(s
 state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';
 state.rangeUnit=['rng','u','spu'].includes(state.rangeUnit)?state.rangeUnit:'rng';
 state.speedUnit=['spu/f','spu/s','u/f','u/s','rng/f','rng/s'].includes(state.speedUnit)?state.speedUnit:'spu/f';
+state.warpUnit=['rng','u','spu'].includes(state.warpUnit)?state.warpUnit:'rng';
 state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];
 const enemyAccountingConfig=DATA.treasure?.passive||{};
 const enemyAccountingBaseBounds=[Number(enemyAccountingConfig.minBaseLevel)||1,Number(enemyAccountingConfig.maxBaseLevel)||20];
@@ -1772,6 +1774,8 @@ const enemyDistanceNumber=value=>new Intl.NumberFormat('ko-KR',{maximumFractionD
 const enemyRangeFactor=()=>state.rangeUnit==='u'?4:state.rangeUnit==='spu'?2:1;
 const enemySpeedFactor=()=>{const unit=state.speedUnit,base=unit.startsWith('u/')?2:unit.startsWith('rng/')?.5:1;return base*(unit.endsWith('/s')?30:1)};
 const enemyRangeText=value=>enemyDistanceNumber(Number(value||0)*enemyRangeFactor());
+const enemyWarpFactor=()=>state.warpUnit==='u'?4:state.warpUnit==='spu'?2:1;
+const enemyWarpText=value=>enemyDistanceNumber(Number(value||0)*enemyWarpFactor());
 const enemyRangeInputText=value=>{const number=Number(value);return Number.isFinite(number)?String(Math.round(number*1000000)/1000000):''};
 const enemyRangeInputNumber=value=>{const text=String(value??'').replace(/,/g,'').trim();return text===''?NaN:Number(text)};
 const enemyRangeSpan=value=>{const minimum=Array.isArray(value)?value[0]:value?.minimum??value?.min;const maximum=Array.isArray(value)?value[1]:value?.maximum??value?.max;if(!Number.isFinite(Number(minimum))||!Number.isFinite(Number(maximum)))return enemyRangeText(value);const left=enemyRangeText(minimum),right=enemyRangeText(maximum);return Number(minimum)===Number(maximum)?left:`${left}~${right}`};
@@ -1829,11 +1833,12 @@ enemyTreasureSettings.open=!!state.treasureOpen;enemyMiscSettings.open=!!state.m
 setEnemyToggleLabel(enemyTreasureSettings,enemyTreasureToggle);setEnemyToggleLabel(enemyMiscSettings,enemyMiscToggle);
 enemyTreasureSettings.addEventListener('toggle',()=>{state.treasureOpen=enemyTreasureSettings.open;setEnemyToggleLabel(enemyTreasureSettings,enemyTreasureToggle);persistEnemySharedSettings()});
 enemyMiscSettings.addEventListener('toggle',()=>{state.miscOpen=enemyMiscSettings.open;setEnemyToggleLabel(enemyMiscSettings,enemyMiscToggle);persistEnemySharedSettings()});
-$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;
-const syncDistanceReset=()=>{$('distance-unit-reset').disabled=state.rangeUnit==='rng'&&state.speedUnit==='spu/f'};
-$('range-unit-select').addEventListener('change',event=>{state.rangeUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderStats()});
+$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;$('warp-unit-select').value=state.warpUnit;
+const syncDistanceReset=()=>{$('distance-unit-reset').disabled=state.rangeUnit==='rng'&&state.speedUnit==='spu/f'&&state.warpUnit==='rng'};
+$('range-unit-select').addEventListener('change',event=>{state.rangeUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderStats();renderEffects()});
 $('speed-unit-select').addEventListener('change',event=>{state.speedUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderStats()});
-$('distance-unit-reset').addEventListener('click',()=>{state.rangeUnit='rng';state.speedUnit='spu/f';$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;persistEnemySharedSettings();syncDistanceReset();renderStats()});
+$('warp-unit-select').addEventListener('change',event=>{state.warpUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderEffects()});
+$('distance-unit-reset').addEventListener('click',()=>{state.rangeUnit='rng';state.speedUnit='spu/f';state.warpUnit='rng';$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;$('warp-unit-select').value=state.warpUnit;persistEnemySharedSettings();syncDistanceReset();renderStats();renderEffects()});
 syncDistanceReset();
 window.addEventListener('resize',()=>{if(!document.querySelector('#hpDamageDetails[open],#attackDamageDetails[open],.attack-timing-details[open]'))requestAnimationFrame(lockEnemyPeerHeights);if(document.querySelector('#attackDamageDetails[open]'))requestAnimationFrame(enemyDrawExpectedRangeChart)});
 document.addEventListener('input',()=>queueMicrotask(persistEnemySharedSettings));
@@ -1863,7 +1868,7 @@ function effectSummary(x){
   if(key==='weaken'&&x.attack_percent!==undefined)p.push(`\uacf5\uaca9\ub825\uc744 ${number(x.attack_percent)}%\ub85c \uac10\uc18c`);
   if(key==='warp'&&x.minimum!==undefined&&x.maximum!==undefined){
     const minimum=Number(x.minimum),maximum=Number(x.maximum);
-    const distance=Math.abs(minimum-maximum)<1e-9?number(x.minimum):`${number(x.minimum)}~${number(x.maximum)}`;
+    const distance=Math.abs(minimum-maximum)<1e-9?enemyWarpText(x.minimum):`${enemyWarpText(x.minimum)}~${enemyWarpText(x.maximum)}`;
     p.push(`\uc774\ub3d9 \uac70\ub9ac ${distance}`);
   }
   if(key==='critical'){
