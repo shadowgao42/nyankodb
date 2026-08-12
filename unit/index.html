@@ -819,7 +819,11 @@
     }
 
     .range-stack > summary {
-      display: grid;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
       width: var(--range-unit-slot);
       min-height: 75px;
       cursor: pointer;
@@ -906,7 +910,6 @@
 
     .range-stack-shared-details > .range-attack-badge { width: calc(100% - 8px); }
     .range-stack-shared-details > .range-effect-badge { width: calc(100% - 8px); }
-    .range-stack[open] > .range-stack-shared-details { display: none; }
 
     .range-empty {
       position: relative;
@@ -1521,7 +1524,7 @@
         return badge.childElementCount ? badge : null;
       }
 
-      function createRangeLink(entry, compact = false) {
+      function createRangeLink(entry, compact = false, includeDetails = true) {
         const card = document.createElement("div");
         card.className = compact ? "range-stack-form" : "range-unit";
         const link = document.createElement("a");
@@ -1531,10 +1534,12 @@
         link.setAttribute("aria-label", `${entry.name} ${entry.id}-${entry.form} 스펙 보기`);
         link.append(createRangeIcon(entry));
         card.append(link);
-        const badge = createRangeBadge(entry);
-        if (badge) card.append(badge);
-        const effectBadge = createRangeEffectBadge(entry);
-        if (effectBadge) card.append(effectBadge);
+        if (includeDetails) {
+          const badge = createRangeBadge(entry);
+          if (badge) card.append(badge);
+          const effectBadge = createRangeEffectBadge(entry);
+          if (effectBadge) card.append(effectBadge);
+        }
         return card;
       }
 
@@ -1561,11 +1566,11 @@
         if (sharedRange) sharedDetails.append(sharedRange);
         const sharedEffects = createRangeEffectBadge(unitEntries[0]);
         if (sharedEffects) sharedDetails.append(sharedEffects);
+        if (sharedDetails.childElementCount) summary.append(sharedDetails);
         const links = document.createElement("div");
         links.className = "range-stack-links";
-        unitEntries.forEach((entry) => links.append(createRangeLink(entry, true)));
+        unitEntries.forEach((entry) => links.append(createRangeLink(entry, true, false)));
         details.append(summary);
-        if (sharedDetails.childElementCount) details.append(sharedDetails);
         details.append(links);
         details.addEventListener("toggle", () => {
           summary.setAttribute(
