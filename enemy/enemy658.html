@@ -888,13 +888,18 @@
       <div class="eyebrow" id="enemy-id"></div>
       <div class="name-row"><h1 class="name" id="enemy-name"></h1></div>
       <p class="description" id="enemy-description"></p>
-      <div class="level-summary">
-        <div class="current-level">현재 배율 <strong><span id="magnification-badge"></span>%</strong><span class="treasure-application" id="treasure-application" hidden></span></div>
-      </div>
       <div class="level-control" aria-label="적 배율 조절">
         <div class="level-row mag-row">
-          <label for="magnification-number">배율</label>
+          <label for="magnification-number">전체 배율</label>
           <label class="magnification-number"><input class="number" type="number" id="magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 배율 직접 입력"><span>%</span></label>
+        </div>
+        <div class="level-row mag-row">
+          <label for="hp-magnification-number">체력 배율</label>
+          <label class="magnification-number"><input class="number" type="number" id="hp-magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 체력 배율 직접 입력"><span>%</span></label>
+        </div>
+        <div class="level-row mag-row">
+          <label for="attack-magnification-number">공격력 배율</label>
+          <label class="magnification-number"><input class="number" type="number" id="attack-magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 공격력 배율 직접 입력"><span>%</span></label>
         </div>
       </div>
       <div class="bar-settings" aria-label="스탯 바 기준값 설정">
@@ -917,12 +922,12 @@ const DATA={"enemy":{"id":658,"name":"미니 엔젤 사이클론","description":
 const SEARCH_SITE_PREFIX="../";
 const $=id=>document.getElementById(id);
 const storeKey=`nyankodb.enemy.${DATA.enemy.id}`;
-const defaults={magnification:DATA.defaults.magnification??100,hpMax:DATA.defaults.hpBarMax??1000000,attackMax:DATA.defaults.attackBarMax??30000,timeUnit:'s',treasureOpen:false,category:'eoc',treasures:{},accounting:{baseLevel:20,plusLevel:10}};
+const defaults={magnification:DATA.defaults.magnification??100,hpMagnification:DATA.defaults.magnification??100,attackMagnification:DATA.defaults.magnification??100,hpMax:DATA.defaults.hpBarMax??1000000,attackMax:DATA.defaults.attackBarMax??30000,timeUnit:'s',treasureOpen:false,category:'eoc',treasures:{},accounting:{baseLevel:20,plusLevel:10}};
 const bounded=(value,fallback,min,max)=>{const n=Number(value);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback};
 const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,n):fallback};
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
-let state={...defaults,...restored};state.magnification=defaults.magnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
-const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
+let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
+const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
 const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
 const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
 // Enemy magnification uses one final floor.  Do not reduce the intermediate
@@ -941,9 +946,14 @@ function initHeader(){
   $('enemy-id').textContent=`ENEMY ${String(DATA.enemy.id).padStart(3,'0')}`;$('enemy-name').textContent=DATA.enemy.name||`적 ${DATA.enemy.id}`;const description=$('enemy-description');description.textContent=DATA.enemy.description||'도감 설명이 없습니다.';description.classList.toggle('is-empty',!!DATA.enemy.descriptionMissing);
   $('enemy-image').src=DATA.assets.image;$('enemy-image').alt=DATA.enemy.name;
   $('enemy-image').addEventListener('error',e=>e.currentTarget.style.visibility='hidden');
-  $('magnification-number').value=state.magnification;$('magnification-badge').textContent=fmt(state.magnification);$('hp-max').value=state.hpMax;$('attack-max').value=state.attackMax;
-  const updateMag=v=>{state.magnification=lowerBounded(v,state.magnification,0);$('magnification-number').value=state.magnification;$('magnification-badge').textContent=fmt(state.magnification);save();renderStats();renderEffects()};
-  $('magnification-number').oninput=e=>{if(e.target.value!=='')updateMag(e.target.value)};$('magnification-number').onchange=e=>{if(e.target.value==='')e.target.value=state.magnification;else updateMag(e.target.value)};
+  $('magnification-number').value=state.magnification;$('hp-magnification-number').value=state.hpMagnification;$('attack-magnification-number').value=state.attackMagnification;$('hp-max').value=state.hpMax;$('attack-max').value=state.attackMax;
+  const redrawMagnification=()=>{save();renderStats();renderEffects()};
+  const updateAllMagnification=value=>{const next=lowerBounded(value,state.magnification,0);state.magnification=next;state.hpMagnification=next;state.attackMagnification=next;$('magnification-number').value=next;$('hp-magnification-number').value=next;$('attack-magnification-number').value=next;redrawMagnification()};
+  const updateSpecificMagnification=(key,id,value)=>{state[key]=lowerBounded(value,state[key],0);$(id).value=state[key];redrawMagnification()};
+  const bindMagnification=(id,callback,key)=>{const element=$(id);element.oninput=e=>{if(e.target.value!=='')callback(e.target.value)};element.onchange=e=>{if(e.target.value==='')e.target.value=state[key];else callback(e.target.value)}};
+  bindMagnification('magnification-number',updateAllMagnification,'magnification');
+  bindMagnification('hp-magnification-number',value=>updateSpecificMagnification('hpMagnification','hp-magnification-number',value),'hpMagnification');
+  bindMagnification('attack-magnification-number',value=>updateSpecificMagnification('attackMagnification','attack-magnification-number',value),'attackMagnification');
   const bindBar=(id,key)=>{const el=$(id);el.oninput=e=>{if(e.target.value==='')return;state[key]=bounded(e.target.value,state[key],1,1e12);save();renderStats()};el.onchange=e=>{if(e.target.value!=='')state[key]=bounded(e.target.value,state[key],1,1e12);e.target.value=state[key];save();renderStats()}};bindBar('hp-max','hpMax');bindBar('attack-max','attackMax');
   for(const unit of ['s','f']){$(`time-${unit}`).setAttribute('aria-pressed',String(state.timeUnit===unit));$(`time-${unit}`).onclick=()=>{state.timeUnit=unit;for(const choice of ['s','f'])$(`time-${choice}`).setAttribute('aria-pressed',String(choice===unit));save();renderStats();renderEffects()}}
 }
@@ -955,9 +965,8 @@ function rangeText(r){
   return fmt(r)
 }
 function renderStats(){
-  renderEnemyTreasureApplication();
   const base=DATA.base||DATA.stats||{},timing=DATA.timing||{},hits=(base.attackHits||base.hits||DATA.attacks||[]).map(x=>typeof x==='number'?x:Number(x.damage??x.baseDamage??0));
-  const hp=scaleEnemy(Number(base.hp||base.health||0),state.magnification),scaledHits=hits.map(x=>scaleEnemy(x,state.magnification)),attack=scaledHits.reduce((a,b)=>a+b,0),cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||base.attackCycleFrames||1)),dps=enemyDps(attack,cycle),kb=Math.max(1,Number(base.knockbacks||base.kb||1));
+  const hp=enemyScale(Number(base.hp||base.health||0),'hp'),scaledHits=hits.map(x=>enemyScale(x,'attack')),attack=scaledHits.reduce((a,b)=>a+b,0),cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||base.attackCycleFrames||1)),dps=enemyDps(attack,cycle),kb=Math.max(1,Number(base.knockbacks||base.kb||1));
   const hpCuts=Array.from({length:Math.max(0,kb-1)},(_,i)=>hp*(i+1)/kb),atkCuts=[];let sum=0;for(const hit of scaledHits.slice(0,-1)){sum+=hit;atkCuts.push(sum)}
   const attackDetail=scaledHits.length>1?scaledHits.map(fmt).join('+'):'';
   const lastHit=Number(timing.lastHitFrame??(timing.foreswingFrames||[]).at(-1)??0),anim=Number(timing.animationFrames||0),backswing=Number(timing.backswingFrames??Math.max(anim-lastHit,0)),cooldown=Number(timing.cooldownFrames||0);
@@ -976,7 +985,7 @@ function renderStats(){
   document.querySelectorAll('.attack-timeline-hit').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const open=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!open)el.dataset.tooltipOpen='true'}));
 }
 function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.replaceChildren();return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
-function effectSummary(x){const p=[];if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?scaleEnemy(x.hitpoints,state.magnification):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(`${fmt(x.minimum)}~${fmt(x.maximum)}`);if(x.range)p.push(`${fmt(x.range.minimum)}~${fmt(x.range.maximum)}`);if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
+function effectSummary(x){const p=[];if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(`${fmt(x.minimum)}~${fmt(x.maximum)}`);if(x.range)p.push(`${fmt(x.range.minimum)}~${fmt(x.range.maximum)}`);if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
 function renderEffects(){const items=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');if(!items.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}let html=items.map((x,i)=>{const title=x.label||x.key,body=x.description||x.detail||'',meta=effectSummary(x)||x.summary||x.meta||'',icon=`<span class="ability-icon">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((title||'?')[0])}</span>`}</span>`;return `<article class="effect ability-card" tabindex="0" data-i="${i}">${icon}<div><div class="effect-name">${esc(title)}</div>${meta?`<div class="effect-meta ability-summary">${esc(meta)}</div>`:''}</div><div class="ability-tooltip"><strong>${esc(title)}</strong>${body?`<p>${esc(body)}</p>`:''}</div></article>`}).join('');if(immunities.length)html+=`<article class="immunity-card"><h3>무효</h3><div class="immunity-icons">${immunities.map((m,i)=>`<span class="immunity-chip" tabindex="0" data-m="${i}" role="img" aria-label="${esc(m.label)}">${m.icon?`<img src="${m.icon}" alt="">`:`<span class="fallback-icon">무</span>`}<span class="ability-tooltip"><strong>${esc(m.label||'무효')}</strong>${m.description?`<p>${esc(m.description)}</p>`:''}</span></span>`).join('')}</div></article>`;root.innerHTML=html;bindInlineTooltips(root)}
 function qualityName(q){return ['없음','조잡한','평범한','최고급'][q]}
 function ensureTreasure(){if(!state.treasures||typeof state.treasures!=='object'||Array.isArray(state.treasures))state.treasures={};for(const category of DATA.treasure.categories)for(const item of category.items)for(let c=0;c<3;c++)for(let s=0;s<item.slotCount;s++){const k=`${item.key}.${c}.${s}`,q=Number(state.treasures[k]);if(!Number.isInteger(q)||q<0||q>3)state.treasures[k]=3;else state.treasures[k]=q}}
@@ -1114,20 +1123,11 @@ function enemyTraitTreasureEffect(){
   return {multiplier:1,treasurePercent:null,maxTreasurePercent:null};
 }
 const enemyTraitMultiplier=()=>enemyTraitTreasureEffect().multiplier;
-const enemyEffectiveMagnification=()=>state.magnification*enemyTraitMultiplier();
-function renderEnemyTreasureApplication(){
-  const element=$('treasure-application');
-  if(!element)return;
-  const effect=enemyTraitTreasureEffect(),percent=effect.treasurePercent;
-  // 상단의 현재 배율은 입력한 원본 배율이 아니라 보물 보정까지 적용된
-  // 실제 적 배율을 표시한다. 괄호에는 현재 적용되는 보물 배율을 표기한다.
-  const badge=$('magnification-badge');
-  if(badge)badge.textContent=fmt(enemyEffectiveMagnification());
-  const show=Number.isFinite(percent)&&percent<effect.maxTreasurePercent-1e-9;
-  element.hidden=!show;
-  if(show)element.textContent=`(보물 적용 ${enemyDetailNumber(effect.multiplier,2)}x)`;
-}
-const enemyScale=value=>scaleEnemy(value,enemyEffectiveMagnification());
+const enemyEffectiveMagnification=(stat='attack')=>{
+  const selected=stat==='hp'?state.hpMagnification:state.attackMagnification;
+  return selected*enemyTraitMultiplier();
+};
+const enemyScale=(value,stat='attack')=>scaleEnemy(value,enemyEffectiveMagnification(stat));
 function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   const barrierAbility=enemyAttackAbility('barrier');
   const barrierEnabled=!!barrierAbility&&enemyActiveHealthEffectKeys.has('barrier');
@@ -1136,7 +1136,7 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   const barrier=barrierEnabled?Math.max(0,Number(barrierAbility.hitpoints)||0):0;
   const shieldAbility=enemyAttackAbility('shield');
   const enabled=!!shieldAbility&&enemyActiveHealthEffectKeys.has('shield');
-  const shield=enabled?enemyScale(Math.max(0,Number(shieldAbility.hitpoints)||0)):0;
+  const shield=enabled?enemyScale(Math.max(0,Number(shieldAbility.hitpoints)||0),'hp'):0;
   const regeneration=Math.max(0,Math.min(100,Number(shieldAbility?.regeneration_percent)||0));
   const regeneratedShield=Math.floor(shield*regeneration/100+1e-9);
   const segments=[];
@@ -1243,8 +1243,8 @@ const enemyFormatMultiplier=value=>Number(Number(value).toFixed(3)).toString();
 function enemyCurrentStatValues(){
   const base=DATA.base||DATA.stats||{},timing=DATA.timing||{};
   const hits=(base.attackHits||base.hits||DATA.attacks||[]).map(value=>typeof value==='number'?value:Number(value.damage??value.baseDamage??0));
-  const hp=enemyScale(Number(base.hp||base.health||0));
-  const baseHits=hits.map(enemyScale);
+  const hp=enemyScale(Number(base.hp||base.health||0),'hp');
+  const baseHits=hits.map(value=>enemyScale(value,'attack'));
   const attackHits=enemySelectedAttackHits(baseHits);
   const attack=attackHits.reduce((sum,value)=>sum+value,0);
   const cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||base.attackCycleFrames||1));
@@ -1295,7 +1295,7 @@ function enemyStatDetailPanel(kind,rows){
 }
 function enemyHealthEffectDetail(ability){
   const rawHitpoints=Math.max(0,Number(ability.hitpoints)||0);
-  const hitpoints=ability.key==='shield'?enemyScale(rawHitpoints):rawHitpoints;
+  const hitpoints=ability.key==='shield'?enemyScale(rawHitpoints,'hp'):rawHitpoints;
   const parts=[`\uccb4\ub825 ${enemyDetailNumber(hitpoints)}`];
   const regeneration=Number(ability.regeneration_percent);
   if(ability.key==='shield'&&Number.isFinite(regeneration)&&regeneration!==100)parts.push(`\uc7ac\uc0dd ${enemyDetailNumber(regeneration)}%`);
@@ -1391,14 +1391,14 @@ function enemyRenderAttackEffectSettings(root){
 function enemyAttackDetailPanel(rows){
   const details=enemyStatDetailPanel('attack',rows);
   const extras=document.createElement('div');
-  extras.innerHTML=`<section class="attack-effect-settings" id="attackEffectSettings" hidden><h3>\uacf5\uaca9 \ub2a5\ub825</h3><div class="attack-effect-toggle-list" id="attackEffectToggleList"></div></section><section class="expected-range-damage" aria-labelledby="expectedRangeDamageTitle"><div class="expected-range-header"><h3 id="expectedRangeDamageTitle">\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12</h3><div class="time-toggle expected-metric-toggle" role="group" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uae30\ub313\uac12 \uc885\ub958"><button id="expectedAttackButton" type="button" aria-pressed="${enemyExpectedMetric==='attack'}">\uacf5\uaca9\ub825</button><button id="expectedDpsButton" type="button" aria-pressed="${enemyExpectedMetric==='dps'}">DPS</button></div></div><div class="expected-range-chart-shell" id="expectedRangeChartShell"><canvas id="expectedRangeCanvas" height="190" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12 \uadf8\ub798\ud504"></canvas><div class="expected-range-tooltip" id="expectedRangeTooltip" role="tooltip" hidden><span>\uc0ac\uac70\ub9ac <strong id="expectedRangeTooltipDistance">0</strong></span><span><span id="expectedRangeTooltipMetricLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span> <strong id="expectedRangeTooltipValue">0</strong></span></div><p class="expected-range-empty" id="expectedRangeEmpty" hidden>\ud604\uc7ac \uc870\uac74\uc5d0\uc11c \ud45c\uc2dc\ud560 \uacf5\uaca9 \uad6c\uac04\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.</p></div><div class="expected-range-query"><div class="expected-range-query-row"><label class="expected-range-field-label" for="expectedRangeInput">\uc0ac\uac70\ub9ac</label><input id="expectedRangeInput" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="\uc0ac\uac70\ub9ac \uc785\ub825" value="${enemyRangeText(enemyExpectedQueryRaw)}"><span class="expected-range-result-label" id="expectedRangeResultLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span><output id="expectedRangeResult" for="expectedRangeInput">\u2014</output></div></div></section>`;
+  extras.innerHTML=`<section class="attack-effect-settings" id="attackEffectSettings" hidden><h3>\uacf5\uaca9 \ub2a5\ub825</h3><div class="attack-effect-toggle-list" id="attackEffectToggleList"></div></section><section class="expected-range-damage" aria-labelledby="expectedRangeDamageTitle"><div class="expected-range-header"><h3 id="expectedRangeDamageTitle">\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12</h3><div class="time-toggle expected-metric-toggle" role="group" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uae30\ub313\uac12 \uc885\ub958"><button id="expectedAttackButton" type="button" aria-pressed="${enemyExpectedMetric==='attack'}">\uacf5\uaca9\ub825</button><button id="expectedDpsButton" type="button" aria-pressed="${enemyExpectedMetric==='dps'}">DPS</button></div></div><div class="expected-range-chart-shell" id="expectedRangeChartShell"><canvas id="expectedRangeCanvas" height="190" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12 \uadf8\ub798\ud504"></canvas><div class="expected-range-tooltip" id="expectedRangeTooltip" role="tooltip" hidden><span>\uc0ac\uac70\ub9ac <strong id="expectedRangeTooltipDistance">0</strong></span><span><span id="expectedRangeTooltipMetricLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span> <strong id="expectedRangeTooltipValue">0</strong></span></div><p class="expected-range-empty" id="expectedRangeEmpty" hidden>\ud604\uc7ac \uc870\uac74\uc5d0\uc11c \ud45c\uc2dc\ud560 \uacf5\uaca9 \uad6c\uac04\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.</p></div><div class="expected-range-query"><div class="expected-range-query-row"><label class="expected-range-field-label" for="expectedRangeInput">\uc0ac\uac70\ub9ac</label><input id="expectedRangeInput" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="\uc0ac\uac70\ub9ac \uc785\ub825" value="${enemyRangeInputText(enemyExpectedQueryRaw*enemyRangeFactor())}"><span class="expected-range-result-label" id="expectedRangeResultLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span><output id="expectedRangeResult" for="expectedRangeInput">\u2014</output></div></div></section>`;
   const detailAnchor=details.querySelector('.attack-detail-settings');
   while(extras.firstChild)details.insertBefore(extras.firstChild,detailAnchor);
   enemyRenderAttackEffectSettings(details);
   details.querySelector('#expectedAttackButton').addEventListener('click',()=>{enemyExpectedMetric='attack';enemyRenderExpectedRangeDamage()});
   details.querySelector('#expectedDpsButton').addEventListener('click',()=>{enemyExpectedMetric='dps';enemyRenderExpectedRangeDamage()});
   const input=details.querySelector('#expectedRangeInput');
-  input.addEventListener('input',()=>{const displayed=Number(input.value);if(Number.isFinite(displayed))enemyExpectedQueryRaw=displayed/enemyRangeFactor();enemyUpdateExpectedRangeQuery();enemyDrawExpectedRangeChart()});
+  input.addEventListener('input',()=>{const clean=input.value.replace(/,/g,'');if(clean!==input.value)input.value=clean;const displayed=enemyRangeInputNumber(clean);if(Number.isFinite(displayed))enemyExpectedQueryRaw=displayed/enemyRangeFactor();enemyUpdateExpectedRangeQuery();enemyDrawExpectedRangeChart()});
   const canvas=details.querySelector('#expectedRangeCanvas');
   canvas.addEventListener('pointermove',enemyUpdateExpectedRangeTooltip);canvas.addEventListener('pointerleave',enemyHideExpectedRangeTooltip);
   details.addEventListener('toggle',()=>{if(details.open)requestAnimationFrame(enemyRenderExpectedRangeDamage);else enemyHideExpectedRangeTooltip()});
@@ -1416,7 +1416,7 @@ function enemyExpectedAttackForHit(attack,hitNumber){
 function enemyExpectedRangeEntries(){
   const base=DATA.base||DATA.stats||{};
   const rawHits=(base.attackHits||base.hits||DATA.attacks||[]).map(value=>typeof value==='number'?value:Number(value.damage??value.baseDamage??0));
-  const hits=rawHits.map(value=>scaleEnemy(value,state.magnification));
+  const hits=rawHits.map(value=>enemyScale(value,'attack'));
   const ranges=DATA.ranges||base.actualRanges||[];
   const entries=[];
   const add=(minimum,maximum,value,source='direct',includeMinimum=true,includeMaximum=true)=>{
@@ -1494,7 +1494,7 @@ function enemyExpectedElements(){
   return {details,attackButton:find('expectedAttackButton'),dpsButton:find('expectedDpsButton'),title:find('expectedRangeDamageTitle'),shell:find('expectedRangeChartShell'),canvas:find('expectedRangeCanvas'),tooltip:find('expectedRangeTooltip'),tooltipDistance:find('expectedRangeTooltipDistance'),tooltipLabel:find('expectedRangeTooltipMetricLabel'),tooltipValue:find('expectedRangeTooltipValue'),empty:find('expectedRangeEmpty'),input:find('expectedRangeInput'),resultLabel:find('expectedRangeResultLabel'),result:find('expectedRangeResult')};
 }
 function enemyUpdateExpectedRangeQuery(){
-  const elements=enemyExpectedElements();if(!elements)return;const displayed=Number(elements.input.value);if(!Number.isFinite(displayed)){elements.result.textContent=elements.input.value.trim()?'\uc785\ub825 \uc624\ub958':'\u2014';return}const raw=displayed/enemyRangeFactor();enemyExpectedQueryRaw=raw;elements.result.textContent=enemyDetailNumber(enemyExpectedValueAt(enemyExpectedRangeDamage,raw)||0);
+  const elements=enemyExpectedElements();if(!elements)return;const displayed=enemyRangeInputNumber(elements.input.value);if(!Number.isFinite(displayed)){elements.result.textContent=elements.input.value.trim()?'\uc785\ub825 \uc624\ub958':'\u2014';return}const raw=displayed/enemyRangeFactor();enemyExpectedQueryRaw=raw;elements.result.textContent=enemyDetailNumber(enemyExpectedValueAt(enemyExpectedRangeDamage,raw)||0);
 }
 function enemyHideExpectedRangeTooltip(){const elements=enemyExpectedElements();if(elements)elements.tooltip.hidden=true}
 function enemyUpdateExpectedRangeTooltip(event){
@@ -1744,6 +1744,8 @@ const enemyDistanceNumber=value=>new Intl.NumberFormat('ko-KR',{maximumFractionD
 const enemyRangeFactor=()=>state.rangeUnit==='u'?4:state.rangeUnit==='spu'?2:1;
 const enemySpeedFactor=()=>{const unit=state.speedUnit,base=unit.startsWith('u/')?2:unit.startsWith('rng/')?.5:1;return base*(unit.endsWith('/s')?30:1)};
 const enemyRangeText=value=>enemyDistanceNumber(Number(value||0)*enemyRangeFactor());
+const enemyRangeInputText=value=>{const number=Number(value);return Number.isFinite(number)?String(Math.round(number*1000000)/1000000):''};
+const enemyRangeInputNumber=value=>{const text=String(value??'').replace(/,/g,'').trim();return text===''?NaN:Number(text)};
 const enemyRangeSpan=value=>{const minimum=Array.isArray(value)?value[0]:value?.minimum??value?.min;const maximum=Array.isArray(value)?value[1]:value?.maximum??value?.max;if(!Number.isFinite(Number(minimum))||!Number.isFinite(Number(maximum)))return enemyRangeText(value);const left=enemyRangeText(minimum),right=enemyRangeText(maximum);return Number(minimum)===Number(maximum)?left:`${left}~${right}`};
 function applyEnemyDistanceUnits(){
   const base=DATA.base||DATA.stats||{},ranges=DATA.ranges||base.actualRanges||[];
@@ -1845,7 +1847,7 @@ function effectSummary(x){
   if(key==='explosion')p.push(`\ud53c\ud574\ub300 ${(x.damage_bands_percent||[100,70,40]).join('/')}%`);
   if(key==='toxic'&&x.max_hitpoints_damage_percent!==undefined)p.push(`\ucd5c\ub300 \uccb4\ub825\uc758 ${number(x.max_hitpoints_damage_percent)}%`);
   if(key==='drain'&&x.cooldown_extension_percent!==undefined)p.push(`\uc0dd\uc0b0 \uc2dc\uac04 +${number(x.cooldown_extension_percent)}%`);
-  if(['barrier','shield'].includes(key)&&x.hitpoints!==undefined)p.push(`\uccb4\ub825 ${number(key==='shield'?enemyScale(x.hitpoints):x.hitpoints)}`);
+  if(['barrier','shield'].includes(key)&&x.hitpoints!==undefined)p.push(`\uccb4\ub825 ${number(key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);
   if(key==='shield'&&x.regeneration_percent!==undefined&&Number(x.regeneration_percent)!==100)p.push(`\uc7ac\uc0dd ${number(x.regeneration_percent)}%`);
   if(key==='burrow'){
     if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);
