@@ -410,7 +410,7 @@
     .stat-meter { position: relative; height: 18px; margin-top: 13px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 7px; background: #d6e3ef; box-shadow: inset 0 2px 4px rgba(20,31,45,.22); }
     .stat-meter-fill { width: 0; height: 100%; border-radius: 6px; transition: width .18s ease; }
     .hp-fill { background: linear-gradient(90deg,#58a73e,#79bc4b); box-shadow: 0 0 14px rgba(108,180,67,.38); }
-    .hp-health-segments { position:absolute; inset:1px; z-index:1; overflow:hidden; border-radius:6px; pointer-events:none; }
+    .hp-health-segments { position:absolute; inset:0; z-index:2; pointer-events:none; }
     .hp-health-segment { position:absolute; inset-block:0; min-width:0; }
     /* A segmented enemy bar must not restart a gradient for every KB.
        Use the same clean, flat colour treatment as the unit HP meter,
@@ -890,7 +890,7 @@
       <div class="level-control" aria-label="적 배율 조절">
         <div class="level-row mag-row">
           <label for="magnification-number">배율</label>
-          <label class="magnification-number"><input class="number" type="number" id="magnification-number" min="0" max="100000" step="1" inputmode="decimal" aria-label="적 배율 직접 입력"><span>%</span></label>
+          <label class="magnification-number"><input class="number" type="number" id="magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 배율 직접 입력"><span>%</span></label>
         </div>
       </div>
       <div class="bar-settings" aria-label="스탯 바 기준값 설정">
@@ -915,13 +915,16 @@ const $=id=>document.getElementById(id);
 const storeKey=`nyankodb.enemy.${DATA.enemy.id}`;
 const defaults={magnification:DATA.defaults.magnification??100,hpMax:DATA.defaults.hpBarMax??1000000,attackMax:DATA.defaults.attackBarMax??30000,timeUnit:'s',treasureOpen:false,category:'eoc',treasures:{},accounting:{baseLevel:20,plusLevel:10}};
 const bounded=(value,fallback,min,max)=>{const n=Number(value);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback};
+const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,n):fallback};
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
 let state={...defaults,...restored};state.magnification=defaults.magnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
 const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
 const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
 const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
-// Enemy magnification truncates the scaled stat instead of rounding it.
-const scaleEnemy=(base,mag)=>Math.floor(Math.fround(Math.fround(Math.fround(base)*Math.fround(mag))/Math.fround(100))+1e-9);
+// Enemy magnification uses one final floor.  Do not reduce the intermediate
+// product to f32: repeated shields at very high magnification would otherwise
+// lose HP through floating-point precision before the final truncation.
+const scaleEnemy=(base,mag)=>Math.floor(Number(base)*Number(mag)/100);
 const enemyDps=(attack,cycle)=>cycle>0?rustRound(Math.fround(Math.fround(attack*30)/Math.fround(cycle))):0;
 const frameText=f=>state.timeUnit==='f'?`${fmt(f)}f`:`${(f/30).toFixed(2)}초`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -935,7 +938,7 @@ function initHeader(){
   $('enemy-image').src=DATA.assets.image;$('enemy-image').alt=DATA.enemy.name;
   $('enemy-image').addEventListener('error',e=>e.currentTarget.style.visibility='hidden');
   $('magnification-number').value=state.magnification;$('magnification-badge').textContent=fmt(state.magnification);$('hp-max').value=state.hpMax;$('attack-max').value=state.attackMax;
-  const updateMag=v=>{state.magnification=bounded(v,state.magnification,0,100000);$('magnification-number').value=state.magnification;$('magnification-badge').textContent=fmt(state.magnification);save();renderStats();renderEffects()};
+  const updateMag=v=>{state.magnification=lowerBounded(v,state.magnification,0);$('magnification-number').value=state.magnification;$('magnification-badge').textContent=fmt(state.magnification);save();renderStats();renderEffects()};
   $('magnification-number').oninput=e=>{if(e.target.value!=='')updateMag(e.target.value)};$('magnification-number').onchange=e=>{if(e.target.value==='')e.target.value=state.magnification;else updateMag(e.target.value)};
   const bindBar=(id,key)=>{const el=$(id);el.oninput=e=>{if(e.target.value==='')return;state[key]=bounded(e.target.value,state[key],1,1e12);save();renderStats()};el.onchange=e=>{if(e.target.value!=='')state[key]=bounded(e.target.value,state[key],1,1e12);e.target.value=state[key];save();renderStats()}};bindBar('hp-max','hpMax');bindBar('attack-max','attackMax');
   for(const unit of ['s','f']){$(`time-${unit}`).setAttribute('aria-pressed',String(state.timeUnit===unit));$(`time-${unit}`).onclick=()=>{state.timeUnit=unit;for(const choice of ['s','f'])$(`time-${choice}`).setAttribute('aria-pressed',String(choice===unit));save();renderStats();renderEffects()}}
@@ -964,7 +967,7 @@ function renderStats(){
   $('stats').innerHTML=html;
   document.querySelectorAll('.attack-timeline-hit').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const open=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!open)el.dataset.tooltipOpen='true'}));
 }
-function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.innerHTML='<div class="empty">속성 없음</div>';return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
+function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.replaceChildren();return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
 function effectSummary(x){const p=[];if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?scaleEnemy(x.hitpoints,state.magnification):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(`${fmt(x.minimum)}~${fmt(x.maximum)}`);if(x.range)p.push(`${fmt(x.range.minimum)}~${fmt(x.range.maximum)}`);if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
 function renderEffects(){const items=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');if(!items.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}let html=items.map((x,i)=>{const title=x.label||x.key,body=x.description||x.detail||'',meta=effectSummary(x)||x.summary||x.meta||'',icon=`<span class="ability-icon">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((title||'?')[0])}</span>`}</span>`;return `<article class="effect ability-card" tabindex="0" data-i="${i}">${icon}<div><div class="effect-name">${esc(title)}</div>${meta?`<div class="effect-meta ability-summary">${esc(meta)}</div>`:''}</div><div class="ability-tooltip"><strong>${esc(title)}</strong>${body?`<p>${esc(body)}</p>`:''}</div></article>`}).join('');if(immunities.length)html+=`<article class="immunity-card"><h3>무효</h3><div class="immunity-icons">${immunities.map((m,i)=>`<span class="immunity-chip" tabindex="0" data-m="${i}" role="img" aria-label="${esc(m.label)}">${m.icon?`<img src="${m.icon}" alt="">`:`<span class="fallback-icon">무</span>`}<span class="ability-tooltip"><strong>${esc(m.label||'무효')}</strong>${m.description?`<p>${esc(m.description)}</p>`:''}</span></span>`).join('')}</div></article>`;root.innerHTML=html;bindInlineTooltips(root)}
 function qualityName(q){return ['없음','조잡한','평범한','최고급'][q]}
@@ -1484,25 +1487,39 @@ function enemyRenderHealthMeter(card,health){
   if(!meter)return;
   meter.querySelector('.hp-fill')?.remove();
   meter.querySelector('.kb-markers')?.remove();
+  // Keep the body layer as the exact same element used by the unit
+  // calculator.  In particular, this is what gives a capped HP meter its
+  // correctly rounded right end.  Shield / barrier overlays only replace
+  // their own portions of that body layer.
+  const max=Math.max(1,Number(state.hpMax)||1);
+  const bodyFill=document.createElement('div');
+  bodyFill.className='stat-meter-fill hp-fill';
+  bodyFill.style.width=`${Math.min(100,health.total/max*100)}%`;
   const segments=document.createElement('div');
   segments.className='hp-health-segments';
   const dividers=document.createElement('div');
   dividers.className='kb-markers';
-  const max=Math.max(1,Number(state.hpMax)||1);
   let offset=0;
   health.segments.forEach(segment=>{
     const amount=Math.max(0,Number(segment.value)||0);
     if(amount<=0)return;
-    const fill=document.createElement('i');
-    fill.className=`hp-health-segment ${segment.kind}`;
-    const startsAtLeft=offset<=0;
-    const reachesRight=offset+amount>=max;
-    fill.style.left=`${offset/max*100}%`;
-    fill.style.width=`${amount/max*100}%`;
-    // Preserve the rounded ends of the unit-style meter even when the
-    // visible portion ends in the middle of a large HP segment.
-    fill.style.borderRadius=`${startsAtLeft?'6px':'0'} ${reachesRight?'6px':'0'} ${reachesRight?'6px':'0'} ${startsAtLeft?'6px':'0'}`;
-    segments.append(fill);
+    // Do not merely let an oversized segment overflow the meter: its
+    // rounded edge would then be outside the viewport and look square.
+    // Clamp the rendered segment itself to the visible bar first, exactly
+    // as the unit HP fill is capped at its configured maximum.
+    const visibleStart=Math.min(max,offset);
+    const visibleEnd=Math.min(max,offset+amount);
+    // Health itself is already drawn by the unit-style body fill.  Draw
+    // only the special coloured portions above it.
+    if(segment.kind!=='health'&&visibleEnd>visibleStart){
+      const fill=document.createElement('i');
+      fill.className=`stat-meter-fill hp-health-segment ${segment.kind}`;
+      const reachesRight=visibleEnd>=max;
+      fill.style.left=`${visibleStart/max*100}%`;
+      fill.style.width=`${(visibleEnd-visibleStart)/max*100}%`;
+      fill.style.borderRadius=`0 ${reachesRight?'6px':'0'} ${reachesRight?'6px':'0'} 0`;
+      segments.append(fill);
+    }
     offset+=amount;
     if(segment.dividerAfter&&offset>0&&offset<max){
       const divider=document.createElement('i');
@@ -1511,7 +1528,7 @@ function enemyRenderHealthMeter(card,health){
       dividers.append(divider);
     }
   });
-  meter.append(segments,dividers);
+  meter.append(bodyFill,segments,dividers);
 }
 function enhanceEnemyStatDetails(){
   const stats=enemyCurrentStatValues();
