@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>유닛 검색 · 냥코DB</title>
+  <title>적 검색 · 냥코DB</title>
   <style>
     :root {
       --bg: #080b10;
@@ -978,19 +978,19 @@
   <main class="page">
     <header class="db-toolbar">
       <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
-      <span class="toolbar-title">유닛 검색</span>
+      <span class="toolbar-title">적 검색</span>
     </header>
 
     <section class="search-panel" aria-labelledby="searchTitle">
       <div class="section-heading">
         <div>
-          <h1 id="searchTitle">유닛 검색</h1>
-          <p class="search-description">이름과 조건을 함께 선택하여 원하는 형태를 찾을 수 있습니다.</p>
+          <h1 id="searchTitle">적 검색</h1>
+          <p class="search-description">이름과 조건을 함께 선택하여 원하는 적을 찾을 수 있습니다.</p>
         </div>
       </div>
       <div class="search-controls">
         <input class="search-input" id="nameSearch" type="search" autocomplete="off"
-               spellcheck="false" placeholder="유닛 이름 입력" aria-label="유닛 이름 검색">
+               spellcheck="false" placeholder="적 이름 입력" aria-label="적 이름 검색">
       </div>
     </section>
 
@@ -1003,11 +1003,6 @@
             <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="true">OR</button>
             <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="false">AND</button>
           </div>
-          <label class="talent-toggle">
-            <span>본능/초본능 포함</span>
-            <input id="includeTalents" type="checkbox">
-            <span class="talent-check" aria-hidden="true">✓</span>
-          </label>
           <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
           <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
             <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
@@ -1016,54 +1011,33 @@
       </div>
       <div class="filter-body" id="filterBody">
         <div class="filter-group">
-          <h3 class="filter-label">레어도</h3>
-          <div class="filter-chip-list" id="rarityFilters"></div>
+          <h3 class="filter-label">속성</h3>
+          <div class="filter-chip-list" id="traitFilters"></div>
         </div>
         <div class="filter-group">
-          <h3 class="filter-label">타겟</h3>
-          <div class="filter-chip-list" id="traitFilters"></div>
+          <h3 class="filter-label">특수 속성</h3>
+          <div class="filter-chip-list" id="specialTraitFilters"></div>
         </div>
         <div class="filter-group ability-filter-group">
           <h3 class="filter-label">효과/능력</h3>
-          <div class="ability-filter-sections">
-            <section class="ability-filter-section">
-              <h4 class="ability-filter-title">효과</h4>
-              <div class="filter-chip-list" id="effectFilters"></div>
-            </section>
-            <section class="ability-filter-section">
-              <h4 class="ability-filter-title">능력</h4>
-              <div class="filter-chip-list" id="abilityFilters"></div>
-            </section>
-            <section class="ability-filter-section">
-              <h4 class="ability-filter-title">무효</h4>
-              <div class="filter-chip-list" id="immunityFilters"></div>
-            </section>
-            <section class="ability-filter-section">
-              <h4 class="ability-filter-title">내성</h4>
-              <div class="filter-chip-list" id="resistanceFilters"></div>
-            </section>
-            <section class="ability-filter-section">
-              <h4 class="ability-filter-title">공격 타입</h4>
-              <div class="filter-chip-list" id="attackFilters"></div>
-            </section>
-          </div>
+          <div class="filter-chip-list" id="abilityFilters"></div>
         </div>
       </div>
     </section>
 
     <section class="results-panel" aria-labelledby="resultsTitle">
       <div class="section-heading">
-        <h2 id="resultsTitle">모든 유닛</h2>
+        <h2 id="resultsTitle">모든 적</h2>
         <div class="result-heading-actions">
-          <div class="display-mode" role="group" aria-label="유닛 표시 방식">
+          <div class="display-mode" role="group" aria-label="적 표시 방식">
             <button class="display-button" type="button" data-display-mode="one" aria-pressed="false">1열</button>
             <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">2열</button>
             <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
           </div>
-          <p class="result-status" id="resultStatus" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
+          <p class="result-status" id="resultStatus" aria-live="polite">적 목록을 불러오는 중입니다.</p>
         </div>
       </div>
-      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="유닛 검색 결과">
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="적 검색 결과">
         <div class="unit-grid display-two" id="unitResults"></div>
         <div class="range-chart" id="rangeResults" hidden></div>
       </div>
@@ -1071,16 +1045,15 @@
   </main>
 
   <script src="catalog.js"></script>
-  <script src="icon-runtime.js"></script>
+  <script src="../unit/icon-runtime.js"></script>
   <script>
     (() => {
       "use strict";
 
-      const catalog = window.NYANKODB_UNIT_CATALOG;
+      const catalog = window.NYANKODB_ENEMY_CATALOG;
       const elements = {
         nameSearch: document.getElementById("nameSearch"),
         reset: document.getElementById("resetFilters"),
-        includeTalents: document.getElementById("includeTalents"),
         logicButtons: [...document.querySelectorAll("[data-filter-logic]")],
         filterPanel: document.querySelector(".filter-panel"),
         filterBody: document.getElementById("filterBody"),
@@ -1093,13 +1066,8 @@
         displayButtons: [...document.querySelectorAll("[data-display-mode]")],
       };
       const groupTargets = {
-        rarity: document.getElementById("rarityFilters"),
         trait: document.getElementById("traitFilters"),
-        effect: document.getElementById("effectFilters"),
         ability: document.getElementById("abilityFilters"),
-        immunity: document.getElementById("immunityFilters"),
-        resistance: document.getElementById("resistanceFilters"),
-        attack: document.getElementById("attackFilters"),
       };
       const selected = Object.fromEntries(
         Object.keys(groupTargets).map((group) => [group, new Set()]),
@@ -1275,8 +1243,8 @@
         return button;
       }
 
-      function renderFilterGroup(items, group, iconMode = true) {
-        const target = groupTargets[group];
+      function renderFilterGroup(items, group, iconMode = true, targetOverride = null) {
+        const target = targetOverride || groupTargets[group];
         const fragment = document.createDocumentFragment();
         items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
         target.replaceChildren(fragment);
@@ -1298,7 +1266,6 @@
 
       function hasActiveFilters() {
         return elements.nameSearch.value.trim() !== ""
-          || elements.includeTalents.checked
           || Object.values(selected).some((values) => values.size > 0);
       }
 
@@ -1330,14 +1297,14 @@
       }
 
       function unitUrl(entry) {
-        return `unit${String(entry.id).padStart(3, "0")}.html?form=${Number(entry.form) || 1}`;
+        return "enemy" + String(entry.id).padStart(3, "0") + ".html";
       }
 
       function createUnitCard(entry) {
         const link = document.createElement("a");
         link.className = "unit-card";
         link.href = unitUrl(entry);
-        link.setAttribute("aria-label", `${entry.name}, ${entry.id}-${entry.form}`);
+        link.setAttribute("aria-label", entry.name + ", ENEMY " + String(entry.id).padStart(3, "0"));
 
         if (entry.icon) {
           const image = document.createElement("img");
@@ -1361,7 +1328,7 @@
         name.textContent = entry.name;
         const identity = document.createElement("span");
         identity.className = "unit-identity";
-        identity.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form}`;
+        identity.textContent = "ENEMY " + String(entry.id).padStart(3, "0");
         copy.append(name, identity);
         link.append(copy);
         return link;
@@ -1372,13 +1339,13 @@
         if (!entries.length) {
           const empty = document.createElement("p");
           empty.className = "empty-results";
-          empty.textContent = "조건에 맞는 유닛이 없습니다.";
+          empty.textContent = "조건에 맞는 적이 없습니다.";
           fragment.append(empty);
         } else {
           entries.forEach((entry) => fragment.append(createUnitCard(entry)));
         }
         elements.results.replaceChildren(fragment);
-        elements.status.textContent = `${numberFormatter.format(entries.length)}개 형태`;
+        elements.status.textContent = numberFormatter.format(entries.length) + "개 적";
       }
 
       function formatRangeNumber(value) {
@@ -1531,7 +1498,10 @@
         link.className = compact ? "range-stack-link" : "range-unit-link";
         link.href = rangeUnitUrl(entry);
         link.title = entry.name;
-        link.setAttribute("aria-label", `${entry.name} ${entry.id}-${entry.form} 스펙 보기`);
+        link.setAttribute(
+          "aria-label",
+          entry.name + " ENEMY " + String(entry.id).padStart(3, "0") + " 스펙 보기",
+        );
         link.append(createRangeIcon(entry));
         card.append(link);
         if (includeDetails) {
@@ -1644,10 +1614,8 @@
         return JSON.stringify({ attacks, effects });
       }
 
-      function filterEntries(entries, rarities) {
+      function filterEntries(entries) {
         const query = compactSearchText(elements.nameSearch.value);
-        const includeTalents = elements.includeTalents.checked;
-
         return entries
           .map((entry) => {
             const rank = searchRank(compactSearchText(entry.name), query);
@@ -1655,37 +1623,17 @@
 
             const traits = entryKeys(entry.traits);
             const abilities = entryKeys(entry.abilities);
-            if (includeTalents) {
-              entryKeys(entry.maxTraits).forEach((key) => traits.add(key));
-              entryKeys(entry.maxAbilities).forEach((key) => abilities.add(key));
-            }
-
-            const effectAbilitySelections = new Set([
-              ...selected.effect,
-              ...selected.ability,
-              ...selected.immunity,
-              ...selected.resistance,
-              ...selected.attack,
-            ]);
             const conditions = [
-              {
-                active: selected.rarity.size > 0,
-                matches: categoryMatches(new Set([rarityKey(entry, rarities)]), selected.rarity),
-              },
               { active: selected.trait.size > 0, matches: categoryMatches(traits, selected.trait) },
-              { active: effectAbilitySelections.size > 0, matches: categoryMatches(abilities, effectAbilitySelections) },
+              { active: selected.ability.size > 0, matches: categoryMatches(abilities, selected.ability) },
             ].filter((condition) => condition.active);
             if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
-            const displayEntry = includeTalents && Array.isArray(entry.maxRangeEffects)
-              ? { ...entry, rangeEffects: entry.maxRangeEffects }
-              : entry;
-            return { entry: displayEntry, rank };
+            return { entry, rank };
           })
           .filter(Boolean)
           .sort((left, right) => (
             left.rank - right.rank
             || Number(left.entry.id) - Number(right.entry.id)
-            || Number(left.entry.form) - Number(right.entry.form)
           ))
           .map(({ entry }) => entry);
       }
@@ -1699,33 +1647,33 @@
       }
 
       if (!catalog || !Array.isArray(catalog.entries)) {
-        showCatalogError("유닛 카탈로그 데이터가 없습니다.");
+        showCatalogError("적 카탈로그 데이터가 없습니다.");
         return;
       }
 
       const meta = catalog.meta || catalog;
-      const rarities = normalizeMetaCollection(meta.rarities);
       const traits = normalizeMetaCollection(meta.traits);
-      const sections = abilitySections(meta);
+      const abilities = normalizeMetaCollection(meta.abilities);
       const entries = catalog.entries.map((entry) => ({
         ...entry,
         id: Number(entry.id),
-        form: Number(entry.form) || 1,
-        name: String(entry.name || `Unit ${entry.id}-${entry.form}`),
+        form: 1,
+        name: String(entry.name || ("Enemy " + entry.id)),
       }));
 
-      renderFilterGroup(rarities, "rarity", false);
-      renderFilterGroup(traits.filter((trait) => !["witch", "eva"].includes(trait.key)), "trait");
-      renderFilterGroup(sections.effect, "effect");
-      renderFilterGroup(sections.ability, "ability");
-      renderFilterGroup(sections.immunity, "immunity");
-      renderFilterGroup(sections.resistance, "resistance");
-      renderFilterGroup(sections.attack
-        .filter((item) => item.key !== "timed_life")
-        .map((item) => (item.key === "limited_attacks" ? { ...item, label: "1회 공격" } : item)), "attack");
+      const primaryTraits = traits.filter((item) => item.section !== "special");
+      const specialTraits = traits.filter((item) => item.section === "special");
+      renderFilterGroup(primaryTraits, "trait");
+      renderFilterGroup(
+        specialTraits,
+        "trait",
+        true,
+        document.getElementById("specialTraitFilters"),
+      );
+      renderFilterGroup(abilities, "ability");
 
       function updateResults({ resetScroll = false } = {}) {
-        const filtered = filterEntries(entries, rarities);
+        const filtered = filterEntries(entries);
         renderResults(filtered);
         renderRangeResults(filtered);
         syncDisplayMode();
@@ -1775,12 +1723,8 @@
         elements.nameSearch.value = "";
         updateResults({ resetScroll: true });
       });
-      elements.includeTalents.addEventListener("change", () => {
-        updateResults({ resetScroll: true });
-      });
       elements.reset.addEventListener("click", () => {
         elements.nameSearch.value = "";
-        elements.includeTalents.checked = false;
         filterLogic = "or";
         syncFilterLogic();
         Object.values(selected).forEach((values) => values.clear());
