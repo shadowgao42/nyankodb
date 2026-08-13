@@ -972,6 +972,100 @@
         transition-duration: .01ms !important;
       }
     }
+    /* Enemy-only Alien selector: keep the same dark rectangular
+       treatment as the calculator's effect/ability popovers. */
+    .filter-panel { position: relative; }
+    .alien-choice-popover {
+      position: absolute;
+      z-index: 50;
+      min-width: 220px;
+      padding: 10px;
+      border: 1px solid #63778c;
+      border-radius: 8px;
+      color: #f3f6fb;
+      background: #111924;
+      box-shadow: 0 12px 30px rgba(0,0,0,.5);
+    }
+    .alien-choice-popover[hidden] { display: none; }
+    .alien-choice-popover > strong {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .alien-choice-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .alien-choice-option {
+      display: grid;
+      min-height: 72px;
+      place-items: center;
+      gap: 3px;
+      padding: 5px 3px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #eaf0f8;
+      background: linear-gradient(180deg, #394552, #242e3a);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .alien-choice-option:hover,
+    .alien-choice-option:focus-visible {
+      border-color: #ff9b5b;
+      background: linear-gradient(180deg, #5b4035, #352720);
+      outline: none;
+    }
+    .alien-choice-option[aria-pressed="true"] {
+      border-color: #ff784f;
+      background: linear-gradient(180deg, #fa643a, #c83f1c);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18), inset 0 1px rgba(255,255,255,.18);
+    }
+    .alien-choice-all { align-content: center; font-size: 12px; }
+    .alien-variant-icon {
+      position: relative;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+    }
+    .alien-variant-icon img { width: 34px; height: 34px; }
+    .alien-variant-icon::after {
+      content: "★";
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      width: 16px;
+      height: 16px;
+      top: -9px;
+      right: -7px;
+      place-items: center;
+      border: 1px solid #d8ebff;
+      border-radius: 50%;
+      color: #ffe071;
+      background: #28557e;
+      box-shadow: 0 2px 5px rgba(0,0,0,.5);
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1;
+      pointer-events: none;
+     }
+    .alien-variant-no-star::before {
+      content: "×";
+      position: absolute;
+      z-index: 3;
+      top: -11px;
+      right: -6px;
+      color: #ff8d71;
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,.8);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .alien-choice-popover { min-width: 204px; padding: 8px; }
+      .alien-choice-option { min-height: 66px; }
+    }
   </style>
 </head>
 <body>
@@ -1023,6 +1117,22 @@
           <div class="filter-chip-list" id="abilityFilters"></div>
         </div>
       </div>
+      <div class="alien-choice-popover" id="alienChoicePopover" role="dialog" aria-label="에이리언 선택" hidden>
+        <strong>에이리언</strong>
+        <div class="alien-choice-options">
+          <button class="alien-choice-option" type="button" data-alien-choice="alien" aria-pressed="false">
+            <span class="alien-variant-icon alien-variant-no-star"><img src="nyanko-imgcut:img015:218:64:64" alt=""></span>
+            <span>별 없음</span>
+          </button>
+          <button class="alien-choice-option" type="button" data-alien-choice="starred_alien" aria-pressed="false">
+            <span class="alien-variant-icon alien-variant-starred"><img src="nyanko-imgcut:img015:218:64:64" alt=""></span>
+            <span>별 있음</span>
+          </button>
+          <button class="alien-choice-option alien-choice-all" type="button" data-alien-choice="alien_all" aria-pressed="false">
+            <span>전체</span>
+          </button>
+        </div>
+      </div>
     </section>
 
     <section class="results-panel" aria-labelledby="resultsTitle">
@@ -1064,6 +1174,7 @@
         resultsScroll: document.getElementById("resultsScroll"),
         status: document.getElementById("resultStatus"),
         displayButtons: [...document.querySelectorAll("[data-display-mode]")],
+        alienChoicePopover: document.getElementById("alienChoicePopover"),
       };
       const groupTargets = {
         trait: document.getElementById("traitFilters"),
@@ -1208,14 +1319,20 @@
 
       function createFilterChip(item, group, iconMode) {
         const button = document.createElement("button");
+        const isAlienTrigger = group === "trait" && item.key === "alien";
         button.type = "button";
-        button.className = `filter-chip ${iconMode ? "icon-chip" : "text-chip"}`;
+        button.className = `filter-chip ${iconMode ? "icon-chip" : "text-chip"}${isAlienTrigger ? " alien-filter-trigger" : ""}`;
         button.dataset.filterGroup = group;
         button.dataset.filterKey = item.key;
         button.setAttribute("aria-pressed", "false");
-        button.setAttribute("aria-label", item.label);
+        button.setAttribute("aria-label", isAlienTrigger ? "에이리언 선택" : item.label);
+        if (isAlienTrigger) {
+          button.dataset.alienFilterTrigger = "true";
+          button.setAttribute("aria-haspopup", "dialog");
+          button.setAttribute("aria-expanded", "false");
+        }
         if (iconMode) {
-          button.dataset.tooltip = item.label;
+          button.dataset.tooltip = isAlienTrigger ? "에이리언" : item.label;
           if (item.icon) {
             const image = document.createElement("img");
             image.src = resolveAssetPath(item.icon);
@@ -1248,6 +1365,70 @@
         const fragment = document.createDocumentFragment();
         items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
         target.replaceChildren(fragment);
+      }
+
+      const alienChoiceKeys = ["alien", "starred_alien", "alien_all"];
+      const alienChoiceLabels = {
+        alien: "별 없음",
+        starred_alien: "별 있음",
+        alien_all: "전체",
+      };
+
+      function alienTrigger() {
+        return document.querySelector("[data-alien-filter-trigger]");
+      }
+
+      function activeAlienChoice() {
+        return alienChoiceKeys.find((key) => selected.trait.has(key)) || "";
+      }
+
+      function syncAlienTrigger() {
+        const trigger = alienTrigger();
+        if (!trigger) return;
+        const choice = activeAlienChoice();
+        const tooltip = choice === "alien"
+          ? "에이리언(별 없음)"
+          : choice === "starred_alien"
+            ? "에이리언(별 있음)"
+            : "에이리언";
+        trigger.classList.toggle("alien-filter-starred", choice === "starred_alien");
+        trigger.classList.toggle("alien-filter-unstarred", choice === "alien");
+        trigger.setAttribute("aria-pressed", String(Boolean(choice)));
+        trigger.dataset.tooltip = tooltip;
+        elements.alienChoicePopover.querySelectorAll("[data-alien-choice]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.alienChoice === choice));
+        });
+        trigger.setAttribute("aria-label", tooltip);
+      }
+
+      function closeAlienChoice() {
+        const popover = elements.alienChoicePopover;
+        if (!popover) return;
+        popover.hidden = true;
+        alienTrigger()?.setAttribute("aria-expanded", "false");
+      }
+
+      function openAlienChoice(trigger) {
+        const popover = elements.alienChoicePopover;
+        if (!popover) return;
+        const panelRect = elements.filterPanel.getBoundingClientRect();
+        const triggerRect = trigger.getBoundingClientRect();
+        popover.hidden = false;
+        const width = popover.offsetWidth;
+        const left = Math.max(
+          8,
+          Math.min(triggerRect.left - panelRect.left, panelRect.width - width - 8),
+        );
+        popover.style.left = `${left}px`;
+        popover.style.top = `${triggerRect.bottom - panelRect.top + 7}px`;
+        trigger.setAttribute("aria-expanded", "true");
+      }
+
+      function applyAlienChoice(choice) {
+        alienChoiceKeys.forEach((key) => selected.trait.delete(key));
+        selected.trait.add(choice);
+        closeAlienChoice();
+        syncAlienTrigger();
       }
 
       function rarityKey(entry, rarities) {
@@ -1623,8 +1804,17 @@
 
             const traits = entryKeys(entry.traits);
             const abilities = entryKeys(entry.abilities);
+            const traitMatches = (key) => key === "alien_all"
+              ? traits.has("alien") || traits.has("starred_alien")
+              : traits.has(key);
+            const selectedTraitMatches = [...selected.trait].map(traitMatches);
             const conditions = [
-              { active: selected.trait.size > 0, matches: categoryMatches(traits, selected.trait) },
+              {
+                active: selected.trait.size > 0,
+                matches: filterLogic === "and"
+                  ? selectedTraitMatches.every(Boolean)
+                  : selectedTraitMatches.some(Boolean),
+              },
               { active: selected.ability.size > 0, matches: categoryMatches(abilities, selected.ability) },
             ].filter((condition) => condition.active);
             if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
@@ -1661,7 +1851,9 @@
         name: String(entry.name || ("Enemy " + entry.id)),
       }));
 
-      const primaryTraits = traits.filter((item) => item.section !== "special");
+      const primaryTraits = traits.filter(
+        (item) => item.section !== "special" && item.key !== "starred_alien",
+      );
       const specialTraits = traits.filter((item) => item.section === "special");
       renderFilterGroup(primaryTraits, "trait");
       renderFilterGroup(
@@ -1684,6 +1876,17 @@
       document.querySelector(".filter-body").addEventListener("click", (event) => {
         const button = event.target.closest(".filter-chip");
         if (!button) return;
+        if (button.dataset.alienFilterTrigger === "true") {
+          if (activeAlienChoice()) {
+            alienChoiceKeys.forEach((key) => selected.trait.delete(key));
+            closeAlienChoice();
+            syncAlienTrigger();
+            updateResults({ resetScroll: true });
+          } else {
+            openAlienChoice(button);
+          }
+          return;
+        }
         const group = button.dataset.filterGroup;
         const key = button.dataset.filterKey;
         if (!selected[group] || !key) return;
@@ -1691,6 +1894,20 @@
         else selected[group].add(key);
         button.setAttribute("aria-pressed", String(selected[group].has(key)));
         updateResults({ resetScroll: true });
+      });
+
+      elements.alienChoicePopover.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-alien-choice]");
+        const choice = button?.dataset.alienChoice;
+        if (!alienChoiceKeys.includes(choice)) return;
+        applyAlienChoice(choice);
+        updateResults({ resetScroll: true });
+      });
+      document.addEventListener("pointerdown", (event) => {
+        const popover = elements.alienChoicePopover;
+        const trigger = alienTrigger();
+        if (popover.hidden || popover.contains(event.target) || trigger?.contains(event.target)) return;
+        closeAlienChoice();
       });
 
       elements.logicButtons.forEach((button) => {
@@ -1712,6 +1929,7 @@
 
       elements.filterCollapse.addEventListener("click", () => {
         elements.filterPanel.classList.toggle("is-collapsed");
+        closeAlienChoice();
         syncFilterCollapse();
       });
 
@@ -1728,6 +1946,8 @@
         filterLogic = "or";
         syncFilterLogic();
         Object.values(selected).forEach((values) => values.clear());
+        closeAlienChoice();
+        syncAlienTrigger();
         document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
           .forEach((button) => button.setAttribute("aria-pressed", "false"));
         updateResults({ resetScroll: true });
@@ -1735,6 +1955,7 @@
 
       syncFilterLogic();
       syncFilterCollapse();
+      syncAlienTrigger();
       syncDisplayMode();
       updateResults();
     })();
