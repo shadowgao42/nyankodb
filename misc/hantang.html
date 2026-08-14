@@ -34,7 +34,6 @@ function update(){
   $('plays').textContent=`${state.plays} / 5`;
   $('spent').textContent=fmt(state.spent)+'개';
   $('earned').textContent=fmt(state.earned)+'개';
-  $('dayLabel').textContent=`오늘 ${state.plays>=5?'— 5회 완료':'— '+(5-state.plays)+'회 남음'}`;
   document.querySelectorAll('.play-btn').forEach(b=>b.disabled=!state.started||state.plays>=5|| (state.money<({복불복:10,일확천금:30,올인:100}[b.dataset.game])));
   renderHistory();
   if(state.plays>=5){ $('resultSection').classList.remove('hidden'); $('resInitial').textContent=fmt(state.initial)+'개'; $('resSpent').textContent=fmt(state.spent)+'개'; $('resEarned').textContent=fmt(state.earned)+'개'; $('resFinal').textContent=fmt(state.money)+'개'; } else $('resultSection').classList.add('hidden');
