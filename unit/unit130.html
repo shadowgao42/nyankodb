@@ -3760,7 +3760,21 @@
     @media (prefers-reduced-motion: reduce) {
       * { scroll-behavior: auto !important; transition: none !important; }
     }
-  </style>
+  
+    .attack-cycle-card.is-animation-missing .attack-timeline,
+    .attack-cycle-card.is-animation-missing .attack-timeline-legend,
+    .attack-cycle-card.is-animation-missing .attack-timing-details {
+      display: none;
+    }
+    .animation-pending {
+      margin-top: 8px;
+      color: #ffb14a;
+      font-size: .9rem;
+      font-weight: 800;
+      letter-spacing: .01em;
+    }
+
+</style>
 </head>
 <body>
   <main class="page">
@@ -7287,7 +7301,20 @@
       knockbackCount.textContent = `${formatter.format(view.knockbacks)}회`;
       unitSpeed.textContent = formatSpeedDistance(view.speed);
       unitCost.textContent = `${formatter.format(view.cost)}원`;
-      setTimeData(cycleTime, view.attackCycleFrames, currentData.attackCycleReliable);
+      const animationTimingAvailable = Boolean(currentData.attackCycleReliable);
+      attackCycleCard.classList.toggle("is-animation-missing", !animationTimingAvailable);
+      let animationPending = attackCycleCard.querySelector(".animation-pending");
+      if (!animationTimingAvailable) {
+        if (!animationPending) {
+          animationPending = document.createElement("div");
+          animationPending.className = "animation-pending";
+          animationPending.textContent = "\uB370\uC774\uD130 \uCD94\uAC00 \uC608\uC815";
+          cycleTime.closest(".stat-value")?.after(animationPending);
+        }
+      } else {
+        animationPending?.remove();
+      }
+      setTimeData(cycleTime, view.attackCycleFrames, animationTimingAvailable);
       setTimeData(cooldownTime, view.cooldownFrames);
       renderAttackTiming(view);
       renderHpEfficiency(view);
@@ -7405,6 +7432,15 @@
     }
 
     function renderAttackTiming(view) {
+      const animationTimingAvailable = Boolean(currentData.attackCycleReliable);
+      if (!animationTimingAvailable) {
+        attackTimeline.hidden = true;
+        attackTimelineMarkers.replaceChildren();
+        attackTimingDetailList.replaceChildren();
+        attackTimingDetails.open = false;
+        return;
+      }
+      attackTimeline.hidden = false;
       const frames = Array.isArray(currentData.foreswingFrames)
         ? currentData.foreswingFrames
         : [currentData.foreswingFrames];
@@ -7720,14 +7756,19 @@
         : null;
       const setLargeEfficiencyValue = (element, value) => {
         element.textContent = Number.isFinite(value)
+          ? `${formatExpectedMetric(value / 1000000)}M`
+          : "—";
+      };
+      const setKiloEfficiencyValue = (element, value) => {
+        element.textContent = Number.isFinite(value)
           ? `${formatExpectedMetric(value / 1000)}k`
           : "—";
       };
       setEfficiencyValue(attackPerCooldownValue, dpsPerCooldown);
       setEfficiencyValue(attackPerCostValue, dpsPerCost);
       setLargeEfficiencyValue(hpDpsValue, hpDps);
-      setLargeEfficiencyValue(hpDpsPerCooldownValue, hpDpsPerCooldown);
-      setLargeEfficiencyValue(hpDpsPerCostValue, hpDpsPerCost);
+      setKiloEfficiencyValue(hpDpsPerCooldownValue, hpDpsPerCooldown);
+      setKiloEfficiencyValue(hpDpsPerCostValue, hpDpsPerCost);
       attackPerCooldownValue.title = "";
       attackPerCostValue.title = "";
       hpDpsValue.title = "";
@@ -7897,11 +7938,12 @@
             const generationEnd = (
               generationStart + (Number(ability.span) || 0)
             );
-            detail.textContent += ` · 생성 ${formatter.format(
-              Math.min(generationStart, generationEnd)
-            )}~${formatter.format(
-              Math.max(generationStart, generationEnd)
-            )}`;
+            const generationMinimum = Math.min(generationStart, generationEnd);
+            const generationMaximum = Math.max(generationStart, generationEnd);
+            const generationText = generationMinimum === generationMaximum
+              ? formatter.format(generationMinimum)
+              : `${formatter.format(generationMinimum)}~${formatter.format(generationMaximum)}`;
+            detail.textContent += ` · 생성 ${generationText}`;
           } else if (ability.key === "explosion") {
             const generationStart = Number(ability.anchor) || 0;
             const generationEnd = (
@@ -8089,9 +8131,11 @@
         return;
       }
       if (currentExpectedRangeMetric === "dps" && data && !data.dpsReliable) {
-        expectedRangeResult.textContent = "계산 불가";
+        expectedRangeResult.textContent = "—";
+        expectedRangeResult.title = "공격 애니메이션 데이터 추가 예정";
         return;
       }
+      expectedRangeResult.title = "";
       const value = expectedRangeValueAt(data, distance) || 0;
       expectedRangeResult.textContent = formatExpectedMetric(value);
     }
@@ -8428,7 +8472,7 @@
       );
       const unavailable = Boolean(metricData?.unavailable);
       expectedRangeEmpty.textContent = unavailable
-        ? "공격 애니메이션 데이터가 없어 DPS를 계산할 수 없습니다."
+        ? "공격 애니메이션 데이터 추가 예정"
         : "현재 조건에서 표시할 공격 구간이 없습니다.";
       expectedRangeEmpty.hidden = Boolean(metricData) && !unavailable;
       expectedRangeCanvas.hidden = !metricData || unavailable;
@@ -10746,7 +10790,9 @@
           name.textContent = entry.name;
           const identity = document.createElement("span");
           identity.className = "unit-search-result-identity";
-          identity.textContent = entry.kind === "enemy" ? `ENEMY ${String(entry.id).padStart(3, "0")}` : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+          identity.textContent = entry.kind === "enemy"
+            ? `ENEMY ${String(entry.id).padStart(3, "0")}`
+            : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           const copy = document.createElement("span");
           copy.className = "unit-search-result-copy";
           copy.append(name, identity);

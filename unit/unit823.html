@@ -7481,14 +7481,19 @@
         : null;
       const setLargeEfficiencyValue = (element, value) => {
         element.textContent = Number.isFinite(value)
+          ? `${formatExpectedMetric(value / 1000000)}M`
+          : "—";
+      };
+      const setKiloEfficiencyValue = (element, value) => {
+        element.textContent = Number.isFinite(value)
           ? `${formatExpectedMetric(value / 1000)}k`
           : "—";
       };
       setEfficiencyValue(attackPerCooldownValue, dpsPerCooldown);
       setEfficiencyValue(attackPerCostValue, dpsPerCost);
       setLargeEfficiencyValue(hpDpsValue, hpDps);
-      setLargeEfficiencyValue(hpDpsPerCooldownValue, hpDpsPerCooldown);
-      setLargeEfficiencyValue(hpDpsPerCostValue, hpDpsPerCost);
+      setKiloEfficiencyValue(hpDpsPerCooldownValue, hpDpsPerCooldown);
+      setKiloEfficiencyValue(hpDpsPerCostValue, hpDpsPerCost);
       attackPerCooldownValue.title = "";
       attackPerCostValue.title = "";
       hpDpsValue.title = "";
