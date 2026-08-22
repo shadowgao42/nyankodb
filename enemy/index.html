@@ -1831,6 +1831,15 @@
               ? traits.has("alien") || traits.has("starred_alien")
               : traits.has(key);
             const selectedTraitMatches = [...selected.trait].map(traitMatches);
+            // The sub-sections only organize the UI.  Effects, abilities,
+            // immunities, and attack types form one effect/ability filter,
+            // exactly like the unit catalogue.
+            const effectAbilitySelections = new Set([
+              ...selected.effect,
+              ...selected.ability,
+              ...selected.immunity,
+              ...selected.attack,
+            ]);
             const conditions = [
               {
                 active: selected.trait.size > 0,
@@ -1838,10 +1847,10 @@
                   ? selectedTraitMatches.every(Boolean)
                   : selectedTraitMatches.some(Boolean),
               },
-              ...["effect", "ability", "immunity", "attack"].map((group) => ({
-                active: selected[group].size > 0,
-                matches: categoryMatches(abilities, selected[group]),
-              })),
+              {
+                active: effectAbilitySelections.size > 0,
+                matches: categoryMatches(abilities, effectAbilitySelections),
+              },
             ].filter((condition) => condition.active);
             if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
             return { entry, rank };
