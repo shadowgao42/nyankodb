@@ -52,6 +52,7 @@
     .brand .db { color: var(--accent); }
 
     .search-card,
+    .update-news-card,
     .notice-card {
       border: 1px solid var(--line);
       border-radius: 17px;
@@ -194,7 +195,49 @@
       font-weight: 900;
       white-space: nowrap;
     }
+    .update-news-card,
     .notice-card { margin-top: 24px; overflow: hidden; }
+
+    .update-news-link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .update-news-link:hover .notice-heading,
+    .update-news-link:focus-visible .notice-heading {
+      background: rgba(255,255,255,.035);
+    }
+
+    .update-news-link:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .update-news-icons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 77px;
+      padding: 12px 20px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .update-news-icon {
+      display: block;
+      flex: 0 0 auto;
+      width: 62px;
+      height: 49px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .update-news-empty {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
 
     .notice-heading {
       padding: 17px 20px;
@@ -224,6 +267,7 @@
       button { padding: 0 13px; }
       .notice-heading { padding: 15px 16px; }
       .notice-note { padding: 11px 16px 0; }
+      .update-news-icons { padding-inline: 16px; }
       iframe { min-height: 520px; }
     }
   </style>
@@ -252,6 +296,13 @@
       <div class="search-results" id="search-results" role="listbox" aria-label="검색 결과"></div>
     </section>
 
+    <section class="update-news-card" aria-labelledby="update-news-title" hidden>
+      <a class="update-news-link" id="update-news-link" href="update/" aria-label="최신 업데이트 소식 보기">
+        <div class="notice-heading"><h2 id="update-news-title">업데이트 소식</h2></div>
+        <div class="update-news-icons" id="update-news-icons" aria-live="polite"></div>
+      </a>
+    </section>
+
     <section class="notice-card" aria-labelledby="notice-title">
       <div class="notice-heading"><h2 id="notice-title">공식 공지</h2></div>
       <p class="notice-note">냥코 대전쟁 공식 공지입니다.</p>
@@ -270,8 +321,73 @@
       const status = document.getElementById("search-status");
       const results = document.getElementById("search-results");
       const entries = window.NYANKODB_SEARCH_CATALOG?.entries || [];
+      const updateNews = document.querySelector(".update-news-card");
+      const updateNewsLink = document.getElementById("update-news-link");
+      const updateNewsIcons = document.getElementById("update-news-icons");
 
       document.getElementById("notice-frame").src = NOTICE_URL;
+
+      async function latestUpdatePage() {
+        // GitHub Pages cannot enumerate a directory.  The repository API lets
+        // the page select the numerically latest update HTML without copying
+        // any update data into the main page.
+        try {
+          const response = await fetch(
+            "https://api.github.com/repos/shadowgao42/nyankodb/contents/update",
+            { headers: { Accept: "application/vnd.github+json" } },
+          );
+          if (!response.ok) throw new Error("update directory unavailable");
+          const files = await response.json();
+          const latest = files
+            .filter((file) => /^\d+\.html$/.test(String(file.name || "")))
+            .sort((left, right) => Number(right.name.replace(/\.html$/, "")) - Number(left.name.replace(/\.html$/, "")))[0];
+          if (latest?.name) return `update/${latest.name}`;
+        } catch {
+          // Local/offline viewing uses the same generated pointer as a
+          // fallback; the icon information is still parsed from that HTML.
+        }
+        const response = await fetch("update/latest.json");
+        if (!response.ok) throw new Error("latest update unavailable");
+        const data = await response.json();
+        if (!/^\d+\.html$/.test(String(data.page || ""))) {
+          throw new Error("invalid latest update pointer");
+        }
+        return `update/${data.page}`;
+      }
+
+      async function renderLatestUpdateNews() {
+        try {
+          const page = await latestUpdatePage();
+          const response = await fetch(page);
+          if (!response.ok) throw new Error("update page unavailable");
+          const document = new DOMParser().parseFromString(
+            await response.text(),
+            "text/html",
+          );
+          const iconSources = [...document.querySelectorAll(
+            ".update-section .update-grid .update-card > img, .update-section .update-grid .update-card .update-card-link > img",
+          )]
+            .map((image) => image.getAttribute("src"))
+            .filter(Boolean);
+          if (!iconSources.length) return;
+
+          updateNewsLink.href = page;
+          updateNewsIcons.replaceChildren(...iconSources.map((source) => {
+            const image = new Image();
+            image.className = "update-news-icon";
+            image.src = new URL(source, new URL(page, window.location.href)).href;
+            image.alt = "";
+            image.loading = "lazy";
+            return image;
+          }));
+          updateNews.hidden = false;
+        } catch {
+          // The main search and official-notice areas remain available even
+          // when an update page is temporarily unavailable.
+        }
+      }
+
+      renderLatestUpdateNews();
       try {
         window.sessionStorage.setItem("nyanko-db:last-page:v1", window.location.pathname);
       } catch {
