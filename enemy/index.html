@@ -1029,9 +1029,7 @@
       place-items: center;
     }
     .alien-variant-icon img { width: 34px; height: 34px; }
-    .alien-variant-icon::after,
-    .alien-filter-trigger.alien-filter-starred::after,
-    .alien-filter-trigger.alien-filter-unstarred::after {
+    .alien-variant-icon::after {
       content: "★";
       position: absolute;
       z-index: 2;
@@ -1051,8 +1049,7 @@
       line-height: 1;
       pointer-events: none;
     }
-    .alien-variant-no-star::before,
-    .alien-filter-trigger.alien-filter-unstarred::before {
+    .alien-variant-no-star::before {
       content: "×";
       position: absolute;
       z-index: 3;
@@ -1065,9 +1062,6 @@
       text-shadow: 0 1px 2px rgba(0,0,0,.8);
       pointer-events: none;
     }
-    .alien-filter-trigger.alien-filter-starred::after,
-    .alien-filter-trigger.alien-filter-unstarred::after { top: 0; right: 0; }
-    .alien-filter-trigger.alien-filter-unstarred::before { top: -2px; right: -2px; }
     @media (max-width: 600px) {
       .alien-choice-popover { min-width: 204px; padding: 8px; }
       .alien-choice-option { min-height: 66px; }
@@ -1110,17 +1104,39 @@
         </div>
       </div>
       <div class="filter-body" id="filterBody">
-        <div class="filter-group">
+        <div class="filter-group ability-filter-group">
           <h3 class="filter-label">속성</h3>
-          <div class="filter-chip-list" id="traitFilters"></div>
-        </div>
-        <div class="filter-group">
-          <h3 class="filter-label">특수 속성</h3>
-          <div class="filter-chip-list" id="specialTraitFilters"></div>
+          <div class="ability-filter-sections">
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">일반 속성</h4>
+              <div class="filter-chip-list" id="traitFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">특수 속성</h4>
+              <div class="filter-chip-list" id="specialTraitFilters"></div>
+            </section>
+          </div>
         </div>
         <div class="filter-group ability-filter-group">
           <h3 class="filter-label">효과/능력</h3>
-          <div class="filter-chip-list" id="abilityFilters"></div>
+          <div class="ability-filter-sections">
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">효과</h4>
+              <div class="filter-chip-list" id="effectFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">능력</h4>
+              <div class="filter-chip-list" id="abilityFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">무효</h4>
+              <div class="filter-chip-list" id="immunityFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">공격 타입</h4>
+              <div class="filter-chip-list" id="attackFilters"></div>
+            </section>
+          </div>
         </div>
       </div>
       <div class="alien-choice-popover" id="alienChoicePopover" role="dialog" aria-label="에이리언 선택" hidden>
@@ -1183,7 +1199,10 @@
       };
       const groupTargets = {
         trait: document.getElementById("traitFilters"),
+        effect: document.getElementById("effectFilters"),
         ability: document.getElementById("abilityFilters"),
+        immunity: document.getElementById("immunityFilters"),
+        attack: document.getElementById("attackFilters"),
       };
       const selected = Object.fromEntries(
         Object.keys(groupTargets).map((group) => [group, new Set()]),
@@ -1351,6 +1370,7 @@
             const fixedFallbacks = {
               multi_hit: "연",
               limited_attacks: "1회",
+              attack_count: "1회",
               timed_life: "시",
               boss_wave_immune: "보",
               explosion_resist: "폭",
@@ -1396,8 +1416,6 @@
           : choice === "starred_alien"
             ? "에이리언(별 있음)"
             : "에이리언";
-        trigger.classList.toggle("alien-filter-starred", choice === "starred_alien");
-        trigger.classList.toggle("alien-filter-unstarred", choice === "alien");
         trigger.setAttribute("aria-pressed", String(Boolean(choice)));
         trigger.dataset.tooltip = tooltip;
         elements.alienChoicePopover.querySelectorAll("[data-alien-choice]").forEach((button) => {
@@ -1820,7 +1838,10 @@
                   ? selectedTraitMatches.every(Boolean)
                   : selectedTraitMatches.some(Boolean),
               },
-              { active: selected.ability.size > 0, matches: categoryMatches(abilities, selected.ability) },
+              ...["effect", "ability", "immunity", "attack"].map((group) => ({
+                active: selected[group].size > 0,
+                matches: categoryMatches(abilities, selected[group]),
+              })),
             ].filter((condition) => condition.active);
             if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
             return { entry, rank };
@@ -1848,7 +1869,7 @@
 
       const meta = catalog.meta || catalog;
       const traits = normalizeMetaCollection(meta.traits);
-      const abilities = normalizeMetaCollection(meta.abilities);
+      const sections = abilitySections(meta);
       const entries = catalog.entries.map((entry) => ({
         ...entry,
         id: Number(entry.id),
@@ -1867,7 +1888,10 @@
         true,
         document.getElementById("specialTraitFilters"),
       );
-      renderFilterGroup(abilities, "ability");
+      renderFilterGroup(sections.effect, "effect");
+      renderFilterGroup(sections.ability, "ability");
+      renderFilterGroup(sections.immunity, "immunity");
+      renderFilterGroup(sections.attack, "attack");
 
       function updateResults({ resetScroll = false } = {}) {
         const filtered = filterEntries(entries);
