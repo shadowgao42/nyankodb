@@ -1127,11 +1127,11 @@
         <strong>에이리언</strong>
         <div class="alien-choice-options">
           <button class="alien-choice-option" type="button" data-alien-choice="alien" aria-pressed="false">
-            <span class="alien-variant-icon alien-variant-no-star"><img src="nyanko-imgcut:img015:218:64:64" alt=""></span>
+            <span class="alien-variant-icon alien-variant-no-star"><img src="../img/i/224.png" alt=""></span>
             <span>별 없음</span>
           </button>
           <button class="alien-choice-option" type="button" data-alien-choice="starred_alien" aria-pressed="false">
-            <span class="alien-variant-icon alien-variant-starred"><img src="nyanko-imgcut:img015:218:64:64" alt=""></span>
+            <span class="alien-variant-icon alien-variant-starred"><img src="../img/i/224.png" alt=""></span>
             <span>별 있음</span>
           </button>
           <button class="alien-choice-option alien-choice-all" type="button" data-alien-choice="alien_all" aria-pressed="false">
@@ -1161,7 +1161,6 @@
   </main>
 
   <script src="catalog.js"></script>
-  <script src="../unit/icon-runtime.js"></script>
   <script>
     (() => {
       "use strict";
@@ -1269,7 +1268,7 @@
 
       function resolveAssetPath(path) {
         if (!path || typeof path !== "string") return "";
-        if (path.startsWith("nyanko-imgcut:") || /^(?:data:|https?:|blob:)/i.test(path)) {
+        if (/^(?:data:|https?:|blob:)/i.test(path)) {
           return path;
         }
         const normalized = path.replace(/^\/+/, "");

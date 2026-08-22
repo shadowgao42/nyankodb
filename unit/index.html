@@ -1071,7 +1071,6 @@
   </main>
 
   <script src="catalog.js"></script>
-  <script src="icon-runtime.js"></script>
   <script>
     (() => {
       "use strict";
@@ -1184,7 +1183,7 @@
 
       function resolveAssetPath(path) {
         if (!path || typeof path !== "string") return "";
-        if (path.startsWith("nyanko-imgcut:") || /^(?:data:|https?:|blob:)/i.test(path)) {
+        if (/^(?:data:|https?:|blob:)/i.test(path)) {
           return path;
         }
         const normalized = path.replace(/^\/+/, "");
