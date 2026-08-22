@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>냥코DB 업데이트</title><style>
+/* The toolbar, search-result list, sections, and combo cards below are copied
+   from unit_spec_calculator's generated page structure. */
+:root{--bg:#080b10;--surface:#111720;--surface-2:#171f29;--line:#293645;--text:#f4f7fb;--muted:#94a2b6;--accent:#ff5b2d;--accent-2:#ffad3d;--accent-text:#ffad3d;--shadow:0 24px 70px rgba(0,0,0,.34)}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-width:320px;min-height:143vh;overflow-x:hidden;zoom:.7;color:var(--text);background:radial-gradient(circle at 18% 0%,rgba(255,74,32,.22),transparent 30rem),repeating-linear-gradient(45deg,transparent 0 70px,rgba(255,255,255,.035) 71px 72px),linear-gradient(180deg,#10151d 0%,var(--bg) 62%);font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}button,input{font:inherit}.page{width:min(1220px,calc(100% - 36px));margin:0 auto;padding:24px 0 38px}
+.db-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px;padding:14px 18px;border:1px solid var(--line);border-radius:17px;background:rgba(14,19,26,.92);box-shadow:var(--shadow)}.db-brand{flex:0 0 auto;color:var(--text);font-size:25px;font-weight:950;letter-spacing:-.05em;text-decoration:none}.db-brand span{color:var(--accent-text)}.unit-search{display:grid;grid-template-columns:auto minmax(150px,220px) auto;align-items:center;gap:9px}.unit-search label{color:#dce3ed;font-size:13px;font-weight:900;white-space:nowrap}.unit-search-field{position:relative;min-width:0}.unit-search input{width:100%;min-width:0;height:38px;padding:7px 11px;border:1px solid #425267;border-radius:9px;color:var(--text);background:#0c1118;outline:none;font-variant-numeric:tabular-nums}.unit-search-field>input{border-color:#4d5a69;background:#171d25}.unit-search .unit-search-field>input:focus{border-color:#788697;box-shadow:0 0 0 2px rgba(145,158,173,.18)}.unit-search button{height:38px;padding:7px 15px;border:0;border-radius:9px;color:#fff;background:var(--accent);font-weight:900;cursor:pointer}.unit-search button[type="submit"]{border:1px solid #596777;color:#f4f7fb;background:#303a47}.unit-search button[type="submit"]:hover{border-color:#718094;background:#3a4655}
+.unit-search-results{position:absolute;top:calc(100% + 7px);left:0;z-index:120;width:min(380px,calc(100vw - 44px));max-height:360px;padding:6px;overflow-y:auto;border:1px solid #46566a;border-radius:12px;background:#080d14;box-shadow:0 16px 42px rgba(0,0,0,.52);scrollbar-width:thin;touch-action:pan-y}.unit-search-results[hidden]{display:none}.unit-search .unit-search-result{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:10px;width:100%;min-height:48px;padding:5px 9px;border:0;border-bottom:1px solid #465363;border-radius:0;color:#f4f7fb;background:#27313e;text-align:left;cursor:pointer;touch-action:pan-y}.unit-search .unit-search-result:last-child{border-bottom:0}.unit-search .unit-search-result:hover{background:#354252}.unit-search-result img,.unit-search-result-icon-empty{display:block;width:54px;height:40px;object-fit:contain;image-rendering:pixelated}.unit-search-result-icon-empty{border:1px dashed #405066;border-radius:7px}.unit-search-result-copy{display:grid;min-width:0;gap:2px}.unit-search-result-name{min-width:0;overflow:hidden;font-size:13px;font-weight:900;text-overflow:ellipsis;white-space:nowrap}.unit-search-result-identity{color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.03em}.unit-search-empty{padding:13px 10px;color:var(--muted);font-size:12px;font-weight:800;text-align:center}
+.update-title{margin:18px 4px 2px;color:#fff;font-size:27px;font-weight:950;letter-spacing:-.04em}.section{margin-top:16px;border:1px solid var(--line);border-radius:20px;background:rgba(15,20,28,.92);box-shadow:var(--shadow)}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:19px 22px 14px}.section-heading h2{margin:0;font-size:20px;letter-spacing:-.025em}.update-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 18px 18px}.update-card{display:flex;align-items:center;gap:12px;min-height:69px;padding:8px 10px;border:1px solid #2d3948;border-radius:12px;color:var(--text);background:var(--surface-2);text-decoration:none;transition:border-color .14s ease,transform .14s ease}.update-card:hover,.update-card:focus-visible{border-color:var(--accent);outline:none;transform:translateY(-2px)}.update-card img{width:62px;height:49px;object-fit:contain;image-rendering:auto}.copy{display:grid;min-width:0;gap:2px}.copy b{overflow:hidden;font-size:14px;font-weight:950;text-overflow:ellipsis;white-space:nowrap}.copy small{color:var(--muted);font-size:11px;font-weight:850;letter-spacing:.03em}.copy .talent-normal{color:#ffe866;text-shadow:0 0 8px rgba(255,216,61,.42)}.copy .talent-ultra{color:#ff717b;text-shadow:0 0 8px rgba(255,51,68,.42)}
+.nyancombo-section-heading{justify-content:flex-start;gap:10px}.nyancombo-count{display:inline-grid;place-items:center;min-width:38px;height:25px;padding:0 8px;border:1px solid #3a485a;border-radius:999px;color:var(--muted);background:#0c1118;font-size:12px;font-weight:900}.nyancombo-list{display:grid;gap:12px;padding:0 18px 18px}.nyancombo-card{overflow:visible;border:1px solid #2d3948;border-radius:18px;background:var(--surface-2)}.nyancombo-card-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:5px 16px;padding:13px 16px 12px;border-bottom:1px solid #313e4e;border-radius:17px 17px 0 0;background:linear-gradient(90deg,rgba(255,91,45,.18),transparent 72%)}.nyancombo-card-heading h3{margin:0;color:#fff;font-size:19px;font-weight:950}.nyancombo-card-heading p{margin:0;color:#fff;font-size:14px;font-weight:900}.nyancombo-members{display:flex;align-items:flex-start;flex-wrap:nowrap;gap:8px;overflow:visible;padding:13px 15px 15px}.nyancombo-member{position:relative;display:block;flex:0 1 clamp(56px,calc(7vw + 29px),96px);width:clamp(56px,calc(7vw + 29px),96px);min-width:56px;padding:4px;border:1px solid #344253;border-radius:10px;color:inherit;background:#0b1017;text-decoration:none;transition:border-color .14s ease,transform .14s ease}.nyancombo-member::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 8px);z-index:30;width:max-content;max-width:min(330px,calc(100vw - 48px));padding:10px 12px;border:1px solid #53657a;border-radius:11px;color:#fff;background:#080c12;box-shadow:0 12px 34px rgba(0,0,0,.48);font-size:13px;font-weight:900;white-space:nowrap;opacity:0;pointer-events:none;transform:translate(-50%,6px);transition:opacity .14s ease,transform .14s ease}.nyancombo-member:hover,.nyancombo-member:focus-visible{border-color:var(--accent);outline:none;transform:translateY(-2px)}.nyancombo-member:hover::after,.nyancombo-member:focus-visible::after{opacity:1;transform:translate(-50%,0)}.nyancombo-member-image{display:grid;place-items:center;width:100%;aspect-ratio:104/79;overflow:hidden;border-radius:6px;background:rgba(255,255,255,.04)}.nyancombo-member-image img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
+@media(max-width:980px){.update-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:720px){.update-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:660px){.page{width:min(100% - 20px,1220px);padding-top:12px}.db-toolbar{align-items:stretch;flex-direction:column;gap:10px;padding:13px 15px}.unit-search{grid-template-columns:72px minmax(0,1fr) 58px;gap:7px}.unit-search button{padding-inline:8px}.unit-search-results{width:min(360px,calc(100vw - 106px))}.update-title{margin-left:2px;font-size:24px}.update-grid{padding-inline:14px}.nyancombo-list{padding-inline:14px}.nyancombo-members{gap:6px;padding-inline:10px}.nyancombo-member{min-width:49px;padding:3px}}@media(max-width:480px){.update-grid{grid-template-columns:1fr}}
+.update-unit-switch-card{padding:0;gap:0}.update-card-link{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:67px;padding:8px 10px;color:inherit;text-decoration:none}.update-card-link:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}.update-form-switch{display:grid;place-content:center;gap:2px;align-self:stretch;flex:0 0 58px;padding:6px 5px;border:0;border-left:1px solid #2d3948;border-radius:0 11px 11px 0;color:#fff;background:#202a36;font-size:11px;font-weight:950;line-height:1.2;cursor:pointer}.update-form-switch:hover,.update-form-switch:focus-visible{color:#fff;background:#354252;outline:none}.update-card-notes{display:contents}
+.copy .update-change{color:#ffad3d}
+</style></head><body><main class="page"><header class="db-toolbar"><a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a><form class="unit-search" id="unitSearchForm" role="search"><label for="unitSearchInput">검색</label><div class="unit-search-field"><input id="unitSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="이름 검색" aria-label="검색할 유닛 또는 적 이름"><div class="unit-search-results" id="unitSearchResults" role="listbox" aria-label="검색 결과" hidden></div></div><button type="submit">검색</button></form></header><h1 class="update-title">v15.5.1 업데이트</h1><section class="section update-section"><div class="section-heading"><h2>추가된 유닛</h2></div><div class="update-grid"><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;오래된 알: N208&quot;,&quot;image&quot;:&quot;../img/s/0/0.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 871-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;녹색 알: N208&quot;,&quot;image&quot;:&quot;../img/s/3/1.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 871-2&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:3,&quot;name&quot;:&quot;어썰트 가재 고양이&quot;,&quot;image&quot;:&quot;../img/u/871/2.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=3&quot;,&quot;identity&quot;:&quot;UNIT 871-3&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit871.html?form=1"><img src="../img/s/0/0.png" alt="" loading="lazy"><span class="copy"><b>오래된 알: N208</b><small>UNIT 871-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;정글 헌터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/0.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 872-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;정글 마스터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/1.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 872-2&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit872.html?form=1"><img src="../img/u/872/0.png" alt="" loading="lazy"><span class="copy"><b>정글 헌터 토모에</b><small>UNIT 872-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article></div></section><section class="section update-section"><div class="section-heading"><h2>3단 진화 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit455.html?form=3"><img src="../img/u/455/2.png" alt="" loading="lazy"><span class="copy"><b>스타라이트 모모코</b><small>UNIT 455-3</small></span></a></div></section><script src="../catalog.js"></script><script>
+(() => {
+  const form = document.getElementById("unitSearchForm");
+  const input = document.getElementById("unitSearchInput");
+  const results = document.getElementById("unitSearchResults");
+  const entries = Array.isArray(window.NYANKODB_SEARCH_CATALOG?.entries) ? window.NYANKODB_SEARCH_CATALOG.entries : [];
+  if (!form || !input || !results) return;
+  const normalize = value => String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+  const ordered = (query, value) => { let at = 0; for (const char of query) { at = value.indexOf(char, at); if (at < 0) return false; at++; } return true; };
+  const containsAll = (query, value) => { const chars = [...value]; return [...query].every(char => { const index = chars.indexOf(char); if (index < 0) return false; chars.splice(index, 1); return true; }); };
+  const rank = (entry, query) => {
+    const name = normalize(entry.name); const identity = normalize(`${entry.kind || "unit"}${entry.id || ""}${entry.form || ""}`);
+    if (!query) return 0;
+    if (name === query || identity === query) return 1;
+    if (name.includes(query) || identity.includes(query)) return 2;
+    if (ordered(query, name) || ordered(query, identity)) return 3;
+    return containsAll(query, name) || containsAll(query, identity) ? 4 : 99;
+  };
+  const close = () => { results.hidden = true; results.replaceChildren(); };
+  const iconPath = entry => {
+    const icon = String(entry.icon || "");
+    return icon.startsWith("data:") || !icon ? icon : `../${icon.replace(/^\.\.\//, "")}`;
+  };
+  const go = entry => {
+    const id = String(entry.id).padStart(3, "0");
+    if (entry.kind === "enemy") location.href = `../enemy/enemy${id}.html`;
+    else location.href = `../unit/unit${id}.html?form=${Number(entry.form) || 1}`;
+  };
+  const render = () => {
+    const query = normalize(input.value);
+    const matching = entries.map(entry => ({entry, score: rank(entry, query)})).filter(item => item.score < 99)
+      .sort((a,b) => a.score - b.score || String(a.entry.name).localeCompare(String(b.entry.name), "ko" ) || Number(a.entry.id) - Number(b.entry.id)).slice(0, 80);
+    results.replaceChildren();
+    if (!query) { close(); return; }
+    if (!matching.length) { const empty = document.createElement("div"); empty.className = "unit-search-empty"; empty.textContent = "검색 결과가 없습니다"; results.append(empty); results.hidden = false; return; }
+    for (const {entry} of matching) {
+      const button = document.createElement("button"); button.type = "button"; button.className = "unit-search-result";
+      const icon = iconPath(entry); const id = String(entry.id).padStart(3, "0"); const identity = entry.kind === "enemy" ? `ENEMY ${id}` : `UNIT ${id}-${Number(entry.form) || 1}`;
+      button.innerHTML = `${icon ? `<img src="${icon}" alt="">` : '<span class="unit-search-result-icon-empty"></span>'}<span class="unit-search-result-copy"><span class="unit-search-result-name"></span><span class="unit-search-result-identity"></span></span>`;
+      button.querySelector(".unit-search-result-name").textContent = String(entry.name || identity);
+      button.querySelector(".unit-search-result-identity").textContent = identity;
+      let start = null; let dragged = false;
+      button.addEventListener("pointerdown", event => { start = {x:event.clientX,y:event.clientY}; dragged = false; });
+      button.addEventListener("pointermove", event => { if (start && Math.hypot(event.clientX-start.x,event.clientY-start.y) > 8) dragged = true; });
+      button.addEventListener("click", event => { if (dragged) { event.preventDefault(); return; } go(entry); });
+      results.append(button);
+    }
+    results.hidden = false;
+  };
+  input.addEventListener("input", render);
+  input.addEventListener("focus", render);
+  form.addEventListener("submit", event => { event.preventDefault(); const first = results.querySelector(".unit-search-result"); if (first) first.click(); });
+  document.addEventListener("pointerdown", event => { if (!form.contains(event.target)) close(); });
+})();
+
+(() => {
+  for (const card of document.querySelectorAll(".update-unit-switch-card[data-form-variants]")) {
+    let variants;
+    try { variants = JSON.parse(card.dataset.formVariants || "[]"); } catch (_) { continue; }
+    if (!Array.isArray(variants) || variants.length < 2) continue;
+    const link = card.querySelector(".update-card-link");
+    const image = link?.querySelector("img");
+    const name = link?.querySelector(".copy b");
+    const identity = link?.querySelector(".copy > small");
+    const notes = link?.querySelector(".update-card-notes");
+    const button = card.querySelector(".update-form-switch");
+    if (!link || !image || !name || !identity || !notes || !button) continue;
+    const render = index => {
+      const variant = variants[index];
+      card.dataset.formIndex = String(index);
+      link.href = String(variant.href || "#");
+      image.src = String(variant.image || "");
+      name.textContent = String(variant.name || "");
+      identity.textContent = String(variant.identity || "");
+      notes.replaceChildren();
+      for (const note of Array.isArray(variant.notes) ? variant.notes : []) {
+        const item = document.createElement("small");
+        item.className = String(note.className || "");
+        item.textContent = String(note.text || "");
+        notes.append(item);
+      }
+      button.setAttribute("aria-label", "형태 변경");
+    };
+    button.addEventListener("click", () => {
+      const current = Number(card.dataset.formIndex || "0");
+      render((current + 1) % variants.length);
+    });
+    render(0);
+  }
+})();
+</script></main></body></html>

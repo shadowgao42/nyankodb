@@ -1029,14 +1029,16 @@
       place-items: center;
     }
     .alien-variant-icon img { width: 34px; height: 34px; }
-    .alien-variant-icon::after {
+    .alien-variant-icon::after,
+    .alien-filter-trigger.alien-filter-starred::after,
+    .alien-filter-trigger.alien-filter-unstarred::after {
       content: "★";
       position: absolute;
       z-index: 2;
       display: grid;
       width: 16px;
       height: 16px;
-      top: -9px;
+      top: -5px;
       right: -7px;
       place-items: center;
       border: 1px solid #d8ebff;
@@ -1048,20 +1050,24 @@
       font-weight: 950;
       line-height: 1;
       pointer-events: none;
-     }
-    .alien-variant-no-star::before {
+    }
+    .alien-variant-no-star::before,
+    .alien-filter-trigger.alien-filter-unstarred::before {
       content: "×";
       position: absolute;
       z-index: 3;
-      top: -11px;
-      right: -6px;
+      top: -8px;
+      right: -9px;
       color: #ff8d71;
       font-size: 21px;
-      font-weight: 400;
+      font-weight: 950;
       line-height: 1;
       text-shadow: 0 1px 2px rgba(0,0,0,.8);
       pointer-events: none;
     }
+    .alien-filter-trigger.alien-filter-starred::after,
+    .alien-filter-trigger.alien-filter-unstarred::after { top: 0; right: 0; }
+    .alien-filter-trigger.alien-filter-unstarred::before { top: -2px; right: -2px; }
     @media (max-width: 600px) {
       .alien-choice-popover { min-width: 204px; padding: 8px; }
       .alien-choice-option { min-height: 66px; }
