@@ -12,60 +12,484 @@
 @media(max-width:980px){.update-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:720px){.update-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:660px){.page{width:min(100% - 20px,1220px);padding-top:12px}.db-toolbar{align-items:stretch;flex-direction:column;gap:10px;padding:13px 15px}.unit-search{grid-template-columns:72px minmax(0,1fr) 58px;gap:7px}.unit-search button{padding-inline:8px}.unit-search-results{width:min(360px,calc(100vw - 106px))}.update-title{margin-left:2px;font-size:24px}.update-grid{padding-inline:14px}.nyancombo-list{padding-inline:14px}.nyancombo-members{gap:6px;padding-inline:10px}.nyancombo-member{min-width:49px;padding:3px}}@media(max-width:480px){.update-grid{grid-template-columns:1fr}}
 .update-unit-switch-card{padding:0;gap:0}.update-card-link{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:67px;padding:8px 10px;color:inherit;text-decoration:none}.update-card-link:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}.update-form-switch{display:grid;place-content:center;gap:2px;align-self:stretch;flex:0 0 58px;padding:6px 5px;border:0;border-left:1px solid #2d3948;border-radius:0 11px 11px 0;color:#fff;background:#202a36;font-size:11px;font-weight:950;line-height:1.2;cursor:pointer}.update-form-switch:hover,.update-form-switch:focus-visible{color:#fff;background:#354252;outline:none}.update-card-notes{display:contents}
 .copy .update-change{color:#ffad3d}
-</style></head><body><main class="page"><header class="db-toolbar"><a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a><form class="unit-search" id="unitSearchForm" role="search"><label for="unitSearchInput">검색</label><div class="unit-search-field"><input id="unitSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="이름 검색" aria-label="검색할 유닛 또는 적 이름"><div class="unit-search-results" id="unitSearchResults" role="listbox" aria-label="검색 결과" hidden></div></div><button type="submit">검색</button></form></header><h1 class="update-title">v15.5.1 업데이트</h1><section class="section update-section"><div class="section-heading"><h2>추가된 유닛</h2></div><div class="update-grid"><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;오래된 알: N208&quot;,&quot;image&quot;:&quot;../img/s/0/0.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 871-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;녹색 알: N208&quot;,&quot;image&quot;:&quot;../img/s/3/1.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 871-2&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:3,&quot;name&quot;:&quot;어썰트 가재 고양이&quot;,&quot;image&quot;:&quot;../img/u/871/2.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=3&quot;,&quot;identity&quot;:&quot;UNIT 871-3&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit871.html?form=1"><img src="../img/s/0/0.png" alt="" loading="lazy"><span class="copy"><b>오래된 알: N208</b><small>UNIT 871-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;정글 헌터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/0.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 872-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;정글 마스터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/1.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 872-2&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit872.html?form=1"><img src="../img/u/872/0.png" alt="" loading="lazy"><span class="copy"><b>정글 헌터 토모에</b><small>UNIT 872-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article></div></section><section class="section update-section"><div class="section-heading"><h2>3단 진화 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit455.html?form=3"><img src="../img/u/455/2.png" alt="" loading="lazy"><span class="copy"><b>스타라이트 모모코</b><small>UNIT 455-3</small></span></a></div></section><script src="../catalog.js"></script><script>
+</style><style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 143vh;
+      min-width: 320px;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .db-brand {
+      flex: 0 0 auto;
+      text-decoration: none;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 950;
+      letter-spacing: -.05em;
+    }
+
+    .db-brand span {
+      color: var(--accent-text);
+    }
+
+    .unit-search {
+      display: grid;
+      grid-template-columns: auto minmax(150px, 220px) auto;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .unit-search-field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .unit-search-field > input {
+      width: 100%;
+      border-color: #4d5a69;
+      background: #171d25;
+    }
+
+    .unit-search .unit-search-field > input:focus {
+      border-color: #788697;
+      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
+    }
+
+    .unit-search button[type="submit"] {
+      border: 1px solid #596777;
+      color: #f4f7fb;
+      background: #303a47;
+    }
+
+    .unit-search button[type="submit"]:hover {
+      border-color: #718094;
+      background: #3a4655;
+    }
+
+    .unit-search-results {
+      position: absolute;
+      top: calc(100% + 7px);
+      left: 0;
+      z-index: 120;
+      width: min(380px, calc(100vw - 44px));
+      max-height: 360px;
+      padding: 6px;
+      overflow-y: auto;
+      border: 1px solid #46566a;
+      border-radius: 12px;
+      background: #080d14;
+      box-shadow: 0 16px 42px rgba(0,0,0,.52);
+      scrollbar-width: thin;
+      touch-action: pan-y;
+    }
+
+    .unit-search-results[hidden] {
+      display: none;
+    }
+
+    .unit-search .unit-search-result {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 48px;
+      padding: 5px 9px;
+      border: 0;
+      border-bottom: 1px solid #465363;
+      border-radius: 0;
+      color: #f4f7fb;
+      background: #27313e;
+      text-align: left;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+
+    .unit-search .unit-search-result:last-child {
+      border-bottom: 0;
+    }
+
+    .unit-search .unit-search-result:hover,
+    .unit-search .unit-search-result[aria-selected="true"] {
+      background: #354252;
+    }
+
+    .unit-search-result img,
+    .unit-search-result-icon-empty {
+      display: block;
+      width: 54px;
+      height: 40px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .unit-search-result-icon-empty {
+      border: 1px dashed #405066;
+      border-radius: 7px;
+    }
+
+    .unit-search-result-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unit-search-result-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .unit-search-result-identity {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    .unit-search-empty {
+      padding: 13px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 660px) {
+      .unit-search-results {
+        width: min(360px, calc(100vw - 106px));
+      }
+    }
+
+    .unit-search label {
+      color: #dce3ed;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .unit-search input {
+      min-width: 0;
+      height: 38px;
+      padding: 7px 11px;
+      border: 1px solid #425267;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .unit-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 91, 45, .2);
+    }
+
+    .unit-search button {
+      height: 38px;
+      padding: 7px 15px;
+      border: 0;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+@media (max-width: 660px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .db-toolbar { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px 15px; }
+      .unit-search { grid-template-columns: 72px minmax(0, 1fr) 58px; gap: 7px; }
+      .unit-search button { padding-inline: 8px; }
+      .treasure-settings summary,
+      .misc-settings summary { flex-wrap: wrap; padding-inline: 15px; }
+      .treasure-panel, .misc-panel { padding-inline: 15px; }
+      .treasure-cards { grid-template-columns: 1fr; }
+      .passive-cards { grid-template-columns: 1fr; }
+      .treasure-card-header { grid-template-columns: 122px minmax(0, 1fr) auto; }
+      .treasure-effect-image { width: 122px; height: 48px; }
+      .treasure-slots { grid-template-columns: repeat(4, 38px); gap: 4px; }
+      .treasure-slot { width: 38px; height: 38px; }
+      .treasure-slot img { width: 34px; height: 34px; }
+      .hero-copy { padding: 20px 16px; }
+      .talent-settings { padding: 0 16px 14px; }
+      .name-row h1 { font-size: clamp(22px, 6vw, 32px); }
+      .level-summary {
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .current-level {
+        flex: 0 0 auto;
+        font-size: clamp(12px, 3.6vw, 15px);
+        white-space: nowrap;
+      }
+      .current-level strong {
+        margin-left: 4px;
+        font-size: clamp(16px, 4.8vw, 20px);
+      }
+      .max-level {
+        flex: 0 0 auto;
+        margin-left: auto;
+        padding-inline: 8px;
+        white-space: nowrap;
+      }
+      .level-row { grid-template-columns: 72px minmax(56px, 1fr) 58px; gap: 6px; }
+      .bar-settings { align-items: flex-start; flex-wrap: wrap; }
+      .bar-settings-title { flex-basis: 100%; }
+      .talent-groups { grid-template-columns: 1fr; }
+      .orb-slot-list { grid-template-columns: 1fr; }
+      .talent-tooltip { left: -4px; }
+      .section-tools {
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 8px;
+      }
+      .counter-selection-summary {
+        max-width: clamp(115px, 32vw, 220px);
+      }
+      .counter-panel {
+        left: auto;
+        right: 0;
+      }
+      .counter-target-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .counter-target-list.special {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .abilities-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .ability-card {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 8px;
+        min-height: 86px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+      .ability-icon,
+      .ability-icon img,
+      .ability-card .fallback-icon,
+      .immunity-chip img,
+      .resistance-chip img,
+      .immunity-chip .fallback-icon,
+      .resistance-chip .fallback-icon {
+        width: 48px;
+        height: 48px;
+      }
+      .resistance-chip {
+        grid-template-rows: 48px 16px;
+        height: 70px;
+      }
+      .ability-card h3 { font-size: 14px; }
+      .ability-summary { font-size: 11px; }
+      .spirit-tooltip-ability[data-ability-key="limited_attacks"] .fallback-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        font-size: 10px;
+      }
+      .stat-bar-card { grid-column: 1 / -1; }
+      .stat-card.attack-cycle-card { grid-column: 1 / -1; }
+      .stat-card:not(.stat-bar-card) { min-height: 100px; padding: 13px 15px; }
+      .stat-card.attack-cycle-card { min-height: 168px; }
+      .traits-row { flex-wrap: wrap; overflow: visible; padding-bottom: 0; }
+      .trait-chip { min-width: 68px; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }</style></head><body><main class="page"><header class="db-toolbar">
+      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <form class="unit-search" id="unitSearchForm" role="search">
+        <label for="unitSearchInput">검색</label>
+        <div class="unit-search-field">
+          <input id="unitSearchInput" type="search" autocomplete="off"
+                spellcheck="false" placeholder="이름 입력"
+                 aria-label="검색할 유닛 이름" aria-autocomplete="list"
+                 aria-controls="unitSearchResults" aria-expanded="false">
+          <div class="unit-search-results" id="unitSearchResults"
+               role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
+        </div>
+        <button type="submit">검색</button>
+      </form>
+    </header><h1 class="update-title">v15.5.1 업데이트</h1><section class="section update-section"><div class="section-heading"><h2>추가된 유닛</h2></div><div class="update-grid"><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;오래된 알: N208&quot;,&quot;image&quot;:&quot;../img/s/0/0.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 871-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;녹색 알: N208&quot;,&quot;image&quot;:&quot;../img/s/3/1.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 871-2&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:3,&quot;name&quot;:&quot;어썰트 가재 고양이&quot;,&quot;image&quot;:&quot;../img/u/871/2.png&quot;,&quot;href&quot;:&quot;../unit/unit871.html?form=3&quot;,&quot;identity&quot;:&quot;UNIT 871-3&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit871.html?form=1"><img src="../img/s/0/0.png" alt="" loading="lazy"><span class="copy"><b>오래된 알: N208</b><small>UNIT 871-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;정글 헌터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/0.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 872-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;정글 마스터 토모에&quot;,&quot;image&quot;:&quot;../img/u/872/1.png&quot;,&quot;href&quot;:&quot;../unit/unit872.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 872-2&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit872.html?form=1"><img src="../img/u/872/0.png" alt="" loading="lazy"><span class="copy"><b>정글 헌터 토모에</b><small>UNIT 872-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article></div></section><section class="section update-section"><div class="section-heading"><h2>3단 진화 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit455.html?form=3"><img src="../img/u/455/2.png" alt="" loading="lazy"><span class="copy"><b>스타라이트 모모코</b><small>UNIT 455-3</small></span></a></div></section><script src="../catalog.js"></script><script>
 (() => {
   const form = document.getElementById("unitSearchForm");
   const input = document.getElementById("unitSearchInput");
   const results = document.getElementById("unitSearchResults");
-  const entries = Array.isArray(window.NYANKODB_SEARCH_CATALOG?.entries) ? window.NYANKODB_SEARCH_CATALOG.entries : [];
+  const entries = Array.isArray(window.NYANKODB_SEARCH_CATALOG?.entries)
+    ? window.NYANKODB_SEARCH_CATALOG.entries : [];
   if (!form || !input || !results) return;
-  const normalize = value => String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
-  const ordered = (query, value) => { let at = 0; for (const char of query) { at = value.indexOf(char, at); if (at < 0) return false; at++; } return true; };
-  const containsAll = (query, value) => { const chars = [...value]; return [...query].every(char => { const index = chars.indexOf(char); if (index < 0) return false; chars.splice(index, 1); return true; }); };
-  const rank = (entry, query) => {
-    const name = normalize(entry.name); const identity = normalize(`${entry.kind || "unit"}${entry.id || ""}${entry.form || ""}`);
-    if (!query) return 0;
-    if (name === query || identity === query) return 1;
-    if (name.includes(query) || identity.includes(query)) return 2;
-    if (ordered(query, name) || ordered(query, identity)) return 3;
-    return containsAll(query, name) || containsAll(query, identity) ? 4 : 99;
+  let visibleResults = [];
+  let activeResultIndex = -1;
+  const normalize = value => String(value || "")
+    .toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+  const orderedPosition = (name, query) => {
+    let cursor = 0;
+    let firstPosition = -1;
+    for (const character of query) {
+      const position = name.indexOf(character, cursor);
+      if (position < 0) return -1;
+      if (firstPosition < 0) firstPosition = position;
+      cursor = position + character.length;
+    }
+    return firstPosition;
   };
-  const close = () => { results.hidden = true; results.replaceChildren(); };
-  const iconPath = entry => {
-    const icon = String(entry.icon || "");
-    return icon.startsWith("data:") || !icon ? icon : `../${icon.replace(/^\.\.\//, "")}`;
+  const containsAll = (name, query) => {
+    const remaining = new Map();
+    for (const character of name) remaining.set(character, (remaining.get(character) || 0) + 1);
+    for (const character of query) {
+      const count = remaining.get(character) || 0;
+      if (count < 1) return false;
+      remaining.set(character, count - 1);
+    }
+    return true;
+  };
+  const match = (name, query) => {
+    if (name === query) return { rank: 0 };
+    if (name.includes(query)) return { rank: 1 };
+    return orderedPosition(name, query) >= 0 ? { rank: 2 }
+      : (containsAll(name, query) ? { rank: 3 } : null);
+  };
+  const close = () => {
+    results.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+    activeResultIndex = -1;
+  };
+  const setActive = index => {
+    if (!visibleResults.length) return;
+    activeResultIndex = (index + visibleResults.length) % visibleResults.length;
+    [...results.querySelectorAll(".unit-search-result")].forEach((result, resultIndex) => {
+      const active = resultIndex === activeResultIndex;
+      result.setAttribute("aria-selected", String(active));
+      if (active) {
+        input.setAttribute("aria-activedescendant", result.id);
+        result.scrollIntoView({ block: "nearest" });
+      }
+    });
   };
   const go = entry => {
     const id = String(entry.id).padStart(3, "0");
-    if (entry.kind === "enemy") location.href = `../enemy/enemy${id}.html`;
-    else location.href = `../unit/unit${id}.html?form=${Number(entry.form) || 1}`;
+    if (entry.kind !== "enemy") try {
+      const storageKey = `nyanko-db:unit:${entry.id}:display-state:v1`;
+      const state = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+      state.form = entry.form;
+      window.localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch (_) { /* Navigation still works without local storage. */ }
+    location.href = entry.kind === "enemy"
+      ? `../enemy/enemy${id}.html`
+      : `../unit/unit${id}.html?form=${Number(entry.form) || 1}`;
   };
   const render = () => {
-    const query = normalize(input.value);
-    const matching = entries.map(entry => ({entry, score: rank(entry, query)})).filter(item => item.score < 99)
-      .sort((a,b) => a.score - b.score || String(a.entry.name).localeCompare(String(b.entry.name), "ko" ) || Number(a.entry.id) - Number(b.entry.id)).slice(0, 80);
+    const query = normalize(input.value.trim());
     results.replaceChildren();
-    if (!query) { close(); return; }
-    if (!matching.length) { const empty = document.createElement("div"); empty.className = "unit-search-empty"; empty.textContent = "검색 결과가 없습니다"; results.append(empty); results.hidden = false; return; }
-    for (const {entry} of matching) {
-      const button = document.createElement("button"); button.type = "button"; button.className = "unit-search-result";
-      const icon = iconPath(entry); const id = String(entry.id).padStart(3, "0"); const identity = entry.kind === "enemy" ? `ENEMY ${id}` : `UNIT ${id}-${Number(entry.form) || 1}`;
-      button.innerHTML = `${icon ? `<img src="${icon}" alt="">` : '<span class="unit-search-result-icon-empty"></span>'}<span class="unit-search-result-copy"><span class="unit-search-result-name"></span><span class="unit-search-result-identity"></span></span>`;
-      button.querySelector(".unit-search-result-name").textContent = String(entry.name || identity);
-      button.querySelector(".unit-search-result-identity").textContent = identity;
-      let start = null; let dragged = false;
-      button.addEventListener("pointerdown", event => { start = {x:event.clientX,y:event.clientY}; dragged = false; });
-      button.addEventListener("pointermove", event => { if (start && Math.hypot(event.clientX-start.x,event.clientY-start.y) > 8) dragged = true; });
-      button.addEventListener("click", event => { if (dragged) { event.preventDefault(); return; } go(entry); });
+    activeResultIndex = -1;
+    if (!query) { visibleResults = []; close(); return; }
+    const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
+    visibleResults = entries.map(entry => ({ entry, name: normalize(entry.name) }))
+      .map(item => ({ ...item, score: numericQuery !== null && Number(item.entry.id) === numericQuery
+        ? 0 : (match(item.name, query)?.rank ?? 99) }))
+      .filter(item => item.score < 99)
+      .sort((a,b) => a.score - b.score || Number(a.entry.id) - Number(b.entry.id)
+        || String(a.entry.kind).localeCompare(String(b.entry.kind)) || Number(a.entry.form) - Number(b.entry.form))
+      .map(item => item.entry);
+    if (!visibleResults.length) {
+      const empty = document.createElement("div");
+      empty.className = "unit-search-empty";
+      empty.textContent = "검색 결과가 없습니다.";
+      results.append(empty);
+    }
+    for (const [index, entry] of visibleResults.entries()) {
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "unit-search-result";
+      button.id = `unitSearchResult${index}`;
+      button.setAttribute("role", "option"); button.setAttribute("aria-selected", "false");
+      const icon = String(entry.icon || "");
+      if (icon) {
+        const image = document.createElement("img");
+        image.src = icon.startsWith("data:") || icon.startsWith("../") ? icon : `../${icon.replace(/^\.\//, "")}`;
+        image.alt = ""; image.loading = "lazy"; button.append(image);
+      } else { const empty = document.createElement("span"); empty.className = "unit-search-result-icon-empty"; button.append(empty); }
+      const copy = document.createElement("span"); copy.className = "unit-search-result-copy";
+      const name = document.createElement("span"); name.className = "unit-search-result-name"; name.textContent = String(entry.name || "");
+      const identity = document.createElement("span"); identity.className = "unit-search-result-identity";
+      identity.textContent = entry.kind === "enemy" ? `ENEMY ${String(entry.id).padStart(3, "0")}` : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+      copy.append(name, identity); button.append(copy);
+      let gestureStart = null; let suppressClick = false;
+      button.addEventListener("pointerdown", event => { if (event.pointerType !== "mouse") gestureStart = { pointerId:event.pointerId, x:event.clientX, y:event.clientY }; });
+      button.addEventListener("pointermove", event => { if (gestureStart && event.pointerId === gestureStart.pointerId && Math.hypot(event.clientX - gestureStart.x, event.clientY - gestureStart.y) > 8) suppressClick = true; });
+      button.addEventListener("pointercancel", () => { gestureStart = null; suppressClick = false; });
+      button.addEventListener("click", event => { if (suppressClick) { event.preventDefault(); event.stopPropagation(); suppressClick = false; gestureStart = null; return; } gestureStart = null; go(entry); });
+      button.addEventListener("mousemove", () => setActive(index));
       results.append(button);
     }
     results.hidden = false;
+    input.setAttribute("aria-expanded", "true");
   };
   input.addEventListener("input", render);
   input.addEventListener("focus", render);
-  form.addEventListener("submit", event => { event.preventDefault(); const first = results.querySelector(".unit-search-result"); if (first) first.click(); });
-  document.addEventListener("pointerdown", event => { if (!form.contains(event.target)) close(); });
+  form.addEventListener("submit", event => { event.preventDefault(); const result = visibleResults[activeResultIndex >= 0 ? activeResultIndex : 0]; if (result) go(result); });
+  input.addEventListener("keydown", event => { if (event.key === "ArrowDown") { event.preventDefault(); setActive(activeResultIndex + 1); } else if (event.key === "ArrowUp") { event.preventDefault(); setActive(activeResultIndex - 1); } else if (event.key === "Escape") close(); });
+  document.addEventListener("click", event => { if (!event.target.closest(".unit-search")) close(); });
 })();
+
 
 (() => {
   for (const card of document.querySelectorAll(".update-unit-switch-card[data-form-variants]")) {
