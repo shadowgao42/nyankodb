@@ -328,24 +328,8 @@
       document.getElementById("notice-frame").src = NOTICE_URL;
 
       async function latestUpdatePage() {
-        // GitHub Pages cannot enumerate a directory.  The repository API lets
-        // the page select the numerically latest update HTML without copying
-        // any update data into the main page.
-        try {
-          const response = await fetch(
-            "https://api.github.com/repos/shadowgao42/nyankodb/contents/update",
-            { headers: { Accept: "application/vnd.github+json" } },
-          );
-          if (!response.ok) throw new Error("update directory unavailable");
-          const files = await response.json();
-          const latest = files
-            .filter((file) => /^\d+\.html$/.test(String(file.name || "")))
-            .sort((left, right) => Number(right.name.replace(/\.html$/, "")) - Number(left.name.replace(/\.html$/, "")))[0];
-          if (latest?.name) return `update/${latest.name}`;
-        } catch {
-          // Local/offline viewing uses the same generated pointer as a
-          // fallback; the icon information is still parsed from that HTML.
-        }
+        // Version filenames such as 150501 and 1506 cannot be ordered as
+        // plain integers. The generated pointer is the source of truth.
         const response = await fetch("update/latest.json");
         if (!response.ok) throw new Error("latest update unavailable");
         const data = await response.json();
