@@ -1818,6 +1818,32 @@
         return JSON.stringify({ attacks, effects });
       }
 
+      function talentRangeEffects(entry) {
+        const normalEffectKeys = new Set(
+          (entry.rangeEffects || []).map((effect) => String(effect?.key || "")),
+        );
+        return entry.maxRangeEffects.map((effect) => {
+          const key = String(effect?.key || "");
+          // Talent-added surge/mini-surge/explosion spawn positions use quarter-unit values.
+          if (![
+            "surge",
+            "mini_surge",
+            "explosion",
+          ].includes(key) || normalEffectKeys.has(key)) {
+            return effect;
+          }
+          const toGameRange = (value) => {
+            const numericValue = Number(value);
+            return Number.isFinite(numericValue) ? numericValue / 4 : value;
+          };
+          return {
+            ...effect,
+            minimum: toGameRange(effect.minimum),
+            maximum: toGameRange(effect.maximum),
+          };
+        });
+      }
+
       function filterEntries(entries) {
         const query = compactSearchText(elements.nameSearch.value);
         return entries
