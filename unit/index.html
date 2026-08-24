@@ -1106,6 +1106,9 @@
       let filterLogic = "or";
       let displayMode = "two";
       const numberFormatter = new Intl.NumberFormat("ko-KR");
+      const abilityIconOverrides = {
+        drain_immune: "../img/i/391.png",
+      };
 
       function asList(value) {
         if (Array.isArray(value)) return value;
@@ -1126,7 +1129,7 @@
           ...value,
           key,
           label: String(value.label_ko ?? value.label ?? value.name ?? key),
-          icon: typeof value.icon === "string" ? value.icon : "",
+          icon: abilityIconOverrides[key] ?? (typeof value.icon === "string" ? value.icon : ""),
         };
       }
 
