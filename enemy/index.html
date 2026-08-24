@@ -1,0 +1,2002 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>적 검색 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --surface-3: #212b37;
+      --line: #293645;
+      --line-strong: #46566a;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-soft: rgba(255, 91, 45, .18);
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button,
+    input { font: inherit; }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .page {
+      width: min(100% - 32px, 1040px);
+      margin: 0 auto;
+      padding: 28px 0 44px;
+    }
+
+    .db-toolbar,
+    .search-panel,
+    .filter-panel,
+    .results-panel {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+    }
+
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .db-brand {
+      display: inline-block;
+      color: var(--text);
+      font-size: clamp(24px, 4vw, 31px);
+      font-weight: 900;
+      letter-spacing: -.06em;
+      text-decoration: none;
+    }
+
+    .db-brand span { color: var(--accent-2); }
+
+    .toolbar-title {
+      color: #dce3ed;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    .search-panel,
+    .filter-panel,
+    .results-panel { margin-top: 12px; }
+
+    .search-panel { padding: 18px; }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    p { margin: 0; }
+
+    h1 {
+      font-size: clamp(22px, 3vw, 29px);
+      letter-spacing: -.045em;
+    }
+
+    h2 {
+      font-size: 18px;
+      letter-spacing: -.035em;
+    }
+
+    .search-description,
+    .result-status {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .search-description { margin-top: 6px; font-weight: 400; }
+    .result-status { font-weight: 700; }
+
+    .search-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: center;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 8px 13px;
+      border: 1px solid #4d5a69;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #788697;
+      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
+    }
+
+    .reset-button {
+      min-height: 30px;
+      padding: 4px 10px;
+      border: 1px solid #596777;
+      border-radius: 6px;
+      color: var(--text);
+      background: #303a47;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .reset-button:hover:not(:disabled) {
+      border-color: #718094;
+      background: #3a4655;
+    }
+
+    .reset-button:disabled {
+      color: #7d8998;
+      background: #202833;
+      cursor: default;
+      opacity: .62;
+    }
+
+    .talent-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 8px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #dce3ed;
+      background: #202a36;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .talent-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+    }
+
+    .talent-check {
+      display: grid;
+      place-items: center;
+      order: 2;
+      width: 15px;
+      height: 15px;
+      border: 1px solid #697789;
+      border-radius: 4px;
+      color: transparent;
+      background: #101721;
+      line-height: 1;
+      transition: .15s ease;
+    }
+
+    .talent-toggle input:checked + .talent-check {
+      border-color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18);
+    }
+
+    .talent-toggle:has(input:focus-visible) {
+      outline: 2px solid rgba(255,173,61,.72);
+      outline-offset: 2px;
+    }
+
+    .filter-panel { overflow: visible; }
+
+    .filter-panel > .section-heading {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .filter-panel.is-collapsed > .section-heading { border-bottom: 0; }
+
+    .filter-body { padding: 1px 15px 15px; }
+
+    .filter-logic {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .filter-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 13px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .filter-collapse {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      border: 0;
+      color: #dce3ed;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .filter-collapse:hover,
+    .filter-collapse:focus-visible {
+      color: #fff;
+      outline: none;
+    }
+
+    .filter-collapse-arrow {
+      color: var(--accent-2);
+      font-size: 22px;
+      line-height: .8;
+      transition: transform .16s ease;
+    }
+
+    .filter-panel:not(.is-collapsed) .filter-collapse-arrow { transform: rotate(180deg); }
+
+    .logic-button {
+      min-width: 36px;
+      min-height: 28px;
+      padding: 3px 7px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #dce5ef;
+      background: #27313d;
+      font-size: 11px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+
+    .logic-button[aria-pressed="true"] {
+      border-color: #ff784f;
+      color: #fff;
+      background: #bd421f;
+    }
+
+    .filter-group {
+      display: grid;
+      grid-template-columns: 100px minmax(0, 1fr);
+      gap: 11px;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .filter-group:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .ability-filter-group { align-items: start; }
+
+    .ability-filter-sections {
+      display: block;
+      min-width: 0;
+    }
+
+    .ability-filter-section {
+      min-width: 0;
+      padding: 0 0 10px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+
+    .ability-filter-section:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .ability-filter-section + .ability-filter-section { padding-top: 10px; }
+
+    .ability-filter-title {
+      margin: 0 0 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .filter-label {
+      padding-top: 7px;
+      color: #e6ecf4;
+      font-size: 14px;
+      font-weight: 950;
+    }
+
+    .filter-chip-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .filter-chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      border: 1px solid #526071;
+      border-radius: 7px;
+      color: #e9eef5;
+      background: linear-gradient(180deg, #394552, #242e3a);
+      font-weight: 900;
+      cursor: pointer;
+      transition: border-color .13s ease, background .13s ease, box-shadow .13s ease;
+    }
+
+    .filter-chip:hover {
+      border-color: #758396;
+      background: linear-gradient(180deg, #465363, #2d3947);
+    }
+
+    .filter-chip[aria-pressed="true"] {
+      border-color: #ff784f;
+      background: linear-gradient(180deg, #fa643a, #c83f1c);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18), inset 0 1px rgba(255,255,255,.18);
+    }
+
+    .filter-chip:focus-visible {
+      outline: 2px solid rgba(255,173,61,.85);
+      outline-offset: 2px;
+    }
+
+    .text-chip {
+      min-width: 112px;
+      padding: 6px 11px;
+      font-size: 12px;
+    }
+
+    #rarityFilters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(108px, 112px));
+      gap: 6px;
+    }
+
+    #rarityFilters .text-chip {
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .icon-chip {
+      width: 42px;
+      height: 42px;
+      min-height: 42px;
+      padding: 3px;
+    }
+
+    .icon-chip img {
+      display: block;
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .icon-fallback {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border: 1px dashed rgba(255,255,255,.32);
+      border-radius: 5px;
+      color: #f4f7fb;
+      font-size: 9px;
+      font-weight: 950;
+      text-align: center;
+      line-height: 1.1;
+    }
+
+    .icon-chip::after {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 100;
+      width: max-content;
+      max-width: min(230px, 76vw);
+      padding: 8px 11px;
+      border: 1px solid #536174;
+      border-radius: 8px;
+      color: #fff;
+      background: #070b11;
+      box-shadow: 0 12px 30px rgba(0,0,0,.48);
+      content: attr(data-tooltip);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.35;
+      text-align: center;
+      transform: translate(-50%, 5px);
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
+    }
+
+    .icon-chip:hover::after,
+    .icon-chip:focus-visible::after {
+      transform: translate(-50%, 0);
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .results-panel { overflow: hidden; }
+
+    .results-panel > .section-heading {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .result-heading-actions {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .display-mode {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border: 1px solid #415062;
+      border-radius: 7px;
+      background: #121a24;
+    }
+
+    .display-button {
+      min-height: 28px;
+      padding: 3px 8px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      color: #b8c4d3;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .display-button:hover,
+    .display-button:focus-visible {
+      color: #fff;
+      background: #273342;
+      outline: none;
+    }
+
+    .display-button[aria-pressed="true"] {
+      border-color: #607185;
+      color: #fff;
+      background: #3a4655;
+    }
+
+    .result-status {
+      flex: 0 0 auto;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .results-scroll {
+      max-height: min(72vh, 920px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #526174 #111720;
+    }
+
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* The author-level grid rule can otherwise override the HTML hidden state. */
+    .unit-grid[hidden],
+    .range-chart[hidden] { display: none !important; }
+
+    .unit-grid.display-one { grid-template-columns: 1fr; }
+    .unit-grid.display-one .unit-card { border-right: 0; }
+
+    .unit-card {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      min-height: 82px;
+      padding: 9px 12px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(23,31,41,.64);
+      text-decoration: none;
+    }
+
+    .unit-card:nth-child(2n) { border-right: 0; }
+
+    .unit-card:hover,
+    .unit-card:focus-visible {
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }
+
+    .unit-card img,
+    .unit-image-empty {
+      display: block;
+      width: 78px;
+      height: 60px;
+      object-fit: contain;
+      object-position: center;
+      image-rendering: pixelated;
+    }
+
+    .unit-image-empty {
+      border: 1px dashed #405066;
+      border-radius: 7px;
+    }
+
+    .unit-copy { min-width: 0; }
+
+    .unit-name {
+      display: block;
+      overflow: hidden;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unit-identity {
+      display: block;
+      margin-top: 5px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty-results,
+    .catalog-error {
+      grid-column: 1 / -1;
+      padding: 42px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .catalog-error { color: #ffb199; }
+
+    .range-chart {
+      position: relative;
+      min-height: 260px;
+      padding: 24px 18px 34px;
+      isolation: isolate;
+    }
+
+    .range-chart::before {
+      position: absolute;
+      z-index: 0;
+      top: 0;
+      bottom: 0;
+      left: 72px;
+      width: 4px;
+      border-right: 1px solid rgba(0,0,0,.5);
+      border-left: 1px solid rgba(255,255,255,.18);
+      background: #4c5764;
+      content: "";
+      transform: translateX(-50%);
+    }
+
+    .range-row {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr);
+      align-items: center;
+      min-height: 92px;
+      padding: 8px 0;
+      border-bottom: 2px solid rgba(115,129,149,.34);
+      box-shadow: inset 0 -1px rgba(0,0,0,.45);
+      content-visibility: auto;
+      contain-intrinsic-size: auto 108px;
+    }
+
+    .range-row:last-child { border-bottom: 0; }
+
+    .range-items {
+      --range-unit-slot: 78px;
+      grid-column: 2;
+      grid-row: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 16px;
+      min-width: 0;
+      padding: 2px 0 2px 11px;
+    }
+
+    .range-marker {
+      position: relative;
+      z-index: 4;
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: stretch;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 2px #000;
+    }
+
+    .range-marker::before {
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-top: 1px solid rgba(255,255,255,.45);
+      border-bottom: 1px solid rgba(0,0,0,.7);
+      background: #6a7685;
+      content: "";
+      transform: translateY(-50%);
+    }
+
+    .range-marker > span {
+      display: inline-flex;
+      min-width: 55px;
+      min-height: 27px;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 8px;
+      border: 1px solid #8b97a5;
+      border-radius: 5px;
+      background: #394451;
+    }
+
+    .range-unit,
+    .range-stack-form,
+    .range-stack { position: relative; flex: 0 0 auto; min-width: 0; }
+
+    .range-unit,
+    .range-stack-form { display: grid; justify-items: center; gap: 3px; }
+    .range-unit { flex-basis: var(--range-unit-slot); width: var(--range-unit-slot); }
+    .range-stack { flex-basis: var(--range-unit-slot); width: var(--range-unit-slot); }
+
+    .range-unit-link,
+    .range-stack > summary,
+    .range-stack-link { color: var(--text); text-decoration: none; }
+
+    .range-unit-link {
+      display: grid;
+      grid-template-columns: 70px;
+      justify-items: center;
+      gap: 3px;
+      width: var(--range-unit-slot);
+      padding: 5px 4px 4px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+    }
+
+    .range-unit > .range-attack-badge { width: calc(100% - 8px); }
+
+    .range-unit-link:hover,
+    .range-unit-link:focus-visible,
+    .range-stack-link:hover,
+    .range-stack-link:focus-visible {
+      border-color: var(--line-strong);
+      outline: none;
+      background: rgba(255,255,255,.065);
+    }
+
+    .range-unit-icon {
+      display: block;
+      width: 70px;
+      height: 54px;
+      object-fit: contain;
+      object-position: center;
+      image-rendering: pixelated;
+    }
+
+    .range-attack-badge {
+      position: relative;
+      display: grid;
+      gap: 2px;
+      width: 100%;
+      padding: 4px 5px;
+      border: 1px solid #6c7b8d;
+      border-radius: 7px;
+      color: #dce7f4;
+      background: #26313e;
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    .range-attack-line { display: block; white-space: nowrap; }
+
+    .range-effect-badge {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 2px 4px;
+      width: calc(100% - 8px);
+      color: #f3c56a;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.2;
+      text-align: center;
+    }
+
+    .range-effect-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .range-effect-copy {
+      display: grid;
+      justify-items: center;
+      gap: 1px;
+    }
+
+    .range-effect-name {
+      color: #f3c56a;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .range-effect-item img {
+      width: 15px;
+      height: 15px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .range-stack > summary {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      width: var(--range-unit-slot);
+      min-height: 75px;
+      cursor: pointer;
+      list-style: none;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 6px;
+    }
+
+    .range-stack > summary::-webkit-details-marker { display: none; }
+    .range-stack > summary:hover,
+    .range-stack > summary:focus-visible {
+      border-color: var(--line-strong);
+      outline: none;
+      background: rgba(255,255,255,.06);
+    }
+
+    .range-stack-preview {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--range-unit-slot);
+      min-height: 58px;
+      overflow: hidden;
+    }
+
+    .range-stack-preview .range-unit-icon {
+      width: 48px;
+      height: 50px;
+      margin-right: -18px;
+      border: 1px solid rgba(255,255,255,.36);
+      background: #121923;
+      box-shadow: 0 2px 8px rgba(0,0,0,.45);
+    }
+
+    .range-stack-preview[data-count="3"] .range-unit-icon { width: 38px; }
+    .range-stack-preview[data-count="4"] .range-unit-icon { width: 33px; }
+    .range-stack-preview .range-unit-icon:last-child { margin-right: 0; }
+    .range-stack-label { display: none; }
+
+    .range-stack[open] {
+      flex-basis: min(100%, 334px);
+      width: min(100%, 334px);
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(11,16,23,.95);
+    }
+
+    .range-stack[open] > summary {
+      min-height: 31px;
+      border-bottom: 1px solid var(--line);
+      border-radius: 4px 4px 0 0;
+    }
+
+    .range-stack[open] .range-stack-preview { display: none; }
+    .range-stack[open] .range-stack-label { display: inline-flex; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .range-stack[open] .range-stack-label::before { content: "형태 접기"; }
+    .range-stack[open] .range-stack-label > span { display: none; }
+
+    .range-stack-links { display: flex; flex-wrap: wrap; gap: 4px; padding-top: 5px; }
+    .range-stack-link {
+      display: grid;
+      grid-template-columns: 58px;
+      justify-items: center;
+      gap: 2px;
+      width: 66px;
+      padding: 4px 3px;
+      border: 1px solid transparent;
+      border-radius: 5px;
+    }
+
+    .range-stack-link .range-unit-icon { width: 58px; height: 46px; }
+    .range-stack-form > .range-attack-badge,
+    .range-stack-link + .range-attack-badge { font-size: 9px; }
+
+    .range-stack-shared-details {
+      display: grid;
+      justify-items: center;
+      gap: 3px;
+      width: 100%;
+      padding-top: 2px;
+    }
+
+    .range-stack-shared-details > .range-attack-badge { width: calc(100% - 8px); }
+    .range-stack-shared-details > .range-effect-badge { width: calc(100% - 8px); }
+
+    .range-empty {
+      position: relative;
+      z-index: 2;
+      padding: 70px 18px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1040px); padding-top: 20px; }
+      .search-panel { padding: 15px; }
+      .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
+      .filter-actions { gap: 8px 11px; }
+      .filter-panel > .section-heading,
+      .results-panel > .section-heading { padding-inline: 15px; }
+      .filter-body { padding-inline: 15px; }
+      .filter-group { grid-template-columns: 1fr; gap: 9px; }
+      .filter-label { padding-top: 0; }
+      .range-chart { padding-right: 8px; padding-left: 8px; }
+      .range-chart::before { left: 72px; }
+      .range-row { grid-template-columns: 72px minmax(0, 1fr); min-height: 90px; }
+      .range-marker { grid-column: 1; grid-row: 1; }
+      .range-items { grid-column: 2; grid-row: 1; justify-content: flex-start; padding: 2px 0 2px 11px; --range-unit-slot: 68px; }
+      .range-unit-link { grid-template-columns: 62px; }
+      .range-unit-link .range-unit-icon { width: 62px; height: 50px; }
+      .range-stack-preview .range-unit-icon { width: 43px; height: 46px; }
+      .range-stack[open] { width: min(100%, 290px); }
+    }
+
+    @media (max-width: 500px) {
+      .toolbar-title { display: none; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .search-controls { grid-template-columns: minmax(0, 1fr); }
+      .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
+      #rarityFilters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      #rarityFilters .text-chip { padding-inline: 4px; font-size: 11px; }
+      .icon-chip { width: 40px; height: 40px; min-height: 40px; }
+      .icon-chip img { width: 32px; height: 32px; }
+      .unit-grid.display-one { grid-template-columns: 1fr; }
+      .unit-grid.display-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .unit-grid.display-two .unit-card { grid-template-columns: 58px minmax(0, 1fr); gap: 7px; padding: 8px; }
+      .unit-grid.display-two .unit-card img,
+      .unit-grid.display-two .unit-image-empty { width: 58px; height: 48px; }
+      .unit-grid.display-one .unit-card { border-right: 0; }
+      .range-chart::before { left: 62px; }
+      .range-row { grid-template-columns: 62px minmax(0, 1fr); }
+      .range-marker { font-size: 13px; }
+      .range-marker > span { min-width: 49px; padding-right: 5px; padding-left: 5px; }
+      .range-items { --range-unit-slot: 62px; }
+      .range-unit-link { grid-template-columns: 56px; padding-right: 2px; padding-left: 2px; }
+      .range-unit-link .range-unit-icon { width: 56px; height: 46px; }
+      .range-stack-preview .range-unit-icon { width: 40px; height: 43px; }
+      .results-scroll { max-height: 68vh; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+    /* Enemy-only Alien selector: keep the same dark rectangular
+       treatment as the calculator's effect/ability popovers. */
+    .filter-panel { position: relative; }
+    .alien-choice-popover {
+      position: absolute;
+      z-index: 50;
+      min-width: 220px;
+      padding: 10px;
+      border: 1px solid #63778c;
+      border-radius: 8px;
+      color: #f3f6fb;
+      background: #111924;
+      box-shadow: 0 12px 30px rgba(0,0,0,.5);
+    }
+    .alien-choice-popover[hidden] { display: none; }
+    .alien-choice-popover > strong {
+      display: block;
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .alien-choice-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .alien-choice-option {
+      display: grid;
+      min-height: 72px;
+      place-items: center;
+      gap: 3px;
+      padding: 5px 3px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #eaf0f8;
+      background: linear-gradient(180deg, #394552, #242e3a);
+      font: inherit;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .alien-choice-option:hover,
+    .alien-choice-option:focus-visible {
+      border-color: #ff9b5b;
+      background: linear-gradient(180deg, #5b4035, #352720);
+      outline: none;
+    }
+    .alien-choice-option[aria-pressed="true"] {
+      border-color: #ff784f;
+      background: linear-gradient(180deg, #fa643a, #c83f1c);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18), inset 0 1px rgba(255,255,255,.18);
+    }
+    .alien-choice-all { align-content: center; font-size: 12px; }
+    .alien-variant-icon {
+      position: relative;
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+    }
+    .alien-variant-icon img { width: 34px; height: 34px; }
+    .alien-variant-icon::after {
+      content: "★";
+      position: absolute;
+      z-index: 2;
+      display: grid;
+      width: 16px;
+      height: 16px;
+      top: -5px;
+      right: -7px;
+      place-items: center;
+      border: 1px solid #d8ebff;
+      border-radius: 50%;
+      color: #ffe071;
+      background: #28557e;
+      box-shadow: 0 2px 5px rgba(0,0,0,.5);
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .alien-variant-no-star::before {
+      content: "×";
+      position: absolute;
+      z-index: 3;
+      top: -8px;
+      right: -9px;
+      color: #ff8d71;
+      font-size: 21px;
+      font-weight: 950;
+      line-height: 1;
+      text-shadow: 0 1px 2px rgba(0,0,0,.8);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .alien-choice-popover { min-width: 204px; padding: 8px; }
+      .alien-choice-option { min-height: 66px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="db-toolbar">
+      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <span class="toolbar-title">적 검색</span>
+    </header>
+
+    <section class="search-panel" aria-labelledby="searchTitle">
+      <div class="section-heading">
+        <div>
+          <h1 id="searchTitle">적 검색</h1>
+          <p class="search-description">이름과 조건을 함께 선택하여 원하는 적을 찾을 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="search-controls">
+        <input class="search-input" id="nameSearch" type="search" autocomplete="off"
+               spellcheck="false" placeholder="적 이름 입력" aria-label="적 이름 검색">
+      </div>
+    </section>
+
+    <section class="filter-panel is-collapsed" aria-labelledby="filterTitle">
+      <div class="section-heading">
+        <h2 id="filterTitle">검색 필터</h2>
+        <div class="filter-actions">
+          <div class="filter-logic" role="group" aria-label="필터 조건 결합">
+            <span>조건</span>
+            <button class="logic-button" type="button" data-filter-logic="or" aria-pressed="true">OR</button>
+            <button class="logic-button" type="button" data-filter-logic="and" aria-pressed="false">AND</button>
+          </div>
+          <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
+          <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
+            <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+          </button>
+        </div>
+      </div>
+      <div class="filter-body" id="filterBody">
+        <div class="filter-group ability-filter-group">
+          <h3 class="filter-label">속성</h3>
+          <div class="ability-filter-sections">
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">일반 속성</h4>
+              <div class="filter-chip-list" id="traitFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">특수 속성</h4>
+              <div class="filter-chip-list" id="specialTraitFilters"></div>
+            </section>
+          </div>
+        </div>
+        <div class="filter-group ability-filter-group">
+          <h3 class="filter-label">효과/능력</h3>
+          <div class="ability-filter-sections">
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">효과</h4>
+              <div class="filter-chip-list" id="effectFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">능력</h4>
+              <div class="filter-chip-list" id="abilityFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">무효</h4>
+              <div class="filter-chip-list" id="immunityFilters"></div>
+            </section>
+            <section class="ability-filter-section">
+              <h4 class="ability-filter-title">공격 타입</h4>
+              <div class="filter-chip-list" id="attackFilters"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+      <div class="alien-choice-popover" id="alienChoicePopover" role="dialog" aria-label="에이리언 선택" hidden>
+        <strong>에이리언</strong>
+        <div class="alien-choice-options">
+          <button class="alien-choice-option" type="button" data-alien-choice="alien" aria-pressed="false">
+            <span class="alien-variant-icon alien-variant-no-star"><img src="../img/i/224.png" alt=""></span>
+            <span>별 없음</span>
+          </button>
+          <button class="alien-choice-option" type="button" data-alien-choice="starred_alien" aria-pressed="false">
+            <span class="alien-variant-icon alien-variant-starred"><img src="../img/i/224.png" alt=""></span>
+            <span>별 있음</span>
+          </button>
+          <button class="alien-choice-option alien-choice-all" type="button" data-alien-choice="alien_all" aria-pressed="false">
+            <span>전체</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-panel" aria-labelledby="resultsTitle">
+      <div class="section-heading">
+        <h2 id="resultsTitle">모든 적</h2>
+        <div class="result-heading-actions">
+          <div class="display-mode" role="group" aria-label="적 표시 방식">
+            <button class="display-button" type="button" data-display-mode="one" aria-pressed="false">1열</button>
+            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">2열</button>
+            <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
+          </div>
+          <p class="result-status" id="resultStatus" aria-live="polite">적 목록을 불러오는 중입니다.</p>
+        </div>
+      </div>
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="적 검색 결과">
+        <div class="unit-grid display-two" id="unitResults"></div>
+        <div class="range-chart" id="rangeResults" hidden></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="catalog.js"></script>
+  <script>
+    (() => {
+      "use strict";
+
+      const catalog = window.NYANKODB_ENEMY_CATALOG;
+      const elements = {
+        nameSearch: document.getElementById("nameSearch"),
+        reset: document.getElementById("resetFilters"),
+        logicButtons: [...document.querySelectorAll("[data-filter-logic]")],
+        filterPanel: document.querySelector(".filter-panel"),
+        filterBody: document.getElementById("filterBody"),
+        filterCollapse: document.getElementById("filterCollapse"),
+        filterCollapseText: document.getElementById("filterCollapseText"),
+        results: document.getElementById("unitResults"),
+        rangeResults: document.getElementById("rangeResults"),
+        resultsScroll: document.getElementById("resultsScroll"),
+        status: document.getElementById("resultStatus"),
+        displayButtons: [...document.querySelectorAll("[data-display-mode]")],
+        alienChoicePopover: document.getElementById("alienChoicePopover"),
+      };
+      const groupTargets = {
+        trait: document.getElementById("traitFilters"),
+        effect: document.getElementById("effectFilters"),
+        ability: document.getElementById("abilityFilters"),
+        immunity: document.getElementById("immunityFilters"),
+        attack: document.getElementById("attackFilters"),
+      };
+      const selected = Object.fromEntries(
+        Object.keys(groupTargets).map((group) => [group, new Set()]),
+      );
+      let filterLogic = "or";
+      let displayMode = "two";
+      const numberFormatter = new Intl.NumberFormat("ko-KR");
+
+      function asList(value) {
+        if (Array.isArray(value)) return value;
+        if (value && typeof value === "object") return Object.values(value);
+        return [];
+      }
+
+      function normalizeMetaItem(item, fallbackKey = "") {
+        if (typeof item === "string" || typeof item === "number") {
+          const text = String(item);
+          return { key: text, label: text, icon: "" };
+        }
+        const value = item && typeof item === "object" ? item : {};
+        const key = String(
+          value.key ?? value.id ?? value.value ?? value.label_ko ?? value.label ?? fallbackKey,
+        );
+        return {
+          ...value,
+          key,
+          label: String(value.label_ko ?? value.label ?? value.name ?? key),
+          icon: typeof value.icon === "string" ? value.icon : "",
+        };
+      }
+
+      function normalizeMetaCollection(value) {
+        if (Array.isArray(value)) {
+          return value.map((item, index) => normalizeMetaItem(item, String(index)));
+        }
+        if (value && typeof value === "object") {
+          return Object.entries(value).map(([key, item]) => {
+            if (typeof item === "string" || typeof item === "number") {
+              return { key: String(key), label: String(item), icon: "" };
+            }
+            return normalizeMetaItem(item, key);
+          });
+        }
+        return [];
+      }
+
+      function abilitySections(meta) {
+        const result = {
+          effect: [],
+          ability: [],
+          immunity: [],
+          resistance: [],
+          attack: [],
+        };
+        const effectKeys = new Set([
+          "weaken", "freeze", "slow", "attack_only", "strong", "resistant",
+          "insanely_tough", "massive_damage", "insane_damage", "knockback",
+          "warp", "curse", "dodge",
+        ]);
+        const excludedKeys = new Set(["villain_slayer"]);
+        const source = meta?.abilities;
+        if (Array.isArray(source)) {
+          source.forEach((item, index) => {
+            const normalized = normalizeMetaItem(item, String(index));
+            if (excludedKeys.has(normalized.key)) return;
+            const declaredSection = String(item?.section || "ability");
+            const section = declaredSection === "ability" && effectKeys.has(normalized.key)
+              ? "effect"
+              : declaredSection;
+            (result[section] || result.ability).push(normalized);
+          });
+          return result;
+        }
+        Object.keys(result).forEach((section) => {
+          result[section] = normalizeMetaCollection(source?.[section]);
+        });
+        result.effect = result.ability.filter((item) => effectKeys.has(item.key));
+        result.ability = result.ability.filter((item) => !effectKeys.has(item.key));
+        result.ability = result.ability.filter((item) => !excludedKeys.has(item.key));
+        return result;
+      }
+
+      function resolveAssetPath(path) {
+        if (!path || typeof path !== "string") return "";
+        if (/^(?:data:|https?:|blob:)/i.test(path)) {
+          return path;
+        }
+        const normalized = path.replace(/^\/+/, "");
+        if (normalized.startsWith("img/")) {
+          return new URL(`../${normalized}`, window.location.href).href;
+        }
+        return new URL(path, window.location.href).href;
+      }
+
+      function entryKeys(value) {
+        return new Set(asList(value).map((item) => String(
+          typeof item === "object" && item !== null ? item.key ?? item.id ?? "" : item,
+        )).filter(Boolean));
+      }
+
+      function compactSearchText(value) {
+        return String(value || "")
+          .toLocaleLowerCase("ko-KR")
+          .replace(/[\s\p{P}\p{S}_]/gu, "");
+      }
+
+      function orderedSubsequenceMatch(name, query) {
+        let cursor = 0;
+        for (const character of query) {
+          const position = name.indexOf(character, cursor);
+          if (position < 0) return false;
+          cursor = position + character.length;
+        }
+        return true;
+      }
+
+      function containsAllLetters(name, query) {
+        const counts = new Map();
+        for (const character of name) {
+          counts.set(character, (counts.get(character) || 0) + 1);
+        }
+        for (const character of query) {
+          const count = counts.get(character) || 0;
+          if (count < 1) return false;
+          counts.set(character, count - 1);
+        }
+        return true;
+      }
+
+      function searchRank(name, query) {
+        if (!query) return 0;
+        if (name === query) return 0;
+        if (name.includes(query)) return 1;
+        if (orderedSubsequenceMatch(name, query)) return 2;
+        if (containsAllLetters(name, query)) return 3;
+        return null;
+      }
+
+      function createFilterChip(item, group, iconMode) {
+        const button = document.createElement("button");
+        const isAlienTrigger = group === "trait" && item.key === "alien";
+        button.type = "button";
+        button.className = `filter-chip ${iconMode ? "icon-chip" : "text-chip"}${isAlienTrigger ? " alien-filter-trigger" : ""}`;
+        button.dataset.filterGroup = group;
+        button.dataset.filterKey = item.key;
+        button.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-label", isAlienTrigger ? "에이리언 선택" : item.label);
+        if (isAlienTrigger) {
+          button.dataset.alienFilterTrigger = "true";
+          button.setAttribute("aria-haspopup", "dialog");
+          button.setAttribute("aria-expanded", "false");
+        }
+        if (iconMode) {
+          button.dataset.tooltip = isAlienTrigger ? "에이리언" : item.label;
+          if (item.icon) {
+            const image = document.createElement("img");
+            image.src = resolveAssetPath(item.icon);
+            image.alt = "";
+            image.width = 46;
+            image.height = 46;
+            button.append(image);
+          } else {
+            const fallback = document.createElement("span");
+            fallback.className = "icon-fallback";
+            const fixedFallbacks = {
+              multi_hit: "연",
+              limited_attacks: "1회",
+              attack_count: "1회",
+              timed_life: "시",
+              boss_wave_immune: "보",
+              explosion_resist: "폭",
+            };
+            fallback.textContent = fixedFallbacks[item.key]
+              || (item.label.length > 5 ? item.label.slice(0, 4) : item.label);
+            button.append(fallback);
+          }
+        } else {
+          button.textContent = item.label;
+        }
+        return button;
+      }
+
+      function renderFilterGroup(items, group, iconMode = true, targetOverride = null) {
+        const target = targetOverride || groupTargets[group];
+        const fragment = document.createDocumentFragment();
+        items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
+        target.replaceChildren(fragment);
+      }
+
+      const alienChoiceKeys = ["alien", "starred_alien", "alien_all"];
+      const alienChoiceLabels = {
+        alien: "별 없음",
+        starred_alien: "별 있음",
+        alien_all: "전체",
+      };
+
+      function alienTrigger() {
+        return document.querySelector("[data-alien-filter-trigger]");
+      }
+
+      function activeAlienChoice() {
+        return alienChoiceKeys.find((key) => selected.trait.has(key)) || "";
+      }
+
+      function syncAlienTrigger() {
+        const trigger = alienTrigger();
+        if (!trigger) return;
+        const choice = activeAlienChoice();
+        const tooltip = choice === "alien"
+          ? "에이리언(별 없음)"
+          : choice === "starred_alien"
+            ? "에이리언(별 있음)"
+            : "에이리언";
+        trigger.setAttribute("aria-pressed", String(Boolean(choice)));
+        trigger.dataset.tooltip = tooltip;
+        elements.alienChoicePopover.querySelectorAll("[data-alien-choice]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.alienChoice === choice));
+        });
+        trigger.setAttribute("aria-label", tooltip);
+      }
+
+      function closeAlienChoice() {
+        const popover = elements.alienChoicePopover;
+        if (!popover) return;
+        popover.hidden = true;
+        alienTrigger()?.setAttribute("aria-expanded", "false");
+      }
+
+      function openAlienChoice(trigger) {
+        const popover = elements.alienChoicePopover;
+        if (!popover) return;
+        const panelRect = elements.filterPanel.getBoundingClientRect();
+        const triggerRect = trigger.getBoundingClientRect();
+        popover.hidden = false;
+        const width = popover.offsetWidth;
+        const left = Math.max(
+          8,
+          Math.min(triggerRect.left - panelRect.left, panelRect.width - width - 8),
+        );
+        popover.style.left = `${left}px`;
+        popover.style.top = `${triggerRect.bottom - panelRect.top + 7}px`;
+        trigger.setAttribute("aria-expanded", "true");
+      }
+
+      function applyAlienChoice(choice) {
+        alienChoiceKeys.forEach((key) => selected.trait.delete(key));
+        selected.trait.add(choice);
+        closeAlienChoice();
+        syncAlienTrigger();
+      }
+
+      function rarityKey(entry, rarities) {
+        const raw = String(entry.rarity ?? "");
+        const match = rarities.find((item) => (
+          item.key === raw || item.label === raw || String(item.id ?? "") === raw
+        ));
+        return match?.key || raw;
+      }
+
+      function categoryMatches(entryKeysSet, selectedKeys) {
+        if (!selectedKeys.size) return true;
+        const matches = [...selectedKeys].map((key) => entryKeysSet.has(key));
+        return filterLogic === "and" ? matches.every(Boolean) : matches.some(Boolean);
+      }
+
+      function hasActiveFilters() {
+        return elements.nameSearch.value.trim() !== ""
+          || Object.values(selected).some((values) => values.size > 0);
+      }
+
+      function syncResetButton() {
+        elements.reset.disabled = !hasActiveFilters();
+      }
+
+      function syncFilterLogic() {
+        elements.logicButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.filterLogic === filterLogic));
+        });
+      }
+
+      function syncDisplayMode() {
+        elements.displayButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.displayMode === displayMode));
+        });
+        elements.results.hidden = displayMode === "range";
+        elements.rangeResults.hidden = displayMode !== "range";
+        elements.results.classList.toggle("display-one", displayMode === "one");
+        elements.results.classList.toggle("display-two", displayMode === "two");
+      }
+
+      function syncFilterCollapse() {
+        const collapsed = elements.filterPanel.classList.contains("is-collapsed");
+        elements.filterBody.hidden = collapsed;
+        elements.filterCollapse.setAttribute("aria-expanded", String(!collapsed));
+        elements.filterCollapseText.textContent = collapsed ? "펼치기" : "접기";
+      }
+
+      function unitUrl(entry) {
+        return "enemy" + String(entry.id).padStart(3, "0") + ".html";
+      }
+
+      function createUnitCard(entry) {
+        const link = document.createElement("a");
+        link.className = "unit-card";
+        link.href = unitUrl(entry);
+        link.setAttribute("aria-label", entry.name + ", ENEMY " + String(entry.id).padStart(3, "0"));
+
+        if (entry.icon) {
+          const image = document.createElement("img");
+          image.src = resolveAssetPath(entry.icon);
+          image.alt = "";
+          image.width = 78;
+          image.height = 60;
+          image.loading = "lazy";
+          image.decoding = "async";
+          link.append(image);
+        } else {
+          const empty = document.createElement("span");
+          empty.className = "unit-image-empty";
+          link.append(empty);
+        }
+
+        const copy = document.createElement("span");
+        copy.className = "unit-copy";
+        const name = document.createElement("span");
+        name.className = "unit-name";
+        name.textContent = entry.name;
+        const identity = document.createElement("span");
+        identity.className = "unit-identity";
+        identity.textContent = "ENEMY " + String(entry.id).padStart(3, "0");
+        copy.append(name, identity);
+        link.append(copy);
+        return link;
+      }
+
+      function renderResults(entries) {
+        const fragment = document.createDocumentFragment();
+        if (!entries.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-results";
+          empty.textContent = "조건에 맞는 적이 없습니다.";
+          fragment.append(empty);
+        } else {
+          entries.forEach((entry) => fragment.append(createUnitCard(entry)));
+        }
+        elements.results.replaceChildren(fragment);
+        elements.status.textContent = numberFormatter.format(entries.length) + "개 적";
+      }
+
+      function formatRangeNumber(value) {
+        return numberFormatter.format(Number(value));
+      }
+
+      function normaliseRangeEntry(entry) {
+        const recognitionRange = Number(entry.recognitionRange);
+        const actualRanges = Array.isArray(entry.actualRanges)
+          ? entry.actualRanges.flatMap((range, index) => {
+            const minimum = Number(range?.minimum);
+            const maximum = Number(range?.maximum);
+            if (!Number.isFinite(minimum) || !Number.isFinite(maximum)) return [];
+            return [{
+              hit: Number(range?.hit) || index + 1,
+              minimum: Math.min(minimum, maximum),
+              maximum: Math.max(minimum, maximum),
+            }];
+          })
+          : [];
+        const rangeEffects = Array.isArray(entry.rangeEffects)
+          ? entry.rangeEffects.flatMap((effect) => {
+            const key = String(effect?.key || "");
+            if (!key) return [];
+            const rawMinimum = effect?.minimum;
+            const rawMaximum = effect?.maximum;
+            const rawLevel = effect?.level;
+            const minimum = Number(rawMinimum);
+            const maximum = Number(rawMaximum);
+            return [{
+              key,
+              icon: String(effect?.icon || ""),
+              minimum: rawMinimum !== null && rawMinimum !== undefined && Number.isFinite(minimum)
+                ? minimum : null,
+              maximum: rawMaximum !== null && rawMaximum !== undefined && Number.isFinite(maximum)
+                ? maximum : null,
+              level: rawLevel !== null && rawLevel !== undefined && Number.isFinite(Number(rawLevel))
+                ? Math.max(1, Math.trunc(Number(rawLevel)))
+                : null,
+            }];
+          })
+          : [];
+        return { ...entry, recognitionRange, actualRanges, rangeEffects };
+      }
+
+      function rangeSpan(range) {
+        return `${formatRangeNumber(range.minimum)}~${formatRangeNumber(range.maximum)}`;
+      }
+
+      function hasDifferentAttackRange(entry) {
+        return entry.actualRanges.some((range) => (
+          Math.abs(range.minimum - (-320)) > 1e-9
+          || Math.abs(range.maximum - entry.recognitionRange) > 1e-9
+        ));
+      }
+
+      function attackRangeText(entry) {
+        return entry.actualRanges.length
+          ? entry.actualRanges.map((range) => rangeSpan(range)).join(" · ")
+          : "공격 사거리 정보 없음";
+      }
+
+      function rangeUnitUrl(entry) {
+        return unitUrl(entry);
+      }
+
+      function createRangeIcon(entry, preview = false) {
+        const image = document.createElement("img");
+        image.className = "range-unit-icon";
+        image.src = resolveAssetPath(entry.icon);
+        image.alt = preview ? "" : entry.name;
+        image.loading = "lazy";
+        image.decoding = "async";
+        return image;
+      }
+
+      function createRangeBadge(entry) {
+        if (!hasDifferentAttackRange(entry)) return null;
+        const badge = document.createElement("span");
+        badge.className = "range-attack-badge";
+        const text = attackRangeText(entry);
+        badge.title = text;
+        badge.setAttribute("aria-label", `실제 공격 사거리 ${text}`);
+        entry.actualRanges.forEach((range) => {
+          const line = document.createElement("span");
+          line.className = "range-attack-line";
+          line.textContent = rangeSpan(range);
+          badge.append(line);
+        });
+        return badge;
+      }
+
+      function rangeEffectText(effect) {
+        if (effect.minimum === null || effect.maximum === null) return "";
+        if (effect.key === "wave" || effect.key === "mini_wave") {
+          return `~${formatRangeNumber(effect.maximum)}`;
+        }
+        return Math.abs(effect.minimum - effect.maximum) < 1e-9
+          ? formatRangeNumber(effect.minimum)
+          : `${formatRangeNumber(effect.minimum)}~${formatRangeNumber(effect.maximum)}`;
+      }
+
+      function createRangeEffectBadge(entry) {
+        const effects = entry.rangeEffects || [];
+        if (!effects.length) return null;
+        const badge = document.createElement("span");
+        badge.className = "range-effect-badge";
+        effects.forEach((effect) => {
+          const text = rangeEffectText(effect);
+          if (!text) return;
+          const names = {
+            wave: "파동",
+            mini_wave: "소파동",
+            surge: "열파",
+            mini_surge: "소열파",
+            explosion: "폭파",
+          };
+          const item = document.createElement("span");
+          item.className = "range-effect-item";
+          const hasLevel = (effect.key === "surge" || effect.key === "mini_surge")
+            && Number.isFinite(effect.level);
+          const effectName = `${names[effect.key] || "공격 효과"}${hasLevel ? ` Lv.${effect.level}` : ""}`;
+          const tooltipName = names[effect.key] || "공격 효과";
+          item.title = `${tooltipName} ${text}${hasLevel ? ` · Lv.${effect.level}` : ""}`;
+          if (effect.icon) {
+            const image = document.createElement("img");
+            image.src = resolveAssetPath(effect.icon);
+            image.alt = "";
+            item.append(image);
+          }
+          const copy = document.createElement("span");
+          copy.className = "range-effect-copy";
+          const name = document.createElement("span");
+          name.className = "range-effect-name";
+          name.textContent = effectName;
+          copy.append(name);
+          const value = document.createElement("span");
+          value.textContent = text;
+          copy.append(value);
+          item.append(copy);
+          badge.append(item);
+        });
+        return badge.childElementCount ? badge : null;
+      }
+
+      function createRangeLink(entry, compact = false, includeDetails = true) {
+        const card = document.createElement("div");
+        card.className = compact ? "range-stack-form" : "range-unit";
+        const link = document.createElement("a");
+        link.className = compact ? "range-stack-link" : "range-unit-link";
+        link.href = rangeUnitUrl(entry);
+        link.title = entry.name;
+        link.setAttribute(
+          "aria-label",
+          entry.name + " ENEMY " + String(entry.id).padStart(3, "0") + " 스펙 보기",
+        );
+        link.append(createRangeIcon(entry));
+        card.append(link);
+        if (includeDetails) {
+          const badge = createRangeBadge(entry);
+          if (badge) card.append(badge);
+          const effectBadge = createRangeEffectBadge(entry);
+          if (effectBadge) card.append(effectBadge);
+        }
+        return card;
+      }
+
+      function createRangeStack(unitEntries) {
+        const details = document.createElement("details");
+        details.className = "range-stack";
+        const summary = document.createElement("summary");
+        const preview = document.createElement("span");
+        preview.className = "range-stack-preview";
+        const previewEntries = unitEntries.slice(0, 4);
+        preview.dataset.count = String(previewEntries.length);
+        previewEntries.forEach((entry) => preview.append(createRangeIcon(entry, true)));
+        const label = document.createElement("span");
+        label.className = "range-stack-label";
+        const labelText = document.createElement("span");
+        labelText.textContent = "형태 펼치기";
+        label.append(labelText);
+        summary.append(preview, label);
+        summary.title = `${unitEntries[0].name} 외 ${unitEntries.length - 1}개 형태`;
+        summary.setAttribute("aria-label", `${unitEntries[0].id}번 유닛 ${unitEntries.length}개 형태 펼치기`);
+        const sharedDetails = document.createElement("div");
+        sharedDetails.className = "range-stack-shared-details";
+        const sharedRange = createRangeBadge(unitEntries[0]);
+        if (sharedRange) sharedDetails.append(sharedRange);
+        const sharedEffects = createRangeEffectBadge(unitEntries[0]);
+        if (sharedEffects) sharedDetails.append(sharedEffects);
+        if (sharedDetails.childElementCount) summary.append(sharedDetails);
+        const links = document.createElement("div");
+        links.className = "range-stack-links";
+        unitEntries.forEach((entry) => links.append(createRangeLink(entry, true, false)));
+        details.append(summary);
+        details.append(links);
+        details.addEventListener("toggle", () => {
+          summary.setAttribute(
+            "aria-label",
+            `${unitEntries[0].id}번 유닛 ${unitEntries.length}개 형태 ${details.open ? "접기" : "펼치기"}`,
+          );
+        });
+        return details;
+      }
+
+      function renderRangeResults(entries) {
+        const groups = new Map();
+        entries.map(normaliseRangeEntry)
+          .filter((entry) => Number.isFinite(entry.recognitionRange))
+          .sort((left, right) => left.recognitionRange - right.recognitionRange
+            || left.id - right.id || left.form - right.form)
+          .forEach((entry) => {
+            const rangeKey = String(entry.recognitionRange);
+            if (!groups.has(rangeKey)) groups.set(rangeKey, new Map());
+            const unitGroups = groups.get(rangeKey);
+            const unitKey = `${entry.id}:${rangeProfileKey(entry)}`;
+            if (!unitGroups.has(unitKey)) unitGroups.set(unitKey, []);
+            unitGroups.get(unitKey).push(entry);
+          });
+
+        const fragment = document.createDocumentFragment();
+        groups.forEach((unitGroups, rangeKey) => {
+          const row = document.createElement("section");
+          row.className = "range-row";
+          row.setAttribute("aria-label", `인식 사거리 ${formatRangeNumber(rangeKey)}`);
+          const items = document.createElement("div");
+          items.className = "range-items";
+          unitGroups.forEach((unitEntries) => {
+            unitEntries.sort((left, right) => left.form - right.form);
+            items.append(unitEntries.length > 1
+              ? createRangeStack(unitEntries)
+              : createRangeLink(unitEntries[0]));
+          });
+          const marker = document.createElement("div");
+          marker.className = "range-marker";
+          const markerText = document.createElement("span");
+          markerText.textContent = formatRangeNumber(rangeKey);
+          marker.append(markerText);
+          row.append(items, marker);
+          fragment.append(row);
+        });
+
+        elements.rangeResults.replaceChildren();
+        if (groups.size) {
+          elements.rangeResults.append(fragment);
+        } else {
+          const empty = document.createElement("p");
+          empty.className = "range-empty";
+          empty.textContent = "조건에 맞는 유닛이 없습니다.";
+          elements.rangeResults.append(empty);
+        }
+      }
+
+      function rangeProfileKey(entry) {
+        const attacks = (entry.actualRanges || []).map((range) => [
+          Number(range.hit) || 0,
+          Number(range.minimum),
+          Number(range.maximum),
+        ]);
+        const effects = (entry.rangeEffects || []).map((effect) => [
+          String(effect.key || ""),
+          Number.isFinite(effect.minimum) ? Number(effect.minimum) : null,
+          Number.isFinite(effect.maximum) ? Number(effect.maximum) : null,
+          Number.isFinite(effect.level) ? Number(effect.level) : null,
+        ]).sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right)));
+        return JSON.stringify({ attacks, effects });
+      }
+
+      function filterEntries(entries) {
+        const query = compactSearchText(elements.nameSearch.value);
+        return entries
+          .map((entry) => {
+            const rank = searchRank(compactSearchText(entry.name), query);
+            if (rank === null) return null;
+
+            const traits = entryKeys(entry.traits);
+            const abilities = entryKeys(entry.abilities);
+            const traitMatches = (key) => key === "alien_all"
+              ? traits.has("alien") || traits.has("starred_alien")
+              : traits.has(key);
+            const selectedTraitMatches = [...selected.trait].map(traitMatches);
+            // The sub-sections only organize the UI.  Effects, abilities,
+            // immunities, and attack types form one effect/ability filter,
+            // exactly like the unit catalogue.
+            const effectAbilitySelections = new Set([
+              ...selected.effect,
+              ...selected.ability,
+              ...selected.immunity,
+              ...selected.attack,
+            ]);
+            const conditions = [
+              {
+                active: selected.trait.size > 0,
+                matches: filterLogic === "and"
+                  ? selectedTraitMatches.every(Boolean)
+                  : selectedTraitMatches.some(Boolean),
+              },
+              {
+                active: effectAbilitySelections.size > 0,
+                matches: categoryMatches(abilities, effectAbilitySelections),
+              },
+            ].filter((condition) => condition.active);
+            if (conditions.length && !conditions.every((condition) => condition.matches)) return null;
+            return { entry, rank };
+          })
+          .filter(Boolean)
+          .sort((left, right) => (
+            left.rank - right.rank
+            || Number(left.entry.id) - Number(right.entry.id)
+          ))
+          .map(({ entry }) => entry);
+      }
+
+      function showCatalogError(message) {
+        const error = document.createElement("p");
+        error.className = "catalog-error";
+        error.textContent = message;
+        elements.results.replaceChildren(error);
+        elements.status.textContent = "목록을 불러오지 못했습니다.";
+      }
+
+      if (!catalog || !Array.isArray(catalog.entries)) {
+        showCatalogError("적 카탈로그 데이터가 없습니다.");
+        return;
+      }
+
+      const meta = catalog.meta || catalog;
+      const traits = normalizeMetaCollection(meta.traits);
+      const sections = abilitySections(meta);
+      const entries = catalog.entries.map((entry) => ({
+        ...entry,
+        id: Number(entry.id),
+        form: 1,
+        name: String(entry.name || ("Enemy " + entry.id)),
+      }));
+
+      const primaryTraits = traits.filter(
+        (item) => item.section !== "special" && item.key !== "starred_alien",
+      );
+      const specialTraits = traits.filter((item) => item.section === "special");
+      renderFilterGroup(primaryTraits, "trait");
+      renderFilterGroup(
+        specialTraits,
+        "trait",
+        true,
+        document.getElementById("specialTraitFilters"),
+      );
+      renderFilterGroup(sections.effect, "effect");
+      renderFilterGroup(sections.ability, "ability");
+      renderFilterGroup(sections.immunity, "immunity");
+      renderFilterGroup(sections.attack, "attack");
+
+      function updateResults({ resetScroll = false } = {}) {
+        const filtered = filterEntries(entries);
+        renderResults(filtered);
+        renderRangeResults(filtered);
+        syncDisplayMode();
+        syncResetButton();
+        if (resetScroll) elements.resultsScroll.scrollTop = 0;
+      }
+
+      document.querySelector(".filter-body").addEventListener("click", (event) => {
+        const button = event.target.closest(".filter-chip");
+        if (!button) return;
+        if (button.dataset.alienFilterTrigger === "true") {
+          if (activeAlienChoice()) {
+            alienChoiceKeys.forEach((key) => selected.trait.delete(key));
+            closeAlienChoice();
+            syncAlienTrigger();
+            updateResults({ resetScroll: true });
+          } else {
+            openAlienChoice(button);
+          }
+          return;
+        }
+        const group = button.dataset.filterGroup;
+        const key = button.dataset.filterKey;
+        if (!selected[group] || !key) return;
+        if (selected[group].has(key)) selected[group].delete(key);
+        else selected[group].add(key);
+        button.setAttribute("aria-pressed", String(selected[group].has(key)));
+        updateResults({ resetScroll: true });
+      });
+
+      elements.alienChoicePopover.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-alien-choice]");
+        const choice = button?.dataset.alienChoice;
+        if (!alienChoiceKeys.includes(choice)) return;
+        applyAlienChoice(choice);
+        updateResults({ resetScroll: true });
+      });
+      document.addEventListener("pointerdown", (event) => {
+        const popover = elements.alienChoicePopover;
+        const trigger = alienTrigger();
+        if (popover.hidden || popover.contains(event.target) || trigger?.contains(event.target)) return;
+        closeAlienChoice();
+      });
+
+      elements.logicButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          filterLogic = button.dataset.filterLogic === "or" ? "or" : "and";
+          syncFilterLogic();
+          updateResults({ resetScroll: true });
+        });
+      });
+
+      elements.displayButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          displayMode = ["one", "two", "range"].includes(button.dataset.displayMode)
+            ? button.dataset.displayMode
+            : "two";
+          syncDisplayMode();
+        });
+      });
+
+      elements.filterCollapse.addEventListener("click", () => {
+        elements.filterPanel.classList.toggle("is-collapsed");
+        closeAlienChoice();
+        syncFilterCollapse();
+      });
+
+      elements.nameSearch.addEventListener("input", () => {
+        updateResults({ resetScroll: true });
+      });
+      elements.nameSearch.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !elements.nameSearch.value) return;
+        elements.nameSearch.value = "";
+        updateResults({ resetScroll: true });
+      });
+      elements.reset.addEventListener("click", () => {
+        elements.nameSearch.value = "";
+        filterLogic = "or";
+        syncFilterLogic();
+        Object.values(selected).forEach((values) => values.clear());
+        closeAlienChoice();
+        syncAlienTrigger();
+        document.querySelectorAll(".filter-chip[aria-pressed=\"true\"]")
+          .forEach((button) => button.setAttribute("aria-pressed", "false"));
+        updateResults({ resetScroll: true });
+      });
+
+      syncFilterLogic();
+      syncFilterCollapse();
+      syncAlienTrigger();
+      syncDisplayMode();
+      updateResults();
+    })();
+  </script>
+</body>
+</html>

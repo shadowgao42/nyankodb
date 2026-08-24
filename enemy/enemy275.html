@@ -1,0 +1,1936 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>과자의 마녀 · 냥코DB</title>
+  <style>
+    :root{--bg:#080b10;--surface:#111720;--surface2:#171f29;--line:#2b3746;--text:#f4f7fb;--muted:#95a3b5;--accent:#ff5b2d;--gold:#ffad3d;--green:#71b447;--red:#ef201d;--blue:#47a6f5;--shadow:0 22px 65px rgba(0,0,0,.34)}
+    *{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-width:320px;min-height:100vh;color:var(--text);background:radial-gradient(circle at 16% 0,rgba(255,74,32,.2),transparent 30rem),repeating-linear-gradient(45deg,transparent 0 70px,rgba(255,255,255,.028) 71px 72px),linear-gradient(180deg,#10151d,var(--bg) 62%);font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}button,input{font:inherit}.page{width:min(1220px,calc(100% - 28px));margin:0 auto;padding:20px 0 44px}
+    .toolbar,.settings,.hero,.sheet{border:1px solid var(--line);background:rgba(14,19,26,.94);box-shadow:var(--shadow)}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px;padding:13px 18px;border-radius:17px}.brand{font-size:25px;font-weight:950;letter-spacing:-.05em}.brand span{color:var(--gold)}.search{display:grid;grid-template-columns:auto minmax(145px,220px) auto;align-items:center;gap:8px}.search label{font-size:13px;font-weight:900}.search input,.number{height:38px;border:1px solid #425267;border-radius:9px;color:var(--text);background:#0c1118;outline:0;text-align:center;font-weight:850}.search input{min-width:0;padding:7px 10px;text-align:left}.search button,.pill-button{height:38px;padding:7px 15px;border:0;border-radius:9px;color:#fff;background:var(--accent);font-size:13px;font-weight:900;cursor:pointer}.search input:focus,.number:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(255,91,45,.2)}
+    .settings{margin-bottom:10px;overflow:hidden;border-radius:17px}.settings summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:9px 18px;list-style:none;cursor:pointer;font-size:17px;font-weight:950}.settings summary::-webkit-details-marker{display:none}.summary-actions{display:flex;align-items:center;gap:7px}.soft-button,.toggle-label{min-height:32px;padding:6px 13px;border:1px solid rgba(255,255,255,.2);border-radius:999px;color:#e8edf4;background:rgba(255,255,255,.06);font-size:12px;font-weight:900}.soft-button{cursor:pointer}.settings-panel{padding:0 17px 16px;border-top:1px solid rgba(255,255,255,.08)}.category-tabs{display:flex;gap:7px;padding:12px 0 10px;overflow-x:auto}.category-tab{flex:none;padding:8px 13px;border:1px solid #364456;border-radius:9px;color:var(--muted);background:#0d1219;font-size:13px;font-weight:900;cursor:pointer}.category-tab[aria-pressed=true]{color:#fff;border-color:rgba(255,173,61,.55);background:rgba(255,173,61,.14)}.treasure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.treasure-card{min-width:0;padding:12px;border:1px solid #2d3948;border-radius:14px;background:#121922}.treasure-head{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:12px}.treasure-main{width:88px;height:66px;object-fit:contain}.treasure-name{font-size:16px;font-weight:950}.treasure-desc,.treasure-total{margin-top:3px;color:var(--muted);font-size:12px;font-weight:750}.treasure-total{color:var(--gold)}.chapters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}.chapter{min-width:0;padding:7px;border:1px solid #2b3746;border-radius:10px;background:#0c1118}.chapter-label{margin-bottom:6px;color:#dce3ed;font-size:11px;font-weight:900}.slots{display:grid;grid-template-columns:repeat(4,minmax(28px,1fr));gap:4px}.slot{position:relative;display:grid;place-items:center;min-width:0;aspect-ratio:1;padding:2px;border:1px solid #364456;border-radius:7px;background:#151d27;cursor:pointer}.slot img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}.passive-panel{display:grid;grid-template-columns:90px minmax(130px,1fr) 76px;align-items:center;gap:12px;max-width:560px;padding:14px;border:1px solid #2d3948;border-radius:14px;background:#121922}.passive-panel strong{font-size:15px}.passive-control{display:grid;grid-template-columns:auto minmax(80px,1fr) 58px;align-items:center;gap:8px;color:var(--muted);font-size:12px;font-weight:900}.passive-control+.passive-control{margin-top:8px}.passive-control input[type=range]{width:100%;accent-color:var(--accent)}
+    .hero{display:grid;grid-template-columns:clamp(160px,24vw,300px) minmax(0,1fr);overflow:hidden;border-radius:22px}.portrait{position:relative;display:grid;place-items:center;min-height:255px;padding:18px;background:linear-gradient(140deg,rgba(255,91,45,.16),rgba(8,11,16,.12))}.portrait .main{width:min(92%,290px);max-height:205px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(10px 14px 18px rgba(0,0,0,.42))}.portrait .icon{position:absolute;left:15px;top:15px;width:64px;height:64px;object-fit:contain;image-rendering:pixelated;filter:drop-shadow(0 5px 10px rgba(0,0,0,.55))}.hero-copy{padding:25px 32px;border-left:1px solid rgba(255,255,255,.06)}.eyebrow{color:var(--gold);font-size:16px;font-weight:950;letter-spacing:.08em}.name{margin:7px 0 0;font-size:clamp(30px,4vw,48px);line-height:1.12;letter-spacing:-.05em}.description{max-width:760px;margin:11px 0 0;color:#bac5d3;font-size:13px;line-height:1.65;white-space:pre-line}.controls{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:18px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.09)}.mag-row{display:grid;grid-template-columns:auto minmax(140px,1fr) 88px;align-items:center;gap:10px}.mag-row label{font-size:14px;font-weight:900}.number{width:88px}.subsettings{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px}.segmented{display:flex;padding:3px;border:1px solid #364456;border-radius:10px;background:#0b1017}.segmented button{min-width:42px;height:30px;padding:3px 9px;border:0;border-radius:7px;color:var(--muted);background:transparent;font-size:12px;font-weight:950;cursor:pointer}.segmented button[aria-pressed=true]{color:#fff;background:var(--accent)}.scale{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:11px;font-weight:850}.scale input{width:94px;height:34px}.sheet{margin-top:10px;overflow:hidden;border-radius:22px}.section-title{margin:0;padding:15px 18px 10px;font-size:20px;letter-spacing:-.03em}.stats{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px;padding:0 14px 14px}.card{position:relative;grid-column:span 2;min-height:108px;overflow:hidden;padding:15px 17px;border:1px solid #2d3948;border-radius:15px;background:var(--surface2)}.label{display:block;color:#e0e6ee;font-size:16px;font-weight:950}.value{display:block;margin-top:10px;font-size:clamp(24px,2.6vw,34px);font-weight:950;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.note{position:absolute;right:13px;bottom:10px;color:var(--muted);font-size:12px;font-weight:750}.bar-card{grid-column:1/-1;display:grid;grid-template-columns:140px minmax(0,1fr);align-items:center;gap:18px;min-height:108px}.bar-title{font-size:20px;font-weight:950}.bar-sub{margin-top:6px;color:var(--muted);font-size:13px;font-weight:900}.bar-content{min-width:0}.meter{position:relative;height:28px;overflow:hidden;border:1px solid #415064;border-radius:7px;background:#d9e6f2;box-shadow:inset 0 2px 5px rgba(0,0,0,.3)}.fill{position:absolute;inset-block:0;left:0;min-width:0}.fill.hp{background:linear-gradient(90deg,#65a93d,#78bd4d)}.fill.attack{background:linear-gradient(90deg,#d90000,#f31a16)}.divider{position:absolute;z-index:3;top:0;width:1px;height:100%;background:rgba(255,255,255,.94);box-shadow:0 0 2px rgba(0,0,0,.22)}.bar-values{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:7px}.bar-main{font-size:25px;font-weight:950;font-variant-numeric:tabular-nums}.bar-detail{min-width:0;color:var(--gold);font-size:14px;font-weight:900;text-align:right;overflow-wrap:anywhere}.attack-main{color:#ff4e45}.hp-main{color:#82c44f}.cycle{grid-column:span 5;min-height:195px}.range{grid-column:span 3;min-height:195px}.timeline-legend{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px;color:var(--muted);font-size:13px;font-weight:950}.timeline-legend span{display:flex;align-items:center;gap:5px}.swatch{width:11px;height:11px;border-radius:3px}.swatch.f{background:#47a6f5}.swatch.b{background:#ff6d62}.swatch.i{background:#f6bd3d}.timeline{margin-top:17px;padding-inline:7px}.markers{position:relative;z-index:5;height:16px}.hit{position:absolute;bottom:-2px;width:20px;height:20px;padding:0;border:0;background:transparent;transform:translateX(-50%);cursor:default}.hit:before{content:"";position:absolute;left:50%;top:6px;border-left:6px solid transparent;border-right:6px solid transparent;border-top:10px solid #fff;filter:drop-shadow(0 1px 2px #000);transform:translateX(-50%)}.track{position:relative;height:15px;overflow:hidden;border:1px solid #455264;border-radius:999px;background:#252e3a;box-shadow:inset 0 2px 5px rgba(0,0,0,.5)}.segment{position:absolute;inset-block:0}.segment.f{z-index:1;background:linear-gradient(90deg,#288ddd,#55b4ff)}.segment.i{z-index:2;background:linear-gradient(90deg,#d99416,#f6c956)}.segment.b{z-index:3;background:linear-gradient(90deg,#e64e47,#ff786c)}.timing-details{margin-top:12px;border-top:1px solid #303c4b}.timing-details summary{display:flex;justify-content:space-between;padding-top:9px;list-style:none;color:#dce3ed;font-size:14px;font-weight:950;cursor:pointer}.timing-details summary:after{content:"▼";color:var(--gold);font-size:19px}.timing-details[open] summary:after{transform:rotate(180deg)}.detail-lines{display:grid;gap:5px;margin-top:8px}.detail-line{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:12px;font-weight:800}.detail-line strong{color:#eef3f8;font-variant-numeric:tabular-nums}.range-lines{display:grid;gap:8px;margin-top:12px}.range-line{display:grid;grid-template-columns:62px minmax(0,1fr);gap:10px}.range-line b{font-size:15px}.range-line span{color:var(--gold);font-size:14px;font-weight:900;overflow-wrap:anywhere}.effects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;padding:0 14px 16px}.effect{position:relative;display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:9px;min-width:0;min-height:76px;padding:9px;border:1px solid #303d4d;border-radius:13px;background:#141b24}.effect img,.fallback-icon{width:54px;height:54px;object-fit:contain;image-rendering:pixelated}.fallback-icon{display:grid;place-items:center;border-radius:10px;color:#fff;background:#3a4655;font-size:23px;font-weight:950}.effect-name{font-size:14px;font-weight:950}.effect-meta{margin-top:4px;color:var(--gold);font-size:12px;font-weight:900;line-height:1.35}.trait-list{display:flex;flex-wrap:wrap;gap:10px;padding:0 14px 16px}.trait{position:relative;width:60px;height:60px;border:0;background:transparent;padding:0;cursor:default}.trait img,.trait .fallback-icon{width:60px;height:60px}.tooltip{position:fixed;z-index:1000;display:none;width:max-content;max-width:min(330px,calc(100vw - 28px));padding:10px 12px;border:1px solid #53657a;border-radius:10px;color:#fff;background:#080c12;box-shadow:0 12px 34px rgba(0,0,0,.52);font-size:12px;font-weight:800;line-height:1.55;white-space:pre-line;pointer-events:none}.tooltip strong{display:block;color:var(--gold);font-size:13px}.empty{padding:4px 14px 18px;color:var(--muted);font-size:13px}
+    @media(max-width:900px){.effects{grid-template-columns:repeat(2,minmax(0,1fr))}.cycle{grid-column:span 7}.range{grid-column:span 5}.controls{grid-template-columns:1fr}.subsettings{justify-content:flex-start}.treasure-grid{grid-template-columns:1fr}.chapters{grid-template-columns:repeat(2,minmax(0,1fr))}.chapters .chapter:last-child{grid-column:1/-1}}
+    @media(max-width:650px){.page{width:min(100% - 14px,1220px);margin-left:7px;margin-right:7px;padding-top:8px}.toolbar{align-items:stretch;flex-direction:column}.search{grid-template-columns:auto minmax(0,1fr) auto}.hero{grid-template-columns:clamp(120px,35vw,190px) minmax(0,1fr)}.portrait{min-height:225px;padding:8px}.portrait .main{width:100%;max-height:170px}.portrait .icon{left:8px;top:8px;width:48px;height:48px}.hero-copy{padding:18px 14px}.name{font-size:clamp(23px,7vw,33px)}.description{font-size:11px}.mag-row{grid-template-columns:auto minmax(70px,1fr) 78px}.scale input{width:80px}.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.bar-card{grid-column:1/-1;grid-template-columns:105px minmax(0,1fr);gap:10px}.bar-title{font-size:17px}.cycle,.range{grid-column:1/-1}.card:not(.bar-card):not(.cycle):not(.range){grid-column:span 2}.effects{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.effect{grid-template-columns:46px minmax(0,1fr);min-height:66px}.effect img,.effect .fallback-icon{width:46px;height:46px}.chapters{grid-template-columns:1fr}.chapters .chapter:last-child{grid-column:auto}.treasure-head{grid-template-columns:72px minmax(0,1fr)}.treasure-main{width:72px;height:58px}.passive-panel{grid-template-columns:70px 1fr}.passive-panel>span{display:none}}
+    @media(max-width:430px){.hero{grid-template-columns:102px minmax(0,1fr)}.portrait{min-height:210px}.hero-copy{padding:16px 10px}.mag-row{grid-template-columns:auto minmax(0,1fr);gap:7px}.mag-row>label:last-child{grid-column:1/-1}.subsettings{gap:6px}.scale{flex:1 1 110px}.scale input{min-width:0;width:72px}.search input{min-width:0;width:100%}}
+    .effect.immunity-group{grid-column:1/-1;grid-template-columns:auto minmax(0,1fr)}.effect-icon-stack{display:flex;flex-wrap:wrap;gap:4px;width:auto;height:auto}.effect-icon-stack img{width:54px!important;height:54px!important}.effect-icon-stack .fallback-icon{width:54px;height:54px}
+    @media(max-width:650px){.effect-icon-stack img,.effect-icon-stack .fallback-icon{width:46px!important;height:46px!important}}
+    .timing-details summary:after{display:inline-block}
+    @media(max-width:430px){.passive-panel{grid-template-columns:1fr}.passive-control{grid-template-columns:auto minmax(60px,1fr) 42px;gap:5px}}
+
+    /* Keep the enemy calculator on the same visual system as the unit calculator. */
+    :root {
+      --surface-2: #171f29;
+      --line: #293645;
+      --muted: #94a2b6;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+    body {
+      min-height: 143vh;
+      overflow-x: hidden;
+      zoom: .7;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+    }
+    .page { width: min(1220px, calc(100% - 36px)); padding: 24px 0 38px; }
+    .db-toolbar {
+      gap: 18px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      background: rgba(14, 19, 26, .92);
+      box-shadow: var(--shadow);
+    }
+    .db-brand { flex: 0 0 auto; color: var(--text); }
+    .db-brand span { color: var(--accent-text); }
+    .unit-search { grid-template-columns: auto minmax(150px, 220px) auto; gap: 9px; }
+    .unit-search label { color: #dce3ed; white-space: nowrap; }
+    .unit-search input { padding:7px 11px; text-align:left; font-weight:400; font-variant-numeric:tabular-nums; }
+
+    .treasure-settings {
+      margin-bottom: 10px;
+      border-color: var(--line);
+      background: rgba(14, 19, 26, .92);
+    }
+    .treasure-settings summary {
+      min-height: 52px;
+      padding: 9px 18px;
+      color: #dce3ed;
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .summary-actions { display: inline-flex; }
+    .soft-button, .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 12px;
+      color: #dce3ed;
+    }
+    .soft-button:hover, .soft-button:focus-visible {
+      border-color: rgba(255,255,255,.42);
+      background: rgba(255,255,255,.12);
+      outline: none;
+    }
+    .soft-button:disabled {
+      color: #707d8e;
+      cursor: default;
+      opacity: .62;
+    }
+    .settings-panel { padding: 0 18px 16px; }
+    .category-tabs { gap: 6px; padding: 12px 0 10px; scrollbar-width: thin; }
+    .category-tab { padding: 7px 12px; font-size: 12px; }
+    .category-tab[aria-pressed="true"] {
+      border-color: rgba(255, 173, 61, .5);
+      background: rgba(255, 173, 61, .14);
+    }
+    .treasure-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .treasure-card {
+      container-name: treasure-card;
+      container-type: inline-size;
+      padding: 10px;
+      background: var(--surface-2);
+    }
+    .treasure-head {
+      grid-template-columns: 148px minmax(0, 1fr) auto;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+    .treasure-main { width: 148px; height: 58px; border-radius: 8px; object-fit: cover; }
+    .treasure-note { margin:0 0 10px; color:var(--muted); font-size:11px; font-weight:700; }
+    .treasure-card-title { min-width:0; }
+    .treasure-name { margin:0; overflow:hidden; font-size:15px; font-weight:950; text-overflow:ellipsis; white-space:nowrap; }
+    .treasure-desc { margin:4px 0 0; font-size:10px; font-weight:700; }
+    .treasure-total { margin-top:0; color:var(--accent-text); font-size:15px; font-weight:950; }
+    .chapters { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin-top:0; }
+    .chapter { padding: 7px; border-color: rgba(255,255,255,.08); background: rgba(8,12,18,.5); }
+    .chapters .chapter:last-child { grid-column:auto; }
+    .chapter-label { display:flex; align-items:center; justify-content:space-between; gap:5px; font-size:10px; }
+    .treasure-chapter-percent { color:var(--accent-text); font-variant-numeric:tabular-nums; }
+    .slots { grid-template-columns: repeat(4, 40px); gap: 5px; }
+    .slot {
+      width: 40px;
+      height: 40px;
+      aspect-ratio: auto;
+      padding: 0;
+      border-color: #3a4859;
+      border-radius: 8px;
+      background: #0b1017;
+    }
+    .slot img { width: 36px; height: 36px; }
+    .slot:hover, .slot:focus-visible {
+      border-color: #71839a;
+      box-shadow: 0 0 0 2px rgba(255,173,61,.18);
+      outline: none;
+    }
+    .slot::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      z-index: 45;
+      width: max-content;
+      max-width: min(240px, calc(100vw - 44px));
+      padding: 8px 10px;
+      border: 1px solid #48586c;
+      border-radius: 9px;
+      color: #fff;
+      background: #080c12;
+      box-shadow: 0 8px 24px rgba(0,0,0,.38);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.5;
+      text-align: left;
+      white-space: pre-line;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 5px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .slot:nth-child(4n + 1)::after { left:0; transform:translate(0,5px); }
+    .slot:nth-child(4n)::after { right:0; left:auto; transform:translate(0,5px); }
+    .slot:hover::after, .slot:focus-visible::after { opacity:1; transform:translate(-50%,0); }
+    .slot:nth-child(4n + 1):hover::after, .slot:nth-child(4n + 1):focus-visible::after, .slot:nth-child(4n):hover::after, .slot:nth-child(4n):focus-visible::after { transform:translate(0,0); }
+    .passive-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .passive-card {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #2d3948;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+    .passive-card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .passive-card-header h3 { margin: 0; font-size: 16px; }
+    .passive-current-level {
+      color: var(--accent-text);
+      font-size: 14px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .passive-effect {
+      margin: -4px 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+    .passive-level-controls { display: grid; gap: 8px; }
+    .passive-level-row {
+      display: grid;
+      grid-template-columns: 78px minmax(80px, 1fr) 58px;
+      align-items: center;
+      gap: 8px;
+    }
+    .passive-level-row label {
+      color: #dce3ed;
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .passive-level-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .passive-level-row input[type="number"] {
+      width: 100%;
+      min-width: 0;
+      padding: 6px 7px;
+      border: 1px solid #3a4859;
+      border-radius: 8px;
+      color: #fff;
+      background: #0b1017;
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+    .treasure-empty { font-size: 16px; font-weight: 900; }
+    .treasure-empty-category {
+      padding: 24px 14px;
+      border: 1px dashed #344254;
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .hero {
+      grid-template-columns: clamp(112px, 20vw, 260px) minmax(0, 1fr);
+      min-height: 238px;
+      border-color: var(--line);
+      background: rgba(14, 19, 26, .9);
+      box-shadow: var(--shadow);
+    }
+    .portrait {
+      min-height: 238px;
+      overflow: hidden;
+      padding: 0;
+      background: linear-gradient(140deg, rgba(255,91,45,.16), rgba(8,11,16,.15));
+    }
+    .portrait #enemy-image {
+      width: min(86%, 500px);
+      max-height: 180px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      filter: drop-shadow(10px 14px 18px rgba(0,0,0,.42));
+    }
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28px 38px;
+    }
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--accent-text);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .name-row { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; }
+    .name {
+      margin: 0;
+      font-family: "Yu Gothic", "Malgun Gothic", sans-serif;
+      font-size: clamp(31px, 3.6vw, 49px);
+      line-height: 1.12;
+      letter-spacing: -.045em;
+    }
+    .description {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: #aeb9c8;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+    .level-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,.09);
+    }
+    .current-level { color: #dce3ed; font-size: 15px; font-weight: 800; }
+    .current-level strong { margin-left: 8px; color: var(--accent-text); font-size: 20px; }
+    .treasure-application { margin-left: 8px; color: #aeb8c6; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .level-control { display: grid; gap: 8px; margin-top: 10px; }
+    .level-row {
+      display: grid;
+      grid-template-columns: 108px minmax(150px, 1fr) 94px;
+      align-items: center;
+      gap: 12px;
+    }
+    .level-control { --magnification-label-gap: 3px; --magnification-label-width: 64px; }
+    .level-row.mag-row { grid-template-columns:var(--magnification-label-width) max-content minmax(0,1fr); justify-content:start; gap:var(--magnification-label-gap); }
+    .mag-pair-row { display:flex; flex-wrap:wrap; align-items:center; column-gap:22px; row-gap:8px; width:100%; margin-top:5px; }
+    .mag-pair-row > .mag-inline { flex:0 0 auto; }
+    .mag-inline { display:grid; grid-template-columns:var(--magnification-label-width) max-content; align-items:center; gap:var(--magnification-label-gap); min-width:0; color:#dce3ed; font-size:13px; font-weight:800; }
+    .mag-inline > span:first-child { white-space:nowrap; }
+    .level-row > label:first-child { color: #dce3ed; font-size: 13px; font-weight: 800; }
+    .magnification-number { display: grid; grid-template-columns: 90px auto; align-items: center; gap: 5px; color: #dce3ed; font-size: 13px; font-weight: 800; }
+    .magnification-number .number { width: 90px; }
+    .mag-row .treasure-application { min-width: 0; margin-left: -2px; white-space: nowrap; }
+    input[type="range"] { width: 100%; height: 18px; accent-color: var(--accent); cursor: pointer; }
+    input[type="number"] {
+      height: 35px;
+      border: 1px solid #425267;
+      border-radius: 10px;
+      color: var(--text);
+      background: #0c1118;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 800;
+      outline: none;
+    }
+    input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,91,45,.16); }
+    .bar-settings {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 11px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .bar-settings-title { margin-right: auto; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .scale-field { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .scale-field input[type="number"] { width: 100px; }
+
+    .section, .sheet {
+      margin-top: 16px;
+      overflow: visible;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(15, 20, 28, .92);
+      box-shadow: var(--shadow);
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 19px 22px 14px;
+    }
+    .section-heading .section-title { margin: 0; padding: 0; font-size: 20px; letter-spacing: -.025em; }
+    .section-tools { display: flex; align-items: center; gap: 12px; }
+    .time-toggle {
+      display: inline-flex;
+      gap: 3px;
+      padding: 3px;
+      border: 1px solid #364456;
+      border-radius: 11px;
+      background: #0d1219;
+    }
+    .time-toggle button {
+      min-width: 62px;
+      padding: 7px 10px;
+      border: 0;
+      border-radius: 8px;
+      color: #aeb9c8;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .time-toggle button[aria-pressed="true"] {
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 4px 12px rgba(255,91,45,.22);
+    }
+    .stats-grid { grid-template-columns: repeat(12, minmax(0,1fr)); gap: 10px; padding: 0 14px 14px; }
+    .stat-card {
+      position: relative;
+      grid-column: span 2;
+      min-height: 108px;
+      overflow: hidden;
+      padding: 15px 18px;
+      border: 1px solid #2d3948;
+      border-radius: 15px;
+      background: var(--surface-2);
+    }
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 5px;
+      background: linear-gradient(var(--accent), var(--accent-2));
+    }
+    .stat-label { display: block; color: #d9e1eb; font-size: 15px; font-weight: 800; }
+    /* Match the unit calculator's compact multiplier badge.  It reports
+       only selected attack-ability effects, never the enemy magnification. */
+    .counter-multiplier { display:inline-block; margin-left:5px; padding:2px 6px; border-radius:999px; color:#11151b; background:var(--accent-text); font-size:10px; font-weight:950; font-variant-numeric:tabular-nums; vertical-align:1px; }
+    .counter-multiplier[hidden] { display:none; }
+    .stat-value {
+      display: block;
+      margin-top: 11px;
+      font-size: clamp(25px,2.5vw,34px);
+      font-weight: 900;
+      letter-spacing: -.045em;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-note { position: absolute; right: 14px; bottom: 12px; color: var(--muted); font-size: 12px; }
+    .stat-bar-card { grid-column: span 6; min-height: 122px; padding: 17px 20px 15px; }
+    .bar-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .bar-heading .stat-value { margin-top: 0; text-align: right; font-size: clamp(27px,2.7vw,37px); }
+    .bar-heading .stat-meter { flex: 1 1 auto; }
+    .bar-value-stack { flex: 0 0 clamp(160px,19vw,230px); min-width: 0; text-align: right; }
+    .bar-value-stack .stat-value { width: 100%; margin-left: auto; }
+    .attack-bar-card .bar-heading { display: grid; grid-template-columns: minmax(0,1fr) clamp(160px,19vw,230px); column-gap: 20px; }
+    .attack-bar-card .bar-heading .stat-meter { grid-column: 1; grid-row: 1; }
+    .attack-bar-card .bar-value-stack { display: contents; }
+    .attack-bar-card .bar-value-stack .stat-value { grid-column: 2; grid-row: 1; }
+    .attack-bar-card .attack-breakdown { grid-column: 1/-1; grid-row: 2; width: 100%; text-align: right; }
+    .attack-breakdown { min-height: 18px; margin-top: 3px; color: var(--accent-text); font-size: 13px; font-weight: 900; line-height: 1.2; overflow-wrap: normal; white-space: normal; font-variant-numeric: tabular-nums; }
+    .stat-meter { position: relative; height: 18px; margin-top: 13px; overflow: hidden; border: 1px solid rgba(255,255,255,.1); border-radius: 7px; background: #d6e3ef; box-shadow: inset 0 2px 4px rgba(20,31,45,.22); }
+    .stat-meter-fill { width: 0; height: 100%; border-radius: 6px; transition: width .18s ease; }
+    .hp-fill { background: linear-gradient(90deg,#58a73e,#79bc4b); box-shadow: 0 0 14px rgba(108,180,67,.38); }
+    .hp-health-segments { position:absolute; inset:0; z-index:2; pointer-events:none; }
+    .hp-health-segment { position:absolute; inset-block:0; min-width:0; }
+    /* A segmented enemy bar must not restart a gradient for every KB.
+       Use the same clean, flat colour treatment as the unit HP meter,
+       then let the white separators communicate individual segments. */
+    .hp-health-segment.health { background:#68ad45; }
+    .hp-health-segment.shield { background:#5EA0CC; }
+    .hp-health-segment.barrier { background:#E89090; }
+    .hp-bar-card .attack-breakdown.barrier-breakdown { display:flex; justify-content:flex-end; gap:0; color:var(--accent-text); }
+    .hp-bar-card .barrier-health-value { color:#E89090; }
+    .attack-fill { background: linear-gradient(90deg,#e6412f,#ff5b2d); box-shadow: 0 0 14px rgba(255,74,44,.38); }
+    .kb-markers, .attack-hit-markers { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+    .kb-marker, .attack-hit-marker { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.92); transform: translateX(-50%); }
+    .bar-detail { display: flex; justify-content: flex-end; margin-top: 8px; color: var(--muted); font-size: 15px; font-weight: 800; }
+    .bar-detail strong { margin-left: 7px; color: var(--text); font-size: 19px; line-height: 1; }
+
+    .attack-cycle-card { grid-column: span 4; min-height: 176px; padding-bottom: 13px; }
+    .attack-cycle-card .stat-value { margin-top: 7px; }
+    .attack-cycle-card.is-animation-missing { min-height: 132px; }
+    .animation-pending { margin-top: 10px; color: #ffb14a; font-size: 15px; font-weight: 800; letter-spacing: .01em; }
+    .attack-timeline-legend { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 9px; color: var(--muted); font-size: 13px; font-weight: 900; line-height: 1; }
+    .attack-timeline-legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .timing-swatch { width: 10px; height: 10px; border-radius: 3px; box-shadow: 0 0 7px currentColor; }
+    .timing-swatch.foreswing { color:#4aa8ff; background:#4aa8ff; }
+    .timing-swatch.backswing { color:#ff6d62; background:#ff6d62; }
+    .timing-swatch.interval { color:#f6bd3d; background:#f6bd3d; }
+    .attack-timeline { margin-top: 15px; padding-inline: 7px; }
+    .attack-timeline-markers { position: relative; z-index: 5; height: 14px; }
+    .attack-timeline-hit { position: absolute; bottom: -2px; width: 18px; height: 18px; padding: 0; border: 0; outline: none; appearance: none; background: transparent; cursor: pointer; transform: translateX(-50%); }
+    .attack-timeline-hit::before { content:""; position:absolute; left:50%; top:7px; width:0; height:0; border-right:5px solid transparent; border-left:5px solid transparent; border-top:8px solid #f7fbff; filter:drop-shadow(0 1px 2px rgba(0,0,0,.9)); transform:translateX(-50%); }
+    .attack-hit-tooltip { position:absolute; left:50%; bottom:calc(100% + 5px); z-index:30; display:flex; align-items:baseline; gap:5px; width:max-content; max-width:min(220px,calc(100vw - 48px)); padding:8px 10px; border:1px solid #53657a; border-radius:10px; color:#fff; background:#080c12; box-shadow:0 12px 34px rgba(0,0,0,.48); font-size:12px; font-weight:850; white-space:nowrap; opacity:0; pointer-events:none; transform:translate(-50%,6px); transition:opacity .14s ease,transform .14s ease; }
+    .attack-hit-tooltip .time-value { color:var(--accent-text); font-size:13px; font-weight:950; }
+    .attack-timeline-hit.align-start .attack-hit-tooltip { left:0; transform:translate(0,6px); }
+    .attack-timeline-hit.align-end .attack-hit-tooltip { right:0; left:auto; transform:translate(0,6px); }
+    .attack-timeline-hit:hover .attack-hit-tooltip, .attack-timeline-hit:focus-visible .attack-hit-tooltip, .attack-timeline-hit[data-tooltip-open="true"] .attack-hit-tooltip { opacity:1; transform:translate(-50%,0); }
+    .attack-timeline-hit.align-start:hover .attack-hit-tooltip, .attack-timeline-hit.align-start:focus-visible .attack-hit-tooltip, .attack-timeline-hit.align-start[data-tooltip-open="true"] .attack-hit-tooltip, .attack-timeline-hit.align-end:hover .attack-hit-tooltip, .attack-timeline-hit.align-end:focus-visible .attack-hit-tooltip, .attack-timeline-hit.align-end[data-tooltip-open="true"] .attack-hit-tooltip { transform:translate(0,0); }
+    .attack-timeline-track { position:relative; height:14px; overflow:hidden; border:1px solid #455264; border-radius:999px; background:#252e3a; box-shadow:inset 0 2px 5px rgba(0,0,0,.5); }
+    .attack-timeline-segment { position:absolute; inset-block:0; min-width:0; }
+    .attack-timeline-segment.foreswing { z-index:1; background:linear-gradient(90deg,#288ddd,#55b4ff); }
+    .attack-timeline-segment.interval { z-index:2; background:linear-gradient(90deg,#d99416,#f6c956); }
+    .attack-timeline-segment.backswing { z-index:3; background:linear-gradient(90deg,#e64e47,#ff786c); box-shadow:1px 0 rgba(255,255,255,.24); }
+    .attack-timing-details { margin-top:10px; border-top:1px solid #303c4b; }
+    .attack-timing-details summary { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:8px; color:var(--muted); font-size:13px; font-weight:900; list-style:none; cursor:pointer; }
+    .attack-timing-details summary::-webkit-details-marker { display:none; }
+    .attack-timing-details summary::after { content:"▾"; color:var(--accent-text); font-size:22px; line-height:.8; transition:transform .16s ease; }
+    .attack-timing-details[open] summary::after { transform:rotate(180deg); }
+    .attack-timing-details .when-open, .attack-timing-details[open] .when-closed { display:none; }
+    .attack-timing-details[open] .when-open { display:inline; }
+    .attack-timing-detail-list { display:grid; gap:0; margin-top:7px; border:1px solid #303c4b; border-radius:9px; background:#111821; }
+    .attack-timing-detail-row { display:grid; grid-template-columns:8px minmax(0,1fr) auto; align-items:center; gap:7px; min-height:29px; padding:5px 8px; color:var(--muted); font-size:13px; font-weight:900; }
+    .attack-timing-detail-row + .attack-timing-detail-row { border-top:1px solid #283341; }
+    .timing-detail-mark { width:6px; height:17px; border-radius:3px; background:#738095; }
+    .attack-timing-detail-row.foreswing .timing-detail-mark { background:#4aa8ff; }
+    .attack-timing-detail-row.backswing .timing-detail-mark { background:#ff6d62; }
+    .attack-timing-detail-row.interval .timing-detail-mark { background:#f6bd3d; }
+    .attack-timing-detail-row .time-value { color:#f4f7fb; font-size:14px; font-weight:950; font-variant-numeric:tabular-nums; }
+    .range-stack { display:grid; gap:8px; margin-top:11px; }
+    .range-row { display:flex; align-items:baseline; justify-content:space-between; gap:8px; color:var(--muted); font-size:13px; font-weight:900; }
+    .range-row strong { color:var(--text); font-size:19px; font-weight:900; font-variant-numeric:tabular-nums; }
+    .actual-range-rows { display:grid; gap:8px; }
+
+    .traits-section { display:grid; grid-template-columns:145px 1fr; align-items:center; min-height:108px; padding:15px 22px; }
+    .traits-title h2 { margin:0; font-size:20px; }
+    .traits-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; min-width:0; padding:0; }
+    .trait { display:grid; place-items:center; width:68px; min-width:68px; height:68px; padding:5px; border:0; border-radius:15px; background:transparent; outline:none; }
+    .trait img, .trait .fallback-icon { width:56px; height:56px; filter:drop-shadow(0 5px 8px rgba(0,0,0,.3)); }
+    .trait::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      z-index: 30;
+      padding: 7px 10px;
+      border: 1px solid #48586c;
+      border-radius: 9px;
+      color: #fff;
+      background: #080c12;
+      box-shadow: 0 8px 24px rgba(0,0,0,.35);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 5px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .trait.starred-alien::before { content:"★"; position:absolute; z-index:2; top:2px; right:2px; display:grid; place-items:center; width:19px; height:19px; border:1px solid #d8ebff; border-radius:50%; color:#ffe071; background:#28557e; box-shadow:0 2px 5px rgba(0,0,0,.5); font-size:13px; font-weight:950; line-height:1; pointer-events:none; }
+    .trait:hover::after, .trait:focus-visible::after, .trait[data-tooltip-open="true"]::after { opacity:1; transform:translate(-50%,0); }
+
+    .abilities-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; padding:0 14px 14px; }
+    .effect {
+      position:relative;
+      display:grid;
+      grid-template-columns:58px 1fr;
+      align-items:center;
+      gap:12px;
+      min-height:96px;
+      padding:13px;
+      border:1px solid #2d3948;
+      border-radius:18px;
+      background:var(--surface-2);
+      outline:none;
+    }
+    .effect:hover, .effect:focus-visible, .effect:focus-within { z-index:12; border-color:#53657a; }
+    .ability-icon { display:grid; place-items:center; width:56px; height:56px; }
+    .effect img, .effect .fallback-icon { width:56px; height:56px; object-fit:contain; filter:drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+    .effect-name { font-size:16px; font-weight:950; }
+    .effect-meta { margin-top:5px; color:var(--accent-text); font-size:12px; font-weight:850; line-height:1.45; }
+    .ability-tooltip {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 30;
+      width: max-content;
+      max-width: min(330px, calc(100vw - 48px));
+      padding: 10px 12px;
+      border: 1px solid #53657a;
+      border-radius: 11px;
+      color: #fff;
+      background: #080c12;
+      box-shadow: 0 12px 34px rgba(0,0,0,.48);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 6px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+    .ability-tooltip strong { display:block; color:#fff; font-size:13px; }
+    .ability-tooltip p { margin:5px 0 0; color:#c0cad7; font-size:11px; font-weight:700; line-height:1.5; white-space:pre-line; }
+    .effect:hover .ability-tooltip, .effect:focus-visible .ability-tooltip, .effect:focus-within .ability-tooltip, .effect[data-tooltip-open="true"] .ability-tooltip, .immunity-chip:hover .ability-tooltip, .immunity-chip:focus .ability-tooltip, .immunity-chip:focus-visible .ability-tooltip, .immunity-chip[data-tooltip-open="true"] .ability-tooltip { opacity:1; transform:translate(-50%,0); }
+    .immunity-card {
+      grid-column:1/-1;
+      display:grid;
+      grid-template-columns:74px minmax(0,1fr);
+      align-items:center;
+      gap:10px;
+      min-height:90px;
+      padding:12px 15px;
+      border:1px solid #2d3948;
+      border-radius:18px;
+      background:var(--surface-2);
+    }
+    .immunity-card > h3 { margin:0; color:#fff; font-size:16px; }
+    .immunity-icons { display:flex; align-items:center; flex-wrap:wrap; gap:8px; min-width:0; }
+    .immunity-chip { position:relative; display:grid; place-items:center; width:58px; height:58px; border:0; border-radius:14px; background:transparent; outline:none; }
+    .immunity-chip img, .immunity-chip .fallback-icon { width:56px; height:56px; object-fit:contain; image-rendering:pixelated; filter:drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+    .tooltip { max-width:min(330px,calc(100vw - 48px)); padding:10px 12px; border-radius:11px; box-shadow:0 12px 34px rgba(0,0,0,.48); font-size:11px; font-weight:700; line-height:1.5; }
+    .tooltip strong { color:#fff; font-size:13px; }
+
+    @container treasure-card (max-width: 570px) { .chapters { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @container treasure-card (max-width: 410px) {
+      .chapters { grid-template-columns:1fr; }
+      .chapter { display:grid; grid-template-columns:52px minmax(0,1fr); align-items:center; gap:8px; }
+      .chapter-label { align-items:flex-start; flex-direction:column; justify-content:center; margin-bottom:0; }
+    }
+    @media (max-width: 980px) {
+      .stats-grid, .abilities-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .stat-card, .stat-bar-card { grid-column:span 1; }
+      .stat-card.attack-cycle-card { grid-column:1/-1; }
+      .traits-section { grid-template-columns:1fr; gap:13px; }
+      .effect .ability-tooltip { left:0; right:auto; transform:translateY(6px); }
+      .effect:nth-child(even) .ability-tooltip { left:auto; right:0; }
+      .effect:hover .ability-tooltip, .effect:focus-visible .ability-tooltip, .effect:focus-within .ability-tooltip, .effect[data-tooltip-open="true"] .ability-tooltip { transform:translateY(0); }
+    }
+    @media (max-width: 660px) {
+      .page { width:min(100% - 20px,1220px); margin:0 auto; padding-top:12px; }
+      .db-toolbar { align-items:stretch; flex-direction:column; gap:10px; padding:13px 15px; }
+      .unit-search { grid-template-columns:72px minmax(0,1fr) 58px; gap:7px; }
+      .unit-search button { padding-inline:8px; }
+      .treasure-settings summary,
+      .misc-settings summary { flex-wrap:wrap; padding-inline:15px; }
+      .treasure-panel,
+      .misc-panel { padding-inline:15px; }
+      .treasure-grid { grid-template-columns:1fr; }
+      .passive-cards { grid-template-columns:1fr; }
+      .treasure-head { grid-template-columns:122px minmax(0,1fr) auto; }
+      .treasure-main { width:122px; height:48px; }
+      .slots { grid-template-columns:repeat(4,38px); gap:4px; }
+      .slot { width:38px; height:38px; }
+      .slot img { width:34px; height:34px; }
+      .hero { grid-template-columns:clamp(112px,20vw,260px) minmax(0,1fr); }
+      .portrait { min-height:238px; padding:0; }
+      .hero-copy { padding:20px 16px; }
+      .description { font-size:12px; }
+      .name { font-size:clamp(22px,6vw,32px); }
+      .level-summary { align-items:center; flex-direction:row; flex-wrap:wrap; gap:8px; }
+      .current-level { flex:0 0 auto; font-size:clamp(12px,3.6vw,15px); white-space:nowrap; }
+      .current-level strong { margin-left:4px; font-size:clamp(16px,4.8vw,20px); }
+      .level-row { grid-template-columns:72px minmax(56px,1fr) 76px; gap:6px; }
+      /* Keep the label track and label-to-input gap identical to desktop.
+         Only the pair itself may wrap on a genuinely narrow screen. */
+      .level-row.mag-row { grid-template-columns:var(--magnification-label-width) max-content minmax(0,1fr); }
+      .mag-pair-row { width:100%; column-gap:14px; row-gap:8px; margin-top:7px; }
+      .mag-inline { grid-template-columns:var(--magnification-label-width) max-content; font-size:12px; }
+      .mag-row > label:last-child { grid-column:auto; }
+      .bar-settings { align-items:flex-start; flex-wrap:wrap; }
+      .bar-settings-title { flex-basis:100%; }
+      .section-tools { align-items:center; flex-direction:row; flex-wrap:nowrap; justify-content:flex-end; width:100%; gap:8px; }
+      .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .abilities-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+      .effect { grid-template-columns:48px minmax(0,1fr); gap:8px; min-height:86px; padding:10px; border-radius:14px; }
+      .ability-icon { width:48px; height:48px; }
+      .effect img, .effect .fallback-icon, .immunity-chip img, .immunity-chip .fallback-icon { width:48px!important; height:48px!important; }
+      .immunity-chip { width:50px; height:50px; }
+      .effect-name { font-size:14px; }
+      .effect-meta { font-size:11px; }
+      .stat-bar-card, .stat-card.attack-cycle-card { grid-column:1/-1; }
+      .stat-card:not(.stat-bar-card) { min-height:100px; padding:13px 15px; }
+      .stat-card.attack-cycle-card { min-height:168px; }
+      .section-heading { align-items:flex-start; flex-direction:column; gap:4px; }
+    }
+    @media (max-width: 420px) {
+      .section-tools { align-items:flex-start; flex-direction:column; justify-content:flex-start; width:auto; }
+      .scale-field input[type="number"] { width:88px; }
+      .passive-cards { grid-template-columns:1fr; }
+      .mag-pair-row { width:100%; }
+      .mag-inline { grid-template-columns:var(--magnification-label-width) max-content; }
+    }
+
+    /* Shared controls from the current unit calculator. */
+    .db-toolbar { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:12px; padding:14px 18px; border:1px solid var(--line); border-radius:17px; background:rgba(14,19,26,.92); box-shadow:var(--shadow); }
+    .db-brand { flex:0 0 auto; text-decoration:none; cursor:pointer; color:var(--text); font-size:25px; font-weight:950; letter-spacing:-.05em; }
+    .db-brand span { color:var(--gold); }
+    /* The calculator search is intentionally the exact unit-calculator UI. */
+    .unit-search { display:grid; grid-template-columns:auto minmax(150px,220px) auto; align-items:center; gap:9px; }
+    .unit-search label { color:#dce3ed; font-size:13px; font-weight:900; white-space:nowrap; }
+    .unit-search input { min-width:0; height:38px; padding:7px 11px; border:1px solid #425267; border-radius:9px; color:var(--text); background:#0c1118; outline:none; font-variant-numeric:tabular-nums; }
+    .unit-search input:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(255,91,45,.2); }
+    .unit-search button { height:38px; padding:7px 15px; border:0; border-radius:9px; color:#fff; background:var(--accent); font-size:13px; font-weight:900; cursor:pointer; }
+    .unit-search-field { position:relative; min-width:0; }
+    /* Final computed palette of the unit calculator.  Its later generic
+       input rule deliberately wins over the earlier field rule. */
+    .unit-search-field > input { width:100%; border-color:#425267; color:#f4f7fb; background:#0c1118; }
+    .unit-search .unit-search-field > input:focus { border-color:#788697; box-shadow:0 0 0 2px rgba(145,158,173,.18); }
+    .unit-search button[type="submit"] { border:1px solid #596777; color:#f4f7fb; background:#303a47; }
+    .unit-search button[type="submit"]:hover { border-color:#718094; background:#3a4655; }
+    .unit-search-results { position:absolute; top:calc(100% + 7px); left:0; z-index:120; width:min(380px,calc(100vw - 44px)); max-height:360px; padding:6px; overflow-y:auto; border:1px solid #46566a; border-radius:12px; background:#080d14; box-shadow:0 16px 42px rgba(0,0,0,.52); scrollbar-width:thin; touch-action:pan-y; }
+    .unit-search-results[hidden] { display:none; }
+    .unit-search .unit-search-result { display:grid; grid-template-columns:54px minmax(0,1fr); align-items:center; gap:10px; width:100%; min-height:48px; padding:5px 9px; border:0; border-bottom:1px solid #465363; border-radius:0; color:#f4f7fb; background:#27313e; text-align:left; cursor:pointer; touch-action:pan-y; }
+    .unit-search .unit-search-result:last-child { border-bottom:0; }
+    .unit-search .unit-search-result:hover,.unit-search .unit-search-result[aria-selected="true"] { background:#354252; }
+    .unit-search-result img,.unit-search-result-icon-empty { display:block; width:54px; height:40px; object-fit:contain; image-rendering:pixelated; }
+    .unit-search-result-icon-empty { border:1px dashed #405066; border-radius:7px; }
+    .unit-search-result-copy { display:grid; min-width:0; gap:2px; }
+    .unit-search-result-name { min-width:0; overflow:hidden; font-size:13px; font-weight:900; text-overflow:ellipsis; white-space:nowrap; }
+    .unit-search-result-identity { color:var(--muted); font-size:10px; font-weight:850; letter-spacing:.03em; }
+    .unit-search-empty { padding:13px 10px; color:var(--muted); font-size:12px; font-weight:800; text-align:center; }
+    @media (max-width:660px) {
+      .db-toolbar { align-items:stretch; flex-direction:column; gap:10px; padding:13px 15px; }
+      .unit-search { grid-template-columns:72px minmax(0,1fr) 58px; gap:7px; }
+      .unit-search button { padding-inline:8px; }
+      .unit-search-results { width:min(360px,calc(100vw - 106px)); }
+    }
+
+    /* Match the unit calculator's treasure and miscellaneous summaries exactly. */
+    .treasure-settings,
+    .misc-settings {
+      margin-bottom:10px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:rgba(14,19,26,.92);
+      box-shadow:var(--shadow);
+    }
+    .treasure-settings summary,
+    .misc-settings summary {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      min-height:52px;
+      padding:9px 18px;
+      color:#dce3ed;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      list-style:none;
+    }
+    .treasure-settings summary::-webkit-details-marker,
+    .misc-settings summary::-webkit-details-marker { display:none; }
+    .treasure-summary-actions,
+    .misc-summary-actions { display:inline-flex; align-items:center; gap:7px; }
+    .treasure-action-button {
+      display:inline-flex;
+      align-items:center;
+      min-height:30px;
+      padding:6px 12px;
+      border:1px solid rgba(255,255,255,.2);
+      border-radius:999px;
+      color:#dce3ed;
+      background:rgba(255,255,255,.06);
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .treasure-action-button:hover:not(:disabled),
+    .treasure-action-button:focus-visible {
+      border-color:rgba(255,255,255,.42);
+      background:rgba(255,255,255,.12);
+      outline:none;
+    }
+    .treasure-action-button:disabled { color:#707d8e; cursor:default; opacity:.62; }
+    .settings-toggle-control { display:inline-flex; align-items:center; gap:7px; color:#dce3ed; font-size:14px; font-weight:900; white-space:nowrap; }
+    .settings-toggle-arrow { color:var(--accent-text); font-size:22px; line-height:.8; transition:transform .16s ease; }
+    .treasure-settings[open] .settings-toggle-arrow,
+    .misc-settings[open] .settings-toggle-arrow { transform:rotate(180deg); }
+    .treasure-panel,
+    .misc-panel { padding:0 18px 16px; border-top:1px solid rgba(255,255,255,.08); }
+    .misc-panel .bar-settings { justify-content:flex-end; margin-top:0; padding-top:14px; border-top:0; }
+    .misc-panel .bar-settings-title { font-size:13px; }
+    .distance-unit-settings {
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+    .distance-unit-settings-title { color:var(--muted); font-size:13px; font-weight:900; }
+    .distance-unit-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .distance-unit-reset {
+      min-height:30px;
+      padding:5px 12px;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:999px;
+      color:#f4f7fb;
+      background:rgba(255,255,255,.07);
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .distance-unit-reset:hover:not(:disabled),
+    .distance-unit-reset:focus-visible { border-color:rgba(255,255,255,.44); background:rgba(255,255,255,.13); outline:none; }
+    .distance-unit-reset:disabled { color:#707d8e; cursor:default; opacity:.62; }
+    .distance-unit-note { margin:0; color:#aeb9c8; font-size:11px; font-weight:750; line-height:1.6; }
+    .distance-unit-note strong { color:var(--accent-text); }
+    .distance-unit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+    .distance-unit-field {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(104px,132px);
+      align-items:center;
+      gap:10px;
+      min-height:40px;
+      padding:8px 10px;
+      border:1px solid #344253;
+      border-radius:10px;
+      color:#dce3ed;
+      background:#0d141d;
+      font-size:12px;
+      font-weight:850;
+    }
+    .distance-unit-field select {
+      min-width:0;
+      height:30px;
+      padding:4px 8px;
+      border:1px solid #43536a;
+      border-radius:8px;
+      color:#f4f7fb;
+      background:#121a24;
+      font-size:12px;
+      font-weight:850;
+      outline:none;
+    }
+    .distance-unit-field select:focus { border-color:#43536a; box-shadow:none; }
+    .description.is-empty { color:#78869a; }
+    .attack-timeline-track { border-color:#fff; }
+    /* Keep every ordinary enemy stat card on the same baseline as the unit
+       calculator.  The native enemy renderer creates these cards dynamically,
+       so their structural classes are assigned in normalizeEnemyStatCards(). */
+    .stats-grid > .stat-card { align-self:start; }
+    .stats-grid > .stat-card.enemy-range-card,
+    .stats-grid > .stat-card.enemy-speed-card,
+    .stats-grid > .stat-card.enemy-cash-card {
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+    }
+    .stats-grid > .stat-card.enemy-range-card > .range-stack,
+    .stats-grid > .stat-card.enemy-speed-card > .stat-value,
+    .stats-grid > .stat-card.enemy-cash-card > .conditional-stat-row {
+      align-self:center;
+      width:100%;
+      margin-top:0;
+    }
+    .stats-grid > .stat-card.enemy-cash-card .stat-value { margin-top:0; }
+    .conditional-stat-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .stats > .stat-bar-card,
+    .stats > .attack-cycle-card { align-self:start; }
+    /* Match the generated unit calculator's details DOM and summary layout. */
+    .attack-timing-details { margin-top:10px; border-top:1px solid #303c4b; }
+    .attack-timing-details summary { display:flex; align-items:center; justify-content:space-between; gap:8px; padding-top:8px; color:#d9e1eb; font-size:15px; font-weight:800; list-style:none; cursor:pointer; }
+    .attack-timing-details summary .detail-summary-title { min-width:0; }
+    .attack-timing-details summary .detail-summary-control { display:inline-flex; align-items:center; flex:0 0 auto; margin-left:auto; white-space:nowrap; }
+    .attack-timing-details summary::-webkit-details-marker { display:none; }
+    .attack-timing-details summary::after { content:"▾"; color:var(--accent-text); font-size:22px; line-height:.8; transition:transform .16s ease; }
+    .attack-timing-details[open] summary::after { transform:rotate(180deg); }
+    .attack-timing-details .when-open, .attack-timing-details[open] .when-closed { display:none; }
+    .attack-timing-details[open] .when-open { display:inline; }
+    .attack-effect-settings,
+    .health-effect-settings,
+    .hp-detail-settings,
+    .expected-range-damage,
+    .attack-detail-settings { margin-top:10px; padding-top:10px; border-top:1px solid #303c4b; }
+    .attack-effect-settings h3,
+    .health-effect-settings h3,
+    .hp-detail-settings h3,
+    .expected-range-header h3,
+    .attack-detail-settings h3 { margin:0; color:#d9e1eb; font-size:14px; font-weight:950; }
+    .hp-efficiency-list { display:grid; gap:8px; margin-top:8px; }
+    .hp-efficiency-list .range-row { min-height:24px; }
+    .hp-efficiency-value { min-width:0; text-align:right; overflow-wrap:anywhere; }
+    .stat-bar-card { display:flex; flex-direction:column; }
+    .stat-bar-summary { position:relative; flex:0 0 145px; min-height:145px; }
+    .attack-bar-card .stat-bar-summary .bar-heading { padding-bottom:27px; }
+    .stat-bar-card .stat-bar-summary .bar-detail {
+      position:absolute;
+      right:0;
+      bottom:8px;
+      left:0;
+      width:100%;
+      max-width:100%;
+      margin:0;
+      justify-content:flex-end;
+      text-align:right;
+      white-space:nowrap;
+    }
+    .stat-bar-card > .hp-damage-details,
+    .stat-bar-card > .attack-damage-details { width:100%; margin-top:0; }
+    .attack-breakdown[hidden] { display:block; visibility:hidden; }
+    .attack-effect-toggle-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+    .attack-effect-toggle { display:grid; grid-template-columns:34px minmax(0,1fr) 18px; align-items:center; gap:7px; min-width:min(100%,178px); padding:6px 8px; border:1px solid #39485a; border-radius:10px; color:#f2f5f9; background:#121a24; font-size:12px; font-weight:900; cursor:default; }
+    .attack-effect-toggle:has(input:checked),
+    .attack-effect-toggle.selected { border-color:var(--gold); background:rgba(255,147,55,.12); box-shadow:inset 0 0 0 1px rgba(255,183,91,.18); }
+    .attack-effect-toggle.explosion-band-control { grid-template-columns:34px minmax(0,1fr) 76px; }
+    .attack-effect-toggle img,
+    .attack-effect-toggle .fallback-icon { width:34px; height:34px; border-radius:8px; object-fit:contain; font-size:13px; }
+    .attack-effect-toggle-copy { display:grid; gap:1px; min-width:0; }
+    .attack-effect-toggle-copy small { color:var(--gold); font-size:10px; font-weight:850; }
+    .attack-effect-toggle input { width:17px; height:17px; margin:0; accent-color:var(--accent); }
+    .attack-effect-band-select { min-width:0; width:76px; height:28px; padding:2px 5px; border:1px solid #526276; border-radius:7px; color:#f4f7fb; background:#0b1119; font:900 11px/1 system-ui,sans-serif; }
+    .expected-range-header { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+    .expected-metric-toggle { flex:0 0 auto; padding:2px; }
+    .expected-metric-toggle button { min-height:28px; padding:4px 9px; font-size:11px; }
+    .expected-range-chart-shell { position:relative; min-height:190px; margin-top:8px; overflow:hidden; border:1px solid #445266; border-radius:11px; background:linear-gradient(180deg,#111924,#0c121a); }
+    .expected-range-chart-shell canvas { display:block; width:100%; height:190px; }
+    .expected-range-tooltip { position:absolute; z-index:4; display:flex; align-items:baseline; gap:10px; width:max-content; max-width:calc(100% - 12px); padding:7px 10px; border:1px solid #48586c; border-radius:9px; color:#fff; background:#080c12; box-shadow:0 8px 24px rgba(0,0,0,.42); font-size:12px; font-weight:800; line-height:1.35; white-space:nowrap; pointer-events:none; transform:translate(-50%,calc(-100% - 8px)); }
+    .expected-range-tooltip[hidden],
+    .expected-range-empty[hidden] { display:none; }
+    .expected-range-tooltip strong { color:var(--gold); font-weight:950; font-variant-numeric:tabular-nums; }
+    .expected-range-empty { position:absolute; inset:0; display:grid; place-items:center; margin:0; padding:20px; color:var(--muted); font-size:12px; font-weight:850; text-align:center; }
+    .expected-range-query { margin-top:9px; }
+    .expected-range-query-row { display:grid; grid-template-columns:auto minmax(92px,120px) auto minmax(72px,1fr); align-items:center; gap:7px; }
+    .expected-range-field-label,
+    .expected-range-result-label { color:#d9e1eb; font-size:12px; font-weight:900; white-space:nowrap; }
+    .expected-range-result-label { color:var(--gold); }
+    .expected-range-query input { min-width:0; height:34px; padding:5px 8px; border:1px solid #445266; border-radius:8px; color:#f4f7fb; background:#0d141d; font:inherit; font-size:12px; font-weight:850; font-variant-numeric:tabular-nums; }
+    .expected-range-query output { min-width:0; padding:2px 0 2px 8px; color:var(--gold); background:transparent; font-size:30px; font-weight:950; line-height:1.05; font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+    @media(max-width:650px){
+      .distance-unit-grid { grid-template-columns:repeat(2,minmax(0,1fr)); max-width:none; }
+      .distance-unit-field { grid-template-columns:minmax(0,1fr) minmax(104px,132px); }
+      .expected-range-query-row { grid-template-columns:auto minmax(0,1fr); }
+    }
+    @media(max-width:620px){ .distance-unit-grid { grid-template-columns:1fr; } }
+
+  </style>
+</head>
+<body>
+<main class="page">
+  <header class="db-toolbar">
+    <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+    <form class="unit-search" id="unitSearchForm" role="search">
+      <label for="unitSearchInput">검색</label>
+      <div class="unit-search-field">
+        <input id="unitSearchInput" type="search" autocomplete="off"
+              spellcheck="false" placeholder="이름 입력"
+              aria-label="검색할 유닛 이름" aria-autocomplete="list"
+              aria-controls="unitSearchResults" aria-expanded="false">
+        <div class="unit-search-results" id="unitSearchResults"
+             role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
+      </div>
+      <button type="submit">검색</button>
+    </form>
+  </header>
+  <details class="treasure-settings" id="treasure-settings">
+    <summary><span>보물/패시브 설정</span><span class="treasure-summary-actions"><button type="button" class="treasure-action-button" id="treasure-reset" disabled>초기화</button><span class="settings-toggle-control"><span class="treasure-toggle-label" id="treasure-toggle">펼치기</span><span class="settings-toggle-arrow" aria-hidden="true">▾</span></span></span></summary>
+    <div class="treasure-panel"><div class="category-tabs" id="category-tabs" role="group" aria-label="보물 및 패시브 종류"></div><p class="treasure-note" id="treasure-note">보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.</p><div id="treasure-content"></div></div>
+  </details>
+
+  <details class="settings misc-settings" id="misc-settings">
+    <summary><span>&#44592;&#53440; &#49444;&#51221;</span><span class="misc-summary-actions"><span class="settings-toggle-control"><span class="misc-toggle-label" id="misc-toggle"></span><span class="settings-toggle-arrow" aria-hidden="true">&#9662;</span></span></span></summary>
+    <div class="settings-panel misc-panel" id="enemy-misc-panel">
+      <section class="distance-unit-settings" aria-labelledby="distance-unit-settings-title">
+        <div class="distance-unit-heading"><span class="distance-unit-settings-title" id="distance-unit-settings-title">&#44144;&#47532; &#45800;&#50948; &#49444;&#51221;</span><button type="button" class="distance-unit-reset" id="distance-unit-reset" disabled>&#52488;&#44592;&#54868;</button></div>
+        <p class="distance-unit-note"><strong>u</strong>: &#44592;&#48376; &#45800;&#50948; &#44144;&#47532; &middot; <strong>spu</strong>: &#51060;&#46041;&#49549;&#46020; &#45800;&#50948; &#44144;&#47532; &middot; <strong>rng</strong>: &#49324;&#44144;&#47532; &#45800;&#50948; &#44144;&#47532;</p>
+        <div class="distance-unit-grid">
+          <label class="distance-unit-field"><span>&#49324;&#44144;&#47532; &#45800;&#50948;</span><select id="range-unit-select" aria-label="&#49324;&#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
+          <label class="distance-unit-field"><span>&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;</span><select id="speed-unit-select" aria-label="&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;"><option value="spu/f">spu/f</option><option value="spu/s">spu/s</option><option value="u/f">u/f</option><option value="u/s">u/s</option><option value="rng/f">rng/f</option><option value="rng/s">rng/s</option></select></label>
+          <label class="distance-unit-field"><span>&#50892;&#54532; &#44144;&#47532; &#45800;&#50948;</span><select id="warp-unit-select" aria-label="&#50892;&#54532; &#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
+        </div>
+      </section>
+    </div>
+  </details>
+  <header class="hero">
+    <div class="portrait"><img id="enemy-image" alt=""></div>
+    <div class="hero-copy">
+      <div class="eyebrow" id="enemy-id"></div>
+      <div class="name-row"><h1 class="name" id="enemy-name"></h1></div>
+      <p class="description" id="enemy-description"></p>
+      <div class="level-control" aria-label="적 배율 조절">
+        <div class="level-row mag-row">
+          <label for="magnification-number">전체 배율</label>
+          <label class="magnification-number"><input class="number" type="number" id="magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 배율 직접 입력"><span>%</span></label>
+          <span class="treasure-application" id="treasure-application" hidden></span>
+        </div>
+        <div class="mag-pair-row">
+          <label class="mag-inline" for="hp-magnification-number"><span>체력</span><span class="magnification-number"><input class="number" type="number" id="hp-magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 체력 배율 직접 입력"><span>%</span></span></label>
+          <label class="mag-inline" for="attack-magnification-number"><span>공격력</span><span class="magnification-number"><input class="number" type="number" id="attack-magnification-number" min="0" step="1" inputmode="decimal" aria-label="적 공격력 배율 직접 입력"><span>%</span></span></label>
+        </div>
+      </div>
+      <div class="bar-settings" aria-label="스탯 바 기준값 설정">
+        <span class="bar-settings-title">바 기준값</span>
+        <label class="scale-field">체력 <input class="number" type="number" id="hp-max" min="1" step="1000" inputmode="numeric" aria-label="체력 바 최댓값"></label>
+        <label class="scale-field">공격력 <input class="number" type="number" id="attack-max" min="1" step="1000" inputmode="numeric" aria-label="공격력 바 최댓값"></label>
+      </div>
+    </div>
+  </header>
+  <section class="sheet section" aria-labelledby="stats-title">
+    <div class="section-heading"><h2 class="section-title" id="stats-title">적 스펙</h2><div class="section-tools"><div class="time-toggle" role="group" aria-label="시간 단위"><button id="time-s" type="button" aria-pressed="true">초 (s)</button><button id="time-f" type="button" aria-pressed="false">프레임 (f)</button></div></div></div>
+    <div class="stats stats-grid" id="stats" aria-live="polite"></div>
+  </section>
+  <section class="section traits-section" aria-labelledby="traits-title"><div class="traits-title"><h2 id="traits-title">속성</h2></div><div class="trait-list traits-row" id="traits"></div></section>
+  <section class="sheet section" aria-labelledby="effects-title"><div class="section-heading"><h2 class="section-title" id="effects-title">효과/능력</h2></div><div class="effects abilities-grid" id="effects"></div></section>
+</main>
+<script src="../catalog.js"></script>
+<script>
+const DATA={"enemy":{"id":275,"name":"과자의 마녀","description":"도감 설명이 없습니다.","has_unknown_abilities":false,"descriptionMissing":true},"base":{"hitpoints":30000,"knockbacks":2,"speed":5,"attack_hits":[6000],"attack_total":6000,"dps":2813,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":1975,"hp":30000,"attackHits":[6000],"range":150,"cash":1975,"hitboxWidth":320,"barrierHp":0,"shieldHp":0,"shieldRegen":0},"current":{"magnification":100.0,"hitpoints_magnification":100.0,"attack_magnification":100.0,"hitpoints":30000,"knockbacks":2,"speed":5,"attack_hits":[6000],"attack_total":6000,"dps":2813,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":1975},"attacks":[{"index":1,"base_damage":6000,"foreswing_frames":25,"abilities_active":true,"damage":6000,"foreswing_seconds":0.8333333333333334}],"timing":{"attack_animation_frames":46,"last_attack_foreswing_frames":25,"attack_cooldown_raw":20,"attack_cooldown_frames":39,"backswing_frames":21,"cycle_frames":64,"cycle_seconds":2.1333333333333333,"backswing_seconds":0.7,"attack_cooldown_seconds":1.3,"animationFrames":46,"lastHitFrame":25,"cooldownFrames":39,"backswingFrames":21,"cycleFrames":64,"foreswingFrames":[25],"attackAnimationAvailable":true},"ranges":[[-320.0,150.0]],"traits":[{"key":"witch","label":"마녀","icon":"../img/i/327.png"}],"abilities":[{"key":"area","label":"범위 공격","icon":"../img/i/211.png","description":"적 캐릭터의 공격 범위 내에 있는 모든 캐릭터에게 데미지를 입힙니다"}],"immunities":[],"assets":{"image":"../img/e/275/0.png"},"raw":{"hitpoints":30000,"knockbacks":2,"speed":5,"attack_1":6000,"attack_cooldown_raw":20,"standing_range":150,"cash_drop_raw":500,"hitbox_position":0,"hitbox_width":320,"unused_9":0,"trait_red":0,"area_attack":1,"foreswing_1":25,"trait_floating":0,"trait_black":0,"trait_metal":0,"trait_traitless":0,"trait_angel":0,"trait_alien":0,"trait_zombie":0,"knockback_chance":0,"freeze_chance":0,"freeze_duration":0,"slow_chance":0,"slow_duration":0,"critical_chance":0,"base_destroyer":0,"wave_chance":0,"wave_level":0,"weaken_chance":0,"weaken_duration":0,"weaken_percent":0,"strengthen_threshold":0,"strengthen_boost":0,"survive_chance":0,"attack_1_range_anchor":0,"attack_1_range_span":0,"wave_immune":0,"wave_blocker":0,"knockback_immune":0,"freeze_immune":0,"slow_immune":0,"weaken_immune":0,"burrow_count":0,"burrow_distance_raw":0,"revive_count":0,"revive_time":0,"revive_hitpoints_percent":0,"trait_witch":1,"trait_dojo":0,"attack_count":-1,"time_before_death":-1,"attack_count_state":0,"spawn_animation":-1,"soul_animation":0,"attack_2":0,"attack_3":0,"foreswing_2":0,"foreswing_3":0,"attack_1_abilities":1,"attack_2_abilities":0,"attack_3_abilities":0,"spawn_animation_flag":0,"soul_animation_flag":0,"barrier_hitpoints":0,"warp_chance":0,"warp_duration":0,"warp_distance_minimum_raw":0,"warp_distance_maximum_raw":0,"starred_alien_type":0,"warp_immune":0,"trait_eva":0,"trait_relic":0,"curse_chance":0,"curse_duration":0,"savage_blow_chance":0,"savage_blow_boost":0,"dodge_chance":0,"dodge_duration":0,"toxic_chance":0,"toxic_damage_percent":0,"surge_chance":0,"surge_spawn_minimum_raw":0,"surge_spawn_span_raw":0,"surge_level":0,"surge_immune":0,"mini_wave":0,"shield_hitpoints":0,"shield_regeneration_percent":0,"death_surge_chance":0,"death_surge_spawn_minimum_raw":0,"death_surge_spawn_span_raw":0,"death_surge_level":0,"trait_aku":0,"trait_colossus":0,"attack_2_range_flag":0,"attack_2_range_anchor":0,"attack_2_range_span":0,"attack_3_range_flag":0,"attack_3_range_anchor":0,"attack_3_range_span":0,"trait_behemoth":0,"mini_surge":0,"counter_surge":0,"trait_sage":0,"curse_immune":0,"explosion_chance":0,"explosion_range_anchor_raw":0,"explosion_range_span_raw":0,"explosion_immune":0,"trait_kaijin":0,"drain_chance":0,"drain_percent":0},"actualRangesDetailed":[{"hit":1,"minimum":-320.0,"maximum":150.0}],"magnification":100.0,"defaults":{"magnification":100.0,"hpBarMax":1000000,"attackBarMax":30000},"mechanicTraits":[{"key":"witch","label":"마녀"}],"treasure":{"qualityIcons":{"1":"../img/treasure/t1.png","2":"../img/treasure/t2.png","3":"../img/treasure/t3.png"},"categories":[{"key":"eoc","label":"세계편 보물","items":[{"key":"super_register","label":"슈퍼 레지스터","icon":"../img/treasure/Ot004_o.png","slotCount":3,"description":"획득 머니 배율 +1.5x","chapters":[[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}]]}]},{"key":"itf","label":"미래편 보물","items":[{"key":"blue_crystal","label":"블루 크리스탈","icon":"../img/treasure/Wt009_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}]]},{"key":"red_crystal","label":"레드 크리스탈","icon":"../img/treasure/Wt010_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}]]}]},{"key":"cotc","label":"우주편 보물","items":[{"key":"green_crystal","label":"그린 크리스탈","icon":"../img/treasure/St000_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}]]},{"key":"yellow_crystal","label":"옐로우 크리스탈","icon":"../img/treasure/St001_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}]]},{"key":"orange_crystal","label":"오렌지 크리스탈","icon":"../img/treasure/St002_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}]]},{"key":"lightblue_crystal","label":"라이트블루 크리스탈","icon":"../img/treasure/St003_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}]]},{"key":"purple_crystal","label":"퍼플 크리스탈","icon":"../img/treasure/St004_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}]]},{"key":"mysterious_mask","label":"수수께끼의 가면","icon":"../img/treasure/St010_o.png","slotCount":3,"description":"신 배율 감소","chapters":[[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}]]}]},{"key":"passive","label":"패시브","items":[]}],"passive":{"label":"회계력","minBaseLevel":1,"maxBaseLevel":20,"minPlusLevel":0,"maxPlusLevel":10,"defaultBaseLevel":20,"defaultPlusLevel":10,"moneyMultiplierPerLevel":0.05}}};
+const SEARCH_SITE_PREFIX="../";
+const $=id=>document.getElementById(id);
+const storeKey=`nyankodb.enemy.${DATA.enemy.id}`;
+const defaults={magnification:DATA.defaults.magnification??100,hpMagnification:DATA.defaults.magnification??100,attackMagnification:DATA.defaults.magnification??100,hpMax:DATA.defaults.hpBarMax??1000000,attackMax:DATA.defaults.attackBarMax??30000,timeUnit:'s',treasureOpen:false,category:'eoc',treasures:{},accounting:{baseLevel:20,plusLevel:10}};
+const bounded=(value,fallback,min,max)=>{const n=Number(value);return Number.isFinite(n)?Math.min(max,Math.max(min,n)):fallback};
+const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,n):fallback};
+let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
+let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
+const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
+const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
+const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
+// Enemy magnification uses one final floor.  Do not reduce the intermediate
+// product to f32: repeated shields at very high magnification would otherwise
+// lose HP through floating-point precision before the final truncation.
+const scaleEnemy=(base,mag)=>Math.floor(Number(base)*Number(mag)/100);
+const enemyDps=(attack,cycle)=>cycle>0?rustRound(Math.fround(Math.fround(attack*30)/Math.fround(cycle))):0;
+const frameText=f=>state.timeUnit==='f'?`${fmt(f)}f`:`${(f/30).toFixed(2)}초`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const attrText=s=>esc(s).replace(/\n/g,'&#10;');
+function persistOpen(){state.treasureOpen=$('treasure-settings').open;save();$('treasure-toggle').textContent=state.treasureOpen?'접기':'펼치기'}
+function closeInlineTooltips(){document.querySelectorAll('[data-tooltip-open="true"]').forEach(el=>delete el.dataset.tooltipOpen)}
+function bindInlineTooltips(root){root.querySelectorAll('.trait,.effect,.immunity-chip').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const wasOpen=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!wasOpen)el.dataset.tooltipOpen='true'}))}
+document.addEventListener('click',closeInlineTooltips);
+function initHeader(){
+  $('enemy-id').textContent=`ENEMY ${String(DATA.enemy.id).padStart(3,'0')}`;$('enemy-name').textContent=DATA.enemy.name||`적 ${DATA.enemy.id}`;const description=$('enemy-description');description.textContent=DATA.enemy.description||'도감 설명이 없습니다.';description.classList.toggle('is-empty',!!DATA.enemy.descriptionMissing);
+  $('enemy-image').src=DATA.assets.image;$('enemy-image').alt=DATA.enemy.name;
+  $('enemy-image').addEventListener('error',e=>e.currentTarget.style.visibility='hidden');
+  $('magnification-number').value=state.magnification;$('hp-magnification-number').value=state.hpMagnification;$('attack-magnification-number').value=state.attackMagnification;$('hp-max').value=state.hpMax;$('attack-max').value=state.attackMax;
+  const redrawMagnification=()=>{save();renderStats();renderEffects()};
+  const updateAllMagnification=value=>{const next=lowerBounded(value,state.magnification,0);state.magnification=next;state.hpMagnification=next;state.attackMagnification=next;$('magnification-number').value=next;$('hp-magnification-number').value=next;$('attack-magnification-number').value=next;redrawMagnification()};
+  const updateSpecificMagnification=(key,id,value)=>{state[key]=lowerBounded(value,state[key],0);$(id).value=state[key];redrawMagnification()};
+  const bindMagnification=(id,callback,key)=>{const element=$(id);element.oninput=e=>{if(e.target.value!=='')callback(e.target.value)};element.onchange=e=>{if(e.target.value==='')e.target.value=state[key];else callback(e.target.value)}};
+  bindMagnification('magnification-number',updateAllMagnification,'magnification');
+  bindMagnification('hp-magnification-number',value=>updateSpecificMagnification('hpMagnification','hp-magnification-number',value),'hpMagnification');
+  bindMagnification('attack-magnification-number',value=>updateSpecificMagnification('attackMagnification','attack-magnification-number',value),'attackMagnification');
+  const bindBar=(id,key)=>{const el=$(id);el.oninput=e=>{if(e.target.value==='')return;state[key]=bounded(e.target.value,state[key],1,1e12);save();renderStats()};el.onchange=e=>{if(e.target.value!=='')state[key]=bounded(e.target.value,state[key],1,1e12);e.target.value=state[key];save();renderStats()}};bindBar('hp-max','hpMax');bindBar('attack-max','attackMax');
+  for(const unit of ['s','f']){$(`time-${unit}`).setAttribute('aria-pressed',String(state.timeUnit===unit));$(`time-${unit}`).onclick=()=>{state.timeUnit=unit;for(const choice of ['s','f'])$(`time-${choice}`).setAttribute('aria-pressed',String(choice===unit));save();renderStats();renderEffects()}}
+}
+function meter(value,max,type,dividers=[]){const width=Math.max(0,value/max*100),markerClass=type==='hp'?'kb-marker':'attack-hit-marker',markerWrap=type==='hp'?'kb-markers':'attack-hit-markers';return `<div class="stat-meter"><div class="stat-meter-fill ${type}-fill" style="width:${width}%"></div><div class="${markerWrap}">${dividers.filter(x=>x>0&&x<max).map(x=>`<i class="${markerClass}" style="left:${x/max*100}%"></i>`).join('')}</div></div>`}
+function card(label,value,note='',cls=''){return `<article class="stat-card ${cls}"><span class="stat-label">${label}</span><strong class="stat-value">${value}</strong>${note?`<span class="stat-note">${note}</span>`:''}</article>`}
+function rangeText(r){
+  if(Array.isArray(r)){const minimum=Number(r[0]),maximum=Number(r[1]);return minimum===maximum?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`}
+  if(r&&typeof r==='object'){const minimum=Number(r.min),maximum=Number(r.max);return minimum===maximum?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`}
+  return fmt(r)
+}
+function renderStats(){
+  const base=DATA.base||DATA.stats||{},timing=DATA.timing||{},hits=(base.attackHits||base.hits||DATA.attacks||[]).map(x=>typeof x==='number'?x:Number(x.damage??x.baseDamage??0));
+  const hp=enemyScale(Number(base.hp||base.health||0),'hp'),scaledHits=hits.map(x=>enemyScale(x,'attack')),attack=scaledHits.reduce((a,b)=>a+b,0),cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||base.attackCycleFrames||1)),timingAvailable=timing.attackAnimationAvailable!==false,dps=timingAvailable?enemyDps(attack,cycle):null,kb=Math.max(1,Number(base.knockbacks||base.kb||1));
+  const hpCuts=Array.from({length:Math.max(0,kb-1)},(_,i)=>hp*(i+1)/kb),atkCuts=[];let sum=0;for(const hit of scaledHits.slice(0,-1)){sum+=hit;atkCuts.push(sum)}
+  const attackDetail=scaledHits.length>1?scaledHits.map(fmt).join('+'):'';
+  const lastHit=Number(timing.lastHitFrame??(timing.foreswingFrames||[]).at(-1)??0),anim=Number(timing.animationFrames||0),backswing=Number(timing.backswingFrames??Math.max(anim-lastHit,0)),cooldown=Number(timing.cooldownFrames||0);
+  const fs=(timing.foreswingFrames||DATA.attacks?.map(x=>x.foreswing)||[lastHit]).map(Number),actualRanges=DATA.ranges||base.actualRanges||[];
+  const clampPct=value=>Math.min(100,Math.max(0,value/cycle*100)),hitStart=clampPct(lastHit),intervalWidth=Math.max(0,Math.min(100-hitStart,cooldown/cycle*100)),backswingWidth=Math.max(0,Math.min(100-hitStart,backswing/cycle*100));
+  let html=`<article class="stat-card stat-bar-card"><span class="stat-label">체력 / KB</span><div class="bar-heading">${meter(hp,state.hpMax,'hp',hpCuts)}<div class="bar-value-stack"><strong class="stat-value">${fmt(hp)}</strong><div class="attack-breakdown" aria-hidden="true"></div></div></div><div class="bar-detail">KB <strong>${fmt(kb)}회</strong></div></article>`;
+  html+=`<article class="stat-card stat-bar-card attack-bar-card"><span class="stat-label">공격력</span><div class="bar-heading">${meter(attack,state.attackMax,'attack',atkCuts)}<div class="bar-value-stack"><strong class="stat-value">${fmt(attack)}</strong><div class="attack-breakdown">${attackDetail}</div></div></div><div class="bar-detail">DPS <strong>${dps===null?'—':fmt(dps)}</strong></div></article>`;
+  const markerHtml=fs.map((f,i)=>{const pct=clampPct(f),align=pct<7?' align-start':pct>93?' align-end':'';return `<button class="attack-timeline-hit${align}" style="left:${pct}%" data-hit="${i}" aria-label="${i+1}타 공격 시점"><span class="attack-hit-tooltip">${i+1}타 공격 시점 <span class="time-value">${frameText(f)}</span></span></button>`}).join('');
+  const detailRows=fs.map((f,i)=>`<div class="attack-timing-detail-row foreswing"><i class="timing-detail-mark"></i><span>선딜${fs.length>1?`(${i+1}타)`:''}</span><strong class="time-value">${frameText(f)}</strong></div>`).join('');
+  html+=timingAvailable
+    ? `<article class="stat-card attack-cycle-card"><span class="stat-label">공격 주기</span><strong class="stat-value">${frameText(cycle)}</strong><div class="attack-timeline-legend" aria-hidden="true"><span><i class="timing-swatch foreswing"></i>선딜</span><span><i class="timing-swatch backswing"></i>후딜</span><span><i class="timing-swatch interval"></i>공격 간격</span></div><div class="attack-timeline" aria-label="공격 주기 타임라인"><div class="attack-timeline-markers">${markerHtml}</div><div class="attack-timeline-track"><i class="attack-timeline-segment foreswing" style="left:0;width:${hitStart}%"></i><i class="attack-timeline-segment interval" style="left:${hitStart}%;width:${intervalWidth}%"></i><i class="attack-timeline-segment backswing" style="left:${hitStart}%;width:${backswingWidth}%"></i></div></div><details class="attack-timing-details"><summary><span class="when-closed">상세정보 펼치기</span><span class="when-open">상세정보 접기</span></summary><div class="attack-timing-detail-list">${detailRows}<div class="attack-timing-detail-row backswing"><i class="timing-detail-mark"></i><span>후딜</span><strong class="time-value">${frameText(backswing)}</strong></div><div class="attack-timing-detail-row interval"><i class="timing-detail-mark"></i><span>공격 간격</span><strong class="time-value">${frameText(cooldown)}</strong></div></div></details></article>`
+    : `<article class="stat-card attack-cycle-card is-animation-missing"><span class="stat-label">공격 주기</span><strong class="stat-value">—</strong><div class="animation-pending">데이터 추가 예정</div></article>`;
+  const rangeLines=[`<div class="range-row"><span>인식</span><strong>${fmt(base.range??base.recognitionRange??0)}</strong></div>`];
+  if(actualRanges.length)actualRanges.forEach((r,i)=>rangeLines.push(`<div class="range-row"><span>${actualRanges.length>1?`${i+1}타`:'공격'}</span><strong>${rangeText(r)}</strong></div>`));else rangeLines.push(`<div class="range-row"><span>공격</span><strong>${fmt(base.range??0)}</strong></div>`);
+  html+=`<article class="stat-card"><span class="stat-label">사거리</span><div class="range-stack">${rangeLines.join('')}</div></article>`;
+  html+=card('이동속도',fmt(base.speed||0),'');html+=card('획득 머니',`${fmt(enemyCashDrop())}원`,'');
+  $('stats').innerHTML=html;
+  document.querySelectorAll('.attack-timeline-hit').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const open=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!open)el.dataset.tooltipOpen='true'}));
+}
+function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.replaceChildren();return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
+function effectSummary(x){const p=[];const compactRange=(minimum,maximum)=>Math.abs(Number(minimum)-Number(maximum))<1e-9?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`;if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(compactRange(x.minimum,x.maximum));if(x.range)p.push(compactRange(x.range.minimum,x.range.maximum));if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
+function renderEffects(){const items=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');if(!items.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}let html=items.map((x,i)=>{const title=x.label||x.key,body=x.description||x.detail||'',meta=effectSummary(x)||x.summary||x.meta||'',icon=`<span class="ability-icon">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((title||'?')[0])}</span>`}</span>`;return `<article class="effect ability-card" tabindex="0" data-i="${i}">${icon}<div><div class="effect-name">${esc(title)}</div>${meta?`<div class="effect-meta ability-summary">${esc(meta)}</div>`:''}</div><div class="ability-tooltip"><strong>${esc(title)}</strong>${body?`<p>${esc(body)}</p>`:''}</div></article>`}).join('');if(immunities.length)html+=`<article class="immunity-card"><h3>무효</h3><div class="immunity-icons">${immunities.map((m,i)=>`<span class="immunity-chip" tabindex="0" data-m="${i}" role="img" aria-label="${esc(m.label)}">${m.icon?`<img src="${m.icon}" alt="">`:`<span class="fallback-icon">무</span>`}<span class="ability-tooltip"><strong>${esc(m.label||'무효')}</strong>${m.description?`<p>${esc(m.description)}</p>`:''}</span></span>`).join('')}</div></article>`;root.innerHTML=html;bindInlineTooltips(root)}
+function qualityName(q){return ['없음','조잡한','평범한','최고급'][q]}
+function ensureTreasure(){if(!state.treasures||typeof state.treasures!=='object'||Array.isArray(state.treasures))state.treasures={};for(const category of DATA.treasure.categories)for(const item of category.items)for(let c=0;c<3;c++)for(let s=0;s<item.slotCount;s++){const k=`${item.key}.${c}.${s}`,q=Number(state.treasures[k]);if(!Number.isInteger(q)||q<0||q>3)state.treasures[k]=3;else state.treasures[k]=q}}
+function treasurePercent(item){let total=0;for(let c=0;c<3;c++){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));total+=qs.some(q=>q===0)?0:qs.reduce((a,q)=>a+q/3,0)/item.slotCount*100}return total}
+function treasureChapterPercent(item,c){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));return qs.some(q=>q===0)?0:qs.reduce((a,q)=>a+q/3,0)/item.slotCount*100}
+const treasurePct=value=>{const rounded=Math.round(value*10)/10;return `${Number.isInteger(rounded)?rounded.toFixed(0):rounded.toFixed(1)}%`};
+function allTreasuresMaximum(){return DATA.treasure.categories.every(category=>category.items.every(item=>Array.from({length:3},(_,c)=>Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`])===3).every(Boolean)).every(Boolean)))}
+function syncTreasureResetButton(){$('treasure-reset').disabled=allTreasuresMaximum()&&enemyAccountingMaximum()}
+function enemyTreasureDescription(item){return item.key==='super_register'?`획득 머니 배율 +${enemyDetailNumber(enemyCashTreasureMultiplier(),2)}x`:item.description}
+function renderTreasure(){
+  ensureTreasure();
+  const t=DATA.treasure;
+  $('category-tabs').innerHTML=t.categories.map(c=>`<button type="button" class="category-tab" data-key="${c.key}" aria-pressed="${state.category===c.key}">${c.label}</button>`).join('');
+  document.querySelectorAll('.category-tab').forEach(b=>b.onclick=()=>{state.category=b.dataset.key;save();renderTreasure()});
+  const cat=t.categories.find(c=>c.key===state.category)||t.categories[0];
+  const note=$('treasure-note');
+  if(cat.key==='passive'){
+    const p=t.passive;
+    note.hidden=true;
+    $('treasure-content').innerHTML=`<div class="passive-cards"><article class="passive-card"><div class="passive-card-header"><h3>${p.label}</h3><span class="passive-current-level" id="accounting-current-level"></span></div><p class="passive-effect" id="accounting-effect"></p><div class="passive-level-controls"><div class="passive-level-row"><label for="accounting-base-range">기본 레벨</label><input id="accounting-base-range" type="range" min="${enemyAccountingBaseBounds[0]}" max="${enemyAccountingBaseBounds[1]}" aria-label="기본 레벨 슬라이더"><input id="accounting-base-number" type="number" min="${enemyAccountingBaseBounds[0]}" max="${enemyAccountingBaseBounds[1]}" inputmode="numeric" aria-label="기본 레벨 직접 입력"></div><div class="passive-level-row"><label for="accounting-plus-range">플러스 레벨</label><input id="accounting-plus-range" type="range" min="${enemyAccountingPlusBounds[0]}" max="${enemyAccountingPlusBounds[1]}" aria-label="플러스 레벨 슬라이더"><input id="accounting-plus-number" type="number" min="${enemyAccountingPlusBounds[0]}" max="${enemyAccountingPlusBounds[1]}" inputmode="numeric" aria-label="플러스 레벨 직접 입력"></div></div></article></div>`;
+    const syncAccounting=()=>{
+      $('accounting-base-range').value=String(state.accounting.baseLevel);$('accounting-base-number').value=String(state.accounting.baseLevel);
+      $('accounting-plus-range').value=String(state.accounting.plusLevel);$('accounting-plus-number').value=String(state.accounting.plusLevel);
+      $('accounting-current-level').textContent=`Lv.${state.accounting.baseLevel}+${state.accounting.plusLevel}`;
+      $('accounting-effect').textContent=`획득 머니 배율 +${enemyDetailNumber(enemyAccountingMultiplier(),2)}x`;
+    };
+    const setAccountingLevel=(key,value)=>{
+      const bounds=key==='baseLevel'?enemyAccountingBaseBounds:enemyAccountingPlusBounds;
+      state.accounting[key]=enemyClampInteger(value,bounds[0],bounds[1],state.accounting[key]);
+      syncAccounting();save();persistEnemySharedSettings();syncTreasureResetButton();renderStats();
+    };
+    [['baseLevel','accounting-base-range','accounting-base-number'],['plusLevel','accounting-plus-range','accounting-plus-number']].forEach(([key,rangeId,numberId])=>{
+      $(rangeId).addEventListener('input',event=>setAccountingLevel(key,event.target.value));
+      $(numberId).addEventListener('input',event=>{if(event.target.value!=='')setAccountingLevel(key,event.target.value)});
+      $(numberId).addEventListener('blur',event=>setAccountingLevel(key,event.target.value));
+    });
+    syncAccounting();
+    syncTreasureResetButton();
+    return;
+  }
+  note.hidden=false;
+  if(!cat.items.length){$('treasure-content').innerHTML='<div class="treasure-empty-category">등록된 보물이 없습니다.</div>';syncTreasureResetButton();return}
+  $('treasure-content').innerHTML=`<div class="treasure-grid">${cat.items.map(item=>`<article class="treasure-card"><div class="treasure-head"><img class="treasure-main" src="${item.icon}" alt="${esc(item.label)}" title="${esc(item.label)}"><div class="treasure-card-title"><h3 class="treasure-name">${item.label}</h3><p class="treasure-desc">${enemyTreasureDescription(item)}</p></div><div class="treasure-total">${treasurePct(treasurePercent(item))}</div></div><div class="chapters">${item.chapters.map((slots,c)=>`<div class="chapter"><div class="chapter-label"><span>${c+1}장</span> <span class="treasure-chapter-percent">${treasurePct(treasureChapterPercent(item,c))}</span></div><div class="slots">${slots.map((slot,s)=>{const k=`${item.key}.${c}.${s}`,q=Number(state.treasures[k]||0),displayed=q===0?'미획득':qualityName(q),tip=`${displayed} ${slot.name}${slot.location?`\n${slot.location}에서 획득!`:''}`;return `<button type="button" class="slot" data-key="${k}" data-tooltip="${attrText(tip)}" aria-label="${attrText(tip)}">${q?`<img src="${t.qualityIcons[q]}" alt="${qualityName(q)}">`:'<span class="treasure-empty">—</span>'}</button>`}).join('')}</div></div>`).join('')}</div></article>`).join('')}</div>`;
+  document.querySelectorAll('.slot').forEach(el=>{el.onclick=()=>{state.treasures[el.dataset.key]=(Number(state.treasures[el.dataset.key]||0)+1)%4;save();renderTreasure();renderStats();renderEffects()}});
+  syncTreasureResetButton();
+}
+$('treasure-settings').open=!!state.treasureOpen;$('treasure-toggle').textContent=state.treasureOpen?'접기':'펼치기';$('treasure-settings').addEventListener('toggle',persistOpen);$('treasure-reset').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();state.treasures={};ensureTreasure();state.accounting={baseLevel:enemyAccountingBaseBounds[1],plusLevel:enemyAccountingPlusBounds[1]};save();persistEnemySharedSettings();renderTreasure();renderStats();renderEffects()});
+
+/* Unit-calculator-compatible shared settings and page-local open panels. */
+const enemySharedSettingsKey='nyanko-db:enemy-shared-settings:v1';
+const enemyPanelStateKey=`${storeKey}.page-panels`;
+const enemySharedKeys=['hpMax','attackMax','timeUnit','rangeUnit','speedUnit','warpUnit','category','treasures','accounting','treasureOpen','miscOpen'];
+let enemyShared={};let enemyPanels={};
+try{enemyShared=JSON.parse(localStorage.getItem(enemySharedSettingsKey)||'{}')||{}}catch(_){}
+try{enemyPanels=JSON.parse(sessionStorage.getItem(enemyPanelStateKey)||'{}')||{}}catch(_){}
+delete enemyPanels.hp;delete enemyPanels.attack;
+const enemyLastPanelPageKey='nyanko-db:enemy-last-panel-page';
+try{
+  const currentEnemyPage=location.pathname||location.href;
+  if(sessionStorage.getItem(enemyLastPanelPageKey)!==currentEnemyPage){
+    enemyPanels={};
+    sessionStorage.removeItem(enemyPanelStateKey);
+  }
+  sessionStorage.setItem(enemyLastPanelPageKey,currentEnemyPage);
+}catch(_){}
+for(const key of enemySharedKeys)if(Object.prototype.hasOwnProperty.call(enemyShared,key))state[key]=enemyShared[key];
+state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);
+state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';
+state.rangeUnit=['rng','u','spu'].includes(state.rangeUnit)?state.rangeUnit:'rng';
+state.speedUnit=['spu/f','spu/s','u/f','u/s','rng/f','rng/s'].includes(state.speedUnit)?state.speedUnit:'spu/f';
+state.warpUnit=['rng','u','spu'].includes(state.warpUnit)?state.warpUnit:'rng';
+state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];
+const enemyAccountingConfig=DATA.treasure?.passive||{};
+const enemyAccountingBaseBounds=[Number(enemyAccountingConfig.minBaseLevel)||1,Number(enemyAccountingConfig.maxBaseLevel)||20];
+const enemyAccountingPlusBounds=[Number(enemyAccountingConfig.minPlusLevel)||0,Number(enemyAccountingConfig.maxPlusLevel)||10];
+const enemyClampInteger=(value,minimum,maximum,fallback)=>{const numeric=Number(value);return Number.isFinite(numeric)?Math.min(maximum,Math.max(minimum,Math.trunc(numeric))):fallback};
+state.accounting=state.accounting&&typeof state.accounting==='object'&&!Array.isArray(state.accounting)?state.accounting:{};
+state.accounting.baseLevel=enemyClampInteger(state.accounting.baseLevel,enemyAccountingBaseBounds[0],enemyAccountingBaseBounds[1],Number(enemyAccountingConfig.defaultBaseLevel)||enemyAccountingBaseBounds[1]);
+state.accounting.plusLevel=enemyClampInteger(state.accounting.plusLevel,enemyAccountingPlusBounds[0],enemyAccountingPlusBounds[1],Number(enemyAccountingConfig.defaultPlusLevel)||enemyAccountingPlusBounds[1]);
+state.treasureOpen=!!state.treasureOpen;state.miscOpen=!!state.miscOpen;
+const persistEnemySharedSettings=()=>{try{const value={};for(const key of enemySharedKeys)value[key]=state[key];localStorage.setItem(enemySharedSettingsKey,JSON.stringify(value))}catch(_){}};
+const persistEnemyPanelState=()=>{enemyPanels={...enemyPanels,timing:!!document.querySelector('.attack-timing-details:not(.attack-damage-details)')?.open};try{sessionStorage.setItem(enemyPanelStateKey,JSON.stringify({timing:!!enemyPanels.timing}))}catch(_){}};
+const setEnemyToggleLabel=(details,label)=>{label.textContent=details.open?'\uc811\uae30':'\ud3bc\uce58\uae30'};
+const upgradeEnemyToggle=label=>{if(!label||label.parentElement?.classList.contains('settings-toggle-control'))return;const control=document.createElement('span'),arrow=document.createElement('span');control.className='settings-toggle-control';arrow.className='settings-toggle-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='\u25be';label.replaceWith(control);control.append(label,arrow)};
+const enemyNativeRenderStats=renderStats;
+const enemyActiveAttackEffectKeys=new Set(Array.isArray(state.attackEffects)?state.attackEffects:[]);
+const enemyActiveHealthEffectKeys=new Set(Array.isArray(state.healthEffects)?state.healthEffects:[]);
+let enemyExplosionBandPercent=[0,100,70,40].includes(Number(state.explosionBandPercent))?Number(state.explosionBandPercent):0;
+let enemyExpectedMetric='attack';
+let enemyExpectedRangeDamage=null;
+let enemyExpectedChartGeometry=null;
+let enemyExpectedQueryRaw=Number((DATA.base||DATA.stats||{}).range??(DATA.base||DATA.stats||{}).recognitionRange??0);
+const enemyDetailNumber=(value,maximumFractionDigits=2)=>{const number=Number(value);if(!Number.isFinite(number))return '\u2014';const precision=10**maximumFractionDigits;return new Intl.NumberFormat('ko-KR',{maximumFractionDigits}).format(Math.round(number*precision)/precision)};
+const enemyDetailM=value=>{const number=Number(value);return Number.isFinite(number)?enemyDetailNumber(number/1000000)+'M':'\u2014'};
+const enemyAttackAbility=key=>(DATA.abilities||[]).find(ability=>ability.key===key)||null;
+const enemyTreasureItem=key=>DATA.treasure.categories.flatMap(category=>category.items||[]).find(item=>item.key===key)||null;
+const enemyTreasurePercent=key=>{const item=enemyTreasureItem(key);return item?treasurePercent(item):0};
+const enemyAccountingLevel=()=>state.accounting.baseLevel+state.accounting.plusLevel;
+const enemyAccountingMultiplier=()=>Math.max(0,enemyAccountingLevel()-1)*(Number(enemyAccountingConfig.moneyMultiplierPerLevel)||.05);
+const enemyCashTreasureMultiplier=()=>Math.max(0,Math.min(300,enemyTreasurePercent('super_register')))/200;
+const enemyCashMultiplier=()=>1+enemyCashTreasureMultiplier()+enemyAccountingMultiplier();
+const enemyCashDrop=()=>{
+  const raw=Number(DATA.raw?.cash_drop_raw??0);
+  // The cash formula is f32 arithmetic followed by exactly one final floor.
+  return Math.floor(Math.fround(Math.fround(raw)*Math.fround(enemyCashMultiplier()))+1e-9);
+};
+const enemyAccountingMaximum=()=>state.accounting.baseLevel===enemyAccountingBaseBounds[1]&&state.accounting.plusLevel===enemyAccountingPlusBounds[1];
+function enemyTraitTreasureEffect(){
+  // Cat God traits are deliberately hidden from the visible attribute row,
+  // but each chapter is still affected by its own Mysterious Mask.
+  const mechanicTraits=DATA.mechanicTraits||DATA.traits||[];
+  const catGod=mechanicTraits.find(trait=>trait.key==='cat_god');
+  if(catGod){
+    const chapter=Math.min(3,Math.max(1,Math.trunc(Number(catGod.chapter)||1)));
+    const mask=enemyTreasureItem('mysterious_mask');
+    const collected=mask?treasureChapterPercent(mask,chapter-1):0;
+    // 0% = 11x and 100% = 1x, decreasing linearly for the relevant chapter.
+    return {multiplier:Math.max(1,11-collected/10),treasurePercent:collected,maxTreasurePercent:100};
+  }
+  const traits=new Set(mechanicTraits.map(trait=>trait.key));
+  if(traits.has('starred_alien')){
+    const keys=['green_crystal','yellow_crystal','orange_crystal','lightblue_crystal','purple_crystal'];
+    const collected=keys.reduce((sum,key)=>sum+enemyTreasurePercent(key),0);
+    // 우주편 크리스탈은 각 장의 수집률이 그대로 합산된다. 최대 1,500%를
+    // 모으면 별 있음 에이리언의 기본 16배 보정이 1배까지 내려간다.
+    return {multiplier:Math.max(1,16-collected/100),treasurePercent:collected,maxTreasurePercent:1500};
+  }
+  if(traits.has('alien')){
+    const keys=['blue_crystal','red_crystal'];
+    const collected=keys.reduce((sum,key)=>sum+enemyTreasurePercent(key),0);
+    // 미래편의 두 크리스탈은 장별 수집률 3개가 각각 1/3씩 반영된다.
+    // 따라서 내부 0~600% 합계는 실제 보물 적용률 0~200%가 된다.
+    const treasurePercent=collected/3;
+    return {multiplier:Math.max(1,3-treasurePercent/100),treasurePercent,maxTreasurePercent:200};
+  }
+  return {multiplier:1,treasurePercent:null,maxTreasurePercent:null};
+}
+const enemyTraitMultiplier=()=>enemyTraitTreasureEffect().multiplier;
+const enemyEffectiveMagnification=(stat='attack')=>{
+  const selected=stat==='hp'?state.hpMagnification:state.attackMagnification;
+  return selected*enemyTraitMultiplier();
+};
+const enemyScale=(value,stat='attack')=>scaleEnemy(value,enemyEffectiveMagnification(stat));
+function renderEnemyTreasureApplication(){
+  const element=$('treasure-application');
+  if(!element)return;
+  const effect=enemyTraitTreasureEffect();
+  const multiplier=Number(effect.multiplier);
+  // Show every incomplete treasure state, including a multiplier that happens
+  // to be 1x after rounding.  Full-gold is the only intentionally quiet state.
+  const complete=effect.maxTreasurePercent!==null
+    && effect.treasurePercent!==null
+    && Number(effect.treasurePercent)>=Number(effect.maxTreasurePercent)-1e-9;
+  const active=Number.isFinite(multiplier)&&effect.treasurePercent!==null&&!complete;
+  element.hidden=!active;
+  if(active)element.textContent=`(보물 적용 ${enemyDetailNumber(multiplier,2)}x)`;
+}
+function enemyShieldHealthState(stats=enemyCurrentStatValues()){
+  const barrierAbility=enemyAttackAbility('barrier');
+  const barrierEnabled=!!barrierAbility&&enemyActiveHealthEffectKeys.has('barrier');
+  // Enemy magnification does not affect barrier durability.  Demon shields,
+  // on the other hand, are scaled with the enemy's normal statistics.
+  const barrier=barrierEnabled?Math.max(0,Number(barrierAbility.hitpoints)||0):0;
+  const shieldAbility=enemyAttackAbility('shield');
+  const enabled=!!shieldAbility&&enemyActiveHealthEffectKeys.has('shield');
+  const shield=enabled?enemyScale(Math.max(0,Number(shieldAbility.hitpoints)||0),'hp'):0;
+  const regeneration=Math.max(0,Math.min(100,Number(shieldAbility?.regeneration_percent)||0));
+  const regeneratedShield=Math.floor(shield*regeneration/100+1e-9);
+  const segments=[];
+  // Keep the body split into its real KB portions even when neither a
+  // barrier nor a shield is selected.  The white markers in the health bar
+  // are KB boundaries, not merely boundaries between optional effects.
+  // Every colour transition is deliberately separated by the same thin
+  // white line used for a unit's KB divisions.  A barrier precedes the
+  // body only once; a shield precedes each body segment as it regenerates
+  // on KB.
+  if(barrier>0)segments.push({kind:'barrier',value:barrier,dividerAfter:true});
+  const healthPerKb=stats.hp/stats.kb;
+  for(let index=0;index<stats.kb;index++){
+    const shieldAmount=index===0?shield:regeneratedShield;
+    if(shieldAmount>0)segments.push({kind:'shield',value:shieldAmount,dividerAfter:true});
+    if(healthPerKb>0)segments.push({kind:'health',value:healthPerKb,dividerAfter:index<stats.kb-1});
+  }
+  return {
+    enabled,
+    barrierEnabled,
+    barrier,
+    shield,
+    regeneratedShield,
+    regeneration,
+    segments:segments.length?segments:[{kind:'health',value:stats.hp,dividerAfter:false}],
+    total:stats.hp+barrier+shield+regeneratedShield*Math.max(0,stats.kb-1),
+  };
+}
+function enemyAbilityAppliesToHit(ability,hitNumber){
+  if(!ability)return false;
+  if(!Object.prototype.hasOwnProperty.call(ability,'applies_to_attacks'))return true;
+  return Array.isArray(ability.applies_to_attacks)&&ability.applies_to_attacks.map(Number).includes(Number(hitNumber));
+}
+function enemyStrengthenedAttack(attack,hitNumber){
+  const ability=enemyAttackAbility('strengthen');
+  if(!ability||!enemyActiveAttackEffectKeys.has('strengthen')||!enemyAbilityAppliesToHit(ability,hitNumber))return attack;
+  return Math.floor(attack*(1+(Number(ability.damage_boost_percent)||0)/100)+1e-9);
+}
+function enemyForcedAttackDamage(attack,hitNumber){
+  let value=enemyStrengthenedAttack(attack,hitNumber);
+  const critical=enemyAttackAbility('critical');
+  const savage=enemyAttackAbility('savage_blow');
+  if(critical&&enemyActiveAttackEffectKeys.has('critical')&&enemyAbilityAppliesToHit(critical,hitNumber))value=Math.floor(value*2+1e-9);
+  if(savage&&enemyActiveAttackEffectKeys.has('savage_blow')&&enemyAbilityAppliesToHit(savage,hitNumber))value=Math.floor(value*(Number(savage.damage_multiplier)||1+(Number(savage.damage_boost_percent)||0)/100)+1e-9);
+  return value;
+}
+function enemySelectedAttackHits(baseHits){
+  return baseHits.map((baseAttack,index)=>{
+    const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;
+    let total=enemyForcedAttackDamage(baseAttack,hitNumber);
+    for(const key of ['wave','mini_wave']){
+      const ability=enemyAttackAbility(key);
+      if(ability&&enemyActiveAttackEffectKeys.has(key)&&enemyAbilityAppliesToHit(ability,hitNumber))total+=enemyForcedAttackDamage(Math.floor(baseAttack*(key==='mini_wave'?.2:1)+1e-9),hitNumber);
+    }
+    for(const key of ['surge','mini_surge']){
+      const ability=enemyAttackAbility(key);
+      if(ability&&enemyActiveAttackEffectKeys.has(key)&&enemyAbilityAppliesToHit(ability,hitNumber)){
+        const derived=Math.floor(baseAttack*(key==='mini_surge'?.2:1)+1e-9);
+        total+=enemyForcedAttackDamage(derived,hitNumber)*Math.max(1,Math.trunc(Number(ability.level)||1));
+      }
+    }
+    const explosion=enemyAttackAbility('explosion');
+    if(explosion&&enemyExplosionBandPercent>0&&enemyAbilityAppliesToHit(explosion,hitNumber)){
+      total+=enemyForcedAttackDamage(Math.floor(baseAttack*enemyExplosionBandPercent/100+1e-9),hitNumber);
+    }
+    return total;
+  });
+}
+function enemyAttackAbilityMultiplier(){
+  // This badge deliberately uses raw attack values.  Enemy magnification,
+  // treasure adjustments, rounding, and the selected damage band must not
+  // change the ability multiplier displayed beside 공격력.
+  const rawHits=((DATA.base||DATA.stats||{}).attackHits||(DATA.base||DATA.stats||{}).hits||DATA.attacks||[]).map(value=>typeof value==='number'?value:Number(value.damage??value.baseDamage??0));
+  let rawTotal=0,abilityTotal=0;
+  rawHits.forEach((rawValue,index)=>{
+    const rawAttack=Math.max(0,Number(rawValue)||0);
+    if(rawAttack<=0)return;
+    const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;
+    const applies=ability=>enemyAbilityAppliesToHit(ability,hitNumber);
+    let forced=1;
+    const strengthen=enemyAttackAbility('strengthen');
+    if(strengthen&&enemyActiveAttackEffectKeys.has('strengthen')&&applies(strengthen))forced*=1+(Math.max(0,Number(strengthen.damage_boost_percent)||0)/100);
+    const critical=enemyAttackAbility('critical');
+    if(critical&&enemyActiveAttackEffectKeys.has('critical')&&applies(critical))forced*=2;
+    const savage=enemyAttackAbility('savage_blow');
+    if(savage&&enemyActiveAttackEffectKeys.has('savage_blow')&&applies(savage))forced*=Math.max(0,Number(savage.damage_multiplier)||1+(Math.max(0,Number(savage.damage_boost_percent)||0)/100));
+    let factor=forced;
+    for(const key of ['wave','mini_wave']){
+      const ability=enemyAttackAbility(key);
+      if(ability&&enemyActiveAttackEffectKeys.has(key)&&applies(ability))factor+=forced*(key==='mini_wave'?.2:1);
+    }
+    for(const key of ['surge','mini_surge']){
+      const ability=enemyAttackAbility(key);
+      if(ability&&enemyActiveAttackEffectKeys.has(key)&&applies(ability))factor+=forced*(key==='mini_surge'?.2:1)*Math.max(1,Math.trunc(Number(ability.level)||1));
+    }
+    const explosion=enemyAttackAbility('explosion');
+    if(explosion&&enemyExplosionBandPercent>0&&applies(explosion))factor+=forced*enemyExplosionBandPercent/100;
+    rawTotal+=rawAttack;
+    abilityTotal+=rawAttack*factor;
+  });
+  return rawTotal>0?abilityTotal/rawTotal:1;
+}
+const enemyFormatMultiplier=value=>Number(Number(value).toFixed(3)).toString();
+function enemyCurrentStatValues(){
+  const base=DATA.base||DATA.stats||{},timing=DATA.timing||{};
+  const hits=(base.attackHits||base.hits||DATA.attacks||[]).map(value=>typeof value==='number'?value:Number(value.damage??value.baseDamage??0));
+  const hp=enemyScale(Number(base.hp||base.health||0),'hp');
+  const baseHits=hits.map(value=>enemyScale(value,'attack'));
+  const attackHits=enemySelectedAttackHits(baseHits);
+  const attack=attackHits.reduce((sum,value)=>sum+value,0);
+  const cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||base.attackCycleFrames||1));
+  const timingAvailable=timing.attackAnimationAvailable!==false;
+  const kb=Math.max(1,Number(base.knockbacks||base.kb||1));
+  const cash=enemyCashDrop();
+  return {hp,attack,attackHits,baseHits,cycle,kb,cash,timingAvailable,dps:timingAvailable?enemyDps(attack,cycle):null};
+}
+function enemyStatDetailPanel(kind,rows){
+  const details=document.createElement('details');
+  details.className='attack-timing-details attack-damage-details'+(kind==='hp'?' hp-damage-details':'');
+  details.id=kind==='hp'?'hpDamageDetails':'attackDamageDetails';
+  const summary=document.createElement('summary');
+  const title=document.createElement('span');
+  title.className='detail-summary-title';
+  title.textContent='\uc0c1\uc138\uc815\ubcf4 \ubc0f \uc124\uc815';
+  const control=document.createElement('span');
+  control.className='detail-summary-control';
+  const closed=document.createElement('span');
+  closed.className='when-closed';
+  closed.textContent='\ud3bc\uce58\uae30';
+  const opened=document.createElement('span');
+  opened.className='when-open';
+  opened.textContent='\uc811\uae30';
+  control.append(closed,opened);
+  summary.append(title,control);
+  const section=document.createElement('section');
+  section.className=kind==='hp'?'hp-detail-settings':'attack-detail-settings';
+  const heading=document.createElement('h3');
+  heading.id=kind==='hp'?'hpDetailTitle':'attackDetailTitle';
+  section.setAttribute('aria-labelledby',heading.id);
+  heading.textContent='\uc0c1\uc138\uc815\ubcf4';
+  const list=document.createElement('div');
+  list.className='hp-efficiency-list';
+  rows.forEach(([label,value])=>{
+    const row=document.createElement('div');
+    row.className='range-row';
+    const rowLabel=document.createElement('span');
+    rowLabel.textContent=label;
+    const rowValue=document.createElement('strong');
+    rowValue.className='hp-efficiency-value';
+    rowValue.textContent=value;
+    row.append(rowLabel,rowValue);
+    list.append(row);
+  });
+  section.append(heading,list);
+  details.append(summary,section);
+  return details;
+}
+function enemyHealthEffectDetail(ability){
+  const rawHitpoints=Math.max(0,Number(ability.hitpoints)||0);
+  const hitpoints=ability.key==='shield'?enemyScale(rawHitpoints,'hp'):rawHitpoints;
+  const parts=[`\uccb4\ub825 ${enemyDetailNumber(hitpoints)}`];
+  const regeneration=Number(ability.regeneration_percent);
+  if(ability.key==='shield'&&Number.isFinite(regeneration)&&regeneration!==100)parts.push(`\uc7ac\uc0dd ${enemyDetailNumber(regeneration)}%`);
+  return parts.join(' \u00b7 ');
+}
+function enemyRenderHealthEffectSettings(root){
+  const abilities=['barrier','shield'].map(enemyAttackAbility).filter(Boolean);
+  const section=root.querySelector('#healthEffectSettings');
+  const list=root.querySelector('#healthEffectToggleList');
+  if(!section||!list)return;
+  section.hidden=!abilities.length;
+  list.replaceChildren();
+  for(const ability of abilities){
+    const control=document.createElement('label');
+    control.className='attack-effect-toggle health-effect-toggle';
+    if(ability.icon){const icon=document.createElement('img');icon.src=ability.icon;icon.alt='';control.append(icon)}
+    else{const fallback=document.createElement('span');fallback.className='fallback-icon';fallback.textContent=(ability.label||ability.key).slice(0,1);control.append(fallback)}
+    const copy=document.createElement('span');copy.className='attack-effect-toggle-copy';
+    const name=document.createElement('span');name.textContent=ability.label||ability.key;
+    const detail=document.createElement('small');detail.textContent=enemyHealthEffectDetail(ability);
+    copy.append(name,detail);
+    const checkbox=document.createElement('input');
+    checkbox.type='checkbox';
+    checkbox.checked=enemyActiveHealthEffectKeys.has(ability.key);
+    checkbox.setAttribute('aria-label',`${ability.label||ability.key} \uccb4\ub825\uc5d0 \uc801\uc6a9`);
+    checkbox.addEventListener('change',()=>{
+      if(checkbox.checked)enemyActiveHealthEffectKeys.add(ability.key);
+      else enemyActiveHealthEffectKeys.delete(ability.key);
+      state.healthEffects=[...enemyActiveHealthEffectKeys];
+      save();
+      renderStats();
+    });
+    control.append(copy,checkbox);
+    list.append(control);
+  }
+}
+function enemyHealthDetailPanel(rows){
+  const details=enemyStatDetailPanel('hp',rows);
+  const extras=document.createElement('div');
+  extras.innerHTML=`<section class="health-effect-settings" id="healthEffectSettings" hidden><h3>\uccb4\ub825 \ub2a5\ub825</h3><div class="attack-effect-toggle-list" id="healthEffectToggleList"></div></section>`;
+  const detailAnchor=details.querySelector('.hp-detail-settings');
+  while(extras.firstChild)details.insertBefore(extras.firstChild,detailAnchor);
+  enemyRenderHealthEffectSettings(details);
+  return details;
+}
+function enemyAttackEffectDetail(ability){
+  if(ability.key==='strengthen'){const boost=Number(ability.damage_boost_percent)||0;return `\uccb4\ub825 ${fmt(ability.hitpoints_threshold_percent||0)}% \uc774\ud558 \u00b7 \uacf5\uaca9\ub825 +${fmt(boost)}% (${fmt(1+boost/100)}\u00d7)`;}
+  if(['wave','mini_wave','surge','mini_surge','explosion'].includes(ability.key)){
+    let text=`\ud655\ub960 ${fmt(ability.chance||0)}%`;
+    if(ability.key!=='explosion')text+=` \u00b7 Lv.${fmt(ability.level||1)}`;
+    if(['surge','mini_surge','explosion'].includes(ability.key)&&ability.range){
+      const minimum=Number(ability.range.minimum)||0,maximum=Number(ability.range.maximum)||0;
+      text+=` \u00b7 \uc0dd\uc131 ${enemyRangeText(minimum)}`;
+      if(minimum!==maximum)text+=`~${enemyRangeText(maximum)}`;
+    }
+    if(['mini_wave','mini_surge'].includes(ability.key))text+=' \u00b7 \uc8fc\ub294 \ud53c\ud574 20%';
+    return text;
+  }
+  if(ability.key==='savage_blow')return `\ud655\ub960 ${fmt(ability.chance||0)}% \u00b7 \uc8fc\ub294 \ud53c\ud574 ${enemyDetailNumber(ability.damage_multiplier||1)}x`;
+  return `\ud655\ub960 ${fmt(ability.chance||0)}%`;
+}
+function enemyRenderAttackEffectSettings(root){
+  const keys=['strengthen','critical','savage_blow','wave','mini_wave','surge','mini_surge','explosion'];
+  const abilities=keys.map(enemyAttackAbility).filter(Boolean);
+  const section=root.querySelector('#attackEffectSettings');
+  const list=root.querySelector('#attackEffectToggleList');
+  section.hidden=abilities.length===0;
+  list.replaceChildren();
+  for(const ability of abilities){
+    const control=document.createElement('label');
+    control.className='attack-effect-toggle';
+    if(ability.icon){const icon=document.createElement('img');icon.src=ability.icon;icon.alt='';control.append(icon)}
+    else{const fallback=document.createElement('span');fallback.className='fallback-icon';fallback.textContent=(ability.label||ability.key).slice(0,1);control.append(fallback)}
+    const copy=document.createElement('span');copy.className='attack-effect-toggle-copy';
+    const name=document.createElement('span');name.textContent=ability.label||ability.key;
+    const detail=document.createElement('small');detail.textContent=enemyAttackEffectDetail(ability);
+    copy.append(name,detail);
+    if(ability.key==='explosion'){
+      control.classList.add('explosion-band-control');
+      const select=document.createElement('select');select.className='attack-effect-band-select';select.setAttribute('aria-label','\ud3ed\ud30c \ud53c\ud574\ub300 \uc120\ud0dd');
+      [[0,'\uc120\ud0dd \uc5c6\uc74c'],[100,'100%'],[70,'70%'],[40,'40%']].forEach(([value,label])=>{const option=document.createElement('option');option.value=String(value);option.textContent=label;select.append(option)});
+      select.value=String(enemyExplosionBandPercent);control.classList.toggle('selected',enemyExplosionBandPercent>0);
+      select.addEventListener('change',()=>{enemyExplosionBandPercent=Number(select.value)||0;state.explosionBandPercent=enemyExplosionBandPercent;save();renderStats()});
+      control.append(copy,select);
+    }else{
+      const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.checked=enemyActiveAttackEffectKeys.has(ability.key);checkbox.setAttribute('aria-label',`${ability.label||ability.key} \uacf5\uaca9\ub825\uc5d0 \uc801\uc6a9`);
+      checkbox.addEventListener('change',()=>{if(checkbox.checked)enemyActiveAttackEffectKeys.add(ability.key);else enemyActiveAttackEffectKeys.delete(ability.key);state.attackEffects=[...enemyActiveAttackEffectKeys];save();renderStats()});
+      control.append(copy,checkbox);
+    }
+    list.append(control);
+  }
+}
+function enemyAttackDetailPanel(rows){
+  const details=enemyStatDetailPanel('attack',rows);
+  const extras=document.createElement('div');
+  extras.innerHTML=`<section class="attack-effect-settings" id="attackEffectSettings" hidden><h3>\uacf5\uaca9 \ub2a5\ub825</h3><div class="attack-effect-toggle-list" id="attackEffectToggleList"></div></section><section class="expected-range-damage" aria-labelledby="expectedRangeDamageTitle"><div class="expected-range-header"><h3 id="expectedRangeDamageTitle">\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12</h3><div class="time-toggle expected-metric-toggle" role="group" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uae30\ub313\uac12 \uc885\ub958"><button id="expectedAttackButton" type="button" aria-pressed="${enemyExpectedMetric==='attack'}">\uacf5\uaca9\ub825</button><button id="expectedDpsButton" type="button" aria-pressed="${enemyExpectedMetric==='dps'}">DPS</button></div></div><div class="expected-range-chart-shell" id="expectedRangeChartShell"><canvas id="expectedRangeCanvas" height="190" aria-label="\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12 \uadf8\ub798\ud504"></canvas><div class="expected-range-tooltip" id="expectedRangeTooltip" role="tooltip" hidden><span>\uc0ac\uac70\ub9ac <strong id="expectedRangeTooltipDistance">0</strong></span><span><span id="expectedRangeTooltipMetricLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span> <strong id="expectedRangeTooltipValue">0</strong></span></div><p class="expected-range-empty" id="expectedRangeEmpty" hidden>\ud604\uc7ac \uc870\uac74\uc5d0\uc11c \ud45c\uc2dc\ud560 \uacf5\uaca9 \uad6c\uac04\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.</p></div><div class="expected-range-query"><div class="expected-range-query-row"><label class="expected-range-field-label" for="expectedRangeInput">\uc0ac\uac70\ub9ac</label><input id="expectedRangeInput" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="\uc0ac\uac70\ub9ac \uc785\ub825" value="${enemyRangeInputText(enemyExpectedQueryRaw*enemyRangeFactor())}"><span class="expected-range-result-label" id="expectedRangeResultLabel">\uacf5\uaca9\ub825 \uae30\ub313\uac12</span><output id="expectedRangeResult" for="expectedRangeInput">\u2014</output></div></div></section>`;
+  const detailAnchor=details.querySelector('.attack-detail-settings');
+  while(extras.firstChild)details.insertBefore(extras.firstChild,detailAnchor);
+  enemyRenderAttackEffectSettings(details);
+  details.querySelector('#expectedAttackButton').addEventListener('click',()=>{enemyExpectedMetric='attack';enemyRenderExpectedRangeDamage()});
+  details.querySelector('#expectedDpsButton').addEventListener('click',()=>{enemyExpectedMetric='dps';enemyRenderExpectedRangeDamage()});
+  const input=details.querySelector('#expectedRangeInput');
+  input.addEventListener('input',()=>{const clean=input.value.replace(/,/g,'');if(clean!==input.value)input.value=clean;const displayed=enemyRangeInputNumber(clean);if(Number.isFinite(displayed))enemyExpectedQueryRaw=displayed/enemyRangeFactor();enemyUpdateExpectedRangeQuery();enemyDrawExpectedRangeChart()});
+  const canvas=details.querySelector('#expectedRangeCanvas');
+  canvas.addEventListener('pointermove',enemyUpdateExpectedRangeTooltip);canvas.addEventListener('pointerleave',enemyHideExpectedRangeTooltip);
+  details.addEventListener('toggle',()=>{if(details.open)requestAnimationFrame(enemyRenderExpectedRangeDamage);else enemyHideExpectedRangeTooltip()});
+  return details;
+}
+function enemyExpectedAttackForHit(attack,hitNumber){
+  const strengthened=enemyStrengthenedAttack(attack,hitNumber);
+  const critical=enemyAttackAbility('critical');
+  const savage=enemyAttackAbility('savage_blow');
+  const criticalChance=critical&&enemyAbilityAppliesToHit(critical,hitNumber)?Math.max(0,Math.min(100,Number(critical.chance)||0))/100:0;
+  const savageChance=savage&&enemyAbilityAppliesToHit(savage,hitNumber)?Math.max(0,Math.min(100,Number(savage.chance)||0))/100:0;
+  const savageBoost=savage?Math.max(0,Number(savage.damage_boost_percent)||0)/100:0;
+  return strengthened*(1+criticalChance)*(1+savageChance*savageBoost);
+}
+function enemyExpectedRangeEntries(){
+  const base=DATA.base||DATA.stats||{};
+  const rawHits=(base.attackHits||base.hits||DATA.attacks||[]).map(value=>typeof value==='number'?value:Number(value.damage??value.baseDamage??0));
+  const hits=rawHits.map(value=>enemyScale(value,'attack'));
+  const ranges=DATA.ranges||base.actualRanges||[];
+  const entries=[];
+  const add=(minimum,maximum,value,source='direct',includeMinimum=true,includeMaximum=true)=>{
+    minimum=Number(minimum);maximum=Number(maximum);value=Number(value);
+    if(!Number.isFinite(minimum)||!Number.isFinite(maximum)||!Number.isFinite(value)||value<=0)return;
+    if(minimum>maximum)[minimum,maximum]=[maximum,minimum];
+    entries.push({minimum,maximum,expectedAttack:value,source,includeMinimum,includeMaximum});
+  };
+  hits.forEach((attack,index)=>{
+    if(attack<=0)return;
+    const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;
+    const range=ranges[index]??ranges[0]??[base.range??base.recognitionRange??0,base.range??base.recognitionRange??0];
+    const minimum=Array.isArray(range)?range[0]:range.minimum??range.min;
+    const maximum=Array.isArray(range)?range[1]:range.maximum??range.max;
+    add(minimum,maximum,enemyExpectedAttackForHit(attack,hitNumber),'direct');
+  });
+  for(const key of ['wave','mini_wave']){
+    const ability=enemyAttackAbility(key);if(!ability)continue;
+    const chance=Math.max(0,Math.min(100,Number(ability.chance)||0))/100;
+    const maximum=Number.isFinite(Number(ability.reach))?Number(ability.reach):467.5+200*(Math.max(1,Math.trunc(Number(ability.level)||1))-1);
+    hits.forEach((attack,index)=>{const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;if(attack<=0||chance<=0||!enemyAbilityAppliesToHit(ability,hitNumber))return;const derived=Math.floor(attack*(key==='mini_wave'?.2:1)+1e-9);add(-67.5,maximum,enemyExpectedAttackForHit(derived,hitNumber)*chance,key,false,true)});
+  }
+  for(const key of ['surge','mini_surge']){
+    const ability=enemyAttackAbility(key);if(!ability||!ability.range)continue;
+    const chance=Math.max(0,Math.min(100,Number(ability.chance)||0))/100;
+    const level=Math.max(1,Math.trunc(Number(ability.level)||1));
+    const generationMinimum=Math.min(Number(ability.range.minimum)||0,Number(ability.range.maximum)||0);
+    const generationMaximum=Math.max(Number(ability.range.minimum)||0,Number(ability.range.maximum)||0);
+    const generationSteps=Math.max(0,Math.round((generationMaximum-generationMinimum)*4));
+    const generationCount=Math.max(1,generationSteps);
+    hits.forEach((attack,index)=>{const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;if(attack<=0||chance<=0||!enemyAbilityAppliesToHit(ability,hitNumber))return;const derived=Math.floor(attack*(key==='mini_surge'?.2:1)+1e-9);const each=enemyExpectedAttackForHit(derived,hitNumber)*chance*level/generationCount;for(let step=0;step<generationCount;step++){const position=generationMinimum+step/4;add(position-250,position+125,each,key,false,true)}});
+  }
+  const explosion=enemyAttackAbility('explosion');
+  if(explosion&&explosion.range){
+    const chance=Math.max(0,Math.min(100,Number(explosion.chance)||0))/100;
+    const generationMinimum=Math.min(Number(explosion.range.minimum)||0,Number(explosion.range.maximum)||0);
+    const generationMaximum=Math.max(Number(explosion.range.minimum)||0,Number(explosion.range.maximum)||0);
+    const generationSteps=Math.max(0,Math.round((generationMaximum-generationMinimum)*4));
+    const generationCount=Math.max(1,generationSteps);
+    hits.forEach((attack,index)=>{const hitNumber=Number(DATA.attacks?.[index]?.index)||index+1;if(attack<=0||chance<=0||!enemyAbilityAppliesToHit(explosion,hitNumber))return;const bandValues=[1,.7,.4].map(scale=>enemyExpectedAttackForHit(Math.floor(attack*scale+1e-9),hitNumber)*chance/generationCount);for(let step=0;step<generationCount;step++){const position=generationMinimum+step/4;add(position-75,position+75,bandValues[0],'explosion',false,true);add(position-175,position-75,bandValues[1],'explosion',false,true);add(position+75,position+175,bandValues[1],'explosion',false,true);add(position-275,position-175,bandValues[2],'explosion',false,true);add(position+175,position+275,bandValues[2],'explosion',false,true)}});
+  }
+  return entries;
+}
+function enemyExpectedValueFromEntries(entries,distance){
+  return entries.filter(entry=>(entry.includeMinimum===false?distance>entry.minimum:distance>=entry.minimum)&&(entry.includeMaximum===false?distance<entry.maximum:distance<=entry.maximum)).reduce((sum,entry)=>sum+entry.expectedAttack,0);
+}
+function enemyCalculateExpectedRangeDamage(){
+  const entries=enemyExpectedRangeEntries();if(!entries.length)return null;
+  const minimum=Math.min(...entries.map(entry=>entry.minimum));
+  const maximum=Math.max(...entries.map(entry=>entry.maximum));
+  const minimumIndex=Math.floor(minimum*4)-1,maximumIndex=Math.ceil(maximum*4)+1;
+  const points=[];
+  for(let index=minimumIndex;index<=maximumIndex;index++)points.push({distance:index/4,value:enemyExpectedValueFromEntries(entries,index/4)});
+  const segments=[];
+  for(let index=0;index<points.length-1;index++){
+    const start=points[index],end=points[index+1];if(start.value<=0&&end.value<=0)continue;
+    const slope=(end.value-start.value)/(end.distance-start.distance);
+    const previous=segments.at(-1);
+    if(previous&&Math.abs(previous.endValue-start.value)<1e-9&&Math.abs(previous.slope-slope)<1e-9&&previous.maximum===start.distance){previous.maximum=end.distance;previous.endValue=end.value;previous.value=Math.max(previous.value,end.value)}
+    else segments.push({minimum:start.distance,maximum:end.distance,startValue:start.value,endValue:end.value,value:Math.max(start.value,end.value),slope});
+  }
+  const timing=DATA.timing||{},cycle=Math.max(1,Number(timing.cycleFrames||timing.attackCycleFrames||1));
+  return {minimum,maximum,maximumValue:Math.max(...points.map(point=>point.value)),entries,segments,attackCycleFrames:cycle,fps:30,dpsReliable:timing.attackAnimationAvailable!==false};
+}
+function enemyExpectedMetricData(data=enemyExpectedRangeDamage){
+  if(!data)return null;if(enemyExpectedMetric==='dps'&&!data.dpsReliable)return null;const multiplier=enemyExpectedMetric==='dps'?30/Math.max(Number(data.attackCycleFrames)||1,1):1;
+  return {...data,maximumValue:data.maximumValue*multiplier,segments:data.segments.map(segment=>({...segment,value:segment.value*multiplier,startValue:segment.startValue*multiplier,endValue:segment.endValue*multiplier})),metricMultiplier:multiplier};
+}
+function enemyExpectedValueAt(data,distance){
+  if(!data||!Number.isFinite(distance))return null;let value=enemyExpectedValueFromEntries(data.entries||[],distance);if(enemyExpectedMetric==='dps')value=value*30/Math.max(Number(data.attackCycleFrames)||1,1);return value;
+}
+function enemyExpectedElements(){
+  const details=document.querySelector('#attackDamageDetails');if(!details)return null;
+  const find=id=>details.querySelector('#'+id);
+  return {details,attackButton:find('expectedAttackButton'),dpsButton:find('expectedDpsButton'),title:find('expectedRangeDamageTitle'),shell:find('expectedRangeChartShell'),canvas:find('expectedRangeCanvas'),tooltip:find('expectedRangeTooltip'),tooltipDistance:find('expectedRangeTooltipDistance'),tooltipLabel:find('expectedRangeTooltipMetricLabel'),tooltipValue:find('expectedRangeTooltipValue'),empty:find('expectedRangeEmpty'),input:find('expectedRangeInput'),resultLabel:find('expectedRangeResultLabel'),result:find('expectedRangeResult')};
+}
+function enemyUpdateExpectedRangeQuery(){
+  const elements=enemyExpectedElements();if(!elements)return;if(enemyExpectedMetric==='dps'&&enemyExpectedRangeDamage&&!enemyExpectedRangeDamage.dpsReliable){elements.result.textContent='—';elements.result.title='\uacf5\uaca9 \uc560\ub2c8\uba54\uc774\uc158 \ub370\uc774\ud130 \ucd94\uac00 \uc608\uc815';return}const displayed=enemyRangeInputNumber(elements.input.value);if(!Number.isFinite(displayed)){elements.result.textContent=elements.input.value.trim()?'\uc785\ub825 \uc624\ub958':'\u2014';return}const raw=displayed/enemyRangeFactor();enemyExpectedQueryRaw=raw;elements.result.title='';elements.result.textContent=enemyDetailNumber(enemyExpectedValueAt(enemyExpectedRangeDamage,raw)||0);
+}
+function enemyHideExpectedRangeTooltip(){const elements=enemyExpectedElements();if(elements)elements.tooltip.hidden=true}
+function enemyUpdateExpectedRangeTooltip(event){
+  const elements=enemyExpectedElements(),geometry=enemyExpectedChartGeometry,data=enemyExpectedMetricData();if(!elements||!geometry||!data){enemyHideExpectedRangeTooltip();return}const canvasRect=elements.canvas.getBoundingClientRect(),shellRect=elements.shell.getBoundingClientRect();if(!canvasRect.width)return;const canvasX=(event.clientX-canvasRect.left)*geometry.canvasWidth/canvasRect.width;if(canvasX<geometry.padding.left||canvasX>geometry.canvasWidth-geometry.padding.right){enemyHideExpectedRangeTooltip();return}const ratio=Math.min(1,Math.max(0,(canvasX-geometry.padding.left)/geometry.plotWidth));const rawDistance=geometry.domainMinimum+ratio*(geometry.domainMaximum-geometry.domainMinimum),distance=Math.round(rawDistance);elements.tooltipDistance.textContent=enemyRangeText(distance);elements.tooltipLabel.textContent=enemyExpectedMetric==='dps'?'DPS \uae30\ub313\uac12':'\uacf5\uaca9\ub825 \uae30\ub313\uac12';elements.tooltipValue.textContent=enemyDetailNumber(enemyExpectedValueAt(enemyExpectedRangeDamage,distance)||0);elements.tooltip.hidden=false;const half=elements.tooltip.offsetWidth/2+6,x=event.clientX-shellRect.left,y=event.clientY-shellRect.top;elements.tooltip.style.left=`${Math.min(Math.max(x,half),shellRect.width-half)}px`;elements.tooltip.style.top=`${Math.max(y,elements.tooltip.offsetHeight+14)}px`;
+}
+function enemyDrawExpectedRangeChart(){
+  enemyExpectedChartGeometry=null;const elements=enemyExpectedElements(),data=enemyExpectedMetricData();if(!elements||!data||!elements.details.open)return;const width=elements.canvas.clientWidth,height=190;if(width<=0)return;const pixelRatio=Math.max(1,window.devicePixelRatio||1);elements.canvas.width=Math.round(width*pixelRatio);elements.canvas.height=Math.round(height*pixelRatio);const context=elements.canvas.getContext('2d');if(!context)return;context.setTransform(pixelRatio,0,0,pixelRatio,0,0);context.clearRect(0,0,width,height);context.font='800 12px system-ui,sans-serif';const yLabel=enemyDetailNumber(data.maximumValue),leftPadding=Math.max(56,Math.ceil(context.measureText(yLabel).width)+20),padding={left:leftPadding,right:42,top:21,bottom:33},plotWidth=Math.max(1,width-padding.left-padding.right),plotHeight=Math.max(1,height-padding.top-padding.bottom),recognition=Number((DATA.base||DATA.stats||{}).range??0);let domainMinimum=Math.min(Number(data.minimum),0,enemyExpectedQueryRaw,recognition),domainMaximum=Math.max(Number(data.maximum),0,enemyExpectedQueryRaw,recognition);if(domainMinimum===domainMaximum){domainMinimum-=1;domainMaximum+=1}const detailedValue=enemyExpectedValueAt(enemyExpectedRangeDamage,enemyExpectedQueryRaw)||0,yMaximum=Math.max(Number(data.maximumValue),detailedValue,Number.EPSILON),mapX=value=>padding.left+(value-domainMinimum)/(domainMaximum-domainMinimum)*plotWidth,mapY=value=>padding.top+(1-value/yMaximum)*plotHeight,baseline=padding.top+plotHeight;enemyExpectedChartGeometry={canvasWidth:width,padding,plotWidth,domainMinimum,domainMaximum};context.lineWidth=1;context.strokeStyle='rgba(137,155,178,.2)';[.25,.5,.75].forEach(ratio=>{const y=padding.top+plotHeight*ratio;context.beginPath();context.moveTo(padding.left,y);context.lineTo(width-padding.right,y);context.stroke()});const gradient=context.createLinearGradient(0,mapY(yMaximum),0,baseline);gradient.addColorStop(0,'rgba(255,112,52,.78)');gradient.addColorStop(1,'rgba(255,91,45,.18)');data.segments.forEach(segment=>{const left=mapX(segment.minimum),right=mapX(segment.maximum),leftY=mapY(segment.startValue),rightY=mapY(segment.endValue);context.fillStyle=gradient;context.beginPath();context.moveTo(left,baseline);context.lineTo(left,leftY);context.lineTo(right,rightY);context.lineTo(right,baseline);context.closePath();context.fill();context.strokeStyle='#ffad52';context.lineWidth=2;context.beginPath();context.moveTo(left,leftY);context.lineTo(right,rightY);context.stroke()});if(Number.isFinite(recognition)){const x=mapX(recognition);context.save();context.strokeStyle='rgba(93,205,255,.88)';context.lineWidth=1.5;context.setLineDash([6,4]);context.beginPath();context.moveTo(x,padding.top);context.lineTo(x,baseline);context.stroke();context.setLineDash([]);context.fillStyle='#8bdcff';context.font='900 11px system-ui,sans-serif';context.textBaseline='top';context.textAlign='left';context.fillText('\uc778\uc2dd',x+7,padding.top+4);context.restore()}context.strokeStyle='rgba(239,244,250,.72)';context.lineWidth=1;context.beginPath();context.moveTo(padding.left,padding.top);context.lineTo(padding.left,baseline);context.lineTo(width-padding.right,baseline);context.stroke();context.fillStyle='#a9b5c5';context.font='800 12px system-ui,sans-serif';context.textBaseline='top';context.textAlign='left';context.fillText(yLabel,7,padding.top-6);const ticks=[domainMinimum];if(domainMinimum<0&&domainMaximum>0)ticks.push(0);if(domainMinimum!==domainMaximum)ticks.push(domainMaximum);[...new Set(ticks)].forEach((tick,index,all)=>{const x=mapX(tick);context.textAlign=index===0?'left':index===all.length-1?'right':'center';const displayed=tick*enemyRangeFactor();context.fillText(displayed>0?'+'+enemyDetailNumber(displayed):enemyDetailNumber(displayed),x,baseline+8)});const pointX=mapX(enemyExpectedQueryRaw),pointY=mapY(detailedValue);context.save();context.shadowColor='rgba(255,91,45,.98)';context.shadowBlur=12;context.fillStyle='#ff5b2d';context.beginPath();context.arc(pointX,pointY,4.5,0,Math.PI*2);context.fill();context.restore();context.fillStyle='#fff';context.beginPath();context.arc(pointX,pointY,4.5,0,Math.PI*2);context.fill();
+}
+function enemyRenderExpectedRangeDamage(){
+  const elements=enemyExpectedElements();if(!elements)return;enemyExpectedRangeDamage=enemyCalculateExpectedRangeDamage();const isDps=enemyExpectedMetric==='dps',metricData=enemyExpectedMetricData(enemyExpectedRangeDamage),unavailable=isDps&&enemyExpectedRangeDamage&&!enemyExpectedRangeDamage.dpsReliable;elements.attackButton.setAttribute('aria-pressed',String(!isDps));elements.dpsButton.setAttribute('aria-pressed',String(isDps));elements.title.textContent=isDps?'\uc0ac\uac70\ub9ac\ubcc4 DPS \uae30\ub313\uac12':'\uc0ac\uac70\ub9ac\ubcc4 \uacf5\uaca9\ub825 \uae30\ub313\uac12';elements.resultLabel.textContent=isDps?'DPS \uae30\ub313\uac12':'\uacf5\uaca9\ub825 \uae30\ub313\uac12';elements.canvas.setAttribute('aria-label',elements.title.textContent+' \uadf8\ub798\ud504');elements.empty.textContent=unavailable?'\uacf5\uaca9 \uc560\ub2c8\uba54\uc774\uc158 \ub370\uc774\ud130 \ucd94\uac00 \uc608\uc815':'\ud604\uc7ac \uc870\uac74\uc5d0\uc11c \ud45c\uc2dc\ud560 \uacf5\uaca9 \uad6c\uac04\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.';elements.empty.hidden=!!metricData;elements.canvas.hidden=!metricData;enemyUpdateExpectedRangeQuery();if(metricData&&elements.details.open)requestAnimationFrame(enemyDrawExpectedRangeChart);
+}
+function addEnemyApparentInterval(){
+  const detailList=document.querySelector('.attack-timing-detail-list');
+  if(!detailList||detailList.querySelector('.apparent-interval'))return;
+  const timing=DATA.timing||{};
+  const foreswings=(timing.foreswingFrames||DATA.attacks?.map(attack=>attack.foreswing)||[]).map(Number);
+  const lastHit=Number(timing.lastHitFrame??foreswings.at(-1)??0);
+  const animationFrames=Number(timing.animationFrames||0);
+  const backswing=Number(timing.backswingFrames??Math.max(animationFrames-lastHit,0));
+  const interval=Number(timing.cooldownFrames||0);
+  const row=document.createElement('div');
+  row.className='attack-timing-detail-row interval apparent-interval';
+  const mark=document.createElement('i');
+  mark.className='timing-detail-mark';
+  const label=document.createElement('span');
+  label.textContent='\uacf5\uaca9 \uac04\uaca9(\uac89\ubcf4\uae30)';
+  const value=document.createElement('strong');
+  value.className='time-value';
+  value.textContent=frameText(Math.max(interval-backswing,0));
+  row.append(mark,label,value);
+  detailList.append(row);
+}
+function enemyWrapStatBarSummary(card){
+  let summary=card.querySelector(':scope > .stat-bar-summary');
+  if(summary)return summary;
+  summary=document.createElement('div');
+  summary.className='stat-bar-summary';
+  while(card.firstChild)summary.append(card.firstChild);
+  card.append(summary);
+  return summary;
+}
+function enemyRenderHealthMeter(card,health){
+  const meter=card.querySelector('.stat-meter');
+  if(!meter)return;
+  meter.querySelector('.hp-fill')?.remove();
+  meter.querySelector('.kb-markers')?.remove();
+  // Keep the body layer as the exact same element used by the unit
+  // calculator.  In particular, this is what gives a capped HP meter its
+  // correctly rounded right end.  Shield / barrier overlays only replace
+  // their own portions of that body layer.
+  const max=Math.max(1,Number(state.hpMax)||1);
+  const bodyFill=document.createElement('div');
+  bodyFill.className='stat-meter-fill hp-fill';
+  bodyFill.style.width=`${Math.min(100,health.total/max*100)}%`;
+  const segments=document.createElement('div');
+  segments.className='hp-health-segments';
+  const dividers=document.createElement('div');
+  dividers.className='kb-markers';
+  let offset=0;
+  health.segments.forEach(segment=>{
+    const amount=Math.max(0,Number(segment.value)||0);
+    if(amount<=0)return;
+    // Do not merely let an oversized segment overflow the meter: its
+    // rounded edge would then be outside the viewport and look square.
+    // Clamp the rendered segment itself to the visible bar first, exactly
+    // as the unit HP fill is capped at its configured maximum.
+    const visibleStart=Math.min(max,offset);
+    const visibleEnd=Math.min(max,offset+amount);
+    // Health itself is already drawn by the unit-style body fill.  Draw
+    // only the special coloured portions above it.
+    if(segment.kind!=='health'&&visibleEnd>visibleStart){
+      const fill=document.createElement('i');
+      fill.className=`stat-meter-fill hp-health-segment ${segment.kind}`;
+      const reachesRight=visibleEnd>=max;
+      fill.style.left=`${visibleStart/max*100}%`;
+      fill.style.width=`${(visibleEnd-visibleStart)/max*100}%`;
+      fill.style.borderRadius=`0 ${reachesRight?'6px':'0'} ${reachesRight?'6px':'0'} 0`;
+      segments.append(fill);
+    }
+    offset+=amount;
+    if(segment.dividerAfter&&offset>0&&offset<max){
+      const divider=document.createElement('i');
+      divider.className='kb-marker';
+      divider.style.left=`${offset/max*100}%`;
+      dividers.append(divider);
+    }
+  });
+  meter.append(bodyFill,segments,dividers);
+}
+function enhanceEnemyStatDetails(){
+  const stats=enemyCurrentStatValues();
+  const health=enemyShieldHealthState(stats);
+  const cycleMeasure=state.timeUnit==='f'?stats.cycle:stats.cycle/30;
+  const timeUnit=state.timeUnit==='f'?'f':'s';
+  const hpCard=[...document.querySelectorAll('#stats .stat-bar-card')].find(card=>card.querySelector('.stat-label')?.textContent.trim()==='\uccb4\ub825 / KB');
+  const attackCard=[...document.querySelectorAll('#stats .stat-bar-card')].find(card=>card.querySelector('.stat-label')?.textContent.trim()==='\uacf5\uaca9\ub825');
+  if(hpCard){
+    hpCard.classList.add('hp-stat-card','hp-bar-card');
+    enemyWrapStatBarSummary(hpCard);
+    const healthLabel=hpCard.querySelector('.stat-label');
+    if(healthLabel){
+      healthLabel.textContent='\uccb4\ub825';
+      let multiplierBadge=healthLabel.querySelector('.counter-multiplier');
+      if(!multiplierBadge){
+        multiplierBadge=document.createElement('small');
+        multiplierBadge.className='counter-multiplier enemy-shield-health-multiplier';
+        healthLabel.append(multiplierBadge);
+      }
+      // Only a Demon Shield represents repeated, magnification-scaled HP.
+      // A barrier remains a separate one-shot threshold and intentionally
+      // never creates a 체력 배수 badge.
+      const shieldMultiplier=health.enabled&&stats.hp>0?health.total/stats.hp:1;
+      const showShieldMultiplier=Math.abs(shieldMultiplier-1)>1e-9;
+      multiplierBadge.hidden=!showShieldMultiplier;
+      multiplierBadge.textContent=showShieldMultiplier?`\u00d7${enemyFormatMultiplier(shieldMultiplier)}`:'';
+      multiplierBadge.title=showShieldMultiplier?'\uc120\ud0dd\ud55c \uc545\ub9c8 \uc30c\ub4dc\ub97c \ud3ec\ud568\ud55c \ucd1d \uccb4\ub825 \ubc30\uc218':'';
+    }
+    const value=hpCard.querySelector('.bar-value-stack .stat-value');if(value)value.textContent=fmt(health.total);
+    const breakdown=hpCard.querySelector('.attack-breakdown');
+    if(breakdown){
+      breakdown.classList.toggle('barrier-breakdown',health.barrierEnabled&&health.barrier>0);
+      breakdown.replaceChildren();
+      if(health.barrierEnabled&&health.barrier>0){
+        const barrier=document.createElement('span');barrier.className='barrier-health-value';barrier.textContent=fmt(health.barrier);
+        const plus=document.createElement('span');plus.textContent='+';
+        const body=document.createElement('span');body.className='body-health-value';body.textContent=fmt(stats.hp);
+        breakdown.append(barrier,plus,body);
+        breakdown.hidden=false;
+      }else{
+        breakdown.hidden=true;
+      }
+    }
+    enemyRenderHealthMeter(hpCard,health);
+    hpCard.querySelector('#hpDamageDetails')?.remove();
+    hpCard.append(enemyHealthDetailPanel([
+      ['KB \uccb4\ub825',enemyDetailNumber(stats.hp/stats.kb)],
+    ]));
+  }
+  if(attackCard){
+    attackCard.classList.add('attack-stat-card');
+    attackCard.classList.toggle('single-hit',stats.attackHits.length===1);
+    enemyWrapStatBarSummary(attackCard);
+    const attackLabel=attackCard.querySelector('.stat-label');
+    if(attackLabel){
+      attackLabel.textContent='\uacf5\uaca9\ub825';
+      let multiplierBadge=attackLabel.querySelector('.counter-multiplier');
+      if(!multiplierBadge){
+        multiplierBadge=document.createElement('small');
+        multiplierBadge.className='counter-multiplier enemy-attack-effect-multiplier';
+        attackLabel.append(multiplierBadge);
+      }
+      const abilityMultiplier=enemyAttackAbilityMultiplier();
+      const showMultiplier=Math.abs(abilityMultiplier-1)>1e-9;
+      multiplierBadge.hidden=!showMultiplier;
+      multiplierBadge.textContent=showMultiplier?`\u00d7${enemyFormatMultiplier(abilityMultiplier)}`:'';
+      multiplierBadge.title=showMultiplier?'\uc120\ud0dd\ud55c \uacf5\uaca9 \ub2a5\ub825\uc758 \uc21c\uc218 \ubc30\uc218':'';
+    }
+    const value=attackCard.querySelector('.bar-value-stack .stat-value');if(value)value.textContent=fmt(stats.attack);
+    const breakdown=attackCard.querySelector('.attack-breakdown');if(breakdown){breakdown.textContent=stats.attackHits.length>1?stats.attackHits.map(fmt).join('+\u200b'):'';breakdown.hidden=stats.attackHits.length<2}
+    const dps=attackCard.querySelector('.bar-detail strong');if(dps)dps.textContent=stats.dps===null?'—':fmt(stats.dps);
+    const fill=attackCard.querySelector('.attack-fill');if(fill)fill.style.width=`${Math.max(0,stats.attack/state.attackMax*100)}%`;
+    const markers=attackCard.querySelector('.attack-hit-markers');if(markers){markers.replaceChildren();let accumulated=0;for(const hit of stats.attackHits.slice(0,-1)){accumulated+=hit;if(accumulated>=state.attackMax)continue;const marker=document.createElement('i');marker.className='attack-hit-marker';marker.style.left=`${accumulated/state.attackMax*100}%`;markers.append(marker)}}
+    attackCard.querySelector('#attackDamageDetails')?.remove();
+    attackCard.append(enemyAttackDetailPanel([
+      ['\uccb4\ub825\u00d7DPS',stats.dps===null?'—':enemyDetailM(health.total*stats.dps)],
+    ]));
+  }
+  addEnemyApparentInterval();
+  enemyRenderExpectedRangeDamage();
+}
+let enemyLockedPeerCards=[];
+function releaseEnemyPeerHeights(){
+  enemyLockedPeerCards.forEach(card=>{
+    card.style.removeProperty('min-height');
+    card.style.removeProperty('align-self');
+  });
+  enemyLockedPeerCards=[];
+}
+function lockEnemyPeerHeights(){
+  releaseEnemyPeerHeights();
+  const rows=[];
+  [...$('stats').querySelectorAll('.stat-card')].forEach(card=>{
+    const top=card.getBoundingClientRect().top;
+    let row=rows.find(candidate=>Math.abs(candidate.top-top)<2);
+    if(!row){row={top,cards:[]};rows.push(row)}
+    row.cards.push(card);
+  });
+  rows.forEach(row=>{
+    if(row.cards.length<2)return;
+    const height=Math.max(...row.cards.map(card=>Math.ceil(card.offsetHeight)));
+    row.cards.forEach(card=>{
+      card.style.minHeight=height+'px';
+      card.style.alignSelf='start';
+      enemyLockedPeerCards.push(card);
+    });
+  });
+}
+function normalizeEnemyStatCards(){
+  const root=$('stats');
+  if(!root)return;
+  const cardFor=label=>[...root.querySelectorAll('.stat-card')].find(card=>card.querySelector('.stat-label')?.textContent.trim()===label);
+  const rangeCard=cardFor('\uc0ac\uac70\ub9ac');
+  if(rangeCard){
+    rangeCard.classList.add('enemy-range-card');
+    const recognition=rangeCard.querySelector('.range-row strong');
+    if(recognition)recognition.id='recognitionRange';
+  }
+  const speedCard=cardFor('\uc774\ub3d9\uc18d\ub3c4');
+  if(speedCard){
+    speedCard.classList.add('enemy-speed-card');
+    const value=speedCard.querySelector('.stat-value');
+    if(value)value.id='unitSpeed';
+  }
+  const cashCard=cardFor('\ud68d\ub4dd \uba38\ub2c8');
+  if(cashCard){
+    cashCard.classList.add('enemy-cash-card');
+    const value=cashCard.querySelector('.stat-value');
+    if(value){
+      value.id='enemyCashDrop';
+      if(!value.parentElement?.classList.contains('conditional-stat-row')){
+        const row=document.createElement('div');
+        row.className='conditional-stat-row';
+        value.replaceWith(row);
+        row.append(value);
+      }
+    }
+  }
+  const timingDetails=root.querySelector('.attack-cycle-card .attack-timing-details:not(.attack-damage-details)');
+  const timingSummary=timingDetails?.querySelector(':scope > summary');
+  if(timingSummary&&!timingSummary.querySelector('.detail-summary-title')){
+    const title=document.createElement('span');
+    title.className='detail-summary-title';
+    title.textContent='\uc0c1\uc138\uc815\ubcf4';
+    const control=document.createElement('span');
+    control.className='detail-summary-control';
+    const closed=document.createElement('span');
+    closed.className='when-closed';
+    closed.textContent='\ud3bc\uce58\uae30';
+    const opened=document.createElement('span');
+    opened.className='when-open';
+    opened.textContent='\uc811\uae30';
+    control.append(closed,opened);
+    timingSummary.replaceChildren(title,control);
+  }
+}
+const enemyDistanceNumber=value=>new Intl.NumberFormat('ko-KR',{maximumFractionDigits:2}).format(Math.round(Number(value||0)*100)/100);
+const enemyRangeFactor=()=>state.rangeUnit==='u'?4:state.rangeUnit==='spu'?2:1;
+const enemySpeedFactor=()=>{const unit=state.speedUnit,base=unit.startsWith('u/')?2:unit.startsWith('rng/')?.5:1;return base*(unit.endsWith('/s')?30:1)};
+const enemyRangeText=value=>enemyDistanceNumber(Number(value||0)*enemyRangeFactor());
+const enemyWarpFactor=()=>state.warpUnit==='u'?4:state.warpUnit==='spu'?2:1;
+const enemyWarpText=value=>enemyDistanceNumber(Number(value||0)*enemyWarpFactor());
+const enemyRangeInputText=value=>{const number=Number(value);return Number.isFinite(number)?String(Math.round(number*1000000)/1000000):''};
+const enemyRangeInputNumber=value=>{const text=String(value??'').replace(/,/g,'').trim();return text===''?NaN:Number(text)};
+const enemyRangeSpan=value=>{const minimum=Array.isArray(value)?value[0]:value?.minimum??value?.min;const maximum=Array.isArray(value)?value[1]:value?.maximum??value?.max;if(!Number.isFinite(Number(minimum))||!Number.isFinite(Number(maximum)))return enemyRangeText(value);const left=enemyRangeText(minimum),right=enemyRangeText(maximum);return Number(minimum)===Number(maximum)?left:`${left}~${right}`};
+function applyEnemyDistanceUnits(){
+  const base=DATA.base||DATA.stats||{},ranges=DATA.ranges||base.actualRanges||[];
+  const rangeCard=document.querySelector('#stats .enemy-range-card');
+  if(rangeCard){const values=[Number(base.range??base.recognitionRange??0),...(ranges.length?ranges:[base.range??0])];rangeCard.querySelectorAll('.range-row strong').forEach((node,index)=>{node.textContent=index===0?enemyRangeText(values[index]):enemyRangeSpan(values[index])})}
+  const speed=document.querySelector('#unitSpeed');
+  if(speed)speed.textContent=enemyDistanceNumber(Number(base.speed||0)*enemySpeedFactor());
+}
+function restoreEnemyDetailPanels(){
+  const panels=[
+    ['#hpDamageDetails','hp'],
+    ['#attackDamageDetails','attack'],
+    ['.attack-timing-details:not(.attack-damage-details)','timing'],
+  ];
+  panels.forEach(([selector,key])=>{const panel=document.querySelector(selector);if(panel)panel.open=!!enemyPanels[key]});
+}
+function persistEnemyDetailPanels(){
+  enemyPanels={
+    hp:!!document.querySelector('#hpDamageDetails')?.open,
+    attack:!!document.querySelector('#attackDamageDetails')?.open,
+    timing:!!document.querySelector('.attack-timing-details:not(.attack-damage-details)')?.open,
+  };
+  try{sessionStorage.setItem(enemyPanelStateKey,JSON.stringify({timing:!!enemyPanels.timing}))}catch(_){}
+}
+function initEnemyCatalogSearch(){
+  // Keep the enemy calculator's search interaction in lockstep with the
+  // unit calculator.  The pages share the same combined catalogue; only
+  // their relative navigation paths differ.
+  const form=$('unitSearchForm'),input=$('unitSearchInput'),results=$('unitSearchResults');
+  if(!form||!input||!results)return;
+  const entries=window.NYANKODB_SEARCH_CATALOG?.entries||[];
+  let visible=[],active=-1;
+  const compact=value=>String(value||'').toLocaleLowerCase('ko-KR').replace(/[\s\p{P}\p{S}_]/gu,'');
+  const subsequence=(needle,haystack)=>{let cursor=0;for(const character of needle){cursor=haystack.indexOf(character,cursor);if(cursor<0)return false;cursor+=character.length}return true};
+  const allCharacters=(needle,haystack)=>{const remaining=new Map();for(const character of haystack)remaining.set(character,(remaining.get(character)||0)+1);for(const character of needle){const count=remaining.get(character)||0;if(count<1)return false;remaining.set(character,count-1)}return true};
+  const matchEntry=(entry,query)=>{if(/^\d+$/.test(query)&&Number(entry.id)===Number(query))return 0;const name=compact(entry.name);if(name===query)return 0;if(name.includes(query))return 1;if(subsequence(query,name))return 2;return allCharacters(query,name)?3:99};
+  const identity=entry=>entry.kind==='enemy'
+    ? `ENEMY ${String(entry.id).padStart(3,'0')}`
+    : `UNIT ${String(entry.id).padStart(3,'0')}-${entry.form||1}`;
+  const href=entry=>entry.kind==='enemy'?`${SEARCH_SITE_PREFIX}enemy/enemy${String(entry.id).padStart(3,'0')}.html`:`${SEARCH_SITE_PREFIX}unit/unit${String(entry.id).padStart(3,'0')}.html?form=${entry.form||1}`;
+  const close=()=>{results.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');active=-1};
+  const setActive=index=>{if(!visible.length)return;active=(index+visible.length)%visible.length;results.querySelectorAll('.unit-search-result').forEach((node,nodeIndex)=>{const selected=nodeIndex===active;node.setAttribute('aria-selected',String(selected));if(selected){input.setAttribute('aria-activedescendant',node.id);node.scrollIntoView({block:'nearest'})}})};
+  const navigate=entry=>{if(!entry)return;if(entry.kind!=='enemy')try{const key=`nyanko-db:unit:${entry.id}:display-state:v1`,saved=JSON.parse(localStorage.getItem(key)||'{}');saved.form=entry.form;localStorage.setItem(key,JSON.stringify(saved))}catch(_){ }location.href=href(entry)};
+  const render=()=>{const query=compact(input.value.trim());results.replaceChildren();active=-1;if(!query){visible=[];close();return}visible=entries.map(entry=>({entry,rank:matchEntry(entry,query)})).filter(item=>item.rank<99).sort((left,right)=>left.rank-right.rank||Number(left.entry.id)-Number(right.entry.id)||String(left.entry.kind).localeCompare(String(right.entry.kind))||Number(left.entry.form)-Number(right.entry.form)).map(item=>item.entry);if(!visible.length){const empty=document.createElement('div');empty.className='unit-search-empty';empty.textContent='검색 결과가 없습니다.';results.append(empty)}else visible.forEach((entry,index)=>{const button=document.createElement('button');button.type='button';button.className='unit-search-result';button.id=`unitSearchResult${index}`;button.setAttribute('role','option');button.setAttribute('aria-selected','false');if(entry.icon){const image=document.createElement('img');image.src=entry.icon.startsWith('data:')?entry.icon:`${SEARCH_SITE_PREFIX}${entry.icon.replace(/^\.\//,'')}`;image.alt='';image.loading='lazy';button.append(image)}else{const empty=document.createElement('span');empty.className='unit-search-result-icon-empty';button.append(empty)}const copy=document.createElement('span');copy.className='unit-search-result-copy';const name=document.createElement('span');name.className='unit-search-result-name';name.textContent=entry.name;const id=document.createElement('span');id.className='unit-search-result-identity';id.textContent=identity(entry);copy.append(name,id);button.append(copy);let start=null,suppress=false;button.addEventListener('pointerdown',event=>{if(event.pointerType!=='mouse')start={id:event.pointerId,x:event.clientX,y:event.clientY}});button.addEventListener('pointermove',event=>{if(start&&event.pointerId===start.id&&Math.hypot(event.clientX-start.x,event.clientY-start.y)>8)suppress=true});button.addEventListener('pointercancel',()=>{start=null;suppress=false});button.addEventListener('click',event=>{if(suppress){event.preventDefault();event.stopPropagation();start=null;suppress=false;return}start=null;navigate(entry)});button.addEventListener('mousemove',()=>setActive(index));results.append(button)});results.hidden=false;input.setAttribute('aria-expanded','true')};
+  form.addEventListener('submit',event=>{event.preventDefault();navigate(visible[active>=0?active:0])});
+  input.addEventListener('input',render);input.addEventListener('focus',render);input.addEventListener('keydown',event=>{if(event.key==='ArrowDown'){event.preventDefault();setActive(active+1)}else if(event.key==='ArrowUp'){event.preventDefault();setActive(active-1)}else if(event.key==='Escape')close()});
+  document.addEventListener('click',event=>{if(!event.target.closest('.unit-search'))close()});
+}
+renderStats=function(){enemyNativeRenderStats();normalizeEnemyStatCards();enhanceEnemyStatDetails();lockEnemyPeerHeights();restoreEnemyDetailPanels();applyEnemyDistanceUnits();enemyRenderExpectedRangeDamage();renderEnemyTreasureApplication()};
+initHeader();
+initEnemyCatalogSearch();
+const enemyTreasureSettings=$('treasure-settings'),enemyMiscSettings=$('misc-settings'),enemyTreasureToggle=$('treasure-toggle'),enemyMiscToggle=$('misc-toggle');
+upgradeEnemyToggle(enemyTreasureToggle);
+const heroBarSettings=document.querySelector('.hero .bar-settings');if(heroBarSettings)$('enemy-misc-panel').prepend(heroBarSettings);
+enemyTreasureSettings.open=!!state.treasureOpen;enemyMiscSettings.open=!!state.miscOpen;
+setEnemyToggleLabel(enemyTreasureSettings,enemyTreasureToggle);setEnemyToggleLabel(enemyMiscSettings,enemyMiscToggle);
+enemyTreasureSettings.addEventListener('toggle',()=>{state.treasureOpen=enemyTreasureSettings.open;setEnemyToggleLabel(enemyTreasureSettings,enemyTreasureToggle);persistEnemySharedSettings()});
+enemyMiscSettings.addEventListener('toggle',()=>{state.miscOpen=enemyMiscSettings.open;setEnemyToggleLabel(enemyMiscSettings,enemyMiscToggle);persistEnemySharedSettings()});
+$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;$('warp-unit-select').value=state.warpUnit;
+const syncDistanceReset=()=>{$('distance-unit-reset').disabled=state.rangeUnit==='rng'&&state.speedUnit==='spu/f'&&state.warpUnit==='rng'};
+$('range-unit-select').addEventListener('change',event=>{state.rangeUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderStats();renderEffects()});
+$('speed-unit-select').addEventListener('change',event=>{state.speedUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderStats()});
+$('warp-unit-select').addEventListener('change',event=>{state.warpUnit=event.target.value;persistEnemySharedSettings();syncDistanceReset();renderEffects()});
+$('distance-unit-reset').addEventListener('click',()=>{state.rangeUnit='rng';state.speedUnit='spu/f';state.warpUnit='rng';$('range-unit-select').value=state.rangeUnit;$('speed-unit-select').value=state.speedUnit;$('warp-unit-select').value=state.warpUnit;persistEnemySharedSettings();syncDistanceReset();renderStats();renderEffects()});
+syncDistanceReset();
+window.addEventListener('resize',()=>{if(!document.querySelector('#hpDamageDetails[open],#attackDamageDetails[open],.attack-timing-details[open]'))requestAnimationFrame(lockEnemyPeerHeights);if(document.querySelector('#attackDamageDetails[open]'))requestAnimationFrame(enemyDrawExpectedRangeChart)});
+document.addEventListener('input',()=>queueMicrotask(persistEnemySharedSettings));
+document.addEventListener('change',()=>queueMicrotask(persistEnemySharedSettings));
+document.addEventListener('click',()=>queueMicrotask(persistEnemySharedSettings));
+document.addEventListener('toggle',event=>{if(event.target.matches?.('#hpDamageDetails,#attackDamageDetails,.attack-timing-details,.treasure-settings,.misc-settings'))queueMicrotask(persistEnemyDetailPanels)},true);
+// The enemy calculator's default is full gold treasures.  Populate the
+// complete treasure map before the first stat pass: rendering stats first
+// would briefly evaluate Alien/Cat God enemies against an empty map.
+ensureTreasure();
+renderStats();renderTraits();renderEffects();renderTreasure();
+
+function effectSummary(x){
+  const key=x.key||'',p=[],number=value=>fmt(value),rangeText=range=>{
+    const minimum=Number(range?.minimum??range?.min??0),maximum=Number(range?.maximum??range?.max??minimum);
+    const left=enemyRangeText(Math.min(minimum,maximum)),right=enemyRangeText(Math.max(minimum,maximum));
+    return Math.abs(minimum-maximum)<1e-9?left:`${left}~${right}`;
+  };
+  if(key==='attack_count')return `${number(x.count||0)}\ud68c \uacf5\uaca9`;
+  if(key==='multi_hit'){
+    const hits=Array.isArray(x.applies_to_attacks)?x.applies_to_attacks.map(Number).filter(Number.isFinite):[];
+    return `${number(x.hit_count||0)}\uc5f0\uc18d \uacf5\uaca9${hits.length?` \u00b7 \ud2b9\uc218\ud6a8\uacfc \ubc1c\ub3d9 ${hits.join('\u00b7')}\ud0c0`:''}`;
+  }
+  if(x.chance!==undefined)p.push(`\ud655\ub960 ${number(x.chance)}%`);
+  if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));
+  if(['wave','mini_wave','surge','mini_surge','death_surge'].includes(key)&&x.level!==undefined)p.push(`Lv.${number(x.level)}`);
+  if(key==='weaken'&&x.attack_percent!==undefined)p.push(`\uacf5\uaca9\ub825\uc744 ${number(x.attack_percent)}%\ub85c \uac10\uc18c`);
+  if(key==='warp'&&x.minimum!==undefined&&x.maximum!==undefined){
+    const minimum=Number(x.minimum),maximum=Number(x.maximum);
+    const distance=Math.abs(minimum-maximum)<1e-9?enemyWarpText(x.minimum):`${enemyWarpText(x.minimum)}~${enemyWarpText(x.maximum)}`;
+    p.push(`\uc774\ub3d9 \uac70\ub9ac ${distance}`);
+  }
+  if(key==='critical'){
+    p.push(`\uc8fc\ub294 \ud53c\ud574 ${number(x.damage_multiplier??2)}\u00d7`,`\uba54\ud0c8 \ub2a5\ub825 \ubb34\uc2dc`);
+  }
+  if(key==='savage_blow'&&x.damage_multiplier!==undefined)p.push(`\uc8fc\ub294 \ud53c\ud574 ${number(x.damage_multiplier)}\u00d7`);
+  if(key==='strengthen'){
+    if(x.hitpoints_threshold_percent!==undefined)p.push(`\uccb4\ub825 ${number(x.hitpoints_threshold_percent)}% \uc774\ud558`);
+    if(x.damage_boost_percent!==undefined){
+      const multiplier=1+Number(x.damage_boost_percent)/100;
+      p.push(`\uacf5\uaca9\ub825 +${number(x.damage_boost_percent)}% (${number(multiplier)}\u00d7)`);
+    }
+  }
+  if(key==='base_destroyer')p.push('\ub0e5\ucf54 \uc131\uc5d0 \uc8fc\ub294 \ud53c\ud574 4\u00d7');
+  if(['mini_wave','mini_surge'].includes(key))p.push(`\uc8fc\ub294 \ud53c\ud574 20%`);
+  if(['surge','mini_surge','death_surge','explosion'].includes(key)&&x.range)p.push(`\uc0dd\uc131 ${rangeText(x.range)}`);
+  if(key==='explosion')p.push(`\ud53c\ud574\ub300 ${(x.damage_bands_percent||[100,70,40]).join('/')}%`);
+  if(key==='toxic'&&x.max_hitpoints_damage_percent!==undefined)p.push(`\ucd5c\ub300 \uccb4\ub825\uc758 ${number(x.max_hitpoints_damage_percent)}%`);
+  if(key==='drain'&&x.cooldown_extension_percent!==undefined)p.push(`\uc0dd\uc0b0 \uc2dc\uac04 +${number(x.cooldown_extension_percent)}%`);
+  if(['barrier','shield'].includes(key)&&x.hitpoints!==undefined)p.push(`\uccb4\ub825 ${number(key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);
+  if(key==='shield'&&x.regeneration_percent!==undefined&&Number(x.regeneration_percent)!==100)p.push(`\uc7ac\uc0dd ${number(x.regeneration_percent)}%`);
+  if(key==='burrow'){
+    if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);
+    if(x.distance!==undefined)p.push(`\uc774\ub3d9 ${number(x.distance)}`);
+  }
+  if(key==='revive'){
+    if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);
+    if(x.delay_frames!==undefined)p.push(`${frameText(x.delay_frames)} \ub4a4 \ubd80\ud65c`);
+    if(x.hitpoints_percent!==undefined)p.push(`\uccb4\ub825 ${number(x.hitpoints_percent)}%`);
+  }
+  return p.join(' \u00b7 ');
+}
+
+</script>
+</body></html>
