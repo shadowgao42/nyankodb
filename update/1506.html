@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>냥코DB 업데이트</title><style>
+/* The toolbar, search-result list, sections, and combo cards below are copied
+   from unit_spec_calculator's generated page structure. */
+:root{--bg:#080b10;--surface:#111720;--surface-2:#171f29;--line:#293645;--text:#f4f7fb;--muted:#94a2b6;--accent:#ff5b2d;--accent-2:#ffad3d;--accent-text:#ffad3d;--shadow:0 24px 70px rgba(0,0,0,.34)}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-width:320px;min-height:143vh;overflow-x:hidden;zoom:.7;color:var(--text);background:radial-gradient(circle at 18% 0%,rgba(255,74,32,.22),transparent 30rem),repeating-linear-gradient(45deg,transparent 0 70px,rgba(255,255,255,.035) 71px 72px),linear-gradient(180deg,#10151d 0%,var(--bg) 62%);font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif}button,input{font:inherit}.page{width:min(1220px,calc(100% - 36px));margin:0 auto;padding:24px 0 38px}
+.db-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:12px;padding:14px 18px;border:1px solid var(--line);border-radius:17px;background:rgba(14,19,26,.92);box-shadow:var(--shadow)}.db-brand{flex:0 0 auto;color:var(--text);font-size:25px;font-weight:950;letter-spacing:-.05em;text-decoration:none}.db-brand span{color:var(--accent-text)}.unit-search{display:grid;grid-template-columns:auto minmax(150px,220px) auto;align-items:center;gap:9px}.unit-search label{color:#dce3ed;font-size:13px;font-weight:900;white-space:nowrap}.unit-search-field{position:relative;min-width:0}.unit-search input{width:100%;min-width:0;height:38px;padding:7px 11px;border:1px solid #425267;border-radius:9px;color:var(--text);background:#0c1118;outline:none;font-variant-numeric:tabular-nums}.unit-search-field>input{border-color:#4d5a69;background:#171d25}.unit-search .unit-search-field>input:focus{border-color:#788697;box-shadow:0 0 0 2px rgba(145,158,173,.18)}.unit-search button{height:38px;padding:7px 15px;border:0;border-radius:9px;color:#fff;background:var(--accent);font-weight:900;cursor:pointer}.unit-search button[type="submit"]{border:1px solid #596777;color:#f4f7fb;background:#303a47}.unit-search button[type="submit"]:hover{border-color:#718094;background:#3a4655}
+.unit-search-results{position:absolute;top:calc(100% + 7px);left:0;z-index:120;width:min(380px,calc(100vw - 44px));max-height:360px;padding:6px;overflow-y:auto;border:1px solid #46566a;border-radius:12px;background:#080d14;box-shadow:0 16px 42px rgba(0,0,0,.52);scrollbar-width:thin;touch-action:pan-y}.unit-search-results[hidden]{display:none}.unit-search .unit-search-result{display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center;gap:10px;width:100%;min-height:48px;padding:5px 9px;border:0;border-bottom:1px solid #465363;border-radius:0;color:#f4f7fb;background:#27313e;text-align:left;cursor:pointer;touch-action:pan-y}.unit-search .unit-search-result:last-child{border-bottom:0}.unit-search .unit-search-result:hover{background:#354252}.unit-search-result img,.unit-search-result-icon-empty{display:block;width:54px;height:40px;object-fit:contain;image-rendering:pixelated}.unit-search-result-icon-empty{border:1px dashed #405066;border-radius:7px}.unit-search-result-copy{display:grid;min-width:0;gap:2px}.unit-search-result-name{min-width:0;overflow:hidden;font-size:13px;font-weight:900;text-overflow:ellipsis;white-space:nowrap}.unit-search-result-identity{color:var(--muted);font-size:10px;font-weight:850;letter-spacing:.03em}.unit-search-empty{padding:13px 10px;color:var(--muted);font-size:12px;font-weight:800;text-align:center}
+.update-title{margin:18px 4px 2px;color:#fff;font-size:27px;font-weight:950;letter-spacing:-.04em}.section{margin-top:16px;border:1px solid var(--line);border-radius:20px;background:rgba(15,20,28,.92);box-shadow:var(--shadow)}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:19px 22px 14px}.section-heading h2{margin:0;font-size:20px;letter-spacing:-.025em}.update-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 18px 18px}.update-card{display:flex;align-items:center;gap:12px;min-height:69px;padding:8px 10px;border:1px solid #2d3948;border-radius:12px;color:var(--text);background:var(--surface-2);text-decoration:none;transition:border-color .14s ease,transform .14s ease}.update-card:hover,.update-card:focus-visible{border-color:var(--accent);outline:none;transform:translateY(-2px)}.update-card img{width:62px;height:49px;object-fit:contain;image-rendering:auto}.copy{display:grid;min-width:0;gap:2px}.copy b{overflow:hidden;font-size:14px;font-weight:950;text-overflow:ellipsis;white-space:nowrap}.copy small{color:var(--muted);font-size:11px;font-weight:850;letter-spacing:.03em}.copy .talent-normal{color:#ffe866;text-shadow:0 0 8px rgba(255,216,61,.42)}.copy .talent-ultra{color:#ff717b;text-shadow:0 0 8px rgba(255,51,68,.42)}
+.nyancombo-section-heading{justify-content:flex-start;gap:10px}.nyancombo-count{display:inline-grid;place-items:center;min-width:38px;height:25px;padding:0 8px;border:1px solid #3a485a;border-radius:999px;color:var(--muted);background:#0c1118;font-size:12px;font-weight:900}.nyancombo-list{display:grid;gap:12px;padding:0 18px 18px}.nyancombo-card{overflow:visible;border:1px solid #2d3948;border-radius:18px;background:var(--surface-2)}.nyancombo-card-heading{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:5px 16px;padding:13px 16px 12px;border-bottom:1px solid #313e4e;border-radius:17px 17px 0 0;background:linear-gradient(90deg,rgba(255,91,45,.18),transparent 72%)}.nyancombo-card-heading h3{margin:0;color:#fff;font-size:19px;font-weight:950}.nyancombo-card-heading p{margin:0;color:#fff;font-size:14px;font-weight:900}.nyancombo-members{display:flex;align-items:flex-start;flex-wrap:nowrap;gap:8px;overflow:visible;padding:13px 15px 15px}.nyancombo-member{position:relative;display:block;flex:0 1 clamp(56px,calc(7vw + 29px),96px);width:clamp(56px,calc(7vw + 29px),96px);min-width:56px;padding:4px;border:1px solid #344253;border-radius:10px;color:inherit;background:#0b1017;text-decoration:none;transition:border-color .14s ease,transform .14s ease}.nyancombo-member::after{content:attr(data-tooltip);position:absolute;left:50%;bottom:calc(100% + 8px);z-index:30;width:max-content;max-width:min(330px,calc(100vw - 48px));padding:10px 12px;border:1px solid #53657a;border-radius:11px;color:#fff;background:#080c12;box-shadow:0 12px 34px rgba(0,0,0,.48);font-size:13px;font-weight:900;white-space:nowrap;opacity:0;pointer-events:none;transform:translate(-50%,6px);transition:opacity .14s ease,transform .14s ease}.nyancombo-member:hover,.nyancombo-member:focus-visible{border-color:var(--accent);outline:none;transform:translateY(-2px)}.nyancombo-member:hover::after,.nyancombo-member:focus-visible::after{opacity:1;transform:translate(-50%,0)}.nyancombo-member-image{display:grid;place-items:center;width:100%;aspect-ratio:104/79;overflow:hidden;border-radius:6px;background:rgba(255,255,255,.04)}.nyancombo-member-image img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
+@media(max-width:980px){.update-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:720px){.update-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:660px){.page{width:min(100% - 20px,1220px);padding-top:12px}.db-toolbar{align-items:stretch;flex-direction:column;gap:10px;padding:13px 15px}.unit-search{grid-template-columns:72px minmax(0,1fr) 58px;gap:7px}.unit-search button{padding-inline:8px}.unit-search-results{width:min(360px,calc(100vw - 106px))}.update-title{margin-left:2px;font-size:24px}.update-grid{padding-inline:14px}.nyancombo-list{padding-inline:14px}.nyancombo-members{gap:6px;padding-inline:10px}.nyancombo-member{min-width:49px;padding:3px}}@media(max-width:480px){.update-grid{grid-template-columns:1fr}}
+.update-unit-switch-card{padding:0;gap:0}.update-card-link{display:flex;align-items:center;gap:12px;flex:1;min-width:0;min-height:67px;padding:8px 10px;color:inherit;text-decoration:none}.update-card-link:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}.update-form-switch{display:grid;place-content:center;gap:2px;align-self:stretch;flex:0 0 58px;padding:6px 5px;border:0;border-left:1px solid #2d3948;border-radius:0 11px 11px 0;color:#fff;background:#202a36;font-size:11px;font-weight:950;line-height:1.2;cursor:pointer}.update-form-switch:hover,.update-form-switch:focus-visible{color:#fff;background:#354252;outline:none}.update-card-notes{display:contents}
+.copy .update-change{color:#ffad3d}
+.update-rank-gift-section .update-grid{grid-template-columns:1fr}.update-rank-gift-card{cursor:default;align-items:flex-start}.update-rank-gift-card:hover{border-color:#2d3948;transform:none}.rank-gift-rewards{display:grid;gap:7px}.rank-gift-reward{position:relative;display:flex;align-items:center;gap:10px;min-width:0;color:#dce3ed;font-size:17px;font-weight:900;cursor:default}.rank-gift-reward[data-tooltip]::after{content:attr(data-tooltip);position:absolute;left:0;bottom:calc(100% + 8px);z-index:30;width:max-content;max-width:min(330px,calc(100vw - 48px));padding:10px 12px;border:1px solid #53657a;border-radius:11px;color:#fff;background:#080c12;box-shadow:0 12px 34px rgba(0,0,0,.48);font-size:13px;font-weight:900;white-space:nowrap;opacity:0;pointer-events:none;transform:translateY(6px);transition:opacity .14s ease,transform .14s ease}.rank-gift-reward[data-tooltip]:hover::after,.rank-gift-reward[data-tooltip]:focus::after{opacity:1;transform:translateY(0)}.rank-gift-reward:focus{outline:none}.rank-gift-reward img{display:block;flex:0 0 auto;width:54px;height:54px;object-fit:contain;image-rendering:auto}.rank-gift-reward span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rank-gift-reward--message{padding:3px 0;color:#dce3ed;line-height:1.45}
+</style><style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 143vh;
+      min-width: 320px;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .db-brand {
+      flex: 0 0 auto;
+      text-decoration: none;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 950;
+      letter-spacing: -.05em;
+    }
+
+    .db-brand span {
+      color: var(--accent-text);
+    }
+
+    .unit-search {
+      display: grid;
+      grid-template-columns: auto minmax(150px, 220px) auto;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .unit-search-field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .unit-search-field > input {
+      width: 100%;
+      border-color: #4d5a69;
+      background: #171d25;
+    }
+
+    .unit-search .unit-search-field > input:focus {
+      border-color: #788697;
+      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
+    }
+
+    .unit-search button[type="submit"] {
+      border: 1px solid #596777;
+      color: #f4f7fb;
+      background: #303a47;
+    }
+
+    .unit-search button[type="submit"]:hover {
+      border-color: #718094;
+      background: #3a4655;
+    }
+
+    .unit-search-results {
+      position: absolute;
+      top: calc(100% + 7px);
+      left: 0;
+      z-index: 120;
+      width: min(380px, calc(100vw - 44px));
+      max-height: 360px;
+      padding: 6px;
+      overflow-y: auto;
+      border: 1px solid #46566a;
+      border-radius: 12px;
+      background: #080d14;
+      box-shadow: 0 16px 42px rgba(0,0,0,.52);
+      scrollbar-width: thin;
+      touch-action: pan-y;
+    }
+
+    .unit-search-results[hidden] {
+      display: none;
+    }
+
+    .unit-search .unit-search-result {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 48px;
+      padding: 5px 9px;
+      border: 0;
+      border-bottom: 1px solid #465363;
+      border-radius: 0;
+      color: #f4f7fb;
+      background: #27313e;
+      text-align: left;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+
+    .unit-search .unit-search-result:last-child {
+      border-bottom: 0;
+    }
+
+    .unit-search .unit-search-result:hover,
+    .unit-search .unit-search-result[aria-selected="true"] {
+      background: #354252;
+    }
+
+    .unit-search-result img,
+    .unit-search-result-icon-empty {
+      display: block;
+      width: 54px;
+      height: 40px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .unit-search-result-icon-empty {
+      border: 1px dashed #405066;
+      border-radius: 7px;
+    }
+
+    .unit-search-result-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unit-search-result-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .unit-search-result-identity {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    .unit-search-empty {
+      padding: 13px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 660px) {
+      .unit-search-results {
+        width: min(360px, calc(100vw - 106px));
+      }
+    }
+
+    .unit-search label {
+      color: #dce3ed;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .unit-search input {
+      min-width: 0;
+      height: 38px;
+      padding: 7px 11px;
+      border: 1px solid #425267;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .unit-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 91, 45, .2);
+    }
+
+    .unit-search button {
+      height: 38px;
+      padding: 7px 15px;
+      border: 0;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+@media (max-width: 660px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .db-toolbar { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px 15px; }
+      .unit-search { grid-template-columns: 72px minmax(0, 1fr) 58px; gap: 7px; }
+      .unit-search button { padding-inline: 8px; }
+      .treasure-settings summary,
+      .misc-settings summary { flex-wrap: wrap; padding-inline: 15px; }
+      .treasure-panel, .misc-panel { padding-inline: 15px; }
+      .treasure-cards { grid-template-columns: 1fr; }
+      .passive-cards { grid-template-columns: 1fr; }
+      .treasure-card-header { grid-template-columns: 122px minmax(0, 1fr) auto; }
+      .treasure-effect-image { width: 122px; height: 48px; }
+      .treasure-slots { grid-template-columns: repeat(4, 38px); gap: 4px; }
+      .treasure-slot { width: 38px; height: 38px; }
+      .treasure-slot img { width: 34px; height: 34px; }
+      .hero-copy { padding: 20px 16px; }
+      .talent-settings { padding: 0 16px 14px; }
+      .name-row h1 { font-size: clamp(22px, 6vw, 32px); }
+      .level-summary {
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .current-level {
+        flex: 0 0 auto;
+        font-size: clamp(12px, 3.6vw, 15px);
+        white-space: nowrap;
+      }
+      .current-level strong {
+        margin-left: 4px;
+        font-size: clamp(16px, 4.8vw, 20px);
+      }
+      .max-level {
+        flex: 0 0 auto;
+        margin-left: auto;
+        padding-inline: 8px;
+        white-space: nowrap;
+      }
+      .level-row { grid-template-columns: 72px minmax(56px, 1fr) 58px; gap: 6px; }
+      .bar-settings { align-items: flex-start; flex-wrap: wrap; }
+      .bar-settings-title { flex-basis: 100%; }
+      .talent-groups { grid-template-columns: 1fr; }
+      .orb-slot-list { grid-template-columns: 1fr; }
+      .talent-tooltip { left: -4px; }
+      .section-tools {
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 8px;
+      }
+      .counter-selection-summary {
+        max-width: clamp(115px, 32vw, 220px);
+      }
+      .counter-panel {
+        left: auto;
+        right: 0;
+      }
+      .counter-target-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .counter-target-list.special {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .abilities-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+      .ability-card {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 8px;
+        min-height: 86px;
+        padding: 10px;
+        border-radius: 14px;
+      }
+      .ability-icon,
+      .ability-icon img,
+      .ability-card .fallback-icon,
+      .immunity-chip img,
+      .resistance-chip img,
+      .immunity-chip .fallback-icon,
+      .resistance-chip .fallback-icon {
+        width: 48px;
+        height: 48px;
+      }
+      .resistance-chip {
+        grid-template-rows: 48px 16px;
+        height: 70px;
+      }
+      .ability-card h3 { font-size: 14px; }
+      .ability-summary { font-size: 11px; }
+      .spirit-tooltip-ability[data-ability-key="limited_attacks"] .fallback-icon {
+        width: 22px;
+        height: 22px;
+        border-radius: 5px;
+        font-size: 10px;
+      }
+      .stat-bar-card { grid-column: 1 / -1; }
+      .stat-card.attack-cycle-card { grid-column: 1 / -1; }
+      .stat-card:not(.stat-bar-card) { min-height: 100px; padding: 13px 15px; }
+      .stat-card.attack-cycle-card { min-height: 168px; }
+      .traits-row { flex-wrap: wrap; overflow: visible; padding-bottom: 0; }
+      .trait-chip { min-width: 68px; }
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 4px; }
+    }</style></head><body><main class="page"><header class="db-toolbar">
+      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <form class="unit-search" id="unitSearchForm" role="search">
+        <label for="unitSearchInput">검색</label>
+        <div class="unit-search-field">
+          <input id="unitSearchInput" type="search" autocomplete="off"
+                spellcheck="false" placeholder="이름 입력"
+                 aria-label="검색할 유닛 이름" aria-autocomplete="list"
+                 aria-controls="unitSearchResults" aria-expanded="false">
+          <div class="unit-search-results" id="unitSearchResults"
+               role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
+        </div>
+        <button type="submit">검색</button>
+      </form>
+    </header><h1 class="update-title">v15.6 업데이트</h1><section class="section update-section "><div class="section-heading"><h2>추가된 유닛</h2></div><div class="update-grid"><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;ロックこねこ&quot;,&quot;image&quot;:&quot;../img/u/873/0.png&quot;,&quot;href&quot;:&quot;../unit/unit873.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 873-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;ロックスターこねこ&quot;,&quot;image&quot;:&quot;../img/u/873/1.png&quot;,&quot;href&quot;:&quot;../unit/unit873.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 873-2&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit873.html?form=1"><img src="../img/u/873/0.png" alt="" loading="lazy"><span class="copy"><b>ロックこねこ</b><small>UNIT 873-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;りゅういち&quot;,&quot;image&quot;:&quot;../img/u/874/0.png&quot;,&quot;href&quot;:&quot;../unit/unit874.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 874-1&quot;,&quot;notes&quot;:[]},{&quot;form&quot;:2,&quot;name&quot;:&quot;りゅういち＆りゅうじ&quot;,&quot;image&quot;:&quot;../img/u/874/1.png&quot;,&quot;href&quot;:&quot;../unit/unit874.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 874-2&quot;,&quot;notes&quot;:[]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit874.html?form=1"><img src="../img/u/874/0.png" alt="" loading="lazy"><span class="copy"><b>りゅういち</b><small>UNIT 874-1</small><span class="update-card-notes"></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><a class="update-card" href="../unit/unit875.html?form=1"><img src="../img/u/875/0.png" alt="" loading="lazy"><span class="copy"><b>정령</b><small>UNIT 875-1</small></span></a></div></section><section class="section update-section "><div class="section-heading"><h2>3단 진화 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit733.html?form=3"><img src="../img/u/733/2.png" alt="" loading="lazy"><span class="copy"><b>白籠のペガサν</b><small>UNIT 733-3</small></span></a></div></section><section class="section update-section "><div class="section-heading"><h2>4단 진화 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit196.html?form=4"><img src="../img/u/196/3.png" alt="" loading="lazy"><span class="copy"><b>キャットマンフォーエバー</b><small>UNIT 196-4</small></span></a></div></section><section class="section update-section "><div class="section-heading"><h2>본능/초본능 추가</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit302.html?form=3"><img src="../img/u/302/2.png" alt="" loading="lazy"><span class="copy"><b>고양이 서큐버스</b><small>UNIT 302-3</small><small class="talent-normal">본능 추가</small></span></a><a class="update-card" href="../unit/unit439.html?form=3"><img src="../img/u/439/2.png" alt="" loading="lazy"><span class="copy"><b>G크로노스 트리거</b><small>UNIT 439-3</small><small class="talent-ultra">초본능 추가</small></span></a><a class="update-card" href="../unit/unit655.html?form=3"><img src="../img/u/655/2.png" alt="" loading="lazy"><span class="copy"><b>빙결의 정령왕 블리자레나</b><small>UNIT 655-3</small><small class="talent-normal">본능 추가</small></span></a></div></section><section class="section update-section "><div class="section-heading"><h2>기타</h2></div><div class="update-grid"><a class="update-card" href="../unit/unit369.html?form=3"><img src="../img/u/369/2.png" alt="" loading="lazy"><span class="copy"><b>고양이 세이버 오르타</b><small>UNIT 369-3</small><small class="update-change">변경: 3단 형태 능력치 · 설명</small></span></a><a class="update-card" href="../unit/unit455.html?form=3"><img src="../img/u/455/2.png" alt="" loading="lazy"><span class="copy"><b>스타라이트 모모코</b><small>UNIT 455-3</small><small class="update-change">변경: 설명</small></span></a><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;おやじネコ(店主)&quot;,&quot;image&quot;:&quot;../img/u/504/0.png&quot;,&quot;href&quot;:&quot;../unit/unit504.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 504-1&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]},{&quot;form&quot;:2,&quot;name&quot;:&quot;おやじネコ(現役)&quot;,&quot;image&quot;:&quot;../img/u/504/1.png&quot;,&quot;href&quot;:&quot;../unit/unit504.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 504-2&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit504.html?form=1"><img src="../img/u/504/0.png" alt="" loading="lazy"><span class="copy"><b>おやじネコ(店主)</b><small>UNIT 504-1</small><span class="update-card-notes"><small class="update-change">변경: 공통 능력치</small></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;고양이 메달왕&quot;,&quot;image&quot;:&quot;../img/u/726/0.png&quot;,&quot;href&quot;:&quot;../unit/unit726.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 726-1&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]},{&quot;form&quot;:2,&quot;name&quot;:&quot;고양이 메달대왕&quot;,&quot;image&quot;:&quot;../img/u/726/1.png&quot;,&quot;href&quot;:&quot;../unit/unit726.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 726-2&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit726.html?form=1"><img src="../img/u/726/0.png" alt="" loading="lazy"><span class="copy"><b>고양이 메달왕</b><small>UNIT 726-1</small><span class="update-card-notes"><small class="update-change">변경: 공통 능력치</small></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><article class="update-card update-unit-switch-card" data-form-variants="[{&quot;form&quot;:1,&quot;name&quot;:&quot;졸병 고양이&quot;,&quot;image&quot;:&quot;../img/u/776/0.png&quot;,&quot;href&quot;:&quot;../unit/unit776.html?form=1&quot;,&quot;identity&quot;:&quot;UNIT 776-1&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]},{&quot;form&quot;:2,&quot;name&quot;:&quot;장수 고양이&quot;,&quot;image&quot;:&quot;../img/u/776/1.png&quot;,&quot;href&quot;:&quot;../unit/unit776.html?form=2&quot;,&quot;identity&quot;:&quot;UNIT 776-2&quot;,&quot;notes&quot;:[{&quot;text&quot;:&quot;변경: 공통 능력치&quot;,&quot;className&quot;:&quot;update-change&quot;}]}]" data-form-index="0"><a class="update-card-link" href="../unit/unit776.html?form=1"><img src="../img/u/776/0.png" alt="" loading="lazy"><span class="copy"><b>졸병 고양이</b><small>UNIT 776-1</small><span class="update-card-notes"><small class="update-change">변경: 공통 능력치</small></span></span></a><button class="update-form-switch" type="button" aria-label="형태 변경"><span>형태</span><span>변경</span></button></article><a class="update-card" href="../unit/unit857.html?form=2"><img src="../img/u/857/1.png" alt="" loading="lazy"><span class="copy"><b>シルバーにゃんこ</b><small>UNIT 857-2</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit858.html?form=2"><img src="../img/u/858/1.png" alt="" loading="lazy"><span class="copy"><b>ゴールドにゃんこ</b><small>UNIT 858-2</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit866.html?form=2"><img src="../img/u/866/1.png" alt="" loading="lazy"><span class="copy"><b>パックマンネコ</b><small>UNIT 866-2</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit867.html?form=2"><img src="../img/u/867/1.png" alt="" loading="lazy"><span class="copy"><b>ネコブリンキーCC</b><small>UNIT 867-2</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit868.html?form=2"><img src="../img/u/868/1.png" alt="" loading="lazy"><span class="copy"><b>ネコインキーCC</b><small>UNIT 868-2</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit871.html?form=3"><img src="../img/u/871/2.png" alt="" loading="lazy"><span class="copy"><b>어썰트 가재 고양이</b><small>UNIT 871-3</small><small class="update-change">변경: 설명</small></span></a><a class="update-card" href="../unit/unit872.html?form=2"><img src="../img/u/872/1.png" alt="" loading="lazy"><span class="copy"><b>정글 마스터 토모에</b><small>UNIT 872-2</small><small class="update-change">변경: 설명</small></span></a></div></section><section class="section update-section "><div class="section-heading"><h2>추가된 적</h2></div><div class="update-grid"><a class="update-card" href="../enemy/enemy786.html"><img src="../img/e/786/0.png" alt="" loading="lazy"><span class="copy"><b>クオリネス卿</b><small>ENEMY 786</small></span></a><a class="update-card" href="../enemy/enemy787.html"><img src="../img/e/787/0.png" alt="" loading="lazy"><span class="copy"><b>적 787</b><small>ENEMY 787</small></span></a></div></section><section class="section update-section update-rank-gift-section"><div class="section-heading"><h2>유저 랭크 보상</h2></div><div class="update-grid"><article class="update-card update-rank-gift-card"><div class="copy"><b>28000</b><div class="rank-gift-rewards"><div class="rank-gift-reward" data-tooltip="레어 티켓" tabindex="0"><img src="../img/r/21.png" alt="레어 티켓"><span>x1</span></div></div></div></article><article class="update-card update-rank-gift-card"><div class="copy"><b>28100</b><div class="rank-gift-rewards"><div class="rank-gift-reward" data-tooltip="캣츠아이【슈퍼 레어】" tabindex="0"><img src="../img/r/52.png" alt="캣츠아이【슈퍼 레어】"><span>x5</span></div></div></div></article><article class="update-card update-rank-gift-card"><div class="copy"><b>28200</b><div class="rank-gift-rewards"><div class="rank-gift-reward" data-tooltip="캣츠아이【울트라 슈퍼 레어】" tabindex="0"><img src="../img/r/53.png" alt="캣츠아이【울트라 슈퍼 레어】"><span>x5</span></div></div></div></article></div></section><section class="section update-section"><div class="section-heading nyancombo-section-heading"><h2>추가된 냥콤보</h2></div><div class="nyancombo-list"><article class="nyancombo-card"><div class="nyancombo-card-heading"><h3>居残り組</h3><p>냥코 대포 충전 속도 UP 【중】</p></div><div class="nyancombo-members"><a class="nyancombo-member" href="../unit/unit781.html?form=2" data-tooltip="마모란파사란" aria-label="마모란파사란"><span class="nyancombo-member-image"><img src="../img/u/781/1.png" alt=""></span></a><a class="nyancombo-member" href="../unit/unit689.html?form=1" data-tooltip="10년이면 고양이" aria-label="10년이면 고양이"><span class="nyancombo-member-image"><img src="../img/u/689/0.png" alt=""></span></a></div></article></div></section><script src="../catalog.js"></script><script>
+(() => {
+  const form = document.getElementById("unitSearchForm");
+  const input = document.getElementById("unitSearchInput");
+  const results = document.getElementById("unitSearchResults");
+  const entries = Array.isArray(window.NYANKODB_SEARCH_CATALOG?.entries)
+    ? window.NYANKODB_SEARCH_CATALOG.entries : [];
+  if (!form || !input || !results) return;
+  let visibleResults = [];
+  let activeResultIndex = -1;
+  const normalize = value => String(value || "")
+    .toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+  const orderedPosition = (name, query) => {
+    let cursor = 0;
+    let firstPosition = -1;
+    for (const character of query) {
+      const position = name.indexOf(character, cursor);
+      if (position < 0) return -1;
+      if (firstPosition < 0) firstPosition = position;
+      cursor = position + character.length;
+    }
+    return firstPosition;
+  };
+  const containsAll = (name, query) => {
+    const remaining = new Map();
+    for (const character of name) remaining.set(character, (remaining.get(character) || 0) + 1);
+    for (const character of query) {
+      const count = remaining.get(character) || 0;
+      if (count < 1) return false;
+      remaining.set(character, count - 1);
+    }
+    return true;
+  };
+  const match = (name, query) => {
+    if (name === query) return { rank: 0 };
+    if (name.includes(query)) return { rank: 1 };
+    return orderedPosition(name, query) >= 0 ? { rank: 2 }
+      : (containsAll(name, query) ? { rank: 3 } : null);
+  };
+  const close = () => {
+    results.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+    activeResultIndex = -1;
+  };
+  const setActive = index => {
+    if (!visibleResults.length) return;
+    activeResultIndex = (index + visibleResults.length) % visibleResults.length;
+    [...results.querySelectorAll(".unit-search-result")].forEach((result, resultIndex) => {
+      const active = resultIndex === activeResultIndex;
+      result.setAttribute("aria-selected", String(active));
+      if (active) {
+        input.setAttribute("aria-activedescendant", result.id);
+        result.scrollIntoView({ block: "nearest" });
+      }
+    });
+  };
+  const go = entry => {
+    const id = String(entry.id).padStart(3, "0");
+    if (entry.kind !== "enemy") try {
+      const storageKey = `nyanko-db:unit:${entry.id}:display-state:v1`;
+      const state = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+      state.form = entry.form;
+      window.localStorage.setItem(storageKey, JSON.stringify(state));
+    } catch (_) { /* Navigation still works without local storage. */ }
+    location.href = entry.kind === "enemy"
+      ? `../enemy/enemy${id}.html`
+      : `../unit/unit${id}.html?form=${Number(entry.form) || 1}`;
+  };
+  const render = () => {
+    const query = normalize(input.value.trim());
+    results.replaceChildren();
+    activeResultIndex = -1;
+    if (!query) { visibleResults = []; close(); return; }
+    const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
+    visibleResults = entries.map(entry => ({ entry, name: normalize(entry.name) }))
+      .map(item => ({ ...item, score: numericQuery !== null && Number(item.entry.id) === numericQuery
+        ? 0 : (match(item.name, query)?.rank ?? 99) }))
+      .filter(item => item.score < 99)
+      .sort((a,b) => a.score - b.score || Number(a.entry.id) - Number(b.entry.id)
+        || String(a.entry.kind).localeCompare(String(b.entry.kind)) || Number(a.entry.form) - Number(b.entry.form))
+      .map(item => item.entry);
+    if (!visibleResults.length) {
+      const empty = document.createElement("div");
+      empty.className = "unit-search-empty";
+      empty.textContent = "검색 결과가 없습니다.";
+      results.append(empty);
+    }
+    for (const [index, entry] of visibleResults.entries()) {
+      const button = document.createElement("button");
+      button.type = "button"; button.className = "unit-search-result";
+      button.id = `unitSearchResult${index}`;
+      button.setAttribute("role", "option"); button.setAttribute("aria-selected", "false");
+      const icon = String(entry.icon || "");
+      if (icon) {
+        const image = document.createElement("img");
+        image.src = icon.startsWith("data:") || icon.startsWith("../") ? icon : `../${icon.replace(/^\.\//, "")}`;
+        image.alt = ""; image.loading = "lazy"; button.append(image);
+      } else { const empty = document.createElement("span"); empty.className = "unit-search-result-icon-empty"; button.append(empty); }
+      const copy = document.createElement("span"); copy.className = "unit-search-result-copy";
+      const name = document.createElement("span"); name.className = "unit-search-result-name"; name.textContent = String(entry.name || "");
+      const identity = document.createElement("span"); identity.className = "unit-search-result-identity";
+      identity.textContent = entry.kind === "enemy" ? `ENEMY ${String(entry.id).padStart(3, "0")}` : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+      copy.append(name, identity); button.append(copy);
+      let gestureStart = null; let suppressClick = false;
+      button.addEventListener("pointerdown", event => { if (event.pointerType !== "mouse") gestureStart = { pointerId:event.pointerId, x:event.clientX, y:event.clientY }; });
+      button.addEventListener("pointermove", event => { if (gestureStart && event.pointerId === gestureStart.pointerId && Math.hypot(event.clientX - gestureStart.x, event.clientY - gestureStart.y) > 8) suppressClick = true; });
+      button.addEventListener("pointercancel", () => { gestureStart = null; suppressClick = false; });
+      button.addEventListener("click", event => { if (suppressClick) { event.preventDefault(); event.stopPropagation(); suppressClick = false; gestureStart = null; return; } gestureStart = null; go(entry); });
+      button.addEventListener("mousemove", () => setActive(index));
+      results.append(button);
+    }
+    results.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+  input.addEventListener("input", render);
+  input.addEventListener("focus", render);
+  form.addEventListener("submit", event => { event.preventDefault(); const result = visibleResults[activeResultIndex >= 0 ? activeResultIndex : 0]; if (result) go(result); });
+  input.addEventListener("keydown", event => { if (event.key === "ArrowDown") { event.preventDefault(); setActive(activeResultIndex + 1); } else if (event.key === "ArrowUp") { event.preventDefault(); setActive(activeResultIndex - 1); } else if (event.key === "Escape") close(); });
+  document.addEventListener("click", event => { if (!event.target.closest(".unit-search")) close(); });
+})();
+
+(() => {
+  for (const card of document.querySelectorAll(".update-unit-switch-card[data-form-variants]")) {
+    let variants;
+    try { variants = JSON.parse(card.dataset.formVariants || "[]"); } catch (_) { continue; }
+    if (!Array.isArray(variants) || variants.length < 2) continue;
+    const link = card.querySelector(".update-card-link");
+    const image = link?.querySelector("img");
+    const name = link?.querySelector(".copy b");
+    const identity = link?.querySelector(".copy > small");
+    const notes = link?.querySelector(".update-card-notes");
+    const button = card.querySelector(".update-form-switch");
+    if (!link || !image || !name || !identity || !notes || !button) continue;
+    const render = index => {
+      const variant = variants[index];
+      card.dataset.formIndex = String(index);
+      link.href = String(variant.href || "#");
+      image.src = String(variant.image || "");
+      name.textContent = String(variant.name || "");
+      identity.textContent = String(variant.identity || "");
+      notes.replaceChildren();
+      for (const note of Array.isArray(variant.notes) ? variant.notes : []) {
+        const item = document.createElement("small");
+        item.className = String(note.className || "");
+        item.textContent = String(note.text || "");
+        notes.append(item);
+      }
+      button.setAttribute("aria-label", "형태 변경");
+    };
+    button.addEventListener("click", () => {
+      const current = Number(card.dataset.formIndex || "0");
+      render((current + 1) % variants.length);
+    });
+    render(0);
+  }
+})();
+
+(() => {
+  const comboList = document.querySelector(".nyancombo-list");
+  if (!comboList || comboList.querySelector('[data-combo-unit="874"]')) return;
+  const combos = [
+    { name: "よくきたな！", effect: "캐릭터의 이동 속도 UP 【소】", form: 1, member: "りゅういち", image: "../img/u/874/0.png" },
+    { name: "いきてはかえさん！", effect: "초기 소지금 UP 【소】", form: 2, member: "りゅういち＆りゅうじ", image: "../img/u/874/1.png" },
+  ];
+  for (const combo of combos) {
+    const card = document.createElement("article");
+    card.className = "nyancombo-card";
+    card.dataset.comboUnit = "874";
+    const heading = document.createElement("div");
+    heading.className = "nyancombo-card-heading";
+    const name = document.createElement("h3");
+    name.textContent = combo.name;
+    const effect = document.createElement("p");
+    effect.textContent = combo.effect;
+    heading.append(name, effect);
+    const members = document.createElement("div");
+    members.className = "nyancombo-members";
+    const member = document.createElement("a");
+    member.className = "nyancombo-member";
+    member.href = `../unit/unit874.html?form=${combo.form}`;
+    member.dataset.tooltip = combo.member;
+    member.setAttribute("aria-label", combo.member);
+    const imageWrap = document.createElement("span");
+    imageWrap.className = "nyancombo-member-image";
+    const image = document.createElement("img");
+    image.src = combo.image;
+    image.alt = "";
+    imageWrap.append(image);
+    member.append(imageWrap);
+    members.append(member);
+    card.append(heading, members);
+    comboList.append(card);
+  }
+})();
+</script></main></body></html>
