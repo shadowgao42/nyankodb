@@ -428,8 +428,10 @@
     .hp-health-segment.health { background:#68ad45; }
     .hp-health-segment.shield { background:#5EA0CC; }
     .hp-health-segment.barrier { background:#E89090; }
-    .hp-bar-card .attack-breakdown.barrier-breakdown { display:flex; justify-content:flex-end; gap:0; color:var(--accent-text); }
+    .hp-health-segment.revive { background:#B971FC; }
+    .hp-bar-card .attack-breakdown.health-breakdown { display:flex; justify-content:flex-end; gap:0; color:var(--accent-text); }
     .hp-bar-card .barrier-health-value { color:#E89090; }
+    .hp-bar-card .revive-health-value { color:#B971FC; }
     .attack-fill { background: linear-gradient(90deg,#e6412f,#ff5b2d); box-shadow: 0 0 14px rgba(255,74,44,.38); }
     .kb-markers, .attack-hit-markers { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
     .kb-marker, .attack-hit-marker { position: absolute; top: 0; bottom: 0; width: 1px; background: rgba(255,255,255,.92); transform: translateX(-50%); }
@@ -919,7 +921,7 @@
         <div class="distance-unit-grid">
           <label class="distance-unit-field"><span>&#49324;&#44144;&#47532; &#45800;&#50948;</span><select id="range-unit-select" aria-label="&#49324;&#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
           <label class="distance-unit-field"><span>&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;</span><select id="speed-unit-select" aria-label="&#51060;&#46041;&#49549;&#46020; &#45800;&#50948;"><option value="spu/f">spu/f</option><option value="spu/s">spu/s</option><option value="u/f">u/f</option><option value="u/s">u/s</option><option value="rng/f">rng/f</option><option value="rng/s">rng/s</option></select></label>
-          <label class="distance-unit-field"><span>&#50892;&#54532; &#44144;&#47532; &#45800;&#50948;</span><select id="warp-unit-select" aria-label="&#50892;&#54532; &#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
+          <label class="distance-unit-field"><span>&#50892;&#54532; &middot; &#48260;&#47196;&#50864; &#44144;&#47532; &#45800;&#50948;</span><select id="warp-unit-select" aria-label="&#50892;&#54532; &middot; &#48260;&#47196;&#50864; &#44144;&#47532; &#45800;&#50948;"><option value="rng">rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
         </div>
       </section>
     </div>
@@ -957,7 +959,7 @@
 </main>
 <script src="../catalog.js"></script>
 <script>
-const DATA={"enemy":{"id":486,"name":"켄","description":"도감 설명이 없습니다.","has_unknown_abilities":false,"descriptionMissing":true},"base":{"hitpoints":600000,"knockbacks":2,"speed":16,"attack_hits":[12000,12000,12000],"attack_total":36000,"dps":9231,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":3950,"hp":600000,"attackHits":[12000,12000,12000],"range":180,"cash":3950,"hitboxWidth":320,"barrierHp":0,"shieldHp":0,"shieldRegen":0},"current":{"magnification":100.0,"hitpoints_magnification":100.0,"attack_magnification":100.0,"hitpoints":600000,"knockbacks":2,"speed":16,"attack_hits":[12000,12000,12000],"attack_total":36000,"dps":9231,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":3950},"attacks":[{"index":1,"base_damage":12000,"foreswing_frames":6,"abilities_active":false,"damage":12000,"foreswing_seconds":0.2},{"index":2,"base_damage":12000,"foreswing_frames":10,"abilities_active":false,"damage":12000,"foreswing_seconds":0.3333333333333333},{"index":3,"base_damage":12000,"foreswing_frames":12,"abilities_active":true,"damage":12000,"foreswing_seconds":0.4}],"timing":{"attack_animation_frames":57,"last_attack_foreswing_frames":12,"attack_cooldown_raw":53,"attack_cooldown_frames":105,"backswing_frames":45,"cycle_frames":117,"cycle_seconds":3.9,"backswing_seconds":1.5,"attack_cooldown_seconds":3.5,"animationFrames":57,"lastHitFrame":12,"cooldownFrames":105,"backswingFrames":45,"cycleFrames":117,"foreswingFrames":[6,10,12],"attackAnimationAvailable":true},"ranges":[[-330.0,330.0],[-330.0,330.0],[-330.0,330.0]],"traits":[{"key":"red","label":"빨간 적","icon":"../img/i/219.png"}],"abilities":[{"key":"area","label":"범위 공격","icon":"../img/i/211.png","description":"적 캐릭터의 공격 범위 내에 있는 모든 캐릭터에게 데미지를 입힙니다"},{"key":"omni_strike","label":"전방위 공격","icon":"../img/i/112.png","description":"적 캐릭터의 앞쪽부터 뒤쪽까지 넓은 범위의 캐릭터들을 공격합니다"},{"key":"multi_hit","label":"연속 공격","hit_count":3,"applies_to_attacks":[3],"icon":"","description":"한 공격 동작 중 여러 번 타격합니다."},{"key":"knockback","label":"날려버린다","chance":100,"applies_to_attacks":[3],"icon":"../img/i/207.png","description":"일정 확률로 캐릭터를 멀리 날려버립니다"}],"immunities":[],"assets":{"image":"../img/e/486/0.png"},"raw":{"hitpoints":600000,"knockbacks":2,"speed":16,"attack_1":12000,"attack_cooldown_raw":53,"standing_range":180,"cash_drop_raw":1000,"hitbox_position":0,"hitbox_width":320,"unused_9":0,"trait_red":1,"area_attack":1,"foreswing_1":6,"trait_floating":0,"trait_black":0,"trait_metal":0,"trait_traitless":0,"trait_angel":0,"trait_alien":0,"trait_zombie":0,"knockback_chance":100,"freeze_chance":0,"freeze_duration":0,"slow_chance":0,"slow_duration":0,"critical_chance":0,"base_destroyer":0,"wave_chance":0,"wave_level":0,"weaken_chance":0,"weaken_duration":0,"weaken_percent":0,"strengthen_threshold":0,"strengthen_boost":0,"survive_chance":0,"attack_1_range_anchor":330,"attack_1_range_span":-660,"wave_immune":0,"wave_blocker":0,"knockback_immune":0,"freeze_immune":0,"slow_immune":0,"weaken_immune":0,"burrow_count":0,"burrow_distance_raw":0,"revive_count":0,"revive_time":0,"revive_hitpoints_percent":0,"trait_witch":0,"trait_dojo":0,"attack_count":-1,"time_before_death":-1,"attack_count_state":0,"spawn_animation":-1,"soul_animation":0,"attack_2":12000,"attack_3":12000,"foreswing_2":10,"foreswing_3":12,"attack_1_abilities":0,"attack_2_abilities":0,"attack_3_abilities":1,"spawn_animation_flag":0,"soul_animation_flag":0,"barrier_hitpoints":0,"warp_chance":0,"warp_duration":0,"warp_distance_minimum_raw":0,"warp_distance_maximum_raw":0,"starred_alien_type":0,"warp_immune":0,"trait_eva":0,"trait_relic":0,"curse_chance":0,"curse_duration":0,"savage_blow_chance":0,"savage_blow_boost":0,"dodge_chance":0,"dodge_duration":0,"toxic_chance":0,"toxic_damage_percent":0,"surge_chance":0,"surge_spawn_minimum_raw":0,"surge_spawn_span_raw":0,"surge_level":0,"surge_immune":0,"mini_wave":0,"shield_hitpoints":0,"shield_regeneration_percent":0,"death_surge_chance":0,"death_surge_spawn_minimum_raw":0,"death_surge_spawn_span_raw":0,"death_surge_level":0,"trait_aku":0,"trait_colossus":0,"attack_2_range_flag":0,"attack_2_range_anchor":0,"attack_2_range_span":0,"attack_3_range_flag":0,"attack_3_range_anchor":0,"attack_3_range_span":0,"trait_behemoth":0,"mini_surge":0,"counter_surge":0,"trait_sage":0,"curse_immune":0,"explosion_chance":0,"explosion_range_anchor_raw":0,"explosion_range_span_raw":0,"explosion_immune":0,"trait_kaijin":0,"drain_chance":0,"drain_percent":0},"actualRangesDetailed":[{"hit":1,"minimum":-330.0,"maximum":330.0},{"hit":2,"minimum":-330.0,"maximum":330.0},{"hit":3,"minimum":-330.0,"maximum":330.0}],"magnification":100.0,"defaults":{"magnification":100.0,"hpBarMax":1000000,"attackBarMax":30000},"mechanicTraits":[{"key":"red","label":"빨간 적"}],"treasure":{"qualityIcons":{"1":"../img/treasure/t1.png","2":"../img/treasure/t2.png","3":"../img/treasure/t3.png"},"categories":[{"key":"eoc","label":"세계편 보물","items":[{"key":"super_register","label":"슈퍼 레지스터","icon":"../img/treasure/Ot004_o.png","slotCount":3,"description":"획득 머니 배율 +1.5x","chapters":[[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}]]}]},{"key":"itf","label":"미래편 보물","items":[{"key":"blue_crystal","label":"블루 크리스탈","icon":"../img/treasure/Wt009_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}]]},{"key":"red_crystal","label":"레드 크리스탈","icon":"../img/treasure/Wt010_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}]]}]},{"key":"cotc","label":"우주편 보물","items":[{"key":"green_crystal","label":"그린 크리스탈","icon":"../img/treasure/St000_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}]]},{"key":"yellow_crystal","label":"옐로우 크리스탈","icon":"../img/treasure/St001_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}]]},{"key":"orange_crystal","label":"오렌지 크리스탈","icon":"../img/treasure/St002_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}]]},{"key":"lightblue_crystal","label":"라이트블루 크리스탈","icon":"../img/treasure/St003_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}]]},{"key":"purple_crystal","label":"퍼플 크리스탈","icon":"../img/treasure/St004_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}]]},{"key":"mysterious_mask","label":"수수께끼의 가면","icon":"../img/treasure/St010_o.png","slotCount":3,"description":"신 배율 감소","chapters":[[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}]]}]},{"key":"passive","label":"패시브","items":[]}],"passive":{"label":"회계력","minBaseLevel":1,"maxBaseLevel":20,"minPlusLevel":0,"maxPlusLevel":10,"defaultBaseLevel":20,"defaultPlusLevel":10,"moneyMultiplierPerLevel":0.05}}};
+const DATA={"enemy":{"id":486,"name":"켄","description":"도감 설명이 없습니다.","has_unknown_abilities":false,"descriptionMissing":true},"base":{"hitpoints":600000,"knockbacks":2,"speed":16,"attack_hits":[12000,12000,12000],"attack_total":36000,"dps":9231,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":3950,"hp":600000,"attackHits":[12000,12000,12000],"range":180,"cash":3950,"hitboxWidth":320,"barrierHp":0,"shieldHp":0,"shieldRegen":0},"current":{"magnification":100.0,"hitpoints_magnification":100.0,"attack_magnification":100.0,"hitpoints":600000,"knockbacks":2,"speed":16,"attack_hits":[12000,12000,12000],"attack_total":36000,"dps":9231,"barrier_hitpoints":0,"shield_hitpoints":0,"cash_drop":3950},"attacks":[{"index":1,"base_damage":12000,"foreswing_frames":6,"abilities_active":false,"damage":12000,"foreswing_seconds":0.2},{"index":2,"base_damage":12000,"foreswing_frames":10,"abilities_active":false,"damage":12000,"foreswing_seconds":0.3333333333333333},{"index":3,"base_damage":12000,"foreswing_frames":12,"abilities_active":true,"damage":12000,"foreswing_seconds":0.4}],"timing":{"attack_animation_frames":57,"last_attack_foreswing_frames":12,"attack_cooldown_raw":53,"attack_cooldown_frames":105,"backswing_frames":45,"cycle_frames":117,"cycle_seconds":3.9,"backswing_seconds":1.5,"attack_cooldown_seconds":3.5,"animationFrames":57,"lastHitFrame":12,"cooldownFrames":105,"backswingFrames":45,"cycleFrames":117,"foreswingFrames":[6,10,12],"attackAnimationAvailable":true},"ranges":[[-330.0,330.0],[-330.0,330.0],[-330.0,330.0]],"traits":[{"key":"red","label":"빨간 적","icon":"../img/i/219.png"}],"abilities":[{"key":"knockback","label":"날려버린다","chance":100,"applies_to_attacks":[3],"icon":"../img/i/207.png","description":"일정 확률로 캐릭터를 멀리 날려버립니다"},{"key":"area","label":"범위 공격","icon":"../img/i/211.png","description":"적 캐릭터의 공격 범위 내에 있는 모든 캐릭터에게 데미지를 입힙니다"},{"key":"omni_strike","label":"전방위 공격","icon":"../img/i/112.png","description":"적 캐릭터의 앞쪽부터 뒤쪽까지 넓은 범위의 캐릭터들을 공격합니다"},{"key":"multi_hit","label":"연속 공격","hit_count":3,"applies_to_attacks":[3],"icon":"","description":"한 공격 동작 중 여러 번 타격합니다."}],"immunities":[],"assets":{"image":"../img/e/486/0.png"},"raw":{"hitpoints":600000,"knockbacks":2,"speed":16,"attack_1":12000,"attack_cooldown_raw":53,"standing_range":180,"cash_drop_raw":1000,"hitbox_position":0,"hitbox_width":320,"unused_9":0,"trait_red":1,"area_attack":1,"foreswing_1":6,"trait_floating":0,"trait_black":0,"trait_metal":0,"trait_traitless":0,"trait_angel":0,"trait_alien":0,"trait_zombie":0,"knockback_chance":100,"freeze_chance":0,"freeze_duration":0,"slow_chance":0,"slow_duration":0,"critical_chance":0,"base_destroyer":0,"wave_chance":0,"wave_level":0,"weaken_chance":0,"weaken_duration":0,"weaken_percent":0,"strengthen_threshold":0,"strengthen_boost":0,"survive_chance":0,"attack_1_range_anchor":330,"attack_1_range_span":-660,"wave_immune":0,"wave_blocker":0,"knockback_immune":0,"freeze_immune":0,"slow_immune":0,"weaken_immune":0,"burrow_count":0,"burrow_distance_raw":0,"revive_count":0,"revive_time":0,"revive_hitpoints_percent":0,"trait_witch":0,"trait_dojo":0,"attack_count":-1,"time_before_death":-1,"attack_count_state":0,"spawn_animation":-1,"soul_animation":0,"attack_2":12000,"attack_3":12000,"foreswing_2":10,"foreswing_3":12,"attack_1_abilities":0,"attack_2_abilities":0,"attack_3_abilities":1,"spawn_animation_flag":0,"soul_animation_flag":0,"barrier_hitpoints":0,"warp_chance":0,"warp_duration":0,"warp_distance_minimum_raw":0,"warp_distance_maximum_raw":0,"starred_alien_type":0,"warp_immune":0,"trait_eva":0,"trait_relic":0,"curse_chance":0,"curse_duration":0,"savage_blow_chance":0,"savage_blow_boost":0,"dodge_chance":0,"dodge_duration":0,"toxic_chance":0,"toxic_damage_percent":0,"surge_chance":0,"surge_spawn_minimum_raw":0,"surge_spawn_span_raw":0,"surge_level":0,"surge_immune":0,"mini_wave":0,"shield_hitpoints":0,"shield_regeneration_percent":0,"death_surge_chance":0,"death_surge_spawn_minimum_raw":0,"death_surge_spawn_span_raw":0,"death_surge_level":0,"trait_aku":0,"trait_colossus":0,"attack_2_range_flag":0,"attack_2_range_anchor":0,"attack_2_range_span":0,"attack_3_range_flag":0,"attack_3_range_anchor":0,"attack_3_range_span":0,"trait_behemoth":0,"mini_surge":0,"counter_surge":0,"trait_sage":0,"curse_immune":0,"explosion_chance":0,"explosion_range_anchor_raw":0,"explosion_range_span_raw":0,"explosion_immune":0,"trait_kaijin":0,"drain_chance":0,"drain_percent":0},"actualRangesDetailed":[{"hit":1,"minimum":-330.0,"maximum":330.0},{"hit":2,"minimum":-330.0,"maximum":330.0},{"hit":3,"minimum":-330.0,"maximum":330.0}],"magnification":100.0,"defaults":{"magnification":100.0,"hpBarMax":1000000,"attackBarMax":30000},"mechanicTraits":[{"key":"red","label":"빨간 적"}],"treasure":{"qualityIcons":{"1":"../img/treasure/t1.png","2":"../img/treasure/t2.png","3":"../img/treasure/t3.png"},"categories":[{"key":"eoc","label":"세계편 보물","items":[{"key":"super_register","label":"슈퍼 레지스터","icon":"../img/treasure/Ot004_o.png","slotCount":3,"description":"획득 머니 배율 +1.5x","chapters":[[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}],[{"stageId":19,"name":"프라이팬","location":"프랑스"},{"stageId":20,"name":"정열","location":"스페인"},{"stageId":17,"name":"동화","location":"덴마크"}]]}]},{"key":"itf","label":"미래편 보물","items":[{"key":"blue_crystal","label":"블루 크리스탈","icon":"../img/treasure/Wt009_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}]]},{"key":"red_crystal","label":"레드 크리스탈","icon":"../img/treasure/Wt010_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}]]}]},{"key":"cotc","label":"우주편 보물","items":[{"key":"green_crystal","label":"그린 크리스탈","icon":"../img/treasure/St000_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}]]},{"key":"yellow_crystal","label":"옐로우 크리스탈","icon":"../img/treasure/St001_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}]]},{"key":"orange_crystal","label":"오렌지 크리스탈","icon":"../img/treasure/St002_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}]]},{"key":"lightblue_crystal","label":"라이트블루 크리스탈","icon":"../img/treasure/St003_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}]]},{"key":"purple_crystal","label":"퍼플 크리스탈","icon":"../img/treasure/St004_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}]]},{"key":"mysterious_mask","label":"수수께끼의 가면","icon":"../img/treasure/St010_o.png","slotCount":3,"description":"신 배율 감소","chapters":[[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}]]}]},{"key":"passive","label":"패시브","items":[]}],"passive":{"label":"회계력","minBaseLevel":1,"maxBaseLevel":20,"minPlusLevel":0,"maxPlusLevel":10,"defaultBaseLevel":20,"defaultPlusLevel":10,"moneyMultiplierPerLevel":0.05}}};
 const SEARCH_SITE_PREFIX="../";
 const $=id=>document.getElementById(id);
 const storeKey=`nyankodb.enemy.${DATA.enemy.id}`;
@@ -1026,8 +1028,24 @@ function renderStats(){
   document.querySelectorAll('.attack-timeline-hit').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const open=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!open)el.dataset.tooltipOpen='true'}));
 }
 function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.replaceChildren();return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
-function effectSummary(x){const p=[];const compactRange=(minimum,maximum)=>Math.abs(Number(minimum)-Number(maximum))<1e-9?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`;if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(compactRange(x.minimum,x.maximum));if(x.range)p.push(compactRange(x.range.minimum,x.range.maximum));if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
-function renderEffects(){const items=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');if(!items.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}let html=items.map((x,i)=>{const title=x.label||x.key,body=x.description||x.detail||'',meta=effectSummary(x)||x.summary||x.meta||'',icon=`<span class="ability-icon">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((title||'?')[0])}</span>`}</span>`;return `<article class="effect ability-card" tabindex="0" data-i="${i}">${icon}<div><div class="effect-name">${esc(title)}</div>${meta?`<div class="effect-meta ability-summary">${esc(meta)}</div>`:''}</div><div class="ability-tooltip"><strong>${esc(title)}</strong>${body?`<p>${esc(body)}</p>`:''}</div></article>`}).join('');if(immunities.length)html+=`<article class="immunity-card"><h3>무효</h3><div class="immunity-icons">${immunities.map((m,i)=>`<span class="immunity-chip" tabindex="0" data-m="${i}" role="img" aria-label="${esc(m.label)}">${m.icon?`<img src="${m.icon}" alt="">`:`<span class="fallback-icon">무</span>`}<span class="ability-tooltip"><strong>${esc(m.label||'무효')}</strong>${m.description?`<p>${esc(m.description)}</p>`:''}</span></span>`).join('')}</div></article>`;root.innerHTML=html;bindInlineTooltips(root)}
+function effectSummary(x){if(x.key==='survive')return x.chance!==undefined?`확률 ${fmt(x.chance)}%`:'';const p=[];const compactRange=(minimum,maximum)=>Math.abs(Number(minimum)-Number(maximum))<1e-9?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`;if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(compactRange(x.minimum,x.maximum));if(x.range)p.push(compactRange(x.range.minimum,x.range.maximum));if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
+function renderEffects(){
+  const all=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');
+  if(!all.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}
+  const effectKeys=new Set(['weaken','freeze','slow','knockback','warp','curse','dodge','drain']);
+  const attackKeys=new Set(['single','area','long_distance','omni_strike','multi_hit','attack_count']);
+  const ordered=[
+    ...all.filter(x=>effectKeys.has(x.key)),
+    ...all.filter(x=>!effectKeys.has(x.key)&&!attackKeys.has(x.key)),
+    ...all.filter(x=>attackKeys.has(x.key)),
+  ];
+  const card=(x,index)=>{const isLimited=x.key==='attack_count',title=isLimited?'1회 공격':(x.label||x.key),body=isLimited?'1회 공격 후 사라짐':(x.description||x.detail||''),meta=isLimited?'':(effectSummary(x)||x.summary||x.meta||''),icon=`<span class="ability-icon">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((title||'?')[0])}</span>`}</span>`;return `<article class="effect ability-card" tabindex="0" data-i="${index}">${icon}<div><div class="effect-name">${esc(title)}</div>${meta?`<div class="effect-meta ability-summary">${esc(meta)}</div>`:''}</div><div class="ability-tooltip"><strong>${esc(title)}</strong>${body?`<p>${esc(body)}</p>`:''}</div></article>`};
+  const immunity=(x,index)=>`<span class="immunity-chip" tabindex="0" data-m="${index}" role="img" aria-label="${esc(x.label)}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">무</span>`}<span class="ability-tooltip"><strong>${esc(x.label||'무효')}</strong>${x.description?`<p>${esc(x.description)}</p>`:''}</span></span>`;
+  let html=ordered.map(card).join('');
+  if(immunities.length)html+=`<article class="immunity-card"><h3>무효</h3><div class="immunity-icons">${immunities.map(immunity).join('')}</div></article>`;
+  root.innerHTML=html;
+  bindInlineTooltips(root);
+}
 function qualityName(q){return ['없음','조잡한','평범한','최고급'][q]}
 function ensureTreasure(){if(!state.treasures||typeof state.treasures!=='object'||Array.isArray(state.treasures))state.treasures={};for(const category of DATA.treasure.categories)for(const item of category.items)for(let c=0;c<3;c++)for(let s=0;s<item.slotCount;s++){const k=`${item.key}.${c}.${s}`,q=Number(state.treasures[k]);if(!Number.isInteger(q)||q<0||q>3)state.treasures[k]=3;else state.treasures[k]=q}}
 function treasurePercent(item){let total=0;for(let c=0;c<3;c++){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));total+=qs.some(q=>q===0)?0:qs.reduce((a,q)=>a+q/3,0)/item.slotCount*100}return total}
@@ -1119,8 +1137,8 @@ let enemyExpectedMetric='attack';
 let enemyExpectedRangeDamage=null;
 let enemyExpectedChartGeometry=null;
 let enemyExpectedQueryRaw=Number((DATA.base||DATA.stats||{}).range??(DATA.base||DATA.stats||{}).recognitionRange??0);
-const enemyDetailNumber=(value,maximumFractionDigits=2)=>{const number=Number(value);if(!Number.isFinite(number))return '\u2014';const precision=10**maximumFractionDigits;return new Intl.NumberFormat('ko-KR',{maximumFractionDigits}).format(Math.round(number*precision)/precision)};
-const enemyDetailM=value=>{const number=Number(value);return Number.isFinite(number)?enemyDetailNumber(number/1000000)+'M':'\u2014'};
+const enemyDetailNumber=(value,maximumFractionDigits=2)=>{const number=Number(value);if(number===Infinity)return '\u221e';if(!Number.isFinite(number))return '\u2014';const precision=10**maximumFractionDigits;return new Intl.NumberFormat('ko-KR',{maximumFractionDigits}).format(Math.round(number*precision)/precision)};
+const enemyDetailM=value=>{const number=Number(value);return number===Infinity?'\u221e':Number.isFinite(number)?enemyDetailNumber(number/1000000)+'M':'\u2014'};
 const enemyAttackAbility=key=>(DATA.abilities||[]).find(ability=>ability.key===key)||null;
 const enemyTreasureItem=key=>DATA.treasure.categories.flatMap(category=>category.items||[]).find(item=>item.key===key)||null;
 const enemyTreasurePercent=key=>{const item=enemyTreasureItem(key);return item?treasurePercent(item):0};
@@ -1195,6 +1213,15 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   const shield=enabled?enemyScale(Math.max(0,Number(shieldAbility.hitpoints)||0),'hp'):0;
   const regeneration=Math.max(0,Math.min(100,Number(shieldAbility?.regeneration_percent)||0));
   const regeneratedShield=Math.floor(shield*regeneration/100+1e-9);
+  const reviveAbility=enemyAttackAbility('revive');
+  const reviveEnabled=!!reviveAbility&&enemyActiveHealthEffectKeys.has('revive');
+  const reviveInfinite=reviveEnabled&&(!!reviveAbility?.infinite||Number(reviveAbility?.count)<0);
+  const reviveCount=reviveEnabled&&!reviveInfinite?Math.max(0,Math.floor(Number(reviveAbility?.count)||0)):0;
+  const revivePercent=Math.max(0,Number(reviveAbility?.hitpoints_percent)||0);
+  // Enemy magnification is applied to the body first.  Revival HP is then
+  // its stated percentage of that already-magnified body, with one final
+  // floor so a fractional result never rounds up.
+  const reviveHealth=reviveEnabled?Math.floor(stats.hp*revivePercent/100+1e-9):0;
   const segments=[];
   // Keep the body split into its real KB portions even when neither a
   // barrier nor a shield is selected.  The white markers in the health bar
@@ -1205,11 +1232,42 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   // on KB.
   if(barrier>0)segments.push({kind:'barrier',value:barrier,dividerAfter:true});
   const healthPerKb=stats.hp/stats.kb;
+  // A revival is a partially depleted copy of the original HP bar.  Split
+  // it at the original KB boundaries instead of dividing the revival value
+  // into equal slices.  For 120,000 HP / 3 KB, a 50% revival is therefore
+  // 20,000 + 40,000, not 30,000 + 30,000.
+  const reviveKbSegments=[];
+  if(reviveHealth>0&&healthPerKb>0){
+    let remaining=reviveHealth;
+    const leading=remaining%healthPerKb;
+    if(leading>1e-9&&healthPerKb-leading>1e-9){
+      reviveKbSegments.push(leading);
+      remaining-=leading;
+    }
+    while(remaining>1e-9){
+      const portion=Math.min(healthPerKb,remaining);
+      reviveKbSegments.push(portion);
+      remaining-=portion;
+    }
+  }
   for(let index=0;index<stats.kb;index++){
     const shieldAmount=index===0?shield:regeneratedShield;
     if(shieldAmount>0)segments.push({kind:'shield',value:shieldAmount,dividerAfter:true});
     if(healthPerKb>0)segments.push({kind:'health',value:healthPerKb,dividerAfter:index<stats.kb-1});
   }
+  if(reviveHealth>0&&(reviveInfinite||reviveCount>0)){
+    // Revivals occur after the original body (and any per-KB shields), so
+    // force the same thin white separator between the two health groups.
+    if(segments.length)segments[segments.length-1].dividerAfter=true;
+    // Repeat that depleted-body pattern once per finite revival.  Every
+    // boundary is explicit, including the join between two revivals.
+    const revivalSegments=Array.from({length:reviveCount},()=>reviveKbSegments).flat();
+    for(let index=0;index<revivalSegments.length;index++){
+      segments.push({kind:'revive',value:revivalSegments[index],dividerAfter:index<revivalSegments.length-1});
+    }
+  }
+  const shieldTotal=stats.hp+shield+regeneratedShield*Math.max(0,stats.kb-1);
+  const finiteTotal=stats.hp+barrier+shield+regeneratedShield*Math.max(0,stats.kb-1)+reviveHealth*reviveCount;
   return {
     enabled,
     barrierEnabled,
@@ -1217,8 +1275,15 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
     shield,
     regeneratedShield,
     regeneration,
+    reviveEnabled,
+    reviveInfinite,
+    reviveCount,
+    revivePercent,
+    reviveHealth,
+    reviveKbSegments,
+    shieldTotal,
     segments:segments.length?segments:[{kind:'health',value:stats.hp,dividerAfter:false}],
-    total:stats.hp+barrier+shield+regeneratedShield*Math.max(0,stats.kb-1),
+    total:reviveInfinite&&reviveHealth>0?Infinity:finiteTotal,
   };
 }
 function enemyAbilityAppliesToHit(ability,hitNumber){
@@ -1351,6 +1416,10 @@ function enemyStatDetailPanel(kind,rows){
   return details;
 }
 function enemyHealthEffectDetail(ability){
+  if(ability.key==='revive'){
+    const count=ability.infinite||Number(ability.count)<0?'\ubb34\uc81c\ud55c':`${enemyDetailNumber(Math.max(0,Number(ability.count)||0))}\ud68c`;
+    return `${count} \u00b7 \uc7ac\uc0dd ${enemyDetailNumber(Math.max(0,Number(ability.hitpoints_percent)||0))}%`;
+  }
   const rawHitpoints=Math.max(0,Number(ability.hitpoints)||0);
   const hitpoints=ability.key==='shield'?enemyScale(rawHitpoints,'hp'):rawHitpoints;
   const parts=[`\uccb4\ub825 ${enemyDetailNumber(hitpoints)}`];
@@ -1359,7 +1428,7 @@ function enemyHealthEffectDetail(ability){
   return parts.join(' \u00b7 ');
 }
 function enemyRenderHealthEffectSettings(root){
-  const abilities=['barrier','shield'].map(enemyAttackAbility).filter(Boolean);
+  const abilities=['barrier','shield','revive'].map(enemyAttackAbility).filter(Boolean);
   const section=root.querySelector('#healthEffectSettings');
   const list=root.querySelector('#healthEffectToggleList');
   if(!section||!list)return;
@@ -1603,6 +1672,10 @@ function enemyRenderHealthMeter(card,health){
   // correctly rounded right end.  Shield / barrier overlays only replace
   // their own portions of that body layer.
   const max=Math.max(1,Number(state.hpMax)||1);
+  // The coloured overlays must round at the end of the *actual* health
+  // total, not only at the configured bar maximum.  Otherwise a zombie's
+  // final revival segment covers the rounded green end with a square edge.
+  const visibleTotal=Number.isFinite(health.total)?Math.min(max,health.total):max;
   const bodyFill=document.createElement('div');
   bodyFill.className='stat-meter-fill hp-fill';
   bodyFill.style.width=`${Math.min(100,health.total/max*100)}%`;
@@ -1625,7 +1698,7 @@ function enemyRenderHealthMeter(card,health){
     if(segment.kind!=='health'&&visibleEnd>visibleStart){
       const fill=document.createElement('i');
       fill.className=`stat-meter-fill hp-health-segment ${segment.kind}`;
-      const reachesRight=visibleEnd>=max;
+      const reachesRight=visibleEnd>=visibleTotal;
       fill.style.left=`${visibleStart/max*100}%`;
       fill.style.width=`${(visibleEnd-visibleStart)/max*100}%`;
       fill.style.borderRadius=`0 ${reachesRight?'6px':'0'} ${reachesRight?'6px':'0'} 0`;
@@ -1639,6 +1712,38 @@ function enemyRenderHealthMeter(card,health){
       dividers.append(divider);
     }
   });
+  // Infinite revival cannot have a literal infinite DOM list.  Draw the
+  // visible remainder as one purple segment and lay out its white revival
+  // boundaries individually (up to a safe visual cap).  The displayed HP
+  // value remains ∞, while every visible cycle is still distinguished.
+  if(health.reviveInfinite&&health.reviveHealth>0&&offset<max){
+    const visibleStart=Math.min(max,offset);
+    const fill=document.createElement('i');
+    fill.className='stat-meter-fill hp-health-segment revive infinite-revive';
+    fill.style.left=`${visibleStart/max*100}%`;
+    fill.style.width=`${(max-visibleStart)/max*100}%`;
+    fill.style.borderRadius='0 6px 6px 0';
+    segments.append(fill);
+    const pattern=health.reviveKbSegments||[];
+    let boundary=offset;
+    // Low magnification makes each revival/KB section very small (enemy 310
+    // at 3% is the representative case).  240 markers visibly stopped the
+    // white boundaries early, so retain a much higher safety cap only for
+    // deliberately extreme user-configured bar maxima.
+    const dividerLimit=4096;
+    let count=0;
+    while(pattern.length&&boundary<max&&count<dividerLimit){
+      for(const portion of pattern){
+        boundary+=portion;
+        if(boundary>=max||count>=dividerLimit)break;
+        const divider=document.createElement('i');
+        divider.className='kb-marker';
+        divider.style.left=`${boundary/max*100}%`;
+        dividers.append(divider);
+        count++;
+      }
+    }
+  }
   meter.append(bodyFill,segments,dividers);
 }
 function enhanceEnemyStatDetails(){
@@ -1660,25 +1765,43 @@ function enhanceEnemyStatDetails(){
         multiplierBadge.className='counter-multiplier enemy-shield-health-multiplier';
         healthLabel.append(multiplierBadge);
       }
-      // Only a Demon Shield represents repeated, magnification-scaled HP.
-      // A barrier remains a separate one-shot threshold and intentionally
-      // never creates a 체력 배수 badge.
-      const shieldMultiplier=health.enabled&&stats.hp>0?health.total/stats.hp:1;
-      const showShieldMultiplier=Math.abs(shieldMultiplier-1)>1e-9;
-      multiplierBadge.hidden=!showShieldMultiplier;
-      multiplierBadge.textContent=showShieldMultiplier?`\u00d7${enemyFormatMultiplier(shieldMultiplier)}`:'';
-      multiplierBadge.title=showShieldMultiplier?'\uc120\ud0dd\ud55c \uc545\ub9c8 \uc30c\ub4dc\ub97c \ud3ec\ud568\ud55c \ucd1d \uccb4\ub825 \ubc30\uc218':'';
+      // Display the complete selected-health-ability multiplier.  Revival
+      // contributes exactly as its added body HP does; infinite revival is
+      // intentionally represented by an infinite multiplier.
+      const healthMultiplier=stats.hp>0?health.total/stats.hp:1;
+      const showHealthMultiplier=healthMultiplier===Infinity||Math.abs(healthMultiplier-1)>1e-9;
+      multiplierBadge.hidden=!showHealthMultiplier;
+      multiplierBadge.textContent=showHealthMultiplier?`\u00d7${healthMultiplier===Infinity?'\u221e':enemyFormatMultiplier(healthMultiplier)}`:'';
+      multiplierBadge.title=showHealthMultiplier?'\uc120\ud0dd\ud55c \uccb4\ub825 \ub2a5\ub825\uc744 \ud3ec\ud568\ud55c \ucd1d \uccb4\ub825 \ubc30\uc218':'';
     }
-    const value=hpCard.querySelector('.bar-value-stack .stat-value');if(value)value.textContent=fmt(health.total);
+    const value=hpCard.querySelector('.bar-value-stack .stat-value');if(value)value.textContent=health.reviveInfinite?'\u221e':fmt(health.total);
     const breakdown=hpCard.querySelector('.attack-breakdown');
     if(breakdown){
-      breakdown.classList.toggle('barrier-breakdown',health.barrierEnabled&&health.barrier>0);
+      const showBarrier=health.barrierEnabled&&health.barrier>0;
+      const showRevive=health.reviveEnabled&&health.reviveHealth>0&&(health.reviveInfinite||health.reviveCount>0);
+      breakdown.classList.toggle('health-breakdown',showBarrier||showRevive);
       breakdown.replaceChildren();
-      if(health.barrierEnabled&&health.barrier>0){
+      if(showBarrier||showRevive){
+        if(showBarrier){
         const barrier=document.createElement('span');barrier.className='barrier-health-value';barrier.textContent=fmt(health.barrier);
         const plus=document.createElement('span');plus.textContent='+';
+        breakdown.append(barrier,plus);
+        }
         const body=document.createElement('span');body.className='body-health-value';body.textContent=fmt(stats.hp);
-        breakdown.append(barrier,plus,body);
+        breakdown.append(body);
+        if(showRevive){
+          if(health.reviveInfinite){
+            const plus=document.createElement('span');plus.textContent='+';
+            const revive=document.createElement('span');revive.className='revive-health-value';revive.textContent=fmt(health.reviveHealth);
+            const multiplier=document.createElement('span');multiplier.textContent='\u00d7\u221e';
+            breakdown.append(plus,revive,multiplier);
+          }else{
+            const plus=document.createElement('span');plus.textContent='+';
+            const revive=document.createElement('span');revive.className='revive-health-value';revive.textContent=fmt(health.reviveHealth);
+            breakdown.append(plus,revive);
+            if(health.reviveCount>1){const multiplier=document.createElement('span');multiplier.textContent=`\u00d7${fmt(health.reviveCount)}`;breakdown.append(multiplier)}
+          }
+        }
         breakdown.hidden=false;
       }else{
         breakdown.hidden=true;
@@ -1887,7 +2010,8 @@ function effectSummary(x){
     const left=enemyRangeText(Math.min(minimum,maximum)),right=enemyRangeText(Math.max(minimum,maximum));
     return Math.abs(minimum-maximum)<1e-9?left:`${left}~${right}`;
   };
-  if(key==='attack_count')return `${number(x.count||0)}\ud68c \uacf5\uaca9`;
+  if(key==='attack_count')return '';
+  if(key==='survive')return x.chance!==undefined?`확률 ${number(x.chance)}%`:'';
   if(key==='multi_hit'){
     const hits=Array.isArray(x.applies_to_attacks)?x.applies_to_attacks.map(Number).filter(Number.isFinite):[];
     return `${number(x.hit_count||0)}\uc5f0\uc18d \uacf5\uaca9${hits.length?` \u00b7 \ud2b9\uc218\ud6a8\uacfc \ubc1c\ub3d9 ${hits.join('\u00b7')}\ud0c0`:''}`;
@@ -1922,7 +2046,7 @@ function effectSummary(x){
   if(key==='shield'&&x.regeneration_percent!==undefined&&Number(x.regeneration_percent)!==100)p.push(`\uc7ac\uc0dd ${number(x.regeneration_percent)}%`);
   if(key==='burrow'){
     if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);
-    if(x.distance!==undefined)p.push(`\uc774\ub3d9 ${number(x.distance)}`);
+    if(x.distance!==undefined)p.push(`\uc774\ub3d9 ${enemyWarpText(x.distance)}`);
   }
   if(key==='revive'){
     if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);
