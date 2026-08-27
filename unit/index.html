@@ -1339,7 +1339,7 @@
         const link = document.createElement("a");
         link.className = "unit-card";
         link.href = unitUrl(entry);
-        link.setAttribute("aria-label", `${entry.name}, ${entry.id}-${entry.form}`);
+        link.setAttribute("aria-label", `${entry.name}, UNIT ${String(entry.id).padStart(3, "0")}-${entry.form}`);
 
         if (entry.icon) {
           const image = document.createElement("img");
@@ -1363,7 +1363,7 @@
         name.textContent = entry.name;
         const identity = document.createElement("span");
         identity.className = "unit-identity";
-        identity.textContent = `${String(entry.id).padStart(3, "0")}-${entry.form}`;
+        identity.textContent = `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form}`;
         copy.append(name, identity);
         link.append(copy);
         return link;
