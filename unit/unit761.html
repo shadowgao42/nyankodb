@@ -3763,22 +3763,24 @@
   
     .mother-members {
       display: grid;
-      gap: 9px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
       align-items: stretch;
-      max-width: 420px;
+      padding: 0 14px 14px;
     }
 
     .mother-member {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
       width: 100%;
       min-width: 0;
-      padding: 8px 10px;
-      border: 1px solid #3b4858;
-      border-radius: 8px;
+      min-height: 76px;
+      padding: 10px 13px;
+      border: 1px solid #2d3948;
+      border-radius: 18px;
       color: #f4f7fb;
-      background: rgba(19, 27, 37, .7);
+      background: var(--surface-2);
       text-decoration: none;
     }
 
@@ -3806,14 +3808,31 @@
     }
 
     .mother-member-name {
-      font-weight: 800;
-      font-size: .94rem;
-      line-height: 1.25;
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 950;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    @media (max-width: 560px) {
-      .mother-members { gap: 8px; }
-      .mother-member { padding: 7px 8px; }
+    .mother-member-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .mother-member-identity {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    /* Match the health/attack cards: both parent cards remain side by side
+       until the stat bars themselves switch to a single column. */
+    @media (max-width: 660px) {
+      .mother-members { grid-template-columns: 1fr; gap: 8px; }
+      .mother-member { min-height: 66px; padding: 8px 10px; }
       .mother-member-image { width: 40px; height: 32px; }
     }
 
@@ -4395,11 +4414,17 @@
       <div class="mother-members">
         <a class="mother-member" href="unit760.html?form=1" aria-label="포룡 건듀로스 유닛 계산기로 이동">
           <span class="mother-member-image"><img src="../img/u/760/0.png" alt=""></span>
-          <span class="mother-member-name">포룡 건듀로스</span>
+          <span class="mother-member-copy">
+            <span class="mother-member-name">포룡 건듀로스</span>
+            <small class="mother-member-identity">UNIT 760-1</small>
+          </span>
         </a>
         <a class="mother-member" href="unit760.html?form=2" aria-label="포룡왕 건듀로스 유닛 계산기로 이동">
           <span class="mother-member-image"><img src="../img/u/760/1.png" alt=""></span>
-          <span class="mother-member-name">포룡왕 건듀로스</span>
+          <span class="mother-member-copy">
+            <span class="mother-member-name">포룡왕 건듀로스</span>
+            <small class="mother-member-identity">UNIT 760-2</small>
+          </span>
         </a>
       </div>
     </section>
