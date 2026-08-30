@@ -280,7 +280,6 @@
       <div class="search-header">
         <div>
           <h1 id="unit-search-title">검색</h1>
-          <p class="intro">유닛 또는 적 이름의 일부를 입력해 원하는 스펙으로 이동할 수 있습니다.</p>
         </div>
         <nav class="search-nav" aria-label="검색 도구">
           <a href="unit/">유닛 검색</a>
@@ -320,7 +319,11 @@
       const form = document.getElementById("unit-search-form");
       const status = document.getElementById("search-status");
       const results = document.getElementById("search-results");
-      const entries = window.NYANKODB_SEARCH_CATALOG?.entries || [];
+      const sharedCatalog = window.NYANKODB_SEARCH_CATALOG || {};
+      const entries = [
+        ...(sharedCatalog.entries || []),
+        ...(sharedCatalog.items || []),
+      ];
       const updateNews = document.querySelector(".update-news-card");
       const updateNewsLink = document.getElementById("update-news-link");
       const updateNewsIcons = document.getElementById("update-news-icons");
@@ -430,6 +433,7 @@
 
       function entryUrl(entry) {
         const id = String(entry.id).padStart(3, "0");
+        if (entry.kind === "item") return `item/item${id}.html`;
         return entry.kind === "enemy"
           ? `enemy/enemy${id}.html`
           : `unit/unit${id}.html?form=${entry.form || 1}`;
@@ -440,7 +444,7 @@
         results.replaceChildren();
         if (!compact(query)) {
           status.textContent = entries.length
-            ? "유닛 또는 적 이름을 입력해 검색하세요."
+            ? "유닛, 적 또는 아이템 이름을 입력해 검색하세요."
             : "검색 목록을 불러오지 못했습니다.";
           return matches;
         }
@@ -464,9 +468,11 @@
           name.textContent = entry.name;
           const formLabel = document.createElement("span");
           formLabel.className = "result-form";
-          formLabel.textContent = entry.kind === "enemy"
-            ? `ENEMY ${String(entry.id).padStart(3, "0")}`
-            : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+          formLabel.textContent = entry.kind === "item"
+            ? `ITEM ${String(entry.id).padStart(3, "0")}`
+            : entry.kind === "enemy"
+              ? `ENEMY ${String(entry.id).padStart(3, "0")}`
+              : `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
           const copy = document.createElement("span");
           copy.className = "search-result-copy";
           copy.append(name, formLabel);
@@ -485,7 +491,7 @@
       });
 
       status.textContent = entries.length
-        ? "유닛 또는 적 이름을 입력해 검색하세요."
+        ? "유닛, 적 또는 아이템 이름을 입력해 검색하세요."
         : "검색 목록을 불러오지 못했습니다.";
     })();
   </script>

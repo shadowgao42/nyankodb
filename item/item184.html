@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>냥코DB · 무지개 수석</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 143vh;
+      min-width: 320px;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+
+    .db-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 12px;
+      padding: 14px 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .db-brand {
+      flex: 0 0 auto;
+      text-decoration: none;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 25px;
+      font-weight: 950;
+      letter-spacing: -.05em;
+    }
+
+    .db-brand span { color: var(--accent-text); }
+
+    .unit-search {
+      display: grid;
+      grid-template-columns: auto minmax(150px, 220px) auto;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .unit-search-field {
+      position: relative;
+      min-width: 0;
+    }
+
+    .unit-search label {
+      color: #dce3ed;
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .unit-search input {
+      min-width: 0;
+      height: 38px;
+      padding: 7px 11px;
+      border: 1px solid #425267;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .unit-search-field > input {
+      width: 100%;
+      border-color: #4d5a69;
+      background: #171d25;
+    }
+
+    .unit-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255, 91, 45, .2);
+    }
+
+    .unit-search .unit-search-field > input:focus {
+      border-color: #788697;
+      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
+    }
+
+    .unit-search button {
+      height: 38px;
+      padding: 7px 15px;
+      border: 0;
+      border-radius: 9px;
+      color: #fff;
+      background: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .unit-search button[type="submit"] {
+      border: 1px solid #596777;
+      color: #f4f7fb;
+      background: #303a47;
+    }
+
+    .unit-search button[type="submit"]:hover {
+      border-color: #718094;
+      background: #3a4655;
+    }
+
+    .unit-search-results {
+      position: absolute;
+      top: calc(100% + 7px);
+      left: 0;
+      z-index: 120;
+      width: min(380px, calc(100vw - 44px));
+      max-height: 360px;
+      padding: 6px;
+      overflow-y: auto;
+      border: 1px solid #46566a;
+      border-radius: 12px;
+      background: #080d14;
+      box-shadow: 0 16px 42px rgba(0,0,0,.52);
+      scrollbar-width: thin;
+      touch-action: pan-y;
+    }
+
+    .unit-search-results[hidden] { display: none; }
+
+    .unit-search .unit-search-result {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      min-height: 48px;
+      padding: 5px 9px;
+      border: 0;
+      border-bottom: 1px solid #465363;
+      border-radius: 0;
+      color: #f4f7fb;
+      background: #27313e;
+      text-align: left;
+      cursor: pointer;
+      touch-action: pan-y;
+    }
+
+    .unit-search .unit-search-result:last-child { border-bottom: 0; }
+    .unit-search .unit-search-result:hover,
+    .unit-search .unit-search-result[aria-selected="true"] { background: #354252; }
+
+    .unit-search-result img,
+    .unit-search-result-icon-empty {
+      display: block;
+      width: 54px;
+      height: 40px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .unit-search-result-icon-empty {
+      border: 1px dashed #405066;
+      border-radius: 7px;
+    }
+
+    .unit-search-result-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 13px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .unit-search-result-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .unit-search-result-identity {
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    .unit-search-empty {
+      padding: 13px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: clamp(112px, 20vw, 260px) minmax(0, 1fr);
+      min-height: 238px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(14, 19, 26, .9);
+      box-shadow: var(--shadow);
+    }
+
+    .portrait {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 238px;
+      overflow: hidden;
+      background: linear-gradient(140deg, rgba(255, 91, 45, .16), rgba(8, 11, 16, .15));
+    }
+
+    .portrait img {
+      width: min(86%, 500px);
+      max-height: 180px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      filter: drop-shadow(10px 14px 18px rgba(0, 0, 0, .42));
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28px 38px;
+      border-left: 1px solid rgba(255,255,255,.06);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--accent-text);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Yu Gothic", "Malgun Gothic", sans-serif;
+      font-size: clamp(31px, 3.6vw, 49px);
+      line-height: 1.12;
+      letter-spacing: -.045em;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+    }
+
+    .unit-description {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: #aeb9c8;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .unit-description:empty { display: none; }
+
+    .rarity-badge {
+      flex: 0 0 auto;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 173, 61, .34);
+      border-radius: 999px;
+      color: var(--accent-text);
+      background: rgba(255, 173, 61, .1);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(15, 20, 28, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 19px 22px 14px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.025em;
+    }
+
+    .mother-members {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      padding: 0 14px 14px;
+    }
+
+    .mother-member {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+      min-height: 76px;
+      padding: 10px 13px;
+      border: 1px solid #2d3948;
+      border-radius: 18px;
+      color: #f4f7fb;
+      background: var(--surface-2);
+      text-decoration: none;
+    }
+
+    .mother-member:hover,
+    .mother-member:focus-visible {
+      border-color: #788697;
+      background: #273341;
+    }
+
+    .mother-member-image {
+      display: grid;
+      width: 46px;
+      height: 36px;
+      place-items: center;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .mother-member-image img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .mother-member-name {
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 950;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mother-member-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .mother-member-identity {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    .required-material-quantity {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      flex: 0 0 auto;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .required-material-quantity img {
+      display: block;
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .required-unit-groups {
+      display: grid;
+      gap: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 13px;
+      padding-bottom: 14px;
+    }
+
+    .required-unit-rarity-group { display: grid; gap: 6px; }
+
+    .required-unit-rarity-title {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0 15px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .required-unit-rarity-title img {
+      display: block;
+      width: 90px;
+      height: 28px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .required-unit-rarity-group .mother-members { padding-bottom: 0; }
+
+    @media (max-width: 660px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .db-toolbar { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px 15px; }
+      .unit-search { grid-template-columns: 72px minmax(0, 1fr) 58px; gap: 7px; }
+      .unit-search button { padding-inline: 8px; }
+      .unit-search-results { width: min(360px, calc(100vw - 106px)); }
+      .hero-copy { padding: 20px 16px; }
+      .name-row h1 { font-size: clamp(22px, 6vw, 32px); }
+      .mother-members { grid-template-columns: 1fr; gap: 8px; }
+      .mother-member { min-height: 66px; padding: 8px 10px; }
+      .mother-member-image { width: 40px; height: 32px; }
+      .required-material-quantity { gap: 4px; font-size: 13px; }
+      .required-material-quantity img { width: 26px; height: 26px; }
+      .required-unit-groups { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+</style>
+</head>
+<body>
+  <main class="page">
+    <header class="db-toolbar">
+      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <form class="unit-search" id="itemSearchForm" role="search">
+        <label for="itemSearchInput">검색</label>
+        <div class="unit-search-field">
+          <input id="itemSearchInput" type="search" autocomplete="off"
+                spellcheck="false" placeholder="이름 입력"
+                 aria-label="검색할 아이템 이름" aria-autocomplete="list"
+                 aria-controls="itemSearchResults" aria-expanded="false">
+          <div class="unit-search-results" id="itemSearchResults"
+               role="listbox" aria-label="아이템 이름 검색 결과" hidden></div>
+        </div>
+        <button type="submit">검색</button>
+      </form>
+    </header>
+
+    <header class="hero" id="itemPanel" role="tabpanel">
+      <div class="portrait">
+        <img id="itemPortrait" src="../img/r/184.png" alt="무지개 수석 아이콘">
+      </div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span id="itemIdentity">ITEM 184</span></div>
+        <div class="name-row">
+          <h1 id="itemName">무지개 수석</h1>
+          <span class="rarity-badge" id="itemCategory">진화 재료</span>
+        </div>
+        <p class="unit-description" id="itemDescription">냥코를 한 차원 높은 수준으로
+클래스 체인지 시킬 수 있는 수석</p>
+      </div>
+    </header>
+    <section class="section mother-section" id="requiredUnitsPanel" data-item-id="184" aria-labelledby="requiredUnitsTitle" hidden>
+      <div class="section-heading"><h2 id="requiredUnitsTitle">요구 캐릭터</h2></div>
+      <div class="required-unit-groups" id="requiredUnitsMembers"></div>
+    </section>
+
+  </main>
+  <script src="../catalog.js"></script>
+  <script>
+    "use strict";
+
+    const itemSearchIndex = [{"kind":"item","id":0,"form":1,"name":"스피드 업","icon":"img/r/0.png"},{"kind":"item","id":1,"form":1,"name":"트레저 레이더","icon":"img/r/1.png"},{"kind":"item","id":2,"form":1,"name":"고양이 도령","icon":"img/r/2.png"},{"kind":"item","id":3,"form":1,"name":"야옹컴","icon":"img/r/3.png"},{"kind":"item","id":4,"form":1,"name":"고양이 박사","icon":"img/r/4.png"},{"kind":"item","id":5,"form":1,"name":"스냥이퍼","icon":"img/r/5.png"},{"kind":"item","id":20,"form":1,"name":"냥코 티켓","icon":"img/r/20.png"},{"kind":"item","id":21,"form":1,"name":"레어 티켓","icon":"img/r/21.png"},{"kind":"item","id":29,"form":1,"name":"플래티넘 티켓","icon":"img/r/29.png"},{"kind":"item","id":30,"form":1,"name":"보라 개다래나무의 씨앗","icon":"img/r/30.png"},{"kind":"item","id":31,"form":1,"name":"빨강 개다래나무의 씨앗","icon":"img/r/31.png"},{"kind":"item","id":32,"form":1,"name":"파랑 개다래나무의 씨앗","icon":"img/r/32.png"},{"kind":"item","id":33,"form":1,"name":"초록 개다래나무의 씨앗","icon":"img/r/33.png"},{"kind":"item","id":34,"form":1,"name":"노랑 개다래나무의 씨앗","icon":"img/r/34.png"},{"kind":"item","id":35,"form":1,"name":"보라 개다래 열매","icon":"img/r/35.png"},{"kind":"item","id":36,"form":1,"name":"빨강 개다래 열매","icon":"img/r/36.png"},{"kind":"item","id":37,"form":1,"name":"파랑 개다래 열매","icon":"img/r/37.png"},{"kind":"item","id":38,"form":1,"name":"초록 개다래 열매","icon":"img/r/38.png"},{"kind":"item","id":39,"form":1,"name":"노랑 개다래 열매","icon":"img/r/39.png"},{"kind":"item","id":40,"form":1,"name":"무지개 개다래 열매","icon":"img/r/40.png"},{"kind":"item","id":41,"form":1,"name":"고대 개다래나무의 씨앗","icon":"img/r/41.png"},{"kind":"item","id":42,"form":1,"name":"고대 개다래 열매","icon":"img/r/42.png"},{"kind":"item","id":43,"form":1,"name":"무지개 개다래나무의 씨앗","icon":"img/r/43.png"},{"kind":"item","id":44,"form":1,"name":"황금 개다래 열매","icon":"img/r/44.png"},{"kind":"item","id":50,"form":1,"name":"캣츠아이【EX】","icon":"img/r/50.png"},{"kind":"item","id":51,"form":1,"name":"캣츠아이【레어】","icon":"img/r/51.png"},{"kind":"item","id":52,"form":1,"name":"캣츠아이【슈퍼 레어】","icon":"img/r/52.png"},{"kind":"item","id":53,"form":1,"name":"캣츠아이【울트라 슈퍼 레어】","icon":"img/r/53.png"},{"kind":"item","id":54,"form":1,"name":"캣츠아이【레전드】","icon":"img/r/54.png"},{"kind":"item","id":58,"form":1,"name":"캣츠아이【다크】","icon":"img/r/58.png"},{"kind":"item","id":85,"form":1,"name":"벽돌","icon":"img/r/85.png"},{"kind":"item","id":86,"form":1,"name":"깃털","icon":"img/r/86.png"},{"kind":"item","id":87,"form":1,"name":"참숯","icon":"img/r/87.png"},{"kind":"item","id":88,"form":1,"name":"철 톱니바퀴","icon":"img/r/88.png"},{"kind":"item","id":89,"form":1,"name":"황금","icon":"img/r/89.png"},{"kind":"item","id":90,"form":1,"name":"우주석","icon":"img/r/90.png"},{"kind":"item","id":91,"form":1,"name":"수수께끼의 뼈","icon":"img/r/91.png"},{"kind":"item","id":140,"form":1,"name":"암모나이트","icon":"img/r/140.png"},{"kind":"item","id":145,"form":1,"name":"레전드 티켓","icon":"img/r/145.png"},{"kind":"item","id":160,"form":1,"name":"악마 개다래나무의 씨앗","icon":"img/r/160.png"},{"kind":"item","id":161,"form":1,"name":"악마 개다래 열매","icon":"img/r/161.png"},{"kind":"item","id":164,"form":1,"name":"황금 개다래나무의 씨앗","icon":"img/r/164.png"},{"kind":"item","id":167,"form":1,"name":"자수석","icon":"img/r/167.png"},{"kind":"item","id":168,"form":1,"name":"홍수석","icon":"img/r/168.png"},{"kind":"item","id":169,"form":1,"name":"청수석","icon":"img/r/169.png"},{"kind":"item","id":170,"form":1,"name":"녹수석","icon":"img/r/170.png"},{"kind":"item","id":171,"form":1,"name":"황수석","icon":"img/r/171.png"},{"kind":"item","id":179,"form":1,"name":"자수석 결정","icon":"img/r/179.png"},{"kind":"item","id":180,"form":1,"name":"홍수석 결정","icon":"img/r/180.png"},{"kind":"item","id":181,"form":1,"name":"청수석 결정","icon":"img/r/181.png"},{"kind":"item","id":182,"form":1,"name":"녹수석 결정","icon":"img/r/182.png"},{"kind":"item","id":183,"form":1,"name":"황수석 결정","icon":"img/r/183.png"},{"kind":"item","id":184,"form":1,"name":"무지개 수석","icon":"img/r/184.png"},{"kind":"item","id":187,"form":1,"name":"벽돌Z","icon":"img/r/187.png"},{"kind":"item","id":188,"form":1,"name":"깃털Z","icon":"img/r/188.png"},{"kind":"item","id":189,"form":1,"name":"참숯Z","icon":"img/r/189.png"},{"kind":"item","id":190,"form":1,"name":"철 톱니바퀴Z","icon":"img/r/190.png"},{"kind":"item","id":191,"form":1,"name":"황금Z","icon":"img/r/191.png"},{"kind":"item","id":192,"form":1,"name":"우주석Z","icon":"img/r/192.png"},{"kind":"item","id":193,"form":1,"name":"수수께끼의 뼈Z","icon":"img/r/193.png"},{"kind":"item","id":194,"form":1,"name":"암모나이트Z","icon":"img/r/194.png"},{"kind":"item","id":212,"form":1,"name":"1억 다운로드 기념 티켓","icon":"img/r/212.png"}];
+    const searchIndex = [
+      ...(window.NYANKODB_SEARCH_CATALOG?.entries || []),
+      ...itemSearchIndex,
+    ];
+    const itemSearchForm = document.getElementById("itemSearchForm");
+    const itemSearchInput = document.getElementById("itemSearchInput");
+    const itemSearchResults = document.getElementById("itemSearchResults");
+    let visibleSearchResults = [];
+    let activeSearchResultIndex = -1;
+
+    function normalizeSearchText(value) {
+      return value.toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+    }
+
+    function orderedCharacterMatchPosition(name, query) {
+      let cursor = 0;
+      let firstPosition = -1;
+      for (const character of query) {
+        const position = name.indexOf(character, cursor);
+        if (position < 0) return -1;
+        if (firstPosition < 0) firstPosition = position;
+        cursor = position + character.length;
+      }
+      return firstPosition;
+    }
+
+    function containsAllSearchCharacters(name, query) {
+      const remaining = new Map();
+      for (const character of name) {
+        remaining.set(character, (remaining.get(character) || 0) + 1);
+      }
+      for (const character of query) {
+        const count = remaining.get(character) || 0;
+        if (count < 1) return false;
+        remaining.set(character, count - 1);
+      }
+      return true;
+    }
+
+    function searchMatch(normalizedName, query) {
+      if (normalizedName === query) return { rank: 0 };
+      if (normalizedName.includes(query)) return { rank: 1 };
+      if (orderedCharacterMatchPosition(normalizedName, query) >= 0) return { rank: 2 };
+      return containsAllSearchCharacters(normalizedName, query) ? { rank: 3 } : null;
+    }
+
+    function identityFor(entry) {
+      if (entry.kind === "enemy") return `ENEMY ${String(entry.id).padStart(3, "0")}`;
+      if (entry.kind === "item") return `ITEM ${String(entry.id).padStart(3, "0")}`;
+      return `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
+    }
+
+    function closeSearchResults() {
+      itemSearchResults.hidden = true;
+      itemSearchInput.setAttribute("aria-expanded", "false");
+      itemSearchInput.removeAttribute("aria-activedescendant");
+      activeSearchResultIndex = -1;
+    }
+
+    function setActiveSearchResult(index) {
+      if (!visibleSearchResults.length) return;
+      activeSearchResultIndex = (index + visibleSearchResults.length) % visibleSearchResults.length;
+      [...itemSearchResults.querySelectorAll(".unit-search-result")].forEach((node, nodeIndex) => {
+        const selected = nodeIndex === activeSearchResultIndex;
+        node.setAttribute("aria-selected", String(selected));
+        if (selected) {
+          itemSearchInput.setAttribute("aria-activedescendant", node.id);
+          node.scrollIntoView({ block: "nearest" });
+        }
+      });
+    }
+
+    function navigateToSearchResult(entry) {
+      if (!entry) return;
+      if (entry.kind === "unit") {
+        try {
+          const storageKey = `nyanko-db:unit:${entry.id}:display-state:v1`;
+          const saved = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+          saved.form = entry.form || 1;
+          window.localStorage.setItem(storageKey, JSON.stringify(saved));
+        } catch {
+          // The page still works when storage is blocked.
+        }
+      }
+      const id = String(entry.id).padStart(3, "0");
+      if (entry.kind === "item") {
+        window.location.href = `item${id}.html`;
+      } else if (entry.kind === "enemy") {
+        window.location.href = `../enemy/enemy${id}.html`;
+      } else {
+        window.location.href = `../unit/unit${id}.html?form=${entry.form || 1}`;
+      }
+    }
+
+    function renderSearchResults() {
+      const query = normalizeSearchText(itemSearchInput.value.trim());
+      itemSearchResults.replaceChildren();
+      activeSearchResultIndex = -1;
+      if (!query) {
+        visibleSearchResults = [];
+        closeSearchResults();
+        return;
+      }
+      const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
+      visibleSearchResults = searchIndex
+        .map((entry) => ({ entry, normalizedName: normalizeSearchText(entry.name || "") }))
+        .map((result) => ({
+          ...result,
+          match: numericQuery !== null && Number(result.entry.id) === numericQuery
+            ? { rank: 0 }
+            : searchMatch(result.normalizedName, query),
+        }))
+        .filter(({ match }) => match !== null)
+        .sort((left, right) => (
+          left.match.rank - right.match.rank
+          || Number(left.entry.id) - Number(right.entry.id)
+          || String(left.entry.kind).localeCompare(String(right.entry.kind))
+          || Number(left.entry.form || 1) - Number(right.entry.form || 1)
+        ))
+        .map(({ entry }) => entry);
+
+      if (!visibleSearchResults.length) {
+        const empty = document.createElement("div");
+        empty.className = "unit-search-empty";
+        empty.textContent = "검색 결과가 없습니다.";
+        itemSearchResults.append(empty);
+      } else {
+        visibleSearchResults.forEach((entry, index) => {
+          const result = document.createElement("button");
+          result.type = "button";
+          result.className = "unit-search-result";
+          result.id = `itemSearchResult${index}`;
+          result.setAttribute("role", "option");
+          result.setAttribute("aria-selected", "false");
+          if (entry.icon) {
+            const image = document.createElement("img");
+            image.src = entry.icon.startsWith("data:") || entry.icon.startsWith("../")
+              ? entry.icon
+              : `../${entry.icon.replace(/^\.\//, "")}`;
+            image.alt = "";
+            image.loading = "lazy";
+            result.append(image);
+          } else {
+            const empty = document.createElement("span");
+            empty.className = "unit-search-result-icon-empty";
+            result.append(empty);
+          }
+          const copy = document.createElement("span");
+          copy.className = "unit-search-result-copy";
+          const name = document.createElement("span");
+          name.className = "unit-search-result-name";
+          name.textContent = entry.name;
+          const identity = document.createElement("span");
+          identity.className = "unit-search-result-identity";
+          identity.textContent = identityFor(entry);
+          copy.append(name, identity);
+          result.append(copy);
+
+          // On touch screens do not convert a vertical scroll into navigation.
+          let gestureStart = null;
+          let suppressClick = false;
+          result.addEventListener("pointerdown", (event) => {
+            if (event.pointerType !== "mouse") {
+              gestureStart = { id: event.pointerId, x: event.clientX, y: event.clientY };
+            }
+          });
+          result.addEventListener("pointermove", (event) => {
+            if (!gestureStart || event.pointerId !== gestureStart.id) return;
+            if (Math.hypot(event.clientX - gestureStart.x, event.clientY - gestureStart.y) > 8) {
+              suppressClick = true;
+            }
+          });
+          result.addEventListener("pointercancel", () => { gestureStart = null; suppressClick = false; });
+          result.addEventListener("click", (event) => {
+            if (suppressClick) {
+              event.preventDefault();
+              event.stopPropagation();
+              suppressClick = false;
+              gestureStart = null;
+              return;
+            }
+            gestureStart = null;
+            navigateToSearchResult(entry);
+          });
+          result.addEventListener("mousemove", () => setActiveSearchResult(index));
+          itemSearchResults.append(result);
+        });
+      }
+      itemSearchResults.hidden = false;
+      itemSearchInput.setAttribute("aria-expanded", "true");
+    }
+
+    itemSearchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const entry = visibleSearchResults[
+        activeSearchResultIndex >= 0 ? activeSearchResultIndex : 0
+      ];
+      if (entry) navigateToSearchResult(entry);
+    });
+    itemSearchInput.addEventListener("input", renderSearchResults);
+    itemSearchInput.addEventListener("focus", renderSearchResults);
+    itemSearchInput.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        setActiveSearchResult(activeSearchResultIndex + 1);
+      } else if (event.key === "ArrowUp") {
+        event.preventDefault();
+        setActiveSearchResult(activeSearchResultIndex - 1);
+      } else if (event.key === "Escape") {
+        closeSearchResults();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".unit-search")) closeSearchResults();
+    });
+  </script>
+</body>
+</html>
+
+
+  <script>
+    (() => {
+      const panel = document.getElementById("requiredUnitsPanel");
+      const members = document.getElementById("requiredUnitsMembers");
+      if (!panel || !members) return;
+
+      const itemId = String(Number(panel.dataset.itemId));
+      const users = window.NYANKODB_SEARCH_CATALOG?.evolutionMaterialUsers?.[itemId];
+      if (!Array.isArray(users) || !users.length) return;
+
+      const rarityGroups = [
+        { label: "기본", icon: 153 }, { label: "EX", icon: 154 },
+        { label: "레어", icon: 155 }, { label: "슈퍼 레어", icon: 156 },
+        { label: "울트라 슈퍼 레어", icon: 157 }, { label: "레전드 레어", icon: 158 },
+      ];
+      const groups = new Map(rarityGroups.map((rarity) => [rarity.label, []]));
+      users.forEach((user) => {
+        const rarity = String(user?.rarity || "기타");
+        if (!groups.has(rarity)) groups.set(rarity, []);
+        groups.get(rarity).push(user);
+      });
+
+      groups.forEach((groupUsers, rarity) => {
+        if (!groupUsers.length) return;
+        const group = document.createElement("section");
+        group.className = "required-unit-rarity-group";
+        const title = document.createElement("h3");
+        title.className = "required-unit-rarity-title";
+        const rarityIcon = rarityGroups.find((entry) => entry.label === rarity);
+        if (rarityIcon) {
+          const image = document.createElement("img");
+          image.src = `../img/i/${rarityIcon.icon}.png`;
+          image.alt = rarity;
+          title.append(image);
+        } else title.textContent = rarity;
+        const grid = document.createElement("div");
+        grid.className = "mother-members";
+
+        groupUsers.forEach((user) => {
+          const unitId = Number(user?.id);
+          const form = Number(user?.form);
+          if (!Number.isInteger(unitId) || unitId < 0 || !Number.isInteger(form) || form < 1) return;
+          const card = document.createElement("a");
+          card.className = "mother-member";
+          card.href = `../unit/unit${String(unitId).padStart(3, "0")}.html?form=${form}`;
+          card.setAttribute("aria-label", `${user?.name || `UNIT ${String(unitId).padStart(3, "0")}-${form}`} 유닛 계산기로 이동`);
+
+          const imageWrap = document.createElement("span");
+          imageWrap.className = "mother-member-image";
+          const unitImage = document.createElement("img");
+          unitImage.src = `../${String(user?.icon || "").replace(/^\.\.\//, "")}`;
+          unitImage.alt = "";
+          unitImage.loading = "lazy";
+          imageWrap.append(unitImage);
+
+          const copy = document.createElement("span");
+          copy.className = "mother-member-copy";
+          const name = document.createElement("span");
+          name.className = "mother-member-name";
+          name.textContent = String(user?.name || `UNIT ${String(unitId).padStart(3, "0")}-${form}`);
+          const identity = document.createElement("small");
+          identity.className = "mother-member-identity";
+          identity.textContent = `UNIT ${String(unitId).padStart(3, "0")}-${form}`;
+          copy.append(name, identity);
+
+          const quantity = Number(user?.quantity);
+          if (Number.isFinite(quantity) && quantity > 0) {
+            const requirement = document.createElement("span");
+            requirement.className = "required-material-quantity";
+            const materialImage = document.createElement("img");
+            materialImage.src = `../img/r/${itemId}.png`;
+            materialImage.alt = "";
+            materialImage.loading = "lazy";
+            const amount = document.createElement("span");
+            amount.textContent = `×${quantity}`;
+            requirement.append(materialImage, amount);
+            card.append(imageWrap, copy, requirement);
+          } else card.append(imageWrap, copy);
+          grid.append(card);
+        });
+
+        if (grid.childElementCount) {
+          group.append(title, grid);
+          members.append(group);
+        }
+      });
+      if (members.childElementCount) panel.hidden = false;
+    })();
+  </script>
