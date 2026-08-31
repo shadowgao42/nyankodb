@@ -407,9 +407,18 @@
       gap: 6px;
     }
 
-    #rarityFilters .text-chip {
-      min-width: 0;
-      white-space: nowrap;
+    #rarityFilters .icon-chip {
+      width: 112px;
+      height: 40px;
+      min-height: 40px;
+      padding: 5px 10px;
+      justify-self: stretch;
+    }
+
+    #rarityFilters .icon-chip img {
+      width: 63px;
+      height: 20px;
+      max-width: 100%;
     }
 
     .icon-chip {
@@ -946,7 +955,7 @@
       .search-controls { grid-template-columns: minmax(0, 1fr); }
       .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
       #rarityFilters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      #rarityFilters .text-chip { padding-inline: 4px; font-size: 11px; }
+      #rarityFilters .icon-chip { width: 100%; padding-inline: 4px; }
       .icon-chip { width: 40px; height: 40px; min-height: 40px; }
       .icon-chip img { width: 32px; height: 32px; }
       .unit-grid.display-one { grid-template-columns: 1fr; }
@@ -985,7 +994,7 @@
       <div class="section-heading">
         <div>
           <h1 id="searchTitle">유닛 검색</h1>
-          <p class="search-description">이름과 조건을 함께 선택하여 원하는 형태를 찾을 수 있습니다.</p>
+          <p class="search-description">이름과 조건을 함께 선택하여 원하는 유닛을 찾을 수 있습니다.</p>
         </div>
       </div>
       <div class="search-controls">
@@ -1280,7 +1289,10 @@
       function renderFilterGroup(items, group, iconMode = true) {
         const target = groupTargets[group];
         const fragment = document.createDocumentFragment();
-        items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
+        const renderedItems = group === "rarity"
+          ? items.map((item, index) => ({ ...item, icon: `img/i/${153 + index}.png` }))
+          : items;
+        renderedItems.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
         target.replaceChildren(fragment);
       }
 
@@ -1742,7 +1754,7 @@
         name: String(entry.name || `Unit ${entry.id}-${entry.form}`),
       }));
 
-      renderFilterGroup(rarities, "rarity", false);
+      renderFilterGroup(rarities, "rarity");
       renderFilterGroup(traits.filter((trait) => !["witch", "eva"].includes(trait.key)), "trait");
       renderFilterGroup(sections.effect, "effect");
       renderFilterGroup(sections.ability, "ability");
