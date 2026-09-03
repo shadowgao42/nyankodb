@@ -1304,10 +1304,10 @@
         return match?.key || raw;
       }
 
-      function categoryMatches(entryKeysSet, selectedKeys) {
+      function categoryMatches(entryKeysSet, selectedKeys, logic = filterLogic) {
         if (!selectedKeys.size) return true;
         const matches = [...selectedKeys].map((key) => entryKeysSet.has(key));
-        return filterLogic === "and" ? matches.every(Boolean) : matches.some(Boolean);
+        return logic === "and" ? matches.every(Boolean) : matches.some(Boolean);
       }
 
       function hasActiveFilters() {
@@ -1710,7 +1710,9 @@
             const conditions = [
               {
                 active: selected.rarity.size > 0,
-                matches: categoryMatches(new Set([rarityKey(entry, rarities)]), selected.rarity),
+                matches: categoryMatches(
+                  new Set([rarityKey(entry, rarities)]), selected.rarity, "or",
+                ),
               },
               { active: selected.trait.size > 0, matches: categoryMatches(traits, selected.trait) },
               { active: effectAbilitySelections.size > 0, matches: categoryMatches(abilities, effectAbilitySelections) },
