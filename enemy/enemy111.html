@@ -968,6 +968,13 @@ const bounded=(value,fallback,min,max)=>{const n=Number(value);return Number.isF
 const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,n):fallback};
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
 let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
+const stageMagnificationParams=new URLSearchParams(window.location.search);
+const readStageMagnification=key=>{const raw=stageMagnificationParams.get(key);if(raw===null||raw.trim()==='')return null;const value=Number(raw);return Number.isFinite(value)&&value>=0?value:null};
+const stageHealthMagnification=readStageMagnification('health');
+const stageAttackMagnification=readStageMagnification('attack');
+if(stageHealthMagnification!==null)state.hpMagnification=stageHealthMagnification;
+if(stageAttackMagnification!==null)state.attackMagnification=stageAttackMagnification;
+if(stageHealthMagnification!==null&&stageAttackMagnification!==null&&stageHealthMagnification===stageAttackMagnification)state.magnification=stageHealthMagnification;
 const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
 const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
 const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
@@ -1477,7 +1484,7 @@ function enemyAttackEffectDetail(ability){
       text+=` \u00b7 \uc0dd\uc131 ${enemyRangeText(minimum)}`;
       if(minimum!==maximum)text+=`~${enemyRangeText(maximum)}`;
     }
-    if(['mini_wave','mini_surge'].includes(ability.key))text+=' \u00b7 \uc8fc\ub294 \ud53c\ud574 20%';
+    if(['mini_wave','mini_surge'].includes(ability.key))text+=' \u00b7 \uc9c1\uc811 \ud0c0\uaca9\uc758 20% \ud53c\ud574';
     return text;
   }
   if(ability.key==='savage_blow')return `\ud655\ub960 ${fmt(ability.chance||0)}% \u00b7 \uc8fc\ub294 \ud53c\ud574 ${enemyDetailNumber(ability.damage_multiplier||1)}x`;
@@ -2039,7 +2046,7 @@ function effectSummary(x){
     }
   }
   if(key==='base_destroyer')p.push('\ub0e5\ucf54 \uc131\uc5d0 \uc8fc\ub294 \ud53c\ud574 4\u00d7');
-  if(['mini_wave','mini_surge'].includes(key))p.push(`\uc8fc\ub294 \ud53c\ud574 20%`);
+  if(['mini_wave','mini_surge'].includes(key))p.push(`\uc9c1\uc811 \ud0c0\uaca9\uc758 20% \ud53c\ud574`);
   if(['surge','mini_surge','death_surge','explosion'].includes(key)&&x.range)p.push(`\uc0dd\uc131 ${rangeText(x.range)}`);
   if(key==='explosion')p.push(`\ud53c\ud574\ub300 ${(x.damage_bands_percent||[100,70,40]).join('/')}%`);
   if(key==='toxic'&&x.max_hitpoints_damage_percent!==undefined)p.push(`\ucd5c\ub300 \uccb4\ub825\uc758 ${number(x.max_hitpoints_damage_percent)}%`);
