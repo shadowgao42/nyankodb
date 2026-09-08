@@ -6347,11 +6347,24 @@
       target[key] = combineProvenance(target[key], kind);
     }
 
-    function positionText(anchorRaw, spanRaw) {
-      const start = anchorRaw / 4;
-      const end = (anchorRaw + spanRaw) / 4;
-      if (start === end) return `${start}`;
-      return `${Math.min(start, end)}~${Math.max(start, end)}`;
+    function generationRangePart(anchorRaw, spanRaw) {
+      const start = Number(anchorRaw) / 4;
+      const end = (Number(anchorRaw) + Number(spanRaw)) / 4;
+      const range = {
+        type: "generation_range",
+        minimum: Math.min(start, end),
+        maximum: Math.max(start, end),
+      };
+      return { ...range, value: `생성 ${formatRangeSpan(range)}` };
+    }
+
+    function refreshAbilityGenerationRanges() {
+      document.querySelectorAll(".ability-generation-range").forEach((element) => {
+        element.textContent = `생성 ${formatRangeSpan({
+          minimum: Number(element.dataset.minimum),
+          maximum: Number(element.dataset.maximum),
+        })}`;
+      });
     }
 
     function buildTalentAbility(talent, raw, values, provenance) {
@@ -6404,7 +6417,7 @@
           numericData.boost_percent = raw[41];
           summaryParts.push(
             textPart(`체력 ${raw[40]}% 이하`),
-            textPart(`공격력 +${raw[41]}%`),
+            textPart(`공격력 +${raw[41]}% (${(100 + Number(raw[41])) / 100}×)`),
           );
           break;
         case 11:
@@ -6432,7 +6445,7 @@
           numericData.chance = raw[35];
           numericData.level = raw[36];
           summaryParts.push(textPart(`확률 ${raw[35]}%`), textPart(`Lv.${raw[36]}`));
-          if (abilityId === 62) summaryParts.push(textPart("주는 피해 20%"));
+          if (abilityId === 62) summaryParts.push(textPart("직접 타격의 20% 피해"));
           break;
         case 18:
         case 19:
@@ -6467,9 +6480,9 @@
           summaryParts.push(
             textPart(`확률 ${raw[86]}%`),
             textPart(`Lv.${raw[89]}`),
-            textPart(`생성 ${positionText(raw[87], raw[88])}`),
+            generationRangePart(raw[87], raw[88]),
           );
-          if (abilityId === 65) summaryParts.push(textPart("주는 피해 20%"));
+          if (abilityId === 65) summaryParts.push(textPart("직접 타격의 20% 피해"));
           break;
         case 58:
           summaryParts.push(textPart(`확률 ${raw[95]}%`));
@@ -6511,7 +6524,8 @@
           numericData.span = raw[115] / 4;
           summaryParts.push(
             textPart(`확률 ${raw[113]}%`),
-            textPart(`생성 ${positionText(raw[114], raw[115])}`),
+            generationRangePart(raw[114], raw[115]),
+            textPart("피해대 100/70/40%"),
           );
           break;
       }
@@ -7574,6 +7588,7 @@
 
     function refreshDistanceUnitDisplays() {
       if (!currentData) return;
+      refreshAbilityGenerationRanges();
       recognitionRange.textContent = formatRangeDistance(
         currentData.recognitionRange
       );
@@ -8583,6 +8598,15 @@
     function appendAbilityParts(container, parts, separated = false) {
       parts.forEach((part, index) => {
         if (separated && index > 0) container.append(" · ");
+        if (part.type === "generation_range") {
+          const range = document.createElement("span");
+          range.className = "ability-generation-range";
+          range.dataset.minimum = String(part.minimum);
+          range.dataset.maximum = String(part.maximum);
+          range.textContent = `생성 ${formatRangeSpan(part)}`;
+          container.append(range);
+          return;
+        }
         if (part.type === "time_range") {
           const duration = document.createElement("span");
           duration.className = "time-value";

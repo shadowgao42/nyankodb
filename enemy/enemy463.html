@@ -2041,13 +2041,13 @@ function effectSummary(x){
   if(key==='strengthen'){
     if(x.hitpoints_threshold_percent!==undefined)p.push(`\uccb4\ub825 ${number(x.hitpoints_threshold_percent)}% \uc774\ud558`);
     if(x.damage_boost_percent!==undefined){
-      const multiplier=1+Number(x.damage_boost_percent)/100;
-      p.push(`\uacf5\uaca9\ub825 +${number(x.damage_boost_percent)}% (${number(multiplier)}\u00d7)`);
+      const multiplier=(100+Number(x.damage_boost_percent))/100;
+      p.push(`\uacf5\uaca9\ub825 +${number(x.damage_boost_percent)}% (${multiplier}\u00d7)`);
     }
   }
   if(key==='base_destroyer')p.push('\ub0e5\ucf54 \uc131\uc5d0 \uc8fc\ub294 \ud53c\ud574 4\u00d7');
-  if(['mini_wave','mini_surge'].includes(key))p.push(`\uc9c1\uc811 \ud0c0\uaca9\uc758 20% \ud53c\ud574`);
   if(['surge','mini_surge','death_surge','explosion'].includes(key)&&x.range)p.push(`\uc0dd\uc131 ${rangeText(x.range)}`);
+  if(['mini_wave','mini_surge'].includes(key))p.push(`\uc9c1\uc811 \ud0c0\uaca9\uc758 20% \ud53c\ud574`);
   if(key==='explosion')p.push(`\ud53c\ud574\ub300 ${(x.damage_bands_percent||[100,70,40]).join('/')}%`);
   if(key==='toxic'&&x.max_hitpoints_damage_percent!==undefined)p.push(`\ucd5c\ub300 \uccb4\ub825\uc758 ${number(x.max_hitpoints_damage_percent)}%`);
   if(key==='drain'&&x.cooldown_extension_percent!==undefined)p.push(`\uc0dd\uc0b0 \uc2dc\uac04 +${number(x.cooldown_extension_percent)}%`);
