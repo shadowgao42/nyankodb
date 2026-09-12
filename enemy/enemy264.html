@@ -975,6 +975,28 @@ const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.is
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
 let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
 const stageMagnificationParams=new URLSearchParams(window.location.search);
+function applyStageTreasures(){
+  // Explicit snapshots work across origins and when opening a new tab.
+  // Older stage links only carry magnifications: read their saved settings.
+  let saved;
+  try{
+    if(stageMagnificationParams.has('treasures'))saved=JSON.parse(stageMagnificationParams.get('treasures'));
+    else if(stageMagnificationParams.has('health')||stageMagnificationParams.has('attack'))saved=JSON.parse(localStorage.getItem('nyanko-db:stage-shared-settings:v1')||'{}')?.treasures;
+  }catch(_){return}
+  if(!saved||typeof saved!=='object'||Array.isArray(saved))return;
+  for(const category of DATA.treasure.categories)for(const item of category.items){
+    if(!item.key.endsWith('_crystal')&&item.key!=='mysterious_mask')continue;
+    const chapters=saved[item.key];
+    if(!Array.isArray(chapters))continue;
+    for(let c=0;c<item.chapters.length;c++){
+      if(!Array.isArray(chapters[c]))continue;
+      for(let s=0;s<item.slotCount;s++){
+        const quality=chapters[c][s];
+        if(Number.isInteger(quality)&&quality>=0&&quality<=3)state.treasures[`${item.key}.${c}.${s}`]=quality;
+      }
+    }
+  }
+}
 const readStageMagnification=key=>{const raw=stageMagnificationParams.get(key);if(raw===null||raw.trim()==='')return null;const value=Number(raw);return Number.isFinite(value)&&value>=0?value:null};
 const stageHealthMagnification=readStageMagnification('health');
 const stageAttackMagnification=readStageMagnification('attack');
@@ -1188,10 +1210,9 @@ function enemyTraitTreasureEffect(){
   if(traits.has('alien')){
     const keys=['blue_crystal','red_crystal'];
     const collected=keys.reduce((sum,key)=>sum+enemyTreasurePercent(key),0);
-    // 미래편의 두 크리스탈은 장별 수집률 3개가 각각 1/3씩 반영된다.
-    // 따라서 내부 0~600% 합계는 실제 보물 적용률 0~200%가 된다.
-    const treasurePercent=collected/3;
-    return {multiplier:Math.max(1,3-treasurePercent/100),treasurePercent,maxTreasurePercent:200};
+    // Blue and Red Crystals across all three chapters total 600%.
+    // No active sets = 7x; all six sets at full gold = 1x.
+    return {multiplier:Math.max(1,7-collected/100),treasurePercent:collected,maxTreasurePercent:600};
   }
   return {multiplier:1,treasurePercent:null,maxTreasurePercent:null};
 }
@@ -2017,6 +2038,7 @@ document.addEventListener('toggle',event=>{if(event.target.matches?.('#hpDamageD
 // complete treasure map before the first stat pass: rendering stats first
 // would briefly evaluate Alien/Cat God enemies against an empty map.
 ensureTreasure();
+applyStageTreasures();
 renderStats();renderTraits();renderEffects();renderTreasure();
 
 function effectSummary(x){
