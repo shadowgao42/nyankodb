@@ -975,24 +975,16 @@ const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.is
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
 let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
 const stageMagnificationParams=new URLSearchParams(window.location.search);
-function applyStageTreasures(){
-  // Explicit snapshots work across origins and when opening a new tab.
-  // Older stage links only carry magnifications: read their saved settings.
+function restoreEnemySharedTreasures(){
+  // Stage pages use the existing enemy shared store via a nested/flat adapter.
   let saved;
-  try{
-    if(stageMagnificationParams.has('treasures'))saved=JSON.parse(stageMagnificationParams.get('treasures'));
-    else if(stageMagnificationParams.has('health')||stageMagnificationParams.has('attack'))saved=JSON.parse(localStorage.getItem('nyanko-db:stage-shared-settings:v1')||'{}')?.treasures;
-  }catch(_){return}
+  try{saved=JSON.parse(localStorage.getItem(enemySharedSettingsKey)||'{}')?.treasures}catch(_){return}
   if(!saved||typeof saved!=='object'||Array.isArray(saved))return;
   for(const category of DATA.treasure.categories)for(const item of category.items){
-    if(!item.key.endsWith('_crystal')&&item.key!=='mysterious_mask')continue;
-    const chapters=saved[item.key];
-    if(!Array.isArray(chapters))continue;
     for(let c=0;c<item.chapters.length;c++){
-      if(!Array.isArray(chapters[c]))continue;
       for(let s=0;s<item.slotCount;s++){
-        const quality=chapters[c][s];
-        if(Number.isInteger(quality)&&quality>=0&&quality<=3)state.treasures[`${item.key}.${c}.${s}`]=quality;
+        const key=`${item.key}.${c}.${s}`,quality=saved[key];
+        if(Number.isInteger(quality)&&quality>=0&&quality<=3)state.treasures[key]=quality;
       }
     }
   }
@@ -2038,7 +2030,13 @@ document.addEventListener('toggle',event=>{if(event.target.matches?.('#hpDamageD
 // complete treasure map before the first stat pass: rendering stats first
 // would briefly evaluate Alien/Cat God enemies against an empty map.
 ensureTreasure();
-applyStageTreasures();
+persistEnemySharedSettings();
+const refreshEnemySharedTreasures=()=>{
+  restoreEnemySharedTreasures();
+  renderStats();renderEffects();renderTreasure();
+};
+window.addEventListener('pageshow',event=>{if(event.persisted)refreshEnemySharedTreasures()});
+window.addEventListener('storage',event=>{if(event.key===enemySharedSettingsKey||event.key===null)refreshEnemySharedTreasures()});
 renderStats();renderTraits();renderEffects();renderTreasure();
 
 function effectSummary(x){
