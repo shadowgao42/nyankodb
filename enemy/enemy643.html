@@ -103,9 +103,9 @@
     .treasure-main { width: 148px; height: 58px; border-radius: 8px; object-fit: cover; }
     .treasure-note { margin:0 0 10px; color:var(--muted); font-size:11px; font-weight:700; }
     .treasure-card-title { min-width:0; }
-    .treasure-name { margin:0; overflow:hidden; font-size:15px; font-weight:950; text-overflow:ellipsis; white-space:nowrap; }
+    .treasure-name { margin:0; overflow:hidden; font-size:15px; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
     .treasure-desc { margin:4px 0 0; font-size:10px; font-weight:700; }
-    .treasure-total { margin-top:0; color:var(--accent-text); font-size:15px; font-weight:950; }
+    .treasure-total { margin-top:0; color:var(--accent-text); font-size:15px; font-weight:950; font-variant-numeric:tabular-nums; white-space:nowrap; }
     .chapters { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin-top:0; }
     .chapter { padding: 7px; border-color: rgba(255,255,255,.08); background: rgba(8,12,18,.5); }
     .chapters .chapter:last-child { grid-column:auto; }
@@ -120,6 +120,7 @@
       border-color: #3a4859;
       border-radius: 8px;
       background: #0b1017;
+      color: #667487;
     }
     .slot img { width: 36px; height: 36px; }
     .slot:hover, .slot:focus-visible {
@@ -731,6 +732,11 @@
     .misc-panel { padding:0 18px 16px; border-top:1px solid rgba(255,255,255,.08); }
     .misc-panel .bar-settings { justify-content:flex-end; margin-top:0; padding-top:14px; border-top:0; }
     .misc-panel .bar-settings-title { font-size:13px; }
+    /* Keep these after the shared desktop rules so mobile spacing wins. */
+    @media (max-width:660px) {
+      .treasure-settings summary, .misc-settings summary { flex-wrap:wrap; padding-inline:15px; }
+      .treasure-panel, .misc-panel { padding-inline:15px; }
+    }
     .distance-unit-settings {
       display:grid;
       gap:10px;
@@ -912,9 +918,9 @@
     <div class="treasure-panel"><div class="category-tabs" id="category-tabs" role="group" aria-label="보물 및 패시브 종류"></div><p class="treasure-note" id="treasure-note">보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.</p><div id="treasure-content"></div></div>
   </details>
 
-  <details class="settings misc-settings" id="misc-settings">
+  <details class="misc-settings" id="misc-settings">
     <summary><span>&#44592;&#53440; &#49444;&#51221;</span><span class="misc-summary-actions"><span class="settings-toggle-control"><span class="misc-toggle-label" id="misc-toggle"></span><span class="settings-toggle-arrow" aria-hidden="true">&#9662;</span></span></span></summary>
-    <div class="settings-panel misc-panel" id="enemy-misc-panel">
+    <div class="misc-panel" id="enemy-misc-panel">
       <section class="distance-unit-settings" aria-labelledby="distance-unit-settings-title">
         <div class="distance-unit-heading"><span class="distance-unit-settings-title" id="distance-unit-settings-title">&#44144;&#47532; &#45800;&#50948; &#49444;&#51221;</span><button type="button" class="distance-unit-reset" id="distance-unit-reset" disabled>&#52488;&#44592;&#54868;</button></div>
         <p class="distance-unit-note"><strong>u</strong>: &#44592;&#48376; &#45800;&#50948; &#44144;&#47532; &middot; <strong>spu</strong>: &#51060;&#46041;&#49549;&#46020; &#45800;&#50948; &#44144;&#47532; &middot; <strong>rng</strong>: &#49324;&#44144;&#47532; &#45800;&#50948; &#44144;&#47532;</p>
