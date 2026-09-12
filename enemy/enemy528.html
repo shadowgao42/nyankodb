@@ -1990,12 +1990,12 @@ function initEnemyCatalogSearch(){
   const subsequence=(needle,haystack)=>{let cursor=0;for(const character of needle){cursor=haystack.indexOf(character,cursor);if(cursor<0)return false;cursor+=character.length}return true};
   const allCharacters=(needle,haystack)=>{const remaining=new Map();for(const character of haystack)remaining.set(character,(remaining.get(character)||0)+1);for(const character of needle){const count=remaining.get(character)||0;if(count<1)return false;remaining.set(character,count-1)}return true};
   const matchEntry=(entry,query)=>{if(/^\d+$/.test(query)&&Number(entry.id)===Number(query))return 0;const name=compact(entry.name);if(name===query)return 0;if(name.includes(query))return 1;if(subsequence(query,name))return 2;return allCharacters(query,name)?3:99};
-  const identity=entry=>entry.kind==='item'
+  const identity=entry=>entry.kind==='stage'?entry.identity:entry.kind==='item'
     ? `ITEM ${String(entry.id).padStart(3,'0')}`
     : entry.kind==='enemy'
       ? `ENEMY ${String(entry.id).padStart(3,'0')}`
       : `UNIT ${String(entry.id).padStart(3,'0')}-${entry.form||1}`;
-  const href=entry=>entry.kind==='item'?`${SEARCH_SITE_PREFIX}item/item${String(entry.id).padStart(3,'0')}.html`:entry.kind==='enemy'?`${SEARCH_SITE_PREFIX}enemy/enemy${String(entry.id).padStart(3,'0')}.html`:`${SEARCH_SITE_PREFIX}unit/unit${String(entry.id).padStart(3,'0')}.html?form=${entry.form||1}`;
+  const href=entry=>entry.kind==='stage'?`${SEARCH_SITE_PREFIX}${entry.href}`:entry.kind==='item'?`${SEARCH_SITE_PREFIX}item/item${String(entry.id).padStart(3,'0')}.html`:entry.kind==='enemy'?`${SEARCH_SITE_PREFIX}enemy/enemy${String(entry.id).padStart(3,'0')}.html`:`${SEARCH_SITE_PREFIX}unit/unit${String(entry.id).padStart(3,'0')}.html?form=${entry.form||1}`;
   const close=()=>{results.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');active=-1};
   const setActive=index=>{if(!visible.length)return;active=(index+visible.length)%visible.length;results.querySelectorAll('.unit-search-result').forEach((node,nodeIndex)=>{const selected=nodeIndex===active;node.setAttribute('aria-selected',String(selected));if(selected){input.setAttribute('aria-activedescendant',node.id);node.scrollIntoView({block:'nearest'})}})};
   const navigate=entry=>{if(!entry)return;if(entry.kind==='unit')try{const key=`nyanko-db:unit:${entry.id}:display-state:v1`,saved=JSON.parse(localStorage.getItem(key)||'{}');saved.form=entry.form;localStorage.setItem(key,JSON.stringify(saved))}catch(_){ }location.href=href(entry)};

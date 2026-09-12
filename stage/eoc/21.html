@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>러시아 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      min-height: 143vh;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,74,32,.22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+    button, input { font: inherit; }
+    select { font: inherit; }
+    button { cursor: pointer; }
+    .page { width: min(1220px, calc(100% - 36px)); margin: 0 auto; padding: 24px 0 38px; }
+    .db-toolbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+      margin-bottom: 12px; padding: 14px 18px; border: 1px solid var(--line);
+      border-radius: 17px; background: rgba(14,19,26,.92); box-shadow: var(--shadow);
+    }
+    .db-brand {
+      flex: 0 0 auto; color: var(--text); text-decoration: none; cursor: pointer; font-size: 25px;
+      font-weight: 950; letter-spacing: -.05em;
+    }
+    .db-brand span { color: var(--accent-text); }
+    .unit-search { display: grid; grid-template-columns: auto minmax(150px, 220px) auto; align-items: center; gap: 9px; }
+    .unit-search-field { position: relative; min-width: 0; }
+    .unit-search-field > input { width: 100%; border-color: #4d5a69; background: #171d25; }
+    .unit-search .unit-search-field > input:focus { border-color: #788697; box-shadow: 0 0 0 2px rgba(145,158,173,.18); }
+    .unit-search button[type="submit"] { border: 1px solid #596777; color: #f4f7fb; background: #303a47; }
+    .unit-search button[type="submit"]:hover { border-color: #718094; background: #3a4655; }
+    .unit-search-results {
+      position: absolute; top: calc(100% + 7px); left: 0; z-index: 120;
+      width: min(380px, calc(100vw - 44px)); max-height: 360px; padding: 6px;
+      overflow-y: auto; border: 1px solid #46566a; border-radius: 12px;
+      background: #080d14; box-shadow: 0 16px 42px rgba(0,0,0,.52);
+      scrollbar-width: thin; touch-action: pan-y;
+    }
+    .unit-search-results[hidden] { display: none; }
+    .unit-search .unit-search-result {
+      display: grid; grid-template-columns: 54px minmax(0,1fr); align-items: center; gap: 10px;
+      width: 100%; min-height: 48px; padding: 5px 9px; border: 0;
+      border-bottom: 1px solid #465363; border-radius: 0; color: #f4f7fb;
+      background: #27313e; text-align: left; cursor: pointer; touch-action: pan-y;
+    }
+    .unit-search .unit-search-result:last-child { border-bottom: 0; }
+    .unit-search .unit-search-result:hover, .unit-search .unit-search-result[aria-selected="true"] { background: #354252; }
+    .unit-search-result img, .unit-search-result-icon-empty {
+      display: block; width: 54px; height: 40px; object-fit: contain; image-rendering: pixelated;
+    }
+    .unit-search-result-icon-empty { border: 1px dashed #405066; border-radius: 7px; }
+    .unit-search-result-copy { display: grid; min-width: 0; gap: 2px; }
+    .unit-search-result-name { min-width: 0; overflow: hidden; font-size: 13px; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .unit-search-result-identity { color: var(--muted); font-size: 10px; font-weight: 850; letter-spacing: .03em; }
+    .unit-search-empty { padding: 13px 10px; color: var(--muted); font-size: 12px; font-weight: 800; text-align: center; }
+    .unit-search label { color: #dce3ed; font-size: 13px; font-weight: 900; white-space: nowrap; }
+    .unit-search input { min-width: 0; height: 38px; padding: 7px 11px; border: 1px solid #425267; border-radius: 9px; color: var(--text); background: #0c1118; outline: none; font-variant-numeric: tabular-nums; }
+    .unit-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,91,45,.2); }
+    .unit-search button { height: 38px; padding: 7px 15px; border: 0; border-radius: 9px; color: #fff; background: var(--accent); font-size: 13px; font-weight: 900; cursor: pointer; }
+
+    .treasure-settings, .misc-settings {
+      margin-bottom: 10px; overflow: hidden; border: 1px solid var(--line);
+      border-radius: 17px; background: rgba(14,19,26,.92); box-shadow: var(--shadow);
+    }
+    .treasure-settings { overflow: visible; }
+    .treasure-settings summary, .misc-settings summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      min-height: 52px; padding: 9px 18px; color: #dce3ed; font-size: 16px;
+      font-weight: 900; list-style: none; cursor: pointer;
+    }
+    .treasure-settings summary::-webkit-details-marker, .misc-settings summary::-webkit-details-marker { display: none; }
+    .treasure-summary-actions, .misc-summary-actions, .settings-toggle-control { display: inline-flex; align-items: center; gap: 7px; }
+    .treasure-action-button { display: inline-flex; align-items: center; min-height: 30px; padding: 6px 12px; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; color: #dce3ed; background: rgba(255,255,255,.06); font-size: 12px; font-weight: 900; cursor: pointer; }
+    .distance-unit-reset { min-height: 30px; padding: 5px 12px; border: 1px solid rgba(255,255,255,.22); border-radius: 999px; color: #f4f7fb; background: rgba(255,255,255,.07); font-size: 12px; font-weight: 900; cursor: pointer; }
+    .treasure-action-button:hover:not(:disabled), .treasure-action-button:focus-visible,
+    .distance-unit-reset:hover:not(:disabled), .distance-unit-reset:focus-visible {
+      border-color: rgba(255,255,255,.42); background: rgba(255,255,255,.12); outline: none;
+    }
+    .treasure-action-button:disabled, .distance-unit-reset:disabled { color: #707d8e; cursor: default; opacity: .62; }
+    .settings-toggle-control { color: #dce3ed; font-size: 14px; font-weight: 900; white-space: nowrap; }
+    .settings-toggle-arrow { color: var(--accent-text); font-size: 22px; line-height: .8; transition: transform .16s ease; }
+    .treasure-settings[open] .settings-toggle-arrow, .misc-settings[open] .settings-toggle-arrow { transform: rotate(180deg); }
+    .treasure-panel, .misc-panel { padding: 0 18px 16px; border-top: 1px solid rgba(255,255,255,.08); }
+    .treasure-category-tabs { display: flex; gap: 6px; padding: 12px 0 10px; overflow-x: auto; scrollbar-width: thin; }
+    .treasure-category-tab {
+      flex: 0 0 auto; padding: 7px 12px; border: 1px solid #364456; border-radius: 9px;
+      color: var(--muted); background: #0d1219; font-size: 12px; font-weight: 900;
+    }
+    .treasure-category-tab[aria-pressed="true"] { color: #fff; border-color: rgba(255,173,61,.5); background: rgba(255,173,61,.14); }
+    .treasure-note { margin: 0 0 10px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .treasure-cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    .treasure-card {
+      container-name: treasure-card; container-type: inline-size; min-width: 0; padding: 10px;
+      border: 1px solid #2d3948; border-radius: 14px; background: var(--surface-2);
+    }
+    .treasure-card:hover, .treasure-card:focus-within { position: relative; z-index: 2; }
+    .treasure-card-header { display: grid; grid-template-columns: 148px minmax(0,1fr) auto; align-items: center; gap: 10px; margin-bottom: 9px; }
+    .treasure-effect-image { width: 148px; height: 58px; border-radius: 8px; object-fit: cover; image-rendering: pixelated; }
+    .treasure-card-title { min-width: 0; }
+    .treasure-card-title h3 { margin: 0; overflow: hidden; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+    .treasure-card-title p { margin: 4px 0 0; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .treasure-total { color: var(--accent-text); font-size: 15px; font-weight: 950; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .treasure-chapters { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; }
+    .treasure-chapter { min-width: 0; padding: 7px; border: 1px solid rgba(255,255,255,.08); border-radius: 10px; background: rgba(8,12,18,.5); }
+    .treasure-chapter-heading { display: flex; align-items: center; justify-content: space-between; gap: 5px; margin-bottom: 6px; color: #dce3ed; font-size: 10px; font-weight: 900; }
+    .treasure-chapter-percent { color: var(--accent-text); font-variant-numeric: tabular-nums; }
+    .treasure-slots { display: grid; grid-template-columns: repeat(4,40px); gap: 5px; }
+    .treasure-slot {
+      display: grid; place-items: center; position: relative; width: 40px; height: 40px;
+      padding: 0; border: 1px solid #3a4859; border-radius: 8px;
+      color: #667487; background: #0b1017; outline: none; cursor: pointer;
+    }
+    .treasure-slot::after {
+      content: attr(data-tooltip); box-sizing: border-box; position: absolute; left: 50%; bottom: calc(100% + 7px);
+      z-index: 45; width: max-content; max-width: min(240px,calc(100vw - 44px)); padding: 8px 10px;
+      border: 1px solid #48586c; border-radius: 9px; color: #fff; background: #080c12;
+      box-shadow: 0 8px 24px rgba(0,0,0,.38); font-size: 11px; font-weight: 800;
+      line-height: 1.5; text-align: left; white-space: pre-line; pointer-events: none; opacity: 0;
+      transform: translate(-50%,5px); transition: opacity .14s ease, transform .14s ease;
+    }
+    .treasure-slot:nth-child(4n+1)::after { left: 0; transform: translate(0,5px); }
+    .treasure-slot:nth-child(4n)::after { right: 0; left: auto; transform: translate(0,5px); }
+    .treasure-slot:hover, .treasure-slot:focus-visible { border-color: #71839a; box-shadow: 0 0 0 2px rgba(255,173,61,.18); outline: none; }
+    .treasure-slot:hover::after, .treasure-slot:focus-visible::after { opacity: 1; transform: translate(-50%,0); }
+    .treasure-slot:nth-child(4n+1):hover::after, .treasure-slot:nth-child(4n+1):focus-visible::after,
+    .treasure-slot:nth-child(4n):hover::after, .treasure-slot:nth-child(4n):focus-visible::after { transform: translate(0,0); }
+    .treasure-slot[data-tooltip-open="true"]::after { opacity: 1; transform: translate(-50%,0); }
+    .treasure-slot:nth-child(4n+1)[data-tooltip-open="true"]::after,
+    .treasure-slot:nth-child(4n)[data-tooltip-open="true"]::after { transform: translate(0,0); }
+    .treasure-slot img { width: 36px; height: 36px; object-fit: contain; image-rendering: pixelated; }
+    .treasure-empty { font-size: 16px; font-weight: 900; }
+    .treasure-empty-category { padding: 24px 14px; border: 1px dashed #344254; border-radius: 12px; color: var(--muted); text-align: center; font-size: 12px; font-weight: 800; }
+    .passive-cards { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+    .passive-card { min-width: 0; padding: 14px; border: 1px solid #2d3948; border-radius: 14px; background: var(--surface-2); }
+    .passive-card-header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+    .passive-card-header h3 { margin: 0; font-size: 16px; }
+    .passive-description { margin: 4px 0 0; color: var(--muted); font-size: 11px; font-weight: 750; }
+    .passive-current-level { color: var(--accent-text); font-size: 14px; font-weight: 950; white-space: nowrap; }
+    .passive-level-controls { display: grid; gap: 8px; }
+    .passive-level-row { display: grid; grid-template-columns: 78px minmax(80px,1fr) 58px; align-items: center; gap: 8px; }
+    .passive-level-row label { color: #dce3ed; font-size: 11px; font-weight: 850; }
+    .passive-level-row input[type="range"] { width: 100%; accent-color: var(--accent); }
+    .passive-level-row input[type="number"] {
+      width: 100%; min-width: 0; padding: 6px 7px; border: 1px solid #3a4859;
+      border-radius: 8px; color: #fff; background: #0b1017; font-size: 12px; font-weight: 850; text-align: center; font-variant-numeric: tabular-nums;
+    }
+    .distance-unit-settings { display: grid; gap: 10px; margin-top: 12px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.08); }
+    .distance-unit-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .distance-unit-settings-title { color: var(--muted); font-size: 13px; font-weight: 900; }
+    .distance-unit-note { margin: 0; color: #aeb9c8; font-size: 11px; font-weight: 750; line-height: 1.6; }
+    .distance-unit-note strong { color: var(--accent-text); }
+    .distance-unit-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+    .distance-unit-field {
+      display: grid; grid-template-columns: minmax(0,1fr) minmax(104px,132px);
+      align-items: center; gap: 10px; min-height: 40px; padding: 8px 10px;
+      border: 1px solid #344253; border-radius: 10px; background: #0d141d;
+      color: #dce3ed; font-size: 12px; font-weight: 850;
+    }
+    .distance-unit-field select {
+      min-width: 0; height: 30px; padding: 4px 8px; border: 1px solid #43536a;
+      border-radius: 8px; color: #f4f7fb; background: #121a24; font-size: 12px; font-weight: 850; outline: none;
+    }
+    .xp-clear-field {
+      display: flex; align-items: center; gap: 6px; margin-top: 9px;
+      color: #dce3ed; font-size: 12px; font-weight: 850; white-space: nowrap;
+    }
+    .xp-clear-field input {
+      width: 56px; min-width: 0; height: 30px; padding: 4px; border: 1px solid #43536a; border-radius: 8px; color: #f4f7fb;
+      background: #121a24; font-size: 12px; font-weight: 850; outline: none; text-align: center; font-variant-numeric: tabular-nums;
+    }
+    .xp-clear-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    .hero {
+      position: relative; isolation: isolate; min-height: 238px; overflow: hidden; border: 1px solid var(--line); border-radius: 22px;
+      background: rgba(14,19,26,.9); box-shadow: var(--shadow);
+    }
+    .hero::before {
+      content: ""; position: absolute; z-index: -1; inset: -3px; pointer-events: none;
+      background-image: var(--stage-background, none); background-repeat: repeat-x;
+      background-position: center; background-size: auto 100%; filter: blur(2px); opacity: .32;
+      -webkit-mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+      mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+    }
+    .hero-copy {
+      display: flex; flex-direction: column; justify-content: center; min-height: 238px; padding: 28px 38px;
+    }
+    .identity { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; color: var(--accent-text); font-size: 14px; font-weight: 800; letter-spacing: .13em; }
+    .stage-heading { position: relative; display: flex; align-items: center; flex-wrap: wrap; gap: 12px 16px; padding-right: 156px; }
+    .map-name {
+      flex: 0 0 auto; max-width: min(760px,100%); margin: 0; padding: 7px 12px;
+      border: 1px solid rgba(255,173,61,.34); border-radius: 999px;
+      color: var(--accent-text); background: rgba(255,173,61,.1);
+      font-size: 12px; font-weight: 900; letter-spacing: -.01em; line-height: normal; white-space: nowrap;
+    }
+    .stage-name { margin: 0; font-family: "Yu Gothic","Malgun Gothic",sans-serif; font-size: clamp(31px,3.6vw,49px); line-height: 1.12; letter-spacing: -.045em; }
+    a.map-name { text-decoration: none; white-space: normal; }
+    a.map-name { transition: border-color .14s ease, transform .14s ease; }
+    a.map-name:hover, a.map-name:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
+    .map-name[hidden] { display: none; }
+    .location-stages { display: grid; grid-template-columns: minmax(0,1fr); }
+    .location-stage { position: relative; display: grid; grid-template-columns: minmax(130px,190px) minmax(0,1fr); align-items: center; gap: 11px; min-width: 0; min-height: 82px; padding: 9px 12px; border-bottom: 1px solid var(--line); color: var(--text); background: rgba(23,31,41,.64); }
+    .location-stage:hover:not(:has(.location-enemy:hover)), .location-stage:has(.location-stage-name:focus-visible) { background: #263240; outline: none; box-shadow: inset 3px 0 var(--accent-2); }
+    .location-stage-name { color: #fff; font-size: 14px; font-weight: 950; text-decoration: none; line-height: 1.35; }
+    .location-stage-name::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+    .location-stage-name:focus-visible { outline: none; }
+    .location-enemies { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 10px 14px; min-width: 0; }
+    .location-enemy { position: relative; z-index: 1; display: flex; align-items: center; flex-direction: column; gap: 5px; min-width: 64px; color: var(--text); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .location-enemy img { display: block; width: 64px; height: 64px; object-fit: contain; }
+    .location-enemy[data-boss="true"] img { filter: drop-shadow(0 0 3px rgba(255,173,61,.65)) drop-shadow(0 0 6px rgba(255,173,61,.3)); }
+    .location-enemy a { display: block; border: 1px solid transparent; border-radius: 8px; background: transparent; transition: border-color .14s ease, transform .14s ease; }
+    .location-enemy a:hover, .location-enemy a:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
+    .location-magnification { text-align: center; line-height: 1.4; }
+    .location-enemy[data-boss="true"] .location-magnification { color: var(--accent-text); }
+    .location-magnification span { display: block; }
+    @media (max-width:660px) {
+      .location-stage { grid-template-columns: 1fr; gap: 11px; }
+      .location-enemies { gap: 10px; }
+    }
+    .continue-icon { display: block; position: absolute; top: 50%; right: 0; width: 140px; height: 140px; margin: 0; object-fit: contain; image-rendering: auto; transform: translateY(-50%); }
+    .continue-icon[hidden] { display: none; }
+    .hero-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 17px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.09); }
+    .time-toggle { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #364456; border-radius: 11px; background: #0d1219; }
+    .time-toggle button { min-width: 62px; padding: 7px 10px; border: 0; border-radius: 8px; color: #aeb9c8; background: transparent; font-size: 12px; font-weight: 800; }
+    .time-toggle button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(255,91,45,.22); }
+    .crown-control { display: flex; align-items: center; gap: 8px; color: #dce3ed; font-size: 12px; font-weight: 900; }
+    .crown-control[hidden] { display: none; }
+    .crown-control select { min-width: 126px; height: 36px; padding: 5px 9px; border: 1px solid #405065; border-radius: 8px; color: #fff; background: #0b1017; font-weight: 900; }
+    .content-panel { margin-top: 16px; overflow: hidden; border: 1px solid var(--line); border-radius: 20px; background: rgba(15,20,28,.92); box-shadow: var(--shadow); }
+    .section-title { margin: 0; padding: 19px 22px 14px; font-size: 20px; letter-spacing: -.025em; }
+    .overview { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 10px; padding: 0 14px 14px; }
+    .stat-card { position: relative; align-self: start; grid-column: span 2; min-width: 0; min-height: 108px; overflow: hidden; padding: 15px 18px; border: 1px solid #2d3948; border-radius: 15px; background: var(--surface-2); }
+    .overview .stat-card { align-self: stretch; }
+    .stat-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: linear-gradient(var(--accent),var(--accent-2)); }
+    .stat-label { display: block; color: #d9e1eb; font-size: 15px; font-weight: 800; }
+    .stat-value { display: block; margin-top: 11px; overflow-wrap: anywhere; font-size: clamp(25px,2.5vw,34px); font-weight: 900; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+    .stage-difficulty-value { display: flex; align-items: baseline; gap: 0; white-space: nowrap; }
+    .stage-difficulty-star { margin-right: 3px; font-size: .86em; letter-spacing: 0; }
+    .stage-difficulty-decimal { margin-left: 1px; color: #d9e1eb; font-size: .66em; font-weight: 900; letter-spacing: -.02em; }
+    .stage-secondary { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; padding: 0 14px 14px; }
+    .stage-secondary.has-score-rewards { grid-template-columns: minmax(0,2fr) minmax(0,1fr); }
+    .stage-secondary .stat-card { align-self: stretch; grid-column: auto; width: 100%; min-width: 0; }
+    .stage-secondary .stat-card[hidden] { display: none; }
+    .stage-rewards-card { display: grid; grid-template-columns: minmax(0,1fr); }
+    .stage-info-panel, .stage-rewards-card { overflow: visible; }
+    .stage-rewards-card::before { border-radius: 14px 0 0 14px; }
+    .stage-rewards-card.has-score-rewards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .stage-rewards-section { min-width: 0; }
+    .stage-rewards-section[hidden] { display: none; }
+    .stage-rewards-card.has-score-rewards > .stage-rewards-section:first-child { padding-right: 18px; }
+    .stage-score-rewards { padding-left: 18px; border-left: 1px solid var(--line); }
+    .stage-restrictions-card { display: flex; flex-direction: column; }
+    .stage-restrictions-card .stage-detail-content { flex: 1 1 auto; align-items: center; margin-top: 0; }
+    .stage-detail-content { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 11px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { padding: 6px 9px; border: 1px solid #3c4a5b; border-radius: 8px; color: #dce3ed; background: #10161e; font-size: 11px; font-weight: 850; }
+    .chip em { color: var(--accent-text); font-style: normal; }
+    .stage-restriction-list { display: grid; width: 100%; align-content: center; gap: 7px; }
+    .stage-restriction { display: block; color: #f4f7fb; font-size: 15px; font-weight: 800; line-height: 1.45; }
+    .empty { color: var(--muted); font-size: 11px; font-weight: 800; }
+
+    .stage-reward-list { display: grid; width: 100%; gap: 9px; }
+    .story-reward-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 11px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+    .story-reward-settings[hidden] { display: none; }
+    .story-reward-acquired { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; color: #d9e1eb; font-size: 12px; font-weight: 800; }
+    .story-reward-acquired select { min-width: 0; max-width: 100%; height: 34px; padding: 5px 8px; border: 1px solid #405065; border-radius: 8px; color: #fff; background: #0b1017; font-weight: 800; }
+    .story-reward-toggles { display: flex; align-items: center; gap: 8px; }
+    .story-reward-toggle { position: relative; display: inline-flex; flex: 0 0 auto; align-items: center; justify-content: center; height: 50px; padding: 3px 8px; border: 1px solid #405065; border-radius: 9px; background: #0b1017; color: var(--muted); }
+    .story-reward-toggle[aria-pressed="true"] { border-color: var(--accent-text); background: rgba(255,173,61,.12); }
+    .story-reward-toggle:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+    .story-reward-toggle img { display: block; width: auto; height: 42px; object-fit: contain; opacity: .45; }
+    .story-reward-toggle[aria-pressed="true"] img { opacity: 1; }
+    .stage-reward-entry { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .stage-reward-radar { display: block; flex: 0 0 auto; width: 25px; height: 25px; margin-left: auto; object-fit: contain; image-rendering: auto; }
+    .stage-reward-item { position: relative; display: block; flex: 0 0 auto; width: 54px; height: 54px; padding: 0; border: 0; color: #dce3ed; background: transparent; }
+    .stage-reward-item:focus { outline: none; }
+    .stage-reward-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .stage-reward-item img { display: block; width: 54px; height: 54px; object-fit: contain; image-rendering: auto; }
+    .stage-reward-item img.story-treasure-image { transform: scale(.7); }
+    .stage-reward-copy { display: grid; flex: 1 1 auto; min-width: 0; gap: 2px; }
+    .stage-reward-copy em { min-width: 0; overflow: hidden; color: var(--accent-text); font-size: 12px; font-style: normal; font-weight: 950; font-variant-numeric: tabular-nums; text-overflow: ellipsis; white-space: nowrap; }
+    .stage-reward-copy small { color: var(--muted); font-size: 12px; font-weight: 800; line-height: 1.3; }
+    .stage-reward-item em { color: inherit; font-style: normal; }
+    .stage-reward-item::after, .story-reward-toggle::after { content: attr(data-tooltip); position: absolute; left: 0; bottom: calc(100% + 8px); z-index: 30; width: max-content; max-width: min(330px,calc(100vw - 48px)); padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-size: 13px; font-weight: 900; white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity .14s ease,transform .14s ease; }
+    .stage-reward-item:hover::after, .stage-reward-item:focus-visible::after, .stage-reward-item[data-tooltip-open="true"]::after, .story-reward-toggle:hover::after, .story-reward-toggle:focus-visible::after { opacity: 1; transform: translateY(0); }
+    .story-reward-toggle[data-tooltip-open="true"]::after { opacity: 1; transform: translateY(0); }
+    .stage-reward-item::after, .story-reward-toggle::after { box-sizing: border-box; left: var(--tooltip-left, 0px); white-space: normal; overflow-wrap: anywhere; }
+
+    .enemy-table { --enemy-identity-width: 350px; padding: 0 16px 17px; }
+    .enemy-table-head, .enemy-row {
+      display: grid; grid-template-columns: var(--enemy-identity-width) 212px minmax(70px,.5fr) minmax(95px,.65fr) minmax(200px,1.3fr);
+      align-items: stretch;
+    }
+    .enemy-table-head { border: 1px solid #344254; border-bottom: 0; border-radius: 13px 13px 0 0; color: var(--muted); background: #111720; font-size: 13px; font-weight: 950; }
+    .enemy-table-head > span { display: grid; place-items: center; min-height: 44px; padding: 8px; border-right: 1px solid #344254; text-align: center; }
+    .enemy-table-head > span:first-child { grid-column: span 2; place-items: center; padding-left: 8px; }
+    .enemy-table-head > span:last-child { border-right: 0; }
+    .enemy-row { color: inherit; border: 1px solid #344254; border-bottom: 0; background: var(--surface-2); text-decoration: none; transition: background .13s ease, border-color .13s ease; }
+    .enemy-row:hover, .enemy-row:focus-visible { position: relative; z-index: 2; border-color: #5e7188; background: #202a36; outline: none; }
+    .enemy-row:last-child { border-bottom: 1px solid #344254; border-radius: 0 0 13px 13px; }
+    .enemy-identity { display: grid; grid-template-columns: 62px minmax(0,1fr); align-items: center; gap: 12px; min-width: 0; padding: 8px 10px; }
+    .enemy-image { display: block; width: 62px; height: 49px; overflow: visible; background: transparent; }
+    .enemy-image img { display: block; width: 62px; height: 49px; object-fit: contain; image-rendering: auto; }
+    .enemy-copy { display: grid; min-width: 0; gap: 2px; }
+    .enemy-name { display: flex; align-items: baseline; min-width: 0; gap: 7px; font-size: 14px; font-weight: 950; white-space: nowrap; }
+    .enemy-name-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .enemy-magnification { flex: 0 0 auto; color: var(--accent-text); font-size: 12px; font-weight: 950; font-variant-numeric: tabular-nums; }
+    .enemy-id { color: var(--muted); font-size: 13px; font-weight: 850; letter-spacing: .03em; }
+    .enemy-cell { display: grid; place-items: center; min-width: 0; min-height: 76px; padding: 9px 8px; border-right: 1px solid #344254; text-align: center; }
+    .enemy-cell:last-child { border-right: 0; }
+    .enemy-cell strong { color: #f4f7fb; font-size: 15px; font-weight: 950; line-height: 1.45; font-variant-numeric: tabular-nums; }
+    .enemy-cell small { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; font-weight: 800; line-height: 1.35; }
+    .enemy-row[data-boss="true"] .enemy-image img { filter: drop-shadow(0 0 3px rgba(255,173,61,.65)) drop-shadow(0 0 6px rgba(255,173,61,.3)); }
+    .enemy-row[data-boss="true"] .enemy-name-text, .enemy-boss-note { color: var(--accent-text); }
+    .enemy-boss-note { font-size: 15px; }
+    .enemy-row-error { grid-column: 1/-1; padding: 7px 12px; border-top: 1px solid #344254; color: #ff9c86; font-size: 10px; font-weight: 800; }
+    .enemy-vitals { grid-column: 2; grid-row: 1; display: grid; align-content: center; gap: 8px; min-width: 0; padding: 10px 12px; border-right: 1px solid #344254; }
+    .enemy-vital { display: grid; grid-template-columns: minmax(0,1fr) 88px; align-items: center; gap: 8px; color: #79bc4b; }
+    .enemy-vital.attack { color: #ff5b2d; }
+    .enemy-vital-bar { display: block; height: 8px; min-width: 0; overflow: hidden; border-radius: 4px; background: #d6e3ef; }
+    .enemy-vital-fill { display: block; height: 100%; border-radius: inherit; background: currentColor; }
+    .enemy-vital-value { min-width: 0; font-size: 13px; font-weight: 900; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+    .bar-settings { display: flex; align-items: center; gap: 10px; margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(255,255,255,.08); }
+    .bar-settings-title { margin-right: auto; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .scale-field { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 700; }
+    .scale-field input[type="number"] { width: 100px; height: 35px; border: 1px solid #425267; border-radius: 10px; color: var(--text); background: #0c1118; text-align: center; font-size: 15px; font-weight: 800; outline: none; }
+    .scale-field input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,91,45,.16); }
+    .misc-panel .bar-settings { justify-content: flex-end; margin-top: 0; padding-top: 14px; border-top: 0; }
+    .misc-panel .bar-settings-title { font-size: 13px; }
+    @media (max-width: 660px) {
+      .bar-settings { align-items: flex-start; flex-wrap: wrap; }
+      .bar-settings-title { flex-basis: 100%; }
+    }
+    @media (max-width: 420px) {
+      .scale-field input[type="number"] { width: 88px; }
+    }
+
+    @container treasure-card (max-width:570px) { .treasure-chapters { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+    @container treasure-card (max-width:410px) {
+      .treasure-chapters { grid-template-columns: 1fr; }
+      .treasure-chapter { display: grid; grid-template-columns: 52px minmax(0,1fr); align-items: center; gap: 8px; }
+      .treasure-chapter-heading { align-items: flex-start; flex-direction: column; justify-content: center; margin: 0; }
+    }
+    @media (max-width: 980px) {
+      .stage-secondary.has-score-rewards { grid-template-columns: minmax(0,1fr); }
+      .overview { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .stat-card { grid-column: span 1; }
+      .enemy-table-head { display: none; }
+      .enemy-table { display: grid; gap: 9px; }
+      .enemy-row { grid-template-columns: minmax(60px,.6fr) minmax(60px,.6fr) minmax(0,1.8fr); border-bottom: 1px solid #344254; border-radius: 13px; overflow: hidden; }
+      .enemy-row:last-child { border-radius: 13px; }
+      .enemy-identity { grid-column: 1/-1; grid-row: 1; width: var(--enemy-identity-width); border-right: 0; border-bottom: 1px solid #344254; }
+      .enemy-vitals { grid-column: 1/-1; grid-row: 1; margin-left: var(--enemy-identity-width); border-right: 0; border-bottom: 1px solid #344254; padding-inline: 8px; }
+      .enemy-cell { min-height: 58px; border-bottom: 1px solid #344254; }
+      .enemy-cell::before { content: attr(data-label); display: block; margin-bottom: 4px; color: var(--muted); font-size: 11px; font-weight: 900; }
+      .enemy-row > .enemy-cell { grid-column: span 1; border-bottom: 0; border-right: 1px solid #344254; }
+      .enemy-row > .enemy-cell:nth-child(4) { border-right: 0; }
+      .enemy-row-error { grid-column: 1/-1; }
+    }
+    @media (max-width: 660px) {
+      .stage-rewards-card.has-score-rewards { padding-inline: 12px; }
+      .stage-rewards-card.has-score-rewards > .stage-rewards-section:first-child { padding-right: 10px; }
+      .stage-score-rewards { padding-left: 10px; }
+      .page { width: min(100% - 20px,1220px); padding-top: 12px; }
+      .db-toolbar { align-items: stretch; flex-direction: column; gap: 10px; padding: 13px 15px; }
+      .unit-search { grid-template-columns: 72px minmax(0,1fr) 58px; gap: 7px; }
+      .unit-search button[type="submit"] { padding-inline: 8px; }
+      .unit-search-results { width: min(360px, calc(100vw - 106px)); }
+      .treasure-settings summary, .misc-settings summary { flex-wrap: wrap; padding-inline: 15px; }
+      .treasure-panel, .misc-panel { padding-inline: 15px; }
+      .treasure-cards, .passive-cards { grid-template-columns: 1fr; }
+      .treasure-card-header { grid-template-columns: 122px minmax(0,1fr) auto; }
+      .treasure-effect-image { width: 122px; height: 48px; }
+      .treasure-slots { grid-template-columns: repeat(4,38px); gap: 4px; }
+      .treasure-slot { width: 38px; height: 38px; }
+      .treasure-slot img { width: 34px; height: 34px; }
+      .hero-copy { padding: 20px 16px; }
+      .stage-name { font-size: clamp(22px,6vw,32px); }
+      .stage-heading { padding-right: 125px; }
+      .continue-icon { width: 115px; height: 115px; }
+      .overview { grid-template-columns: repeat(2,minmax(0,1fr)); padding-inline: 10px; }
+      .stage-secondary { padding-inline: 10px; }
+      .section-title { padding-inline: 14px; }
+      .distance-unit-grid { grid-template-columns: 1fr; }
+      .enemy-table { --enemy-identity-width: 327px; padding-inline: 10px; }
+      .enemy-row { grid-template-columns: minmax(60px,.6fr) minmax(60px,.6fr) minmax(0,1.8fr); }
+      .enemy-identity { grid-template-columns: 48px minmax(0,1fr); gap: 7px; padding-inline: 8px; }
+      .enemy-image, .enemy-image img { width: 48px; height: 40px; }
+      .enemy-name { flex-wrap: wrap; gap: 2px 5px; }
+      .enemy-vital { gap: 5px; }
+      .enemy-row > .enemy-cell { grid-column: span 1; border-bottom: 0; border-right: 1px solid #344254; }
+      .enemy-row > .enemy-cell:nth-child(4) { border-right: 0; }
+    }
+    @media (max-width: 400px) {
+      .enemy-identity { width: 100%; grid-template-columns: 48px 256px; }
+      .enemy-vitals { grid-row: 2; margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="db-toolbar">
+      <a class="db-brand" id="homeLink" href="#" aria-label="냥코DB 홈">냥코<span>DB</span></a>
+      <form class="unit-search" id="unitSearchForm" role="search">
+        <label for="unitSearchInput">검색</label>
+        <div class="unit-search-field">
+          <input id="unitSearchInput" type="search" autocomplete="off" spellcheck="false"
+                 placeholder="이름 입력" aria-label="이름 검색" aria-autocomplete="list"
+                 aria-controls="unitSearchResults" aria-expanded="false">
+          <div class="unit-search-results" id="unitSearchResults" role="listbox" aria-label="이름 검색 결과" hidden></div>
+        </div>
+        <button type="submit">검색</button>
+      </form>
+    </header>
+
+    <details class="treasure-settings" id="treasureSettings">
+      <summary>
+        <span>보물/패시브 설정</span>
+        <span class="treasure-summary-actions">
+          <button class="treasure-action-button" id="treasureResetButton" type="button" disabled>초기화</button>
+          <span class="settings-toggle-control"><span id="treasureToggleLabel">펼치기</span><span class="settings-toggle-arrow" aria-hidden="true">▾</span></span>
+        </span>
+      </summary>
+      <div class="treasure-panel">
+        <div class="treasure-category-tabs" id="treasureCategoryTabs" role="group" aria-label="보물 및 패시브 종류"></div>
+        <p class="treasure-note" id="treasureNote">보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.</p>
+        <div id="treasureCategoryContent"></div>
+      </div>
+    </details>
+
+    <details class="misc-settings" id="miscSettings">
+      <summary>
+        <span>기타 설정</span>
+        <span class="misc-summary-actions"><span class="settings-toggle-control"><span id="miscToggleLabel">펼치기</span><span class="settings-toggle-arrow" aria-hidden="true">▾</span></span></span>
+      </summary>
+      <div class="misc-panel">
+        <div class="bar-settings" aria-label="스탯 바 기준값 설정">
+          <span class="bar-settings-title">바 기준값</span>
+          <label class="scale-field">체력 <input class="number" id="enemyHpBarMax" type="number" inputmode="numeric" min="1" step="1000" aria-label="체력 바 최댓값"></label>
+          <label class="scale-field">공격력 <input class="number" id="enemyAttackBarMax" type="number" inputmode="numeric" min="1" step="1000" aria-label="공격력 바 최댓값"></label>
+        </div>
+        <section class="distance-unit-settings" aria-labelledby="distanceUnitSettingsTitle">
+          <div class="distance-unit-heading">
+            <span class="distance-unit-settings-title" id="distanceUnitSettingsTitle">거리 단위 설정</span>
+            <button class="distance-unit-reset" id="distanceUnitResetButton" type="button" disabled>초기화</button>
+          </div>
+          <p class="distance-unit-note"><strong>u</strong>: 기본 단위 거리 · <strong>spu</strong>: 이동속도 단위 거리 · <strong>rng</strong>: 사거리 단위 거리</p>
+          <div class="distance-unit-grid">
+            <label class="distance-unit-field"><span>스테이지 길이 단위</span><select id="stageLengthUnitSelect" aria-label="스테이지 길이 단위"><option value="rng" selected>rng</option><option value="u">u</option><option value="spu">spu</option></select></label>
+          </div>
+        </section>
+      </div>
+    </details>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="identity" id="stageId"></div>
+        <div class="stage-heading"><h1 class="stage-name" id="stageName"></h1><a class="map-name" id="mapName"></a><img class="continue-icon" id="continueIcon" src="../../img/icon/icon_continue_kr.png" alt="컨티뉴 불가" hidden></div>
+        <div class="hero-controls">
+          <div class="time-toggle" role="group" aria-label="시간 단위"><button id="timeSeconds" type="button" aria-pressed="true">초 (s)</button><button id="timeFrames" type="button" aria-pressed="false">프레임 (f)</button></div>
+          <label class="crown-control">스테이지 레벨 <select id="crownSelect"></select></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-panel stage-info-panel">
+      <h2 class="section-title">스테이지 정보</h2>
+      <div class="overview" id="overview"></div>
+      <div class="stage-secondary">
+        <article class="stat-card stage-rewards-card" id="rewardsCard">
+          <div class="stage-rewards-section"><span class="stat-label">보상</span>
+          <div class="story-reward-settings" id="storyRewardSettings" hidden>
+            <label class="story-reward-acquired">획득 상태 <select id="rewardQualitySelect"><option value="0">미획득</option><option value="1">조잡한 보물</option><option value="2">평범한 보물</option><option value="3">최고급 보물</option></select></label>
+            <div class="story-reward-toggles">
+              <button class="story-reward-toggle" id="zombieClearToggle" type="button" aria-pressed="false" aria-label="좀비 습격 클리어" data-tooltip="좀비 습격 클리어"><img id="zombieClearIcon" alt=""></button>
+              <button class="story-reward-toggle" id="treasureChanceToggle" type="button" aria-pressed="false" aria-label="트레저 찬스" data-tooltip="트레저 찬스"><img id="treasureChanceIcon" alt=""></button>
+            </div>
+          </div>
+          <div class="stage-detail-content" id="rewards"></div>
+          </div>
+          <div class="stage-rewards-section stage-score-rewards" id="scoreRewardsSection" hidden><span class="stat-label">채점보상</span><div class="stage-detail-content" id="scoreRewards"></div></div>
+        </article>
+        <article class="stat-card stage-restrictions-card"><span class="stat-label">출격 조건</span><div class="stage-detail-content" id="restrictions"></div></article>
+      </div>
+    </section>
+
+    <section class="content-panel">
+      <h2 class="section-title">출현 적</h2>
+      <div class="enemy-table" id="enemyTable">
+        <div class="enemy-table-head"><span>적</span><span>출현 수</span><span>성 체력</span><span>등장</span></div>
+        <div id="enemyRows"></div>
+      </div>
+    </section>
+  </main>
+  <script src="../../catalog.js"></script>
+  <script>
+    const DATA = {"map_code":"EOC","map_index":0,"stage_number":22,"stage_index":21,"absolute_map_id":3000,"stage_id":"21","story":{"family":0,"chapter":1,"fileIndex":21,"resourceIndex":24,"stageFilename":"stage21.csv","metadataFilename":"stageNormal0.csv","label":"세계편","stageIndex":21,"chapters":[{"chapter":1,"enemyMultiplier":100,"energy":28,"baseHealth":12000,"difficulty":1.1},{"chapter":2,"enemyMultiplier":150,"energy":38,"baseHealth":24000,"difficulty":2.2},{"chapter":3,"enemyMultiplier":400,"energy":48,"baseHealth":36000,"difficulty":3.3}],"treasureName":"보드카","locations":[{"stageIndex":0,"resourceIndex":45,"name":"한국"},{"stageIndex":1,"resourceIndex":44,"name":"몽골"},{"stageIndex":2,"resourceIndex":43,"name":"중국"},{"stageIndex":3,"resourceIndex":42,"name":"태국"},{"stageIndex":4,"resourceIndex":41,"name":"캄보디아"},{"stageIndex":5,"resourceIndex":40,"name":"필리핀"},{"stageIndex":6,"resourceIndex":39,"name":"일본"},{"stageIndex":7,"resourceIndex":38,"name":"호주"},{"stageIndex":8,"resourceIndex":37,"name":"싱가포르"},{"stageIndex":9,"resourceIndex":36,"name":"몰디브"},{"stageIndex":10,"resourceIndex":35,"name":"인도"},{"stageIndex":11,"resourceIndex":34,"name":"네팔"},{"stageIndex":12,"resourceIndex":33,"name":"두바이"},{"stageIndex":13,"resourceIndex":32,"name":"사우디아라비아"},{"stageIndex":14,"resourceIndex":31,"name":"케냐"},{"stageIndex":15,"resourceIndex":30,"name":"마다가스카르"},{"stageIndex":16,"resourceIndex":29,"name":"남아프리카"},{"stageIndex":17,"resourceIndex":28,"name":"가나"},{"stageIndex":18,"resourceIndex":27,"name":"사하라사막"},{"stageIndex":19,"resourceIndex":26,"name":"이집트"},{"stageIndex":20,"resourceIndex":25,"name":"터키"},{"stageIndex":21,"resourceIndex":24,"name":"러시아"},{"stageIndex":22,"resourceIndex":23,"name":"그리스"},{"stageIndex":23,"resourceIndex":22,"name":"이탈리아"},{"stageIndex":24,"resourceIndex":21,"name":"모나코"},{"stageIndex":25,"resourceIndex":20,"name":"스페인"},{"stageIndex":26,"resourceIndex":19,"name":"프랑스"},{"stageIndex":27,"resourceIndex":18,"name":"독일"},{"stageIndex":28,"resourceIndex":17,"name":"덴마크"},{"stageIndex":29,"resourceIndex":16,"name":"노르웨이"},{"stageIndex":30,"resourceIndex":15,"name":"영국"},{"stageIndex":31,"resourceIndex":14,"name":"그린란드"},{"stageIndex":32,"resourceIndex":13,"name":"캐나다"},{"stageIndex":33,"resourceIndex":12,"name":"뉴욕"},{"stageIndex":34,"resourceIndex":11,"name":"버뮤다"},{"stageIndex":35,"resourceIndex":10,"name":"자메이카"},{"stageIndex":36,"resourceIndex":9,"name":"콜롬비아"},{"stageIndex":37,"resourceIndex":8,"name":"브라질"},{"stageIndex":38,"resourceIndex":7,"name":"아르헨티나"},{"stageIndex":39,"resourceIndex":6,"name":"마추픽추"},{"stageIndex":40,"resourceIndex":5,"name":"이스터섬"},{"stageIndex":41,"resourceIndex":4,"name":"멕시코"},{"stageIndex":42,"resourceIndex":3,"name":"NASA"},{"stageIndex":43,"resourceIndex":2,"name":"라스베가스"},{"stageIndex":44,"resourceIndex":1,"name":"할리우드"},{"stageIndex":45,"resourceIndex":0,"name":"알래스카"},{"stageIndex":46,"resourceIndex":46,"name":"하와이"},{"stageIndex":47,"resourceIndex":47,"name":"달"}],"treasureDropRules":{"basePercent":35,"zombieClearPercent":50,"treasureChancePercent":70,"qualityWeights":[[45,30,25],[0,70,30],[0,0,100],[0,0,0]],"firstChapterSuperiorGuaranteed":false,"zombieClearIcon":"img/treasure/zombieclear.png","treasureChanceIcon":"img/icon/otchance.png"}},"names":{"map":"세계편 제1장","stage":"러시아"},"difficulty":{"raw":"1.1","value":1.1},"map_option":{"absolute_map_id":3000,"star_unlock_count":3,"back_star_unlock_count":0,"crown_multipliers_percent":[100,150,400],"guerrilla_set":0,"reward_reset_type":0,"one_time_display":false,"display_order":0,"interval":0,"challenge_flag":0,"map_difficulty_mask":3,"hide_after_clear":false,"xp_advertisement":false,"production_amount_multiplier":0,"energy_flag":1,"japanese_map_name":"0"},"stage_options":[],"map_stage_data":{"header":{"map_number":-1,"item_reward_stage_id":-1,"score_reward_stage_id":-1,"display_condition":-1,"play_condition":-1,"display_user_rank":-1},"map_pattern":-1,"energy":28,"xp":7300,"music":{"main_id":3,"boss_trigger_hp_percent":0,"boss_id":4},"drop_reward_type":-1,"first_reward":null,"additional_rewards":[],"timed_score_flag":false,"timed_score_rewards":[],"raw_values":[28,0,3,0,4,-1],"xp_source":"story_progression_formula"},"non_story_stage_info":null,"stage_info":{"width":4800,"base_health":12000,"min_production_frames":15,"max_production_frames":60,"background_id":3,"max_enemy_count":4,"castle_enemy_id":0,"trial_mode_duration_minutes":0,"unknown":[0],"castle":{"id":24,"collection":"ec","language":"ko","raw_values":[2,0,127]}},"enemies":[{"raw_enemy_id":3,"enemy_id":1,"name":"낼름이","count":null,"count_raw":0,"infinite":true,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":15,"frames":30,"seconds":1.0},"respawn_max":{"raw_half_frames":150,"frames":300,"seconds":10.0},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":0,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[3,0,0,15,150,100,0,9,0],"enemyId":1,"icon":"img/e/1/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":100,"hits":[15],"cycleFrames":37,"range":110,"speed":8,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":30,"respawnMaxFrames":300,"baseTrigger":100,"bossFlag":0},{"raw_enemy_id":3,"enemy_id":1,"name":"낼름이","count":null,"count_raw":0,"infinite":true,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":15,"frames":30,"seconds":1.0},"respawn_max":{"raw_half_frames":150,"frames":300,"seconds":10.0},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":0,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[3,0,0,15,150,100,0,9,0],"enemyId":1,"icon":"img/e/1/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":100,"hits":[15],"cycleFrames":37,"range":110,"speed":8,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":30,"respawnMaxFrames":300,"baseTrigger":100,"bossFlag":0},{"raw_enemy_id":4,"enemy_id":2,"name":"놈놈놈","count":null,"count_raw":0,"infinite":true,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":15,"frames":30,"seconds":1.0},"respawn_max":{"raw_half_frames":150,"frames":300,"seconds":10.0},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":0,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[4,0,0,15,150,100,0,9,0],"enemyId":2,"icon":"img/e/2/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":200,"hits":[20],"cycleFrames":30,"range":110,"speed":10,"knockbacks":1},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":30,"respawnMaxFrames":300,"baseTrigger":100,"bossFlag":0},{"raw_enemy_id":9,"enemy_id":7,"name":"메에메에","count":null,"count_raw":0,"infinite":true,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":15,"frames":30,"seconds":1.0},"respawn_max":{"raw_half_frames":150,"frames":300,"seconds":10.0},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":0,"max":4},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[9,0,0,15,150,100,0,4,0],"enemyId":7,"icon":"img/e/7/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":500,"hits":[50],"cycleFrames":53,"range":110,"speed":7,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":30,"respawnMaxFrames":300,"baseTrigger":100,"bossFlag":0},{"raw_enemy_id":7,"enemy_id":5,"name":"재키 펭","count":1,"count_raw":1,"infinite":false,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":1,"frames":2,"seconds":0.06666666666666667},"respawn_max":{"raw_half_frames":1,"frames":2,"seconds":0.06666666666666667},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":5,"max":5},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[7,1,0,1,1,100,5,5,0],"enemyId":5,"icon":"img/e/5/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":1300,"hits":[80],"cycleFrames":24,"range":150,"speed":11,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":2,"respawnMaxFrames":2,"baseTrigger":100,"bossFlag":0},{"raw_enemy_id":8,"enemy_id":6,"name":"고릴라저씨","count":2,"count_raw":2,"infinite":false,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":1,"frames":2,"seconds":0.06666666666666667},"respawn_max":{"raw_half_frames":30,"frames":60,"seconds":2.0},"base_hp_trigger_percent":80,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":5,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[8,2,0,1,30,80,5,9,0],"enemyId":6,"icon":"img/e/6/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":1000,"hits":[80],"cycleFrames":16,"range":150,"speed":15,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":2,"respawnMaxFrames":60,"baseTrigger":80,"bossFlag":0},{"raw_enemy_id":8,"enemy_id":6,"name":"고릴라저씨","count":2,"count_raw":2,"infinite":false,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":1,"frames":2,"seconds":0.06666666666666667},"respawn_max":{"raw_half_frames":30,"frames":60,"seconds":2.0},"base_hp_trigger_percent":70,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":5,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[8,2,0,1,30,70,5,9,0],"enemyId":6,"icon":"img/e/6/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":1000,"hits":[80],"cycleFrames":16,"range":150,"speed":15,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":2,"respawnMaxFrames":60,"baseTrigger":70,"bossFlag":0},{"raw_enemy_id":8,"enemy_id":6,"name":"고릴라저씨","count":2,"count_raw":2,"infinite":false,"spawn":{"start":{"raw_half_frames":0,"frames":0,"seconds":0.0},"respawn_min":{"raw_half_frames":1,"frames":2,"seconds":0.06666666666666667},"respawn_max":{"raw_half_frames":30,"frames":60,"seconds":2.0},"base_hp_trigger_percent":60,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":5,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[8,2,0,1,30,60,5,9,0],"enemyId":6,"icon":"img/e/6/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":1000,"hits":[80],"cycleFrames":16,"range":150,"speed":15,"knockbacks":3},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":0,"respawnMinFrames":2,"respawnMaxFrames":60,"baseTrigger":60,"bossFlag":0},{"raw_enemy_id":23,"enemy_id":21,"name":"간판 아가씨","count":null,"count_raw":0,"infinite":true,"spawn":{"start":{"raw_half_frames":13500,"frames":27000,"seconds":900.0},"respawn_min":{"raw_half_frames":13500,"frames":27000,"seconds":900.0},"respawn_max":{"raw_half_frames":13500,"frames":27000,"seconds":900.0},"base_hp_trigger_percent":100,"use_start_delay_after_base_trigger":false,"cat_kill_count_trigger":0},"layer":{"min":9,"max":9},"boss_flag":0,"trial_score":0,"hp_magnification_percent":100,"attack_magnification_percent":100,"has_explicit_attack_magnification":false,"magnifications_by_crown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"raw_values":[23,0,13500,13500,13500,100,9,9,0],"enemyId":21,"icon":"img/e/21/0.png","mechanicTraits":[{"key":"traitless","label":"속성이 없는 적"}],"base":{"hp":10000,"hits":[1],"cycleFrames":607,"range":800,"speed":4,"knockbacks":10000},"hpMagnification":100,"attackMagnification":100,"magnificationsByCrown":[{"crown":1,"crown_multiplier_percent":100,"hp_percent":100,"attack_percent":100},{"crown":2,"crown_multiplier_percent":150,"hp_percent":150,"attack_percent":150},{"crown":3,"crown_multiplier_percent":400,"hp_percent":400,"attack_percent":400}],"firstSpawnFrames":27000,"respawnMinFrames":27000,"respawnMaxFrames":27000,"baseTrigger":100,"bossFlag":0}],"enemyBarDefaults":{"hp":1000000,"attack":30000},"stage":{"id":"21","name":"러시아","mapName":"세계편 제1장","collectionName":"","locationId":"eoc","locationHref":"stage/eoc/index.html","noContinues":false},"xpClearRule":{"key":"story","label":"세계편 계열"},"stageInfo":{"energy":28,"xp":7300,"baseHp":12000,"width":4800,"maxEnemies":4,"spawnMinFrames":15,"spawnMaxFrames":60,"backgroundId":3,"castleEnemyId":0,"difficulty":1.1,"music":{"main_id":3,"boss_trigger_hp_percent":0,"boss_id":4},"castle":{"id":24,"collection":"ec","language":"ko","raw_values":[2,0,127]}},"crownMagnifications":[100,150,400],"rewards":[{"kind":"treasure","name":"조잡한 보드카","amount":1,"oneTime":true,"treasureGrade":1,"itemIcon":"img/treasure/t1.png","treasureRadarGuaranteed":false},{"kind":"treasure","name":"평범한 보드카","amount":1,"oneTime":true,"treasureGrade":2,"itemIcon":"img/treasure/t2.png","treasureRadarGuaranteed":false},{"kind":"treasure","name":"최고급 보드카","amount":1,"oneTime":true,"treasureGrade":3,"itemIcon":"img/treasure/t3.png","treasureRadarGuaranteed":true}],"restrictions":[{"label":"최대 50마리","crown":0,"kind":"deploy_limit"}],"treasures":{"qualityIcons":{"1":"img/treasure/t1.png","2":"img/treasure/t2.png","3":"img/treasure/t3.png"},"categories":[{"key":"eoc","label":"세계편 보물","items":[{"key":"philosophers_stone","label":"현자의 돌","icon":"img/treasure/Ot006_o.png","slotCount":7,"description":"스테이지 클리어 시 경험치 증가!","xpBonusPerChapter":0.5,"chapters":[[{"stageId":29,"name":"부부젤라","location":"남아프리카"},{"stageId":28,"name":"카카오","location":"가나"},{"stageId":27,"name":"보들보들 모래","location":"사하라사막"},{"stageId":26,"name":"히에로글리프","location":"이집트"},{"stageId":25,"name":"융단","location":"터키"},{"stageId":24,"name":"보드카","location":"러시아"},{"stageId":23,"name":"제우스의 손톱 때","location":"그리스"}],[{"stageId":29,"name":"부부젤라","location":"남아프리카"},{"stageId":28,"name":"카카오","location":"가나"},{"stageId":27,"name":"보들보들 모래","location":"사하라사막"},{"stageId":26,"name":"히에로글리프","location":"이집트"},{"stageId":25,"name":"융단","location":"터키"},{"stageId":24,"name":"보드카","location":"러시아"},{"stageId":23,"name":"제우스의 손톱 때","location":"그리스"}],[{"stageId":29,"name":"부부젤라","location":"남아프리카"},{"stageId":28,"name":"카카오","location":"가나"},{"stageId":27,"name":"보들보들 모래","location":"사하라사막"},{"stageId":26,"name":"히에로글리프","location":"이집트"},{"stageId":25,"name":"융단","location":"터키"},{"stageId":24,"name":"보드카","location":"러시아"},{"stageId":23,"name":"제우스의 손톱 때","location":"그리스"}]]}]},{"key":"itf","label":"미래편 보물","items":[{"key":"blue_crystal","label":"블루 크리스탈","icon":"img/treasure/Wt009_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}],[{"stageId":45,"name":"가전제품","location":"일본"},{"stageId":41,"name":"피로시키","location":"러시아"},{"stageId":38,"name":"햄릿","location":"덴마크"},{"stageId":35,"name":"플라멩고","location":"스페인"},{"stageId":32,"name":"고대 유적","location":"그리스"},{"stageId":29,"name":"마하라자","location":"인도"},{"stageId":26,"name":"압사라 댄스","location":"캄보디아"},{"stageId":23,"name":"코알라","location":"호주"}]]},{"key":"red_crystal","label":"레드 크리스탈","icon":"img/treasure/Wt010_o.png","slotCount":8,"description":"에이리언(별 없음) 배율 감소","chapters":[[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}],[{"stageId":21,"name":"자연보호구역","location":"마다가스카르"},{"stageId":18,"name":"미이라","location":"이집트"},{"stageId":15,"name":"스와지캔들","location":"남아프리카"},{"stageId":12,"name":"해시계","location":"마추픽추"},{"stageId":9,"name":"솜브레로","location":"멕시코"},{"stageId":6,"name":"개 썰매","location":"알래스카"},{"stageId":3,"name":"베이글","location":"뉴욕"},{"stageId":0,"name":"축구공","location":"브라질"}]]}]},{"key":"cotc","label":"우주편 보물","items":[{"key":"green_crystal","label":"그린 크리스탈","icon":"img/treasure/St000_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}],[{"stageId":45,"name":"인류","location":"지구"},{"stageId":44,"name":"화성인","location":"화성"},{"stageId":43,"name":"기체","location":"목성"},{"stageId":42,"name":"수수께끼의 고리","location":"토성"},{"stageId":41,"name":"빛나는 돌","location":"금성"}]]},{"key":"yellow_crystal","label":"옐로우 크리스탈","icon":"img/treasure/St001_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}],[{"stageId":36,"name":"상복","location":"트리톤"},{"stageId":35,"name":"검은 물체","location":"명왕성"},{"stageId":34,"name":"사각형","location":"붉은사각형 성운"},{"stageId":33,"name":"에스키모","location":"에스키모 성운"},{"stageId":32,"name":"캣츠아이","location":"캣츠아이 성운"}]]},{"key":"orange_crystal","label":"오렌지 크리스탈","icon":"img/treasure/St002_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}],[{"stageId":27,"name":"용골","location":"카노푸스"},{"stageId":26,"name":"거문고","location":"직녀성"},{"stageId":25,"name":"황소","location":"알데바란"},{"stageId":24,"name":"오리온","location":"베텔게우스"},{"stageId":23,"name":"백조","location":"디네프"}]]},{"key":"lightblue_crystal","label":"라이트블루 크리스탈","icon":"img/treasure/St003_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}],[{"stageId":18,"name":"휴머노이드","location":"부타라 성운"},{"stageId":17,"name":"희망","location":"모스칸다그"},{"stageId":16,"name":"아이돌","location":"코론별"},{"stageId":15,"name":"영웅","location":"매운매운떡뽀끼"},{"stageId":14,"name":"절임","location":"다진마늘성"}]]},{"key":"purple_crystal","label":"퍼플 크리스탈","icon":"img/treasure/St004_o.png","slotCount":5,"description":"에이리언(별 있음) 배율 감소","chapters":[[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}],[{"stageId":9,"name":"우주선","location":"우그하문"},{"stageId":8,"name":"별사탕","location":"솔로몬"},{"stageId":7,"name":"버섯","location":"아바・부아"},{"stageId":6,"name":"얼굴","location":"티탄"},{"stageId":5,"name":"포스","location":"데스스턴"}]]},{"key":"neutrino","label":"뉴트리노","icon":"img/treasure/St008_o.png","slotCount":4,"description":"스테이지 클리어 시의 경험치 증가!","xpBonusPerChapter":0.25,"chapters":[[{"stageId":4,"name":"원숭이","location":"고릴라의 혹성"},{"stageId":2,"name":"대단한 남자","location":"크림존성"},{"stageId":0,"name":"신화","location":"안드로메다"},{"stageId":47,"name":"기원","location":"빅뱅"}],[{"stageId":4,"name":"원숭이","location":"고릴라의 혹성"},{"stageId":2,"name":"대단한 남자","location":"크림존성"},{"stageId":0,"name":"신화","location":"안드로메다"},{"stageId":47,"name":"기원","location":"빅뱅"}],[{"stageId":4,"name":"원숭이","location":"고릴라의 혹성"},{"stageId":2,"name":"대단한 남자","location":"크림존성"},{"stageId":0,"name":"신화","location":"안드로메다"},{"stageId":47,"name":"기원","location":"빅뱅"}]]},{"key":"mysterious_mask","label":"수수께끼의 가면","icon":"img/treasure/St010_o.png","slotCount":3,"description":"신 배율 감소","chapters":[[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}],[{"stageId":3,"name":"변압기","location":"쪼매바로톤성"},{"stageId":1,"name":"3분간","location":"N77 성운"},{"stageId":46,"name":"시공","location":"블랙홀"}]]}]},{"key":"passive","label":"패시브","kind":"passive","items":[]}],"passive":{"key":"study","label":"공부력","description":"스테이지 클리어 시에 받을 수 있는 경험치를 상승시킬 수 있습니다","minBaseLevel":1,"maxBaseLevel":20,"minPlusLevel":0,"maxPlusLevel":10,"defaultBaseLevel":20,"defaultPlusLevel":10,"xpMultiplierPerLevel":0.05}}};
+    const SITE_PREFIX = "../../";
+    const $ = (id) => document.getElementById(id);
+    const stage = DATA.stage || {};
+    const stageId = String(stage.id || DATA.stage_id || "");
+    const isLocation = Boolean(DATA.location);
+    const locationLevelStorageKey = `nyanko-db:stage-location:${stage.locationId}:level:v1`;
+    const sharedSettingsStorageKey = "nyanko-db:stage-shared-settings:v1";
+    const enemySharedSettingsKey = "nyanko-db:enemy-shared-settings:v1";
+    const clearCountStorageKey = `nyanko-db:stage:${stageId}:previous-clear-count:v1`;
+    const storyRewardStorageKey = `nyanko-db:stage:${stageId}:story-rewards:v1`;
+    const panelStateStorageKey = `nyanko-db:page-panels:${window.location.pathname}:v1`;
+    const lastPageStorageKey = "nyanko-db:last-page:v1";
+    const qualityWeights = [0, 1 / 3, 2 / 3, 1];
+    const qualityNames = ["없음", "조잡한", "평범한", "최고급"];
+    const treasureState = new Map();
+    const storyRewardStates = new Map();
+    (DATA.treasures?.categories || []).forEach((category) => {
+      (category.items || []).forEach((item) => {
+        treasureState.set(item.key, (item.chapters || []).map(() => Array(item.slotCount).fill(3)));
+      });
+    });
+    const passive = DATA.treasures?.passive || {};
+    const xpClearRule = DATA.xpClearRule || { key: "none", label: "" };
+    const enemyBarDefaults = DATA.enemyBarDefaults || { hp: 1000000, attack: 30000 };
+    const state = {
+      timeUnit: "seconds",
+      crownIndex: 0,
+      treasureCategory: DATA.treasures?.categories?.[0]?.key || "",
+      stageLengthUnit: "rng",
+      previousClearCount: 0,
+      hpBarMax: enemyBarDefaults.hp,
+      attackBarMax: enemyBarDefaults.attack,
+      study: { baseLevel: Number(passive.defaultBaseLevel || 20), plusLevel: Number(passive.defaultPlusLevel || 10) },
+    };
+    const crownOptions = (DATA.crownMagnifications || [100]).map(Number).filter((value) => Number.isFinite(value) && value > 0);
+    if (!crownOptions.length) crownOptions.push(100);
+    const currentStoryChapter = () => DATA.story?.chapters?.[state.crownIndex];
+    function restoreLocationLevel() {
+      try {
+        const level = Number(localStorage.getItem(locationLevelStorageKey));
+        if (!Number.isInteger(level) || level < 1) return;
+        const index = DATA.story ? DATA.story.chapters.findIndex((chapter) => chapter.chapter === level) : level - 1;
+        if (index >= 0 && index < crownOptions.length) state.crownIndex = index;
+      } catch (_) {}
+    }
+    function persistLocationLevel() {
+      const level = currentStoryChapter()?.chapter ?? state.crownIndex + 1;
+      try { localStorage.setItem(locationLevelStorageKey, String(level)); } catch (_) {}
+    }
+    function currentStoryRewardState() {
+      const chapter = currentStoryChapter()?.chapter;
+      if (!storyRewardStates.has(chapter)) storyRewardStates.set(chapter, { quality: 0, zombieCleared: false, treasureChance: false });
+      return storyRewardStates.get(chapter);
+    }
+    function restoreStoryRewardStates() {
+      if (!DATA.story) return;
+      try {
+        const saved = JSON.parse(localStorage.getItem(storyRewardStorageKey) || "{}");
+        const selectedIndex = DATA.story.chapters.findIndex(({ chapter }) => chapter === saved?.selectedChapter);
+        if (selectedIndex >= 0) state.crownIndex = selectedIndex;
+        for (const { chapter } of DATA.story.chapters) {
+          const acquired = saved?.chapters?.[chapter];
+          if (!acquired || typeof acquired !== "object") continue;
+          storyRewardStates.set(chapter, {
+            quality: clampInteger(acquired.quality, 0, 3, 0),
+            zombieCleared: acquired.zombieCleared === true,
+            treasureChance: acquired.treasureChance === true,
+          });
+        }
+      } catch (_) {}
+    }
+    function persistStoryRewardStates() {
+      if (!DATA.story) return;
+      try { localStorage.setItem(storyRewardStorageKey, JSON.stringify({ selectedChapter: currentStoryChapter()?.chapter, chapters: Object.fromEntries(storyRewardStates) })); } catch (_) {}
+    }
+    function treasureDropProbability(grade) {
+      const rules = DATA.story.treasureDropRules;
+      const acquired = currentStoryRewardState();
+      if (rules.firstChapterSuperiorGuaranteed && currentStoryChapter()?.chapter === 1 && acquired.quality < 3) return grade === 3 ? 100 : 0;
+      const chance = acquired.treasureChance ? (rules.treasureChancePercent ?? 70) : acquired.zombieCleared ? rules.zombieClearPercent : rules.basePercent;
+      return chance * rules.qualityWeights[acquired.quality][grade - 1] / 100;
+    }
+
+    const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+    const fmt = (value) => Math.floor(Number(value) || 0).toLocaleString("ko-KR");
+    const fmtNumber = (value, digits = 2) => Number(value || 0).toLocaleString("ko-KR", { maximumFractionDigits: digits });
+    const assetPath = (path) => {
+      const value = String(path || "");
+      if (!value || /^(?:data:|https?:|\/)/i.test(value)) return value;
+      return SITE_PREFIX + value.replace(/^\.\//, "");
+    };
+    const clampInteger = (value, minimum, maximum, fallback) => {
+      const parsed = Math.floor(Number(value));
+      return Number.isFinite(parsed) ? Math.min(maximum, Math.max(minimum, parsed)) : fallback;
+    };
+    const frameText = (frames) => state.timeUnit === "frames" ? `${fmt(frames)}f` : `${(Number(frames || 0) / 30).toFixed(2)}초`;
+    const frameRangeText = (minimum, maximum) => {
+      if (minimum === maximum) return frameText(minimum);
+      if (state.timeUnit === "frames") return `${fmt(minimum)}~${fmt(maximum)}f`;
+      return `${(Number(minimum || 0) / 30).toFixed(2)}~${(Number(maximum || 0) / 30).toFixed(2)}초`;
+    };
+    const stageLengthText = (raw) => {
+      const factor = { rng: 1, spu: 2, u: 4 }[state.stageLengthUnit] || 1;
+      return fmtNumber(Number(raw || 0) * factor);
+    };
+    function formatTreasurePercent(value) {
+      const rounded = Math.round(value * 10) / 10;
+      return `${Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(1)}%`;
+    }
+    function chapterPercent(slots) {
+      if (!slots.length || slots.some((quality) => quality === 0)) return 0;
+      return slots.reduce((sum, quality) => sum + qualityWeights[quality], 0) / slots.length * 100;
+    }
+    const treasureBonus = (item) => {
+      const chapters = treasureState.get(item.key) || [];
+      return chapters.reduce((sum, slots) => sum + chapterPercent(slots) / 100 * Number(item.xpBonusPerChapter || 0), 0);
+    };
+    const studyBonus = () => Math.max(0, state.study.baseLevel + state.study.plusLevel - 1) * Number(passive.xpMultiplierPerLevel || .05);
+    const xpMultiplier = () => 1 + studyBonus() + (DATA.treasures?.categories || []).flatMap((category) => category.items || []).reduce((sum, item) => sum + treasureBonus(item), 0);
+    function clearAdjustedBaseXp() {
+      const baseXp = Number(DATA.stageInfo?.xp || 0);
+      const count = Math.max(0, Math.floor(Number(state.previousClearCount) || 0));
+      const initialXp = xpClearRule.key === "legend" ? baseXp * 9 : baseXp;
+      const divisor = xpClearRule.key === "legend" ? 5 : xpClearRule.key === "story" ? 14 : 0;
+      if (!divisor) return initialXp;
+      // Truncate the clear-count deduction before applying study/treasure bonuses.
+      // Integer numerator/divisor arithmetic avoids rounding an integral deduction down.
+      return initialXp - Math.floor(initialXp * Math.min(count, divisor - 1) / divisor);
+    }
+    function restorePreviousClearCount() {
+      try { state.previousClearCount = Math.max(0, Math.floor(Number(localStorage.getItem(clearCountStorageKey)) || 0)); } catch (_) {}
+    }
+    function persistPreviousClearCount() {
+      try { localStorage.setItem(clearCountStorageKey, String(state.previousClearCount)); } catch (_) {}
+    }
+
+    function collectTreasureState() {
+      const result = {};
+      treasureState.forEach((chapters, key) => { result[key] = chapters.map((slots) => slots.slice()); });
+      return result;
+    }
+    function applySavedTreasures(saved) {
+      if (!saved || typeof saved !== "object") return;
+      treasureState.forEach((chapters, key) => {
+        if (!Array.isArray(saved[key])) return;
+        chapters.forEach((slots, chapterIndex) => {
+          const source = saved[key][chapterIndex];
+          if (!Array.isArray(source)) return;
+          slots.forEach((_, slotIndex) => {
+            const quality = source[slotIndex];
+            if (Number.isInteger(quality) && quality >= 0 && quality <= 3) {
+              slots[slotIndex] = quality;
+            }
+          });
+        });
+      });
+    }
+    function readSharedSettings() {
+      try { return JSON.parse(localStorage.getItem(sharedSettingsStorageKey) || "{}") || {}; } catch (_) { return {}; }
+    }
+    function readEnemySharedSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(enemySharedSettingsKey) || "{}");
+        return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+      } catch (_) { return {}; }
+    }
+    function persistEnemyTreasureState() {
+      try {
+        const saved = readEnemySharedSettings();
+        const treasures = { ...(saved.treasures || {}) };
+        treasureState.forEach((chapters, key) => {
+          if (!key.endsWith("_crystal") && key !== "mysterious_mask") return;
+          chapters.forEach((slots, c) => slots.forEach((quality, s) => { treasures[`${key}.${c}.${s}`] = quality; }));
+        });
+        saved.treasures = treasures;
+        const value = JSON.stringify(saved);
+        if (localStorage.getItem(enemySharedSettingsKey) !== value) localStorage.setItem(enemySharedSettingsKey, value);
+      } catch (_) {}
+    }
+    function restoreEnemyTreasureState() {
+      const saved = readEnemySharedSettings().treasures;
+      if (!saved || typeof saved !== "object" || Array.isArray(saved)) return;
+      treasureState.forEach((chapters, key) => {
+        if (!key.endsWith("_crystal") && key !== "mysterious_mask") return;
+        chapters.forEach((slots, c) => slots.forEach((_, s) => {
+          const quality = saved[`${key}.${c}.${s}`];
+          if (Number.isInteger(quality) && quality >= 0 && quality <= 3) slots[s] = quality;
+        }));
+      });
+    }
+    function persistSharedSettings() {
+      try {
+        const saved = readSharedSettings();
+        saved.treasures = { ...(saved.treasures || {}), ...collectTreasureState() };
+        if (DATA.treasures?.passive) saved.passives = { ...(saved.passives || {}), study: { ...state.study } };
+        saved.distanceUnits = { ...(saved.distanceUnits || {}), stageLength: state.stageLengthUnit };
+        saved.treasureCategory = state.treasureCategory;
+        saved.enemyBars = { hp: state.hpBarMax, attack: state.attackBarMax };
+        localStorage.setItem(sharedSettingsStorageKey, JSON.stringify(saved));
+        persistEnemyTreasureState();
+      } catch (_) {}
+    }
+    function restoreSharedSettings() {
+      const saved = readSharedSettings();
+      applySavedTreasures(saved.treasures);
+      restoreEnemyTreasureState();
+      state.hpBarMax = clampInteger(saved.enemyBars?.hp, 1, 1e12, enemyBarDefaults.hp);
+      state.attackBarMax = clampInteger(saved.enemyBars?.attack, 1, 1e12, enemyBarDefaults.attack);
+      const study = saved.passives?.study;
+      if (study && typeof study === "object") {
+        state.study.baseLevel = clampInteger(study.baseLevel, Number(passive.minBaseLevel || 1), Number(passive.maxBaseLevel || 20), state.study.baseLevel);
+        state.study.plusLevel = clampInteger(study.plusLevel, Number(passive.minPlusLevel || 0), Number(passive.maxPlusLevel || 10), state.study.plusLevel);
+      }
+      if ((DATA.treasures?.categories || []).some((category) => category.key === saved.treasureCategory)) {
+        state.treasureCategory = saved.treasureCategory;
+      }
+      const unit = saved.distanceUnits?.stageLength;
+      if (["rng", "u", "spu"].includes(unit)) state.stageLengthUnit = unit;
+    }
+    function allTreasuresMaximum() {
+      return [...treasureState.values()].every((chapters) => chapters.every((slots) => slots.every((quality) => quality === 3)));
+    }
+    function allPassivesMaximum() {
+      if (!DATA.treasures?.passive) return true;
+      return state.study.baseLevel === Number(passive.maxBaseLevel || 20) && state.study.plusLevel === Number(passive.maxPlusLevel || 10);
+    }
+    function syncTreasureResetButton() {
+      $("treasureResetButton").disabled = allTreasuresMaximum() && allPassivesMaximum();
+    }
+    function syncResetButtons() {
+      syncTreasureResetButton();
+      if ($("distanceUnitResetButton")) $("distanceUnitResetButton").disabled = state.stageLengthUnit === "rng";
+    }
+
+    function syncPanelLabels() {
+      $("treasureToggleLabel").textContent = $("treasureSettings").open ? "접기" : "펼치기";
+      if ($("miscSettings")) $("miscToggleLabel").textContent = $("miscSettings").open ? "접기" : "펼치기";
+    }
+    function restorePanels() {
+      try {
+        const samePage = sessionStorage.getItem(lastPageStorageKey) === window.location.pathname;
+        const saved = samePage ? JSON.parse(sessionStorage.getItem(panelStateStorageKey) || "{}") : {};
+        $("treasureSettings").open = !!saved.treasure;
+        if ($("miscSettings")) $("miscSettings").open = !!saved.misc;
+        if (!samePage) sessionStorage.removeItem(panelStateStorageKey);
+        sessionStorage.setItem(lastPageStorageKey, window.location.pathname);
+      } catch (_) {}
+      syncPanelLabels();
+    }
+    function persistPanels() {
+      try {
+        sessionStorage.setItem(panelStateStorageKey, JSON.stringify({ treasure: $("treasureSettings").open, misc: $("miscSettings")?.open || false }));
+        sessionStorage.setItem(lastPageStorageKey, window.location.pathname);
+      } catch (_) {}
+      syncPanelLabels();
+    }
+
+    function renderTreasureTabs() {
+      const categories = DATA.treasures?.categories || [];
+      const root = $("treasureCategoryTabs");
+      root.replaceChildren();
+      categories.forEach((category) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "treasure-category-tab";
+        button.textContent = category.label;
+        button.setAttribute("aria-pressed", String(category.key === state.treasureCategory));
+        button.addEventListener("click", () => {
+          state.treasureCategory = category.key;
+          persistSharedSettings();
+          renderTreasureTabs();
+          renderTreasureContent();
+        });
+        root.append(button);
+      });
+    }
+    function renderPassive() {
+      $("treasureNote").hidden = true;
+      if (!DATA.treasures?.passive) {
+        $("treasureCategoryContent").innerHTML = '<div class="treasure-empty-category">설정할 패시브가 없습니다.</div>';
+        return;
+      }
+      const current = `Lv.${state.study.baseLevel}+${state.study.plusLevel}`;
+      $("treasureCategoryContent").innerHTML = `<div class="passive-cards"><article class="passive-card"><div class="passive-card-header"><div><h3>${escapeHtml(passive.label || "공부력")}</h3><p class="passive-description" id="studyEffectText">획득 경험치 배율 +${fmtNumber(studyBonus())}×</p></div><span class="passive-current-level" id="studyLevelText">${current}</span></div><div class="passive-level-controls"><div class="passive-level-row"><label for="studyBaseRange">기본 레벨</label><input id="studyBaseRange" type="range" min="${passive.minBaseLevel}" max="${passive.maxBaseLevel}" value="${state.study.baseLevel}"><input id="studyBaseNumber" type="number" inputmode="numeric" min="${passive.minBaseLevel}" max="${passive.maxBaseLevel}" value="${state.study.baseLevel}"></div><div class="passive-level-row"><label for="studyPlusRange">플러스 레벨</label><input id="studyPlusRange" type="range" min="${passive.minPlusLevel}" max="${passive.maxPlusLevel}" value="${state.study.plusLevel}"><input id="studyPlusNumber" type="number" inputmode="numeric" min="${passive.minPlusLevel}" max="${passive.maxPlusLevel}" value="${state.study.plusLevel}"></div></div></article></div>`;
+      const bind = (key, rangeId, numberId, minimum, maximum) => {
+        const range = $(rangeId), number = $(numberId);
+        const update = (value) => {
+          state.study[key] = clampInteger(value, Number(minimum), Number(maximum), state.study[key]);
+          range.value = number.value = String(state.study[key]);
+          $("studyLevelText").textContent = `Lv.${state.study.baseLevel}+${state.study.plusLevel}`;
+          $("studyEffectText").textContent = `획득 경험치 배율 +${fmtNumber(studyBonus())}×`;
+          persistSharedSettings(); syncResetButtons(); renderOverview();
+        };
+        range.addEventListener("input", (event) => update(event.target.value));
+        number.addEventListener("input", (event) => { if (event.target.value !== "") update(event.target.value); });
+        number.addEventListener("blur", (event) => update(event.target.value));
+      };
+      bind("baseLevel", "studyBaseRange", "studyBaseNumber", passive.minBaseLevel, passive.maxBaseLevel);
+      bind("plusLevel", "studyPlusRange", "studyPlusNumber", passive.minPlusLevel, passive.maxPlusLevel);
+    }
+    function renderTreasureContent() {
+      const category = (DATA.treasures?.categories || []).find((entry) => entry.key === state.treasureCategory);
+      const root = $("treasureCategoryContent");
+      root.replaceChildren();
+      if (!category) return;
+      if (category.kind === "passive") { renderPassive(); return; }
+      $("treasureNote").hidden = false;
+      $("treasureNote").textContent = "보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.";
+      if (!(category.items || []).length) {
+        const empty = document.createElement("div");
+        empty.className = "treasure-empty-category";
+        empty.textContent = "등록된 보물이 없습니다.";
+        root.append(empty);
+        return;
+      }
+      const cards = document.createElement("div");
+      cards.className = "treasure-cards";
+      (category.items || []).forEach((item) => {
+        const chapters = treasureState.get(item.key) || [];
+        const card = document.createElement("article");
+        card.className = "treasure-card";
+        const header = document.createElement("div");
+        header.className = "treasure-card-header";
+        if (item.icon) {
+          const image = document.createElement("img");
+          image.className = "treasure-effect-image";
+          image.src = assetPath(item.icon);
+          image.alt = item.label;
+          image.title = item.label;
+          header.append(image);
+        } else {
+          const placeholder = document.createElement("span");
+          placeholder.className = "treasure-effect-image";
+          header.append(placeholder);
+        }
+        const title = document.createElement("div");
+        title.className = "treasure-card-title";
+        const heading = document.createElement("h3");
+        heading.textContent = item.label;
+        const detail = document.createElement("p");
+        detail.textContent = item.xpBonusPerChapter ? `획득 경험치 배율 +${fmtNumber(treasureBonus(item))}×` : item.description || "";
+        title.append(heading, detail);
+        const total = document.createElement("span");
+        total.className = "treasure-total";
+        total.textContent = formatTreasurePercent(chapters.reduce((sum, slots) => sum + chapterPercent(slots), 0));
+        header.append(title, total);
+
+        const chapterRoot = document.createElement("div");
+        chapterRoot.className = "treasure-chapters";
+        chapters.forEach((slots, chapterIndex) => {
+          const chapter = document.createElement("section");
+          chapter.className = "treasure-chapter";
+          const chapterHeading = document.createElement("div");
+          chapterHeading.className = "treasure-chapter-heading";
+          const chapterName = document.createElement("span");
+          chapterName.textContent = `${chapterIndex + 1}장`;
+          const chapterValue = document.createElement("span");
+          chapterValue.className = "treasure-chapter-percent";
+          chapterValue.textContent = formatTreasurePercent(chapterPercent(slots));
+          chapterHeading.append(chapterName, chapterValue);
+          const slotRoot = document.createElement("div");
+          slotRoot.className = "treasure-slots";
+          slots.forEach((quality, slotIndex) => {
+            const detail = item.chapters?.[chapterIndex]?.[slotIndex] || {};
+            const slot = document.createElement("button");
+            slot.type = "button";
+            slot.className = "treasure-slot";
+            slot.dataset.tooltipKey = `${item.key}:${chapterIndex}:${slotIndex}`;
+            const qualityName = qualityNames[quality];
+            const displayedQuality = quality === 0 ? "미획득" : qualityName;
+            const tooltipLines = [`${displayedQuality} ${detail.name || `${slotIndex + 1}번째 보물`}`];
+            if (detail.location) tooltipLines.push(`${detail.location}에서 획득!`);
+            const tooltip = tooltipLines.join("\n");
+            slot.dataset.tooltip = tooltip;
+            slot.setAttribute("aria-label", tooltip.replace("\n", ", "));
+            const icon = DATA.treasures?.qualityIcons?.[String(quality)];
+            if (quality > 0 && icon) {
+              const image = document.createElement("img");
+              image.src = assetPath(icon);
+              image.alt = qualityName;
+              image.width = 30;
+              image.height = 30;
+              slot.append(image);
+            } else {
+              const empty = document.createElement("span");
+              empty.className = "treasure-empty";
+              empty.textContent = "—";
+              slot.append(empty);
+            }
+            slot.addEventListener("click", () => {
+              slots[slotIndex] = (slots[slotIndex] + 1) % 4;
+              persistSharedSettings();
+              renderTreasureContent();
+              syncResetButtons();
+              renderOverview();
+              renderEnemies();
+              const updatedSlot = [...document.querySelectorAll(".treasure-slot")].find((entry) => entry.dataset.tooltipKey === slot.dataset.tooltipKey);
+              if (updatedSlot) { closeRewardTooltips(updatedSlot); updatedSlot.dataset.tooltipOpen = "true"; updatedSlot.focus({ preventScroll: true }); }
+            });
+            slotRoot.append(slot);
+          });
+          chapter.append(chapterHeading, slotRoot);
+          chapterRoot.append(chapter);
+        });
+        card.append(header, chapterRoot);
+        cards.append(card);
+      });
+      root.append(cards);
+    }
+
+    function statCard(label, value, detail = "", valueId = "") {
+      return `<article class="stat-card"><span class="stat-label">${escapeHtml(label)}</span><strong class="stat-value"${valueId ? ` id="${escapeHtml(valueId)}"` : ""}>${escapeHtml(value)}</strong>${detail}</article>`;
+    }
+    function difficultyCard(value) {
+      const text = String(value).trim();
+      const match = text.match(/^(\d+)(\.\d+)?$/);
+      const whole = match ? match[1] : text;
+      const decimal = match?.[2] || "";
+      return `<article class="stat-card"><span class="stat-label">난이도</span><strong class="stat-value stage-difficulty-value">` +
+        `<span class="stage-difficulty-star">⭐${escapeHtml(whole)}</span>${decimal ? `<small class="stage-difficulty-decimal">${escapeHtml(decimal)}</small>` : ""}</strong></article>`;
+    }
+    function stageXpText() {
+      return fmt(Math.floor(clearAdjustedBaseXp() * xpMultiplier()));
+    }
+    function xpClearControl() {
+      if (xpClearRule.key !== "legend" && xpClearRule.key !== "story") return "";
+      return `<label class="xp-clear-field"><span>클리어</span><input id="previousClearCount" type="number" inputmode="numeric" min="0" step="1" value="${state.previousClearCount}" aria-label="클리어 횟수"><span>회</span></label>`;
+    }
+    function renderOverview() {
+      if (isLocation) return;
+      const info = DATA.stageInfo || {};
+      const storyChapter = currentStoryChapter();
+      const minSpawn = Number(info.spawnMinFrames || 0), maxSpawn = Number(info.spawnMaxFrames || 0);
+      const spawnText = minSpawn === maxSpawn ? frameText(minSpawn) : `${frameText(minSpawn)}~${frameText(maxSpawn)}`;
+      const cards = [
+        statCard("통솔력", fmt(storyChapter?.energy ?? info.energy)),
+        statCard("획득 XP", stageXpText(), xpClearControl(), "stageXpValue"),
+        statCard("성 체력", fmt(storyChapter?.baseHealth ?? info.baseHp)),
+        statCard("스테이지 길이", stageLengthText(info.width)),
+        statCard("최대 적 수", fmt(info.maxEnemies)),
+      ];
+      const difficulty = storyChapter?.difficulty ?? info.difficulty;
+      if (difficulty !== null && difficulty !== undefined) cards.push(difficultyCard(difficulty));
+      $("overview").innerHTML = cards.join("");
+    }
+    function renderRewards() {
+      if (isLocation) return;
+      $("storyRewardSettings").hidden = !DATA.story;
+      if (DATA.story) {
+        const acquired = currentStoryRewardState();
+        $("rewardQualitySelect").value = String(acquired.quality);
+        for (const [id, active, label] of [["zombieClearToggle", acquired.zombieCleared, "좀비 습격 클리어"], ["treasureChanceToggle", acquired.treasureChance, "트레저 찬스"]]) {
+          const toggle = $(id);
+          const tooltip = active ? `${label} 해제` : label;
+          toggle.setAttribute("aria-pressed", String(active));
+          toggle.setAttribute("aria-label", tooltip);
+          toggle.dataset.tooltip = tooltip;
+        }
+        $("zombieClearIcon").src = assetPath(DATA.story.treasureDropRules.zombieClearIcon);
+        $("treasureChanceIcon").src = assetPath(DATA.story.treasureDropRules.treasureChanceIcon || "img/icon/otchance.png");
+      }
+      const rewards = (DATA.rewards || []).filter((reward) => reward.kind !== "treasure" || treasureDropProbability(reward.treasureGrade) > 0);
+      renderRewardList($("rewards"), rewards);
+      const scores = DATA.scoreRewards || [];
+      $("scoreRewardsSection").hidden = !scores.length;
+      $("rewardsCard").classList.toggle("has-score-rewards", Boolean(scores.length));
+      $("rewardsCard").parentElement.classList.toggle("has-score-rewards", Boolean(scores.length));
+      renderRewardList($("scoreRewards"), scores, true);
+    }
+    function renderRewardList(root, rewards, scoreOnly = false) {
+      root.innerHTML = rewards.length ? rewards.map((reward, index) => {
+        const criterion = Number(reward.chance || 0);
+        const amountValue = fmt(reward.amount || 1);
+        const isXpOrNp = [6, 7].includes(Number(reward.itemId)) || ["XP", "NP"].includes(String(reward.displayUnit || "").trim());
+        const amount = isXpOrNp ? amountValue : `×${amountValue}`;
+        const name = reward.name || `아이템 ${reward.itemId}`;
+        const probability = reward.kind === "treasure" ? treasureDropProbability(reward.treasureGrade) : Number(reward.probabilityPercent ?? criterion);
+        const condition = reward.kind === "score"
+          ? (criterion ? `점수 ${fmt(criterion)}점` : "")
+          : reward.criterionKind === "reward_number" && reward.probabilityPercent === undefined
+          ? "확률 미확인"
+          : (reward.kind === "treasure" || reward.probabilityPercent !== undefined || probability ? `확률 ${fmtNumber(probability)}%` : "");
+        const availability = reward.oneTime ? "1회만" : "중복 가능";
+        const details = scoreOnly ? `${fmt(criterion)}점` : [condition, availability].filter(Boolean).join(" · ");
+        const copy = `<span class="stage-reward-copy">${reward.itemIcon ? "" : `<strong>${escapeHtml(name)}</strong>`}<em>${escapeHtml(amount)}</em><small>${escapeHtml(details)}</small></span>`;
+        const radar = reward.treasureRadarGuaranteed
+          ? `<img class="stage-reward-radar" src="${escapeHtml(assetPath("img/icon/icon_treasure.png"))}" alt="트레저 레이더 보장">`
+          : "";
+        const icon = reward.itemIcon ? `<img${reward.kind === "treasure" ? ' class="story-treasure-image"' : ""} src="${escapeHtml(assetPath(reward.itemIcon))}" alt="">` : `<span aria-hidden="true">?</span>`;
+        const item = reward.itemHref
+          ? `<button class="stage-reward-item" type="button" data-reward-index="${index}" data-tooltip="${escapeHtml(name)}" aria-label="${escapeHtml(name)} ${escapeHtml(amount)}" aria-expanded="false">${icon}</button>`
+          : `<span class="stage-reward-item" tabindex="0" data-tooltip="${escapeHtml(name)}">${icon}</span>`;
+        return `<div class="stage-reward-entry">${item}${copy}${radar}</div>`;
+      }).join("") : `<span class="empty">보상 없음</span>`;
+      if (rewards.length) root.innerHTML = `<div class="stage-reward-list">${root.innerHTML}</div>`;
+      root.querySelectorAll("button.stage-reward-item[data-reward-index]").forEach((item) => {
+        item.addEventListener("click", () => {
+          const reward = rewards[Number(item.dataset.rewardIndex)];
+          if (item.dataset.tooltipOpen === "true" && reward?.itemHref) {
+            window.location.assign(SITE_PREFIX + String(reward.itemHref).replace(/^\.\//, ""));
+            return;
+          }
+          const shouldOpen = item.dataset.tooltipOpen !== "true";
+          closeRewardTooltips(item);
+          if (shouldOpen) { item.dataset.tooltipOpen = "true"; item.setAttribute("aria-expanded", "true"); }
+          else { delete item.dataset.tooltipOpen; item.setAttribute("aria-expanded", "false"); }
+        });
+        item.addEventListener("blur", () => { delete item.dataset.tooltipOpen; item.setAttribute("aria-expanded", "false"); });
+      });
+    }
+    function closeRewardTooltips(except = null) {
+      document.querySelectorAll('[data-tooltip-open="true"]').forEach((item) => {
+        if (item === except) return;
+        delete item.dataset.tooltipOpen;
+        if (item.hasAttribute("aria-expanded")) item.setAttribute("aria-expanded", "false");
+      });
+    }
+    function renderRestrictions() {
+      if (isLocation) return;
+      const all = DATA.restrictions || [];
+      const selectedCrown = state.crownIndex + 1;
+      const hasSpecificDeployLimit = all.some((restriction) => restriction.kind === "deploy_limit" && Number(restriction.crown) === selectedCrown);
+      const visible = all.filter((restriction) => {
+        if (restriction.crown && Number(restriction.crown) !== selectedCrown) return false;
+        return !(hasSpecificDeployLimit && restriction.kind === "deploy_limit" && !restriction.crown);
+      });
+      $("restrictions").innerHTML = visible.length ? `<div class="stage-restriction-list">${visible.map((restriction) => `<span class="stage-restriction">${escapeHtml(typeof restriction === "string" ? restriction : restriction.label)}</span>`).join("")}</div>` : `<span class="empty">출격 제한 없음</span>`;
+    }
+    function rowMagnifications(row) {
+      const crown = state.crownIndex + 1;
+      const exact = (row.magnificationsByCrown || []).find((entry) => Number(entry.crown) === crown);
+      if (exact) return { health: Number(exact.hp_percent ?? exact.health_percent ?? row.hpMagnification ?? 100), attack: Number(exact.attack_percent ?? row.attackMagnification ?? row.hpMagnification ?? 100) };
+      const factor = Number(crownOptions[state.crownIndex] || 100) / 100;
+      return { health: Number(row.hpMagnification ?? 100) * factor, attack: Number(row.attackMagnification ?? row.hpMagnification ?? 100) * factor };
+    }
+    function enemyTreasureMultiplier(row) {
+      const traits = row.mechanicTraits || [];
+      const total = (key) => (treasureState.get(key) || []).reduce((sum, slots) => sum + chapterPercent(slots), 0);
+      const god = traits.find((trait) => trait.key === "cat_god");
+      if (god) {
+        const chapter = clampInteger(god.chapter, 1, 3, 1) - 1;
+        const percent = chapterPercent(treasureState.get("mysterious_mask")?.[chapter] || []);
+        return Math.max(1, 11 - percent / 10);
+      }
+      if (traits.some((trait) => trait.key === "starred_alien")) {
+        const percent = ["green_crystal", "yellow_crystal", "orange_crystal", "lightblue_crystal", "purple_crystal"].reduce((sum, key) => sum + total(key), 0);
+        return Math.max(1, 16 - percent / 100);
+      }
+      if (traits.some((trait) => trait.key === "alien")) return Math.max(1, 7 - (total("blue_crystal") + total("red_crystal")) / 100);
+      return 1;
+    }
+    function enemyVitalBars(row, magnification) {
+      const multiplier = enemyTreasureMultiplier(row);
+      // Match the enemy calculator: floor each scaled hit before summing.
+      // Keep this effect separate from the stage's displayed magnification.
+      const scale = (value, percent) => Math.floor(Number(value || 0) * (percent * multiplier) / 100);
+      const hp = scale(row.base?.hp, magnification.health);
+      const attack = (row.base?.hits || []).reduce((sum, hit) => sum + scale(typeof hit === "number" ? hit : hit.damage, magnification.attack), 0);
+      const bar = (value, maximum, kind, label) => `<span class="enemy-vital ${kind}" aria-label="${label} ${fmt(value)}"><span class="enemy-vital-bar" aria-hidden="true"><span class="enemy-vital-fill" style="width:${Math.min(100, Math.max(0, value / maximum * 100))}%"></span></span><span class="enemy-vital-value">${fmt(value)}</span></span>`;
+      return `<span class="enemy-vitals">${bar(hp, state.hpBarMax, "hp", "체력")}${bar(attack, state.attackBarMax, "attack", "공격력")}</span>`;
+    }
+    function enemyPageHref(enemyId, magnification) {
+      const params = new URLSearchParams({ health: magnification.health, attack: magnification.attack });
+      return `${SITE_PREFIX}enemy/enemy${String(enemyId).padStart(3,"0")}.html?${params}`;
+    }
+    function renderEnemies() {
+      if (isLocation) { renderLocationStages(); return; }
+      const root = $("enemyRows");
+      const rows = DATA.enemies || [];
+      if (!rows.length) { root.innerHTML = `<div class="empty" style="padding:18px">출현 적 정보 없음</div>`; return; }
+      root.innerHTML = rows.map((row) => {
+        const magnification = rowMagnifications(row);
+        const same = Math.abs(magnification.health - magnification.attack) < 1e-9;
+        const multiplierText = same ? `${fmtNumber(magnification.health)}%` : `체력 ${fmtNumber(magnification.health)}% · 공격력 ${fmtNumber(magnification.attack)}%`;
+        const count = row.count === 0 || row.count === null || row.count === undefined ? "무제한" : fmt(row.count);
+        const trigger = Number(row.baseTrigger ?? 100);
+        const firstFrames = Number(row.firstSpawnFrames || 0);
+        const linked = trigger < 100;
+        const delayed = !!row.spawn?.use_start_delay_after_base_trigger;
+        const firstText = linked ? (delayed ? `성 연동 후 ${frameText(firstFrames)}` : "성 연동 즉시") : frameText(firstFrames);
+        const respawnMin = Number(row.respawnMinFrames || 0), respawnMax = Number(row.respawnMaxFrames ?? respawnMin);
+        const respawn = frameRangeText(respawnMin, respawnMax);
+        const appearance = Number(row.count) === 1 ? firstText : `${firstText} (재등장 ${respawn})`;
+        const triggerNotes = [];
+        if (row.bossFlag) triggerNotes.push(`<span class="enemy-boss-note">보스</span>`);
+        if (Number(row.spawn?.cat_kill_count_trigger || 0)) triggerNotes.push(`<span>${escapeHtml(`${fmt(row.spawn.cat_kill_count_trigger)}마리 처치 후`)}</span>`);
+        const triggerNoteHtml = triggerNotes.join('<span aria-hidden="true"> · </span>');
+        const href = enemyPageHref(row.enemyId, magnification);
+        return `<a class="enemy-row" data-boss="${Boolean(row.bossFlag)}" href="${href}" aria-label="${escapeHtml(row.name)} 적 스펙 보기"><span class="enemy-identity"><span class="enemy-image"><img src="${escapeHtml(assetPath(row.icon))}" alt="" onerror="this.style.visibility='hidden'"></span><span class="enemy-copy"><span class="enemy-name"><span class="enemy-name-text">${escapeHtml(row.name || `적 ${row.enemyId}`)}</span><span class="enemy-magnification">${escapeHtml(multiplierText)}</span></span><span class="enemy-id">ENEMY ${String(row.enemyId).padStart(3,"0")}</span></span></span><span class="enemy-cell" data-label="출현 수"><strong>${escapeHtml(count)}</strong></span><span class="enemy-cell" data-label="성 체력"><strong>${fmtNumber(trigger)}%</strong>${triggerNoteHtml ? `<small>${triggerNoteHtml}</small>` : ""}</span><span class="enemy-cell" data-label="등장"><strong>${escapeHtml(appearance)}</strong></span>${enemyVitalBars(row, magnification)}${row.enemyLoadError ? `<span class="enemy-row-error">적 데이터 일부를 불러오지 못했습니다.</span>` : ""}</a>`;
+      }).join("");
+    }
+
+    function normalizeSearch(value) { return String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, ""); }
+    function isSubsequence(query, target) { let index = 0; for (const char of target) if (char === query[index]) index += 1; return index === query.length; }
+    function includesAllCharacters(query, target) {
+      const remaining = [...target];
+      return [...query].every((char) => { const index = remaining.indexOf(char); if (index < 0) return false; remaining.splice(index, 1); return true; });
+    }
+    function catalogueEntries() {
+      const catalogue = window.NYANKODB_SEARCH_CATALOG || {};
+      const raw = Array.isArray(catalogue) ? catalogue : [...(catalogue.entries || []), ...(catalogue.items || [])];
+      return raw.filter((entry) => entry && (entry.name || entry.label)).map((entry) => ({ ...entry, name: entry.name || entry.label, href: entry.href || entry.url || "", icon: entry.icon || entry.image || "" }));
+    }
+    function identityText(entry) {
+      if (entry.kind === "stage") return entry.identity;
+      const kind = String(entry.kind || entry.type || "unit").toLowerCase();
+      if (kind === "enemy") return `ENEMY ${String(entry.id ?? entry.enemyId ?? 0).padStart(3,"0")}`;
+      if (kind === "item") return `ITEM ${String(entry.id ?? entry.itemId ?? 0).padStart(3,"0")}`;
+      const id = String(entry.id ?? entry.unitId ?? 0).padStart(3,"0"), form = Number(entry.form || entry.formId || 1);
+      return `UNIT ${id}-${form}`;
+    }
+    function searchCatalogue(rawQuery) {
+      const query = normalizeSearch(rawQuery);
+      if (!query) return [];
+      const numeric = /^\d+$/.test(query) ? Number(query) : null;
+      return catalogueEntries().map((entry) => {
+        const name = normalizeSearch(entry.name);
+        let rank = 99;
+        if (name === query || (numeric !== null && Number(entry.id) === numeric)) rank = 0;
+        else if (name.includes(query)) rank = 1;
+        else if (isSubsequence(query, name)) rank = 2;
+        else if (includesAllCharacters(query, name)) rank = 3;
+        return { entry, rank };
+      }).filter((result) => result.rank < 99).sort((a,b) => a.rank - b.rank || Number(a.entry.id) - Number(b.entry.id) || String(a.entry.kind).localeCompare(String(b.entry.kind)) || Number(a.entry.form || 0) - Number(b.entry.form || 0)).map((result) => result.entry);
+    }
+    let visibleSearchResults = [], selectedSearchIndex = -1, pointerStart = null;
+    function closeSearchResults() { $("unitSearchResults").hidden = true; $("unitSearchInput").setAttribute("aria-expanded", "false"); selectedSearchIndex = -1; }
+    function destination(entry) {
+      const kind = String(entry.kind || entry.type || "unit").toLowerCase();
+      if (kind === "enemy") return enemyPageHref(entry.id ?? entry.enemyId ?? 0, { health: 100, attack: 100 });
+      const href = String(entry.href || "");
+      if (href) {
+        if (/^(?:https?:|\/)/i.test(href)) return href;
+        return SITE_PREFIX + href.replace(/^\.\//, "");
+      }
+      const id = String(entry.id ?? entry.unitId ?? entry.enemyId ?? entry.itemId ?? 0).padStart(3, "0");
+      if (kind === "item") return `${SITE_PREFIX}item/item${id}.html`;
+      return `${SITE_PREFIX}unit/unit${id}.html?form=${Number(entry.form || entry.formId || 1)}`;
+    }
+    function navigateEntry(entry) {
+      if (String(entry.kind || "unit").toLowerCase() === "unit") try {
+        const key = `nyanko-db:unit:${entry.id}:display-state:v1`;
+        const saved = JSON.parse(localStorage.getItem(key) || "{}");
+        saved.form = Number(entry.form || 1);
+        localStorage.setItem(key, JSON.stringify(saved));
+      } catch (_) {}
+      const href = destination(entry); if (href) window.location.href = href;
+    }
+    function renderSearchResults() {
+      const root = $("unitSearchResults");
+      root.innerHTML = visibleSearchResults.length ? visibleSearchResults.map((entry,index) => `<button class="unit-search-result" type="button" role="option" data-index="${index}" aria-selected="${index === selectedSearchIndex}">${entry.icon ? `<img src="${escapeHtml(assetPath(entry.icon))}" alt="">` : `<span class="unit-search-result-icon-empty"></span>`}<span class="unit-search-result-copy"><span class="unit-search-result-name">${escapeHtml(entry.name)}</span><span class="unit-search-result-identity">${escapeHtml(identityText(entry))}</span></span></button>`).join("") : `<div class="unit-search-empty">검색 결과가 없습니다.</div>`;
+      root.hidden = false; $("unitSearchInput").setAttribute("aria-expanded", "true");
+      root.querySelectorAll(".unit-search-result").forEach((button) => {
+        button.addEventListener("pointerdown", (event) => { pointerStart = { x: event.clientX, y: event.clientY }; });
+        button.addEventListener("pointerup", (event) => {
+          if (!pointerStart) return; const moved = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y); pointerStart = null;
+          if (moved <= 8) navigateEntry(visibleSearchResults[Number(button.dataset.index)]);
+        });
+      });
+    }
+    function runSearch() { visibleSearchResults = searchCatalogue($("unitSearchInput").value); selectedSearchIndex = -1; renderSearchResults(); }
+
+    function renderStageClassification() {
+      const chapter = currentStoryChapter();
+      const classification = chapter
+        ? `${DATA.story.label} 제${chapter.chapter}장`
+        : [stage.collectionName, stage.mapName].map((value) => String(value || "").trim()).filter(Boolean).join(" - ");
+      $("mapName").hidden = !classification;
+      $("mapName").textContent = classification;
+      if (stage.locationHref) $("mapName").href = SITE_PREFIX + stage.locationHref;
+    }
+
+    function renderLocationStages() {
+      const rangeText = (range) => range[0] === range[1] ? `${fmtNumber(range[0])}%` : `${fmtNumber(range[0])}~${fmtNumber(range[1])}%`;
+      $("locationStages").innerHTML = DATA.location.stages.map((entry) => {
+        const enemies = entry.enemies.map((enemy) => {
+          const level = enemy.levels[state.crownIndex] || enemy.levels[0];
+          const factor = enemyTreasureMultiplier(enemy);
+          const health = level.health.map((value) => value * factor);
+          const attack = level.attack.map((value) => value * factor);
+          const same = health.every((value, index) => Math.abs(value - attack[index]) < 1e-9);
+          const text = same ? rangeText(health) : `<span>체력 ${rangeText(health)}</span><span>공격력 ${rangeText(attack)}</span>`;
+          // A ranged summary has no single exact enemy configuration. Its link
+          // opens the minimum values; the detail page retains every spawn row.
+          const href = enemyPageHref(enemy.enemyId, { health: level.health[0], attack: level.attack[0] });
+          return `<div class="location-enemy" data-enemy-id="${enemy.enemyId}" data-boss="${Boolean(enemy.bossFlag)}"><a href="${escapeHtml(href)}" title="${escapeHtml(enemy.name)}" aria-label="${escapeHtml(enemy.name)}"><img src="${escapeHtml(assetPath(enemy.icon))}" alt="${escapeHtml(enemy.name)}" loading="lazy"></a><span class="location-magnification">${text}</span></div>`;
+        }).join("");
+        return `<article class="location-stage" data-stage-id="${escapeHtml(entry.id)}"><a class="location-stage-name" href="${escapeHtml(SITE_PREFIX + entry.href)}">${escapeHtml(entry.name)}</a><div class="location-enemies">${enemies || '<span class="empty">출현 적 정보 없음</span>'}</div></article>`;
+      }).join("");
+    }
+
+    function stagePageHref(identifier) {
+      const value = String(identifier).trim();
+      if (/^\d{1,2}$/.test(value)) {
+        const id = Number(value);
+        return (id < 48 || id === 49 || id === 50) ? `${SITE_PREFIX}stage/eoc/${id}.html` : "";
+      }
+      const match = value.match(/^([a-z]+)(\d{1,3})-(\d+)$/i);
+      if (!match) return "";
+      const prefix = match[1].toUpperCase();
+      const width = prefix === "W" || prefix === "SPACE" ? 2 : 3;
+      const group = (prefix === "SPACE" ? "Space" : prefix) + match[2].padStart(width, "0");
+      return `${SITE_PREFIX}stage/${group}/${Number(match[3])}.html`;
+    }
+
+    function initializeStageBackground() {
+      const id = DATA.stageInfo?.backgroundId;
+      if (id === null || id === undefined || !Number.isInteger(Number(id)) || Number(id) < 0) return;
+      const image = new Image();
+      image.onload = () => document.querySelector(".hero").style.setProperty("--stage-background", `url("${image.src}")`);
+      // The hero keeps its original dark surface until a matching image loads.
+      image.src = assetPath(`img/bg/bg${String(Number(id)).padStart(3, "0")}.png`);
+    }
+
+    function initialize() {
+      initializeStageBackground();
+      // Keep the original CSS descriptions; explicit tap state also works without hover or keyboard focus.
+      const placeRewardTooltip = (item) => {
+        if (!item?.matches(".stage-reward-item, .story-reward-toggle")) return;
+        const zoom = Number.parseFloat(getComputedStyle(document.body).zoom) || 1;
+        const width = Number.parseFloat(getComputedStyle(item, "::after").width) * zoom;
+        const rect = item.getBoundingClientRect();
+        const left = Math.max(12, Math.min(rect.left, window.innerWidth - width - 12));
+        item.style.setProperty("--tooltip-left", `${(left - rect.left) / zoom}px`);
+      };
+      document.addEventListener("pointerover", (event) => placeRewardTooltip(event.target.closest("[data-tooltip]")));
+      document.addEventListener("focusin", (event) => placeRewardTooltip(event.target.closest("[data-tooltip]")));
+      document.addEventListener("pointerdown", (event) => closeRewardTooltips(event.target.closest("[data-tooltip]")));
+      document.addEventListener("click", (event) => {
+        const item = event.target.closest(".stage-reward-item, .story-reward-toggle");
+        if (!item) return;
+        if (!item.matches("button.stage-reward-item")) { closeRewardTooltips(item); item.dataset.tooltipOpen = "true"; }
+        placeRewardTooltip(item);
+      });
+      window.addEventListener("resize", () => document.querySelectorAll('[data-tooltip-open="true"], .stage-reward-item:hover, .story-reward-toggle:hover').forEach(placeRewardTooltip));
+      $("homeLink").href = SITE_PREFIX + "index.html";
+      $("stageId").textContent = `STAGE ${isLocation ? stageId.toUpperCase() : stageId}`;
+      const stageName = String(stage.name || stageId).trim();
+      renderStageClassification();
+      $("stageName").textContent = stageName;
+      $("continueIcon").hidden = !Boolean(stage.noContinues);
+      restoreSharedSettings(); restorePreviousClearCount(); restoreStoryRewardStates(); restoreLocationLevel(); restorePanels();
+      renderStageClassification();
+      $("mapName").addEventListener("click", persistLocationLevel);
+      $("locationStages")?.addEventListener("click", (event) => {
+        if (event.target.closest(".location-stage-name")) persistLocationLevel();
+      });
+      persistEnemyTreasureState();
+      const syncEnemyBarInputs = () => { if ($("enemyHpBarMax")) $("enemyHpBarMax").value = state.hpBarMax; if ($("enemyAttackBarMax")) $("enemyAttackBarMax").value = state.attackBarMax; };
+      syncEnemyBarInputs();
+      for (const [id, key] of [["enemyHpBarMax", "hpBarMax"], ["enemyAttackBarMax", "attackBarMax"]]) {
+        const input = $(id);
+        if (!input) continue;
+        input.addEventListener("input", () => {
+          if (input.value === "") return;
+          state[key] = clampInteger(input.value, 1, 1e12, state[key]);
+          persistSharedSettings(); syncResetButtons(); renderEnemies();
+        });
+        input.addEventListener("change", () => { input.value = state[key]; });
+      }
+      const restoreSharedView = () => {
+        restoreSharedSettings(); syncEnemyBarInputs(); if ($("stageLengthUnitSelect")) $("stageLengthUnitSelect").value = state.stageLengthUnit;
+        restoreLocationLevel(); $("crownSelect").value = String(state.crownIndex); renderStageClassification();
+        renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
+      };
+      window.addEventListener("pageshow", (event) => { if (event.persisted) restoreSharedView(); });
+      window.addEventListener("storage", (event) => { if ([sharedSettingsStorageKey, enemySharedSettingsKey, locationLevelStorageKey, null].includes(event.key)) restoreSharedView(); });
+      if ($("stageLengthUnitSelect")) $("stageLengthUnitSelect").value = state.stageLengthUnit;
+      $("crownSelect").innerHTML = crownOptions.map((value,index) => `<option value="${index}">${DATA.story ? `제${DATA.story.chapters[index].chapter}장` : DATA.location?.chapters?.length ? `제${DATA.location.chapters[index]}장` : `👑${index + 1} · ${fmtNumber(value)}%`}</option>`).join("");
+      $("crownSelect").closest(".crown-control").hidden = Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
+      $("crownSelect").value = String(state.crownIndex);
+      const syncTimeButtons = () => { $("timeSeconds")?.setAttribute("aria-pressed", String(state.timeUnit === "seconds")); $("timeFrames")?.setAttribute("aria-pressed", String(state.timeUnit === "frames")); };
+      $("timeSeconds")?.addEventListener("click", () => { state.timeUnit = "seconds"; syncTimeButtons(); renderOverview(); renderEnemies(); });
+      $("timeFrames")?.addEventListener("click", () => { state.timeUnit = "frames"; syncTimeButtons(); renderOverview(); renderEnemies(); });
+      $("crownSelect").addEventListener("change", (event) => { state.crownIndex = clampInteger(event.target.value, 0, crownOptions.length - 1, 0); persistLocationLevel(); persistStoryRewardStates(); renderStageClassification(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies(); });
+      $("rewardQualitySelect")?.addEventListener("change", (event) => { currentStoryRewardState().quality = clampInteger(event.target.value, 0, 3, 0); persistStoryRewardStates(); renderRewards(); });
+      $("zombieClearToggle")?.addEventListener("click", () => { const acquired = currentStoryRewardState(); acquired.zombieCleared = !acquired.zombieCleared; persistStoryRewardStates(); renderRewards(); });
+      $("treasureChanceToggle")?.addEventListener("click", () => { const acquired = currentStoryRewardState(); acquired.treasureChance = !acquired.treasureChance; persistStoryRewardStates(); renderRewards(); });
+      $("treasureSettings").addEventListener("toggle", persistPanels);
+      $("miscSettings")?.addEventListener("toggle", persistPanels);
+      $("treasureResetButton").addEventListener("click", (event) => {
+        event.preventDefault(); event.stopPropagation();
+        treasureState.forEach((chapters) => chapters.forEach((slots) => slots.fill(3)));
+        if (DATA.treasures?.passive) { state.study.baseLevel = Number(passive.maxBaseLevel || 20); state.study.plusLevel = Number(passive.maxPlusLevel || 10); }
+        persistSharedSettings(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderEnemies();
+      });
+      $("stageLengthUnitSelect")?.addEventListener("change", (event) => { state.stageLengthUnit = event.target.value; persistSharedSettings(); syncResetButtons(); renderOverview(); });
+      $("distanceUnitResetButton")?.addEventListener("click", () => { state.stageLengthUnit = "rng"; $("stageLengthUnitSelect").value = "rng"; persistSharedSettings(); syncResetButtons(); renderOverview(); });
+      $("overview")?.addEventListener("input", (event) => {
+        if (event.target.id !== "previousClearCount") return;
+        state.previousClearCount = Math.max(0, Math.floor(Number(event.target.value) || 0));
+        if (event.target.value !== String(state.previousClearCount)) event.target.value = String(state.previousClearCount);
+        persistPreviousClearCount(); $("stageXpValue").textContent = stageXpText();
+      });
+      $("unitSearchInput").addEventListener("input", runSearch);
+      $("unitSearchInput").addEventListener("focus", () => { if ($("unitSearchInput").value.trim()) runSearch(); });
+      $("unitSearchInput").addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" && visibleSearchResults.length) { event.preventDefault(); selectedSearchIndex = (selectedSearchIndex + 1) % visibleSearchResults.length; renderSearchResults(); }
+        else if (event.key === "ArrowUp" && visibleSearchResults.length) { event.preventDefault(); selectedSearchIndex = (selectedSearchIndex - 1 + visibleSearchResults.length) % visibleSearchResults.length; renderSearchResults(); }
+        else if (event.key === "Escape") closeSearchResults();
+      });
+      $("unitSearchForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const directStage = $("unitSearchInput").value.trim().toUpperCase();
+        if (selectedSearchIndex >= 0 && visibleSearchResults[selectedSearchIndex]) navigateEntry(visibleSearchResults[selectedSearchIndex]);
+        else if (visibleSearchResults[0]) navigateEntry(visibleSearchResults[0]);
+        else if (stagePageHref(directStage)) window.location.href = stagePageHref(directStage);
+        else runSearch();
+      });
+      document.addEventListener("pointerdown", (event) => { if (!$("unitSearchForm").contains(event.target)) closeSearchResults(); });
+      document.addEventListener("pointerdown", (event) => { if (!$("rewards")?.contains(event.target) && !$("scoreRewards")?.contains(event.target)) closeRewardTooltips(); });
+      syncTimeButtons(); renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
+    }
+    initialize();
+  </script>
+</body>
+</html>

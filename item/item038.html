@@ -566,6 +566,7 @@
     }
 
     function identityFor(entry) {
+      if (entry.kind === "stage") return entry.identity;
       if (entry.kind === "enemy") return `ENEMY ${String(entry.id).padStart(3, "0")}`;
       if (entry.kind === "item") return `ITEM ${String(entry.id).padStart(3, "0")}`;
       return `UNIT ${String(entry.id).padStart(3, "0")}-${entry.form || 1}`;
@@ -593,6 +594,7 @@
 
     function navigateToSearchResult(entry) {
       if (!entry) return;
+      if (entry.kind === "stage") { window.location.href = `../${entry.href}`; return; }
       if (entry.kind === "unit") {
         try {
           const storageKey = `nyanko-db:unit:${entry.id}:display-state:v1`;

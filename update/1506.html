@@ -438,7 +438,7 @@
       state.form = entry.form;
       window.localStorage.setItem(storageKey, JSON.stringify(state));
     } catch (_) { /* Navigation still works without local storage. */ }
-    location.href = entry.kind === "item"
+    location.href = entry.kind === "stage" ? `../${entry.href}` : entry.kind === "item"
       ? `../item/item${id}.html`
       : entry.kind === "enemy"
         ? `../enemy/enemy${id}.html`
@@ -478,7 +478,7 @@
       const copy = document.createElement("span"); copy.className = "unit-search-result-copy";
       const name = document.createElement("span"); name.className = "unit-search-result-name"; name.textContent = String(entry.name || "");
       const identity = document.createElement("span"); identity.className = "unit-search-result-identity";
-      identity.textContent = entry.kind === "item"
+      identity.textContent = entry.kind === "stage" ? entry.identity : entry.kind === "item"
         ? `ITEM ${String(entry.id).padStart(3, "0")}`
         : entry.kind === "enemy"
           ? `ENEMY ${String(entry.id).padStart(3, "0")}`

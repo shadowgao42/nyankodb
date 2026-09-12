@@ -10668,7 +10668,7 @@
         // Navigation still works when local storage is unavailable.
       }
       const filenameId = String(entry.id).padStart(3, "0");
-      window.location.href = entry.kind === "item"
+      window.location.href = entry.kind === "stage" ? `../${entry.href}` : entry.kind === "item"
         ? `../item/item${filenameId}.html`
         : entry.kind === "enemy"
           ? `../enemy/enemy${filenameId}.html`
@@ -10736,7 +10736,7 @@
           name.textContent = entry.name;
           const identity = document.createElement("span");
           identity.className = "unit-search-result-identity";
-          identity.textContent = entry.kind === "item"
+          identity.textContent = entry.kind === "stage" ? entry.identity : entry.kind === "item"
             ? `ITEM ${String(entry.id).padStart(3, "0")}`
             : entry.kind === "enemy"
               ? `ENEMY ${String(entry.id).padStart(3, "0")}`
