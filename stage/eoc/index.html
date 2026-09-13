@@ -1105,9 +1105,9 @@
       $("locationStages").innerHTML = DATA.location.stages.map((entry) => {
         const enemies = entry.enemies.map((enemy) => {
           const level = enemy.levels[state.crownIndex] || enemy.levels[0];
-          const factor = enemyTreasureMultiplier(enemy);
-          const health = level.health.map((value) => value * factor);
-          const attack = level.attack.map((value) => value * factor);
+          // Display the stage multipliers; treasure effects belong to enemy stats.
+          const health = level.health;
+          const attack = level.attack;
           const same = health.every((value, index) => Math.abs(value - attack[index]) < 1e-9);
           const text = same ? rangeText(health) : `<span>체력 ${rangeText(health)}</span><span>공격력 ${rangeText(attack)}</span>`;
           // A ranged summary has no single exact enemy configuration. Its link
