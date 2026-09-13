@@ -228,8 +228,8 @@
     .location-stage-name::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
     .location-stage-name:focus-visible { outline: none; }
     .location-enemies { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 10px 14px; min-width: 0; }
-    .location-enemy { position: relative; z-index: 1; display: flex; align-items: center; flex-direction: column; gap: 5px; min-width: 64px; color: var(--text); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
-    .location-enemy img { display: block; width: 64px; height: 64px; object-fit: contain; }
+    .location-enemy { position: relative; z-index: 1; display: flex; align-items: center; flex-direction: column; gap: 5px; min-width: 62px; color: var(--text); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .location-enemy img { display: block; width: 62px; height: 49px; object-fit: contain; }
     .location-enemy[data-boss="true"] img { filter: drop-shadow(0 0 3px rgba(255,173,61,.65)) drop-shadow(0 0 6px rgba(255,173,61,.3)); }
     .location-enemy a { display: block; border: 1px solid transparent; border-radius: 8px; background: transparent; transition: border-color .14s ease, transform .14s ease; }
     .location-enemy a:hover, .location-enemy a:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
@@ -239,6 +239,8 @@
     @media (max-width:660px) {
       .location-stage { grid-template-columns: 1fr; gap: 11px; }
       .location-enemies { gap: 10px; }
+      .location-enemy { min-width: 48px; }
+      .location-enemy img { width: 48px; height: 40px; }
     }
     .continue-icon { display: block; position: absolute; top: 50%; right: 0; width: 140px; height: 140px; margin: 0; object-fit: contain; image-rendering: auto; transform: translateY(-50%); }
     .continue-icon[hidden] { display: none; }
@@ -274,6 +276,12 @@
     .stage-score-rewards { padding-left: 18px; border-left: 1px solid var(--line); }
     .stage-restrictions-card { display: flex; flex-direction: column; }
     .stage-restrictions-card .stage-detail-content { flex: 1 1 auto; align-items: center; margin-top: 0; }
+    .stage-castle-card { display: grid; grid-template-rows: auto minmax(0,1fr); }
+    .range-stack { display: grid; gap: 8px; margin-top: 11px; }
+    .range-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 900; }
+    .range-row[hidden] { display: none; }
+    .range-row strong { color: var(--text); font-size: 19px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .stage-castle-card > .range-stack { align-self: center; width: 100%; margin-top: 0; }
     .stage-detail-content { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 11px; }
     .chips { display: flex; flex-wrap: wrap; gap: 7px; }
     .chip { padding: 6px 9px; border: 1px solid #3c4a5b; border-radius: 8px; color: #dce3ed; background: #10161e; font-size: 11px; font-weight: 850; }
@@ -404,7 +412,6 @@
       .overview { grid-template-columns: repeat(2,minmax(0,1fr)); padding-inline: 10px; }
       .stage-secondary { padding-inline: 10px; }
       .section-title { padding-inline: 14px; }
-      .distance-unit-grid { grid-template-columns: 1fr; }
       .enemy-table { --enemy-identity-width: 327px; padding-inline: 10px; }
       .enemy-row { grid-template-columns: minmax(60px,.6fr) minmax(60px,.6fr) minmax(0,1.8fr); }
       .enemy-identity { grid-template-columns: 48px minmax(0,1fr); gap: 7px; padding-inline: 8px; }
@@ -413,6 +420,9 @@
       .enemy-vital { gap: 5px; }
       .enemy-row > .enemy-cell { grid-column: span 1; border-bottom: 0; border-right: 1px solid #344254; }
       .enemy-row > .enemy-cell:nth-child(4) { border-right: 0; }
+    }
+    @media (max-width: 620px) {
+      .distance-unit-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 400px) {
       .enemy-identity { width: 100%; grid-template-columns: 48px 256px; }
@@ -498,6 +508,7 @@
       crownIndex: 0,
       treasureCategory: DATA.treasures?.categories?.[0]?.key || "",
       stageLengthUnit: "rng",
+      bossSpawnUnit: "rng",
       previousClearCount: 0,
       hpBarMax: enemyBarDefaults.hp,
       attackBarMax: enemyBarDefaults.attack,
@@ -574,6 +585,15 @@
       const factor = { rng: 1, spu: 2, u: 4 }[state.stageLengthUnit] || 1;
       return fmtNumber(Number(raw || 0) * factor);
     };
+    const bossSpawnText = (raw) => {
+      if (typeof raw !== "number" || !Number.isFinite(raw)) return "—";
+      const factor = { rng: 1, spu: 2, u: 4 }[state.bossSpawnUnit] || 1;
+      return fmtNumber(raw * factor);
+    };
+    function syncDistanceUnitInputs() {
+      if ($("stageLengthUnitSelect")) $("stageLengthUnitSelect").value = state.stageLengthUnit;
+      if ($("bossSpawnUnitSelect")) $("bossSpawnUnitSelect").value = state.bossSpawnUnit;
+    }
     function formatTreasurePercent(value) {
       const rounded = Math.round(value * 10) / 10;
       return `${Number.isInteger(rounded) ? rounded.toFixed(0) : rounded.toFixed(1)}%`;
@@ -664,7 +684,7 @@
         const saved = readSharedSettings();
         saved.treasures = { ...(saved.treasures || {}), ...collectTreasureState() };
         if (DATA.treasures?.passive) saved.passives = { ...(saved.passives || {}), study: { ...state.study } };
-        saved.distanceUnits = { ...(saved.distanceUnits || {}), stageLength: state.stageLengthUnit };
+        saved.distanceUnits = { ...(saved.distanceUnits || {}), stageLength: state.stageLengthUnit, bossSpawn: state.bossSpawnUnit };
         saved.treasureCategory = state.treasureCategory;
         saved.enemyBars = { hp: state.hpBarMax, attack: state.attackBarMax };
         localStorage.setItem(sharedSettingsStorageKey, JSON.stringify(saved));
@@ -687,6 +707,8 @@
       }
       const unit = saved.distanceUnits?.stageLength;
       if (["rng", "u", "spu"].includes(unit)) state.stageLengthUnit = unit;
+      const bossUnit = saved.distanceUnits?.bossSpawn;
+      state.bossSpawnUnit = ["rng", "u", "spu"].includes(bossUnit) ? bossUnit : "rng";
     }
     function allTreasuresMaximum() {
       return [...treasureState.values()].every((chapters) => chapters.every((slots) => slots.every((quality) => quality === 3)));
@@ -700,7 +722,7 @@
     }
     function syncResetButtons() {
       syncTreasureResetButton();
-      if ($("distanceUnitResetButton")) $("distanceUnitResetButton").disabled = state.stageLengthUnit === "rng";
+      if ($("distanceUnitResetButton")) $("distanceUnitResetButton").disabled = state.stageLengthUnit === "rng" && state.bossSpawnUnit === "rng";
     }
 
     function syncPanelLabels() {
@@ -906,13 +928,19 @@
       const cards = [
         statCard("통솔력", fmt(storyChapter?.energy ?? info.energy)),
         statCard("획득 XP", stageXpText(), xpClearControl(), "stageXpValue"),
-        statCard("성 체력", fmt(storyChapter?.baseHealth ?? info.baseHp)),
         statCard("스테이지 길이", stageLengthText(info.width)),
         statCard("최대 적 수", fmt(info.maxEnemies)),
       ];
       const difficulty = storyChapter?.difficulty ?? info.difficulty;
       if (difficulty !== null && difficulty !== undefined) cards.push(difficultyCard(difficulty));
+      cards.push(`<article class="stat-card stage-restrictions-card"><span class="stat-label">출격 조건</span><div class="stage-detail-content" id="restrictions"></div></article>`);
       $("overview").innerHTML = cards.join("");
+      $("castleHp").textContent = fmt(storyChapter?.baseHealth ?? info.baseHp);
+      $("bossSpawnPosition").closest(".range-row").hidden = !(DATA.enemies || []).some((row) => Boolean(row.bossFlag));
+      $("bossSpawnPosition").textContent = bossSpawnText(info.castle?.boss_spawn_rng);
+      $("bossSpawnPosition").title = info.castle?.boss_spawn_rng == null ? "성 데이터에서 출현 위치를 확인할 수 없습니다." : `적 성 기준 · ${state.bossSpawnUnit}`;
+      $("castleId").textContent = info.castle?.resource_key || "—";
+      renderRestrictions();
     }
     function renderRewards() {
       if (isLocation) return;
@@ -1230,13 +1258,13 @@
         input.addEventListener("change", () => { input.value = state[key]; });
       }
       const restoreSharedView = () => {
-        restoreSharedSettings(); syncEnemyBarInputs(); if ($("stageLengthUnitSelect")) $("stageLengthUnitSelect").value = state.stageLengthUnit;
+        restoreSharedSettings(); syncEnemyBarInputs(); syncDistanceUnitInputs();
         restoreLocationLevel(); $("crownSelect").value = String(state.crownIndex); renderStageClassification();
         renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
       };
       window.addEventListener("pageshow", (event) => { if (event.persisted) restoreSharedView(); });
       window.addEventListener("storage", (event) => { if ([sharedSettingsStorageKey, enemySharedSettingsKey, locationLevelStorageKey, null].includes(event.key)) restoreSharedView(); });
-      if ($("stageLengthUnitSelect")) $("stageLengthUnitSelect").value = state.stageLengthUnit;
+      syncDistanceUnitInputs();
       $("crownSelect").innerHTML = crownOptions.map((value,index) => `<option value="${index}">${DATA.story ? `제${DATA.story.chapters[index].chapter}장` : DATA.location?.chapters?.length ? `제${DATA.location.chapters[index]}장` : `👑${index + 1} · ${fmtNumber(value)}%`}</option>`).join("");
       $("crownSelect").closest(".crown-control").hidden = Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
       $("crownSelect").value = String(state.crownIndex);
@@ -1256,7 +1284,8 @@
         persistSharedSettings(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderEnemies();
       });
       $("stageLengthUnitSelect")?.addEventListener("change", (event) => { state.stageLengthUnit = event.target.value; persistSharedSettings(); syncResetButtons(); renderOverview(); });
-      $("distanceUnitResetButton")?.addEventListener("click", () => { state.stageLengthUnit = "rng"; $("stageLengthUnitSelect").value = "rng"; persistSharedSettings(); syncResetButtons(); renderOverview(); });
+      $("bossSpawnUnitSelect")?.addEventListener("change", (event) => { state.bossSpawnUnit = event.target.value; persistSharedSettings(); syncResetButtons(); renderOverview(); });
+      $("distanceUnitResetButton")?.addEventListener("click", () => { state.stageLengthUnit = "rng"; state.bossSpawnUnit = "rng"; syncDistanceUnitInputs(); persistSharedSettings(); syncResetButtons(); renderOverview(); });
       $("overview")?.addEventListener("input", (event) => {
         if (event.target.id !== "previousClearCount") return;
         state.previousClearCount = Math.max(0, Math.floor(Number(event.target.value) || 0));
