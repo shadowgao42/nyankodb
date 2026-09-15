@@ -201,9 +201,12 @@
     .hero::before {
       content: ""; position: absolute; z-index: -1; inset: -3px; pointer-events: none;
       background-image: var(--stage-background, none); background-repeat: repeat-x;
-      background-position: center; background-size: auto 100%; filter: blur(2px); opacity: .32;
+      background-position: center; background-size: auto 100%; filter: blur(2px); opacity: .5;
       -webkit-mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
       mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+    }
+    .hero.location-hero::before {
+      inset: 0; background-repeat: no-repeat; background-position: center; background-size: cover;
     }
     .hero-copy {
       display: flex; flex-direction: column; justify-content: center; min-height: 238px; padding: 28px 38px;
@@ -245,6 +248,7 @@
     .continue-icon { display: block; position: absolute; top: 50%; right: 0; width: 140px; height: 140px; margin: 0; object-fit: contain; image-rendering: auto; transform: translateY(-50%); }
     .continue-icon[hidden] { display: none; }
     .hero-controls { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-top: 17px; padding-top: 13px; border-top: 1px solid rgba(255,255,255,.09); }
+    .hero-controls[hidden] { display: none; }
     .time-toggle { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #364456; border-radius: 11px; background: #0d1219; }
     .time-toggle button { min-width: 62px; padding: 7px 10px; border: 0; border-radius: 8px; color: #aeb9c8; background: transparent; font-size: 12px; font-weight: 800; }
     .time-toggle button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(255,91,45,.22); }
@@ -1155,9 +1159,9 @@
       $("locationStages").innerHTML = DATA.location.stages.map((entry) => {
         const enemies = entry.enemies.map((enemy) => {
           const level = enemy.levels[state.crownIndex] || enemy.levels[0];
-          const factor = enemyTreasureMultiplier(enemy);
-          const health = level.health.map((value) => value * factor);
-          const attack = level.attack.map((value) => value * factor);
+          // Display the stage multipliers; treasure effects belong to enemy stats.
+          const health = level.health;
+          const attack = level.attack;
           const same = health.every((value, index) => Math.abs(value - attack[index]) < 1e-9);
           const text = same ? rangeText(health) : `<span>체력 ${rangeText(health)}</span><span>공격력 ${rangeText(attack)}</span>`;
           // A ranged summary has no single exact enemy configuration. Its link
@@ -1170,12 +1174,22 @@
     }
 
     function initializeStageBackground() {
-      const id = DATA.stageInfo?.backgroundId;
-      if (id === null || id === undefined || !Number.isInteger(Number(id)) || Number(id) < 0) return;
+      const hero = document.querySelector(".hero");
+      let path;
+      if (isLocation) {
+        const map = { eoc: "eoc", W04: "itf", W05: "itf", W06: "itf" }[stage.locationId];
+        if (!map) return;
+        hero.classList.add("location-hero");
+        path = `img/map/${map}.png`;
+      } else {
+        const id = DATA.stageInfo?.backgroundId;
+        if (id === null || id === undefined || !Number.isInteger(Number(id)) || Number(id) < 0) return;
+        path = `img/bg/bg${String(Number(id)).padStart(3, "0")}.png`;
+      }
       const image = new Image();
-      image.onload = () => document.querySelector(".hero").style.setProperty("--stage-background", `url("${image.src}")`);
+      image.onload = () => hero.style.setProperty("--stage-background", `url("${image.src}")`);
       // The hero keeps its original dark surface until a matching image loads.
-      image.src = assetPath(`img/bg/bg${String(Number(id)).padStart(3, "0")}.png`);
+      image.src = assetPath(path);
     }
 
     function initialize() {
