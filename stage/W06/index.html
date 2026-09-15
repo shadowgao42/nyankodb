@@ -193,6 +193,7 @@
       background: #121a24; font-size: 12px; font-weight: 850; outline: none; text-align: center; font-variant-numeric: tabular-nums;
     }
     .xp-clear-field input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .invasion-clear-note { display: block; margin-top: 6px; color: var(--muted); font-size: 11px; font-weight: 700; word-break: keep-all; }
 
     .hero {
       position: relative; isolation: isolate; min-height: 238px; overflow: hidden; border: 1px solid var(--line); border-radius: 22px;
@@ -279,19 +280,26 @@
     .stage-rewards-card.has-score-rewards > .stage-rewards-section:first-child { padding-right: 18px; }
     .stage-score-rewards { padding-left: 18px; border-left: 1px solid var(--line); }
     .stage-restrictions-card { display: flex; flex-direction: column; }
-    .stage-restrictions-card .stage-detail-content { flex: 1 1 auto; align-items: center; margin-top: 0; }
-    .stage-castle-card { display: grid; grid-template-rows: auto minmax(0,1fr); }
+    .stage-restrictions-card .stage-detail-content { align-items: flex-start; margin-top: 11px; }
+    .stage-castle-card { display: grid; grid-template-columns: auto minmax(0,1fr); grid-template-rows: auto minmax(0,1fr); column-gap: 18px; }
+    .stage-castle-card > .stat-label { grid-column: 1 / -1; grid-row: 1; }
+    .stage-castle-image { display: block; grid-column: 1; grid-row: 2; align-self: center; width: auto; height: 132px; max-width: 92px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,.34)); }
+    .stage-castle-image[hidden] { display: none; }
     .range-stack { display: grid; gap: 8px; margin-top: 11px; }
     .range-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 900; }
     .range-row[hidden] { display: none; }
     .range-row strong { color: var(--text); font-size: 19px; font-weight: 900; font-variant-numeric: tabular-nums; }
-    .stage-castle-card > .range-stack { align-self: center; width: 100%; margin-top: 0; }
+    .stage-castle-card > .range-stack { align-self: center; grid-column: 2; grid-row: 2; width: 100%; margin-top: 0; }
+    .stage-castle-card .range-row { flex-wrap: wrap; }
+    .stage-castle-card .range-row > span, .stage-castle-card .range-row > strong { flex-shrink: 0; white-space: nowrap; }
+    .stage-castle-card .range-row > strong { margin-left: auto; }
     .stage-detail-content { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 11px; }
     .chips { display: flex; flex-wrap: wrap; gap: 7px; }
     .chip { padding: 6px 9px; border: 1px solid #3c4a5b; border-radius: 8px; color: #dce3ed; background: #10161e; font-size: 11px; font-weight: 850; }
     .chip em { color: var(--accent-text); font-style: normal; }
-    .stage-restriction-list { display: grid; width: 100%; align-content: center; gap: 7px; }
-    .stage-restriction { display: block; color: #f4f7fb; font-size: 15px; font-weight: 800; line-height: 1.45; }
+    .stage-restriction-list { display: grid; width: 100%; align-content: start; gap: 7px; }
+    .stage-restriction { display: block; color: #f4f7fb; font-size: 15px; font-weight: 800; line-height: 1.45; word-break: keep-all; overflow-wrap: normal; }
+    .stage-restriction-value { color: var(--accent-text); font-style: normal; font-variant-numeric: tabular-nums; }
     .empty { color: var(--muted); font-size: 11px; font-weight: 800; }
 
     .stage-reward-list { display: grid; width: 100%; gap: 9px; }
@@ -470,7 +478,7 @@
         <div class="identity" id="stageId"></div>
         <div class="stage-heading"><h1 class="stage-name" id="stageName"></h1><a class="map-name" id="mapName"></a><img class="continue-icon" id="continueIcon" src="../../img/icon/icon_continue_kr.png" alt="컨티뉴 불가" hidden></div>
         <div class="hero-controls" hidden>
-          <label class="crown-control">스테이지 레벨 <select id="crownSelect"></select></label>
+          <label class="crown-control"><span id="stageLevelLabel">스테이지 레벨</span> <select id="crownSelect"></select></label>
         </div>
       </div>
     </section>
@@ -493,6 +501,9 @@
     const sharedSettingsStorageKey = "nyanko-db:stage-shared-settings:v1";
     const enemySharedSettingsKey = "nyanko-db:enemy-shared-settings:v1";
     const clearCountStorageKey = `nyanko-db:stage:${stageId}:previous-clear-count:v1`;
+    const invasionLocationStorageKey = `nyanko-db:stage:${stageId}:invasion-location:v1`;
+    const invasionLocations = DATA.invasionLocations || [];
+    const isInvasion = invasionLocations.length > 0;
     const storyRewardStorageKey = `nyanko-db:stage:${stageId}:story-rewards:v1`;
     const panelStateStorageKey = `nyanko-db:page-panels:${window.location.pathname}:v1`;
     const lastPageStorageKey = "nyanko-db:last-page:v1";
@@ -515,6 +526,8 @@
       stageLengthUnit: "rng",
       bossSpawnUnit: "rng",
       previousClearCount: 0,
+      invasionLocationId: invasionLocations[0]?.id || "",
+      invasionSourceClearCount: 0,
       hpBarMax: enemyBarDefaults.hp,
       attackBarMax: enemyBarDefaults.attack,
       study: { baseLevel: Number(passive.defaultBaseLevel || 20), plusLevel: Number(passive.defaultPlusLevel || 10) },
@@ -614,10 +627,12 @@
     const studyBonus = () => Math.max(0, state.study.baseLevel + state.study.plusLevel - 1) * Number(passive.xpMultiplierPerLevel || .05);
     const xpMultiplier = () => 1 + studyBonus() + (DATA.treasures?.categories || []).flatMap((category) => category.items || []).reduce((sum, item) => sum + treasureBonus(item), 0);
     function clearAdjustedBaseXp() {
-      const baseXp = Number(DATA.stageInfo?.xp || 0);
-      const count = Math.max(0, Math.floor(Number(state.previousClearCount) || 0));
-      const initialXp = xpClearRule.key === "legend" ? baseXp * 9 : baseXp;
-      const divisor = xpClearRule.key === "legend" ? 5 : xpClearRule.key === "story" ? 14 : 0;
+      const location = typeof currentInvasionLocation === "function" ? currentInvasionLocation() : null;
+      const rule = location?.xpClearRule || xpClearRule;
+      const baseXp = Number(location?.xp ?? DATA.stageInfo?.xp ?? 0);
+      const count = location ? state.invasionSourceClearCount : Math.max(0, Math.floor(Number(state.previousClearCount) || 0));
+      const initialXp = rule.key === "legend" ? baseXp * 9 : baseXp;
+      const divisor = rule.key === "legend" ? 5 : rule.key === "story" ? 14 : 0;
       if (!divisor) return initialXp;
       // Truncate the clear-count deduction before applying study/treasure bonuses.
       // Integer numerator/divisor arithmetic avoids rounding an integral deduction down.
@@ -625,9 +640,52 @@
     }
     function restorePreviousClearCount() {
       try { state.previousClearCount = Math.max(0, Math.floor(Number(localStorage.getItem(clearCountStorageKey)) || 0)); } catch (_) {}
+      if (isInvasion) {
+        state.previousClearCount = Math.min(1, state.previousClearCount);
+        try {
+          const saved = localStorage.getItem(invasionLocationStorageKey);
+          if (invasionLocations.some(({id}) => id === saved)) state.invasionLocationId = saved;
+        } catch (_) {}
+        state.invasionSourceClearCount = readLocationClearCount(state.invasionLocationId);
+      }
     }
     function persistPreviousClearCount() {
       try { localStorage.setItem(clearCountStorageKey, String(state.previousClearCount)); } catch (_) {}
+    }
+    function currentInvasionLocation() {
+      return invasionLocations.find(({id}) => id === state.invasionLocationId);
+    }
+    function locationClearCountKey(id) {
+      return `nyanko-db:stage:${id}:previous-clear-count:v1`;
+    }
+    function readLocationClearCount(id) {
+      try { return clampInteger(localStorage.getItem(locationClearCountKey(id)), 0, Number.MAX_SAFE_INTEGER, 0); }
+      catch (_) { return id === state.invasionLocationId ? state.invasionSourceClearCount : 0; }
+    }
+    function adjustLocationClearCount(id, delta) {
+      const count = Math.max(0, readLocationClearCount(id) + delta);
+      try { localStorage.setItem(locationClearCountKey(id), String(count)); } catch (_) {}
+      if (id === state.invasionLocationId) state.invasionSourceClearCount = count;
+    }
+    function setPreviousClearCount(value) {
+      const count = clampInteger(value, 0, isInvasion ? 1 : Number.MAX_SAFE_INTEGER, 0);
+      if (isInvasion) {
+        // Restore first so another tab's transition cannot be counted twice.
+        restorePreviousClearCount();
+        adjustLocationClearCount(state.invasionLocationId, count - state.previousClearCount);
+      }
+      state.previousClearCount = count;
+      persistPreviousClearCount();
+    }
+    function selectInvasionLocation(id) {
+      if (!invasionLocations.some((location) => location.id === id)) return;
+      restorePreviousClearCount();
+      if (id === state.invasionLocationId) return;
+      if (state.previousClearCount) adjustLocationClearCount(state.invasionLocationId, -1);
+      state.invasionLocationId = id;
+      state.invasionSourceClearCount = readLocationClearCount(id);
+      if (state.previousClearCount) adjustLocationClearCount(id, 1);
+      try { localStorage.setItem(invasionLocationStorageKey, id); } catch (_) {}
     }
 
     function collectTreasureState() {
@@ -921,12 +979,36 @@
       return fmt(Math.floor(clearAdjustedBaseXp() * xpMultiplier()));
     }
     function xpClearControl() {
-      if (xpClearRule.key !== "legend" && xpClearRule.key !== "story") return "";
-      return `<label class="xp-clear-field"><span>클리어</span><input id="previousClearCount" type="number" inputmode="numeric" min="0" step="1" value="${state.previousClearCount}" aria-label="클리어 횟수"><span>회</span></label>`;
+      if (!isInvasion && xpClearRule.key !== "legend" && xpClearRule.key !== "story") return "";
+      return `<label class="xp-clear-field"><span>클리어</span><input id="previousClearCount" type="number" inputmode="numeric" min="0" ${isInvasion ? 'max="1"' : ''} step="1" value="${state.previousClearCount}" aria-label="클리어 횟수"><span>회</span></label>${isInvasion ? `<small class="invasion-clear-note" id="invasionClearNote">${invasionClearNote()}</small>` : ""}`;
+    }
+    function invasionClearNote() {
+      return `(${escapeHtml(currentInvasionLocation()?.name)} 클리어 ${fmt(state.invasionSourceClearCount)}회)`;
+    }
+    function renderCastleImage(info) {
+      const invasion = currentInvasionLocation();
+      if (invasion) {
+        $("castleIdRow").hidden = false;
+        $("castleImage").hidden = false;
+        $("castleImage").src = assetPath(`img/castle/${invasion.castle.resource_key}.png`);
+        $("castleImage").alt = `${invasion.name} 성`;
+        return;
+      }
+      const hasStoryCastleImage = [0, 1, 2].includes(DATA.story?.family);
+      $("castleIdRow").hidden = hasStoryCastleImage;
+      $("castleImage").hidden = !hasStoryCastleImage;
+      if (!hasStoryCastleImage) return;
+      const castle = info.castle || {};
+      const isClearedKorea = DATA.story.family === 0 && DATA.story.stageIndex === 0
+        && ((currentStoryChapter()?.chapter ?? 1) >= 2 || state.previousClearCount >= 1);
+      const languageSuffix = DATA.story.family === 0 ? (isClearedKorea ? "_2_ko" : "_ko") : "";
+      $("castleImage").src = assetPath(`img/castle/${castle.resource_key}${languageSuffix}.png`);
+      $("castleImage").alt = `${stage.name || "스테이지"} 성`;
     }
     function renderOverview() {
       if (isLocation) return;
       const info = DATA.stageInfo || {};
+      const castle = currentInvasionLocation()?.castle || info.castle;
       const storyChapter = currentStoryChapter();
       const minSpawn = Number(info.spawnMinFrames || 0), maxSpawn = Number(info.spawnMaxFrames || 0);
       const spawnText = minSpawn === maxSpawn ? frameText(minSpawn) : `${frameText(minSpawn)}~${frameText(maxSpawn)}`;
@@ -942,9 +1024,10 @@
       $("overview").innerHTML = cards.join("");
       $("castleHp").textContent = fmt(storyChapter?.baseHealth ?? info.baseHp);
       $("bossSpawnPosition").closest(".range-row").hidden = !(DATA.enemies || []).some((row) => Boolean(row.bossFlag));
-      $("bossSpawnPosition").textContent = bossSpawnText(info.castle?.boss_spawn_rng);
-      $("bossSpawnPosition").title = info.castle?.boss_spawn_rng == null ? "성 데이터에서 출현 위치를 확인할 수 없습니다." : `적 성 기준 · ${state.bossSpawnUnit}`;
-      $("castleId").textContent = info.castle?.resource_key || "—";
+      $("bossSpawnPosition").textContent = bossSpawnText(castle?.boss_spawn_rng);
+      $("bossSpawnPosition").title = castle?.boss_spawn_rng == null ? "성 데이터에서 출현 위치를 확인할 수 없습니다." : `적 성 기준 · ${state.bossSpawnUnit}`;
+      $("castleId").textContent = castle?.resource_key || "—";
+      renderCastleImage(info);
       renderRestrictions();
     }
     function renderRewards() {
@@ -1028,7 +1111,11 @@
         if (restriction.crown && Number(restriction.crown) !== selectedCrown) return false;
         return !(hasSpecificDeployLimit && restriction.kind === "deploy_limit" && !restriction.crown);
       });
-      $("restrictions").innerHTML = visible.length ? `<div class="stage-restriction-list">${visible.map((restriction) => `<span class="stage-restriction">${escapeHtml(typeof restriction === "string" ? restriction : restriction.label)}</span>`).join("")}</div>` : `<span class="empty">출격 제한 없음</span>`;
+      const restrictionHtml = (restriction) => {
+        if (typeof restriction === "string" || restriction.value === undefined) return escapeHtml(typeof restriction === "string" ? restriction : restriction.label);
+        return `${escapeHtml(restriction.prefix || "")}<em class="stage-restriction-value">${escapeHtml(restriction.value)}</em>${escapeHtml(restriction.suffix || "")}`;
+      };
+      $("restrictions").innerHTML = visible.length ? `<div class="stage-restriction-list">${visible.map((restriction) => `<span class="stage-restriction">${restrictionHtml(restriction)}</span>`).join("")}</div>` : `<span class="empty">출격 제한 없음</span>`;
     }
     function rowMagnifications(row) {
       const crown = state.crownIndex + 1;
@@ -1127,7 +1214,7 @@
       const hero = document.querySelector(".hero");
       let path;
       if (isLocation) {
-        const map = { eoc: "eoc", W04: "itf", W05: "itf", W06: "itf" }[stage.locationId];
+        const map = { eoc: "eoc", W04: "itf", W05: "itf", W06: "itf", Space07: "cotc", Space08: "cotc", Space09: "cotc" }[stage.locationId];
         if (!map) return;
         hero.classList.add("location-hero");
         path = `img/map/${map}.png`;
@@ -1190,19 +1277,28 @@
       }
       const restoreSharedView = () => {
         restoreSharedSettings(); syncEnemyBarInputs(); syncDistanceUnitInputs();
-        restoreLocationLevel(); $("crownSelect").value = String(state.crownIndex); renderStageClassification();
+        restorePreviousClearCount(); restoreLocationLevel(); $("crownSelect").value = isInvasion ? state.invasionLocationId : String(state.crownIndex); renderStageClassification();
         renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
       };
       window.addEventListener("pageshow", (event) => { if (event.persisted) restoreSharedView(); });
-      window.addEventListener("storage", (event) => { if ([sharedSettingsStorageKey, enemySharedSettingsKey, locationLevelStorageKey, null].includes(event.key)) restoreSharedView(); });
+      window.addEventListener("storage", (event) => { if ([sharedSettingsStorageKey, enemySharedSettingsKey, locationLevelStorageKey, clearCountStorageKey, invasionLocationStorageKey, null].includes(event.key) || (isInvasion && event.key === locationClearCountKey(state.invasionLocationId))) restoreSharedView(); });
       syncDistanceUnitInputs();
       $("crownSelect").innerHTML = crownOptions.map((value,index) => `<option value="${index}">${DATA.story ? `제${DATA.story.chapters[index].chapter}장` : DATA.location?.chapters?.length ? `제${DATA.location.chapters[index]}장` : `👑${index + 1} · ${fmtNumber(value)}%`}</option>`).join("");
-      $("crownSelect").closest(".crown-control").hidden = Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
+      $("crownSelect").closest(".crown-control").hidden = stage.showStageLevel === false || Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
       $("crownSelect").value = String(state.crownIndex);
+      if (isInvasion) {
+        $("stageLevelLabel").textContent = "습격 위치";
+        $("crownSelect").closest(".crown-control").hidden = false;
+        $("crownSelect").innerHTML = invasionLocations.map(({id, name}) => `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`).join("");
+        $("crownSelect").value = state.invasionLocationId;
+      }
       const syncTimeButtons = () => { $("timeSeconds")?.setAttribute("aria-pressed", String(state.timeUnit === "seconds")); $("timeFrames")?.setAttribute("aria-pressed", String(state.timeUnit === "frames")); };
       $("timeSeconds")?.addEventListener("click", () => { state.timeUnit = "seconds"; syncTimeButtons(); renderOverview(); renderEnemies(); });
       $("timeFrames")?.addEventListener("click", () => { state.timeUnit = "frames"; syncTimeButtons(); renderOverview(); renderEnemies(); });
-      $("crownSelect").addEventListener("change", (event) => { state.crownIndex = clampInteger(event.target.value, 0, crownOptions.length - 1, 0); persistLocationLevel(); persistStoryRewardStates(); renderStageClassification(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies(); });
+      $("crownSelect").addEventListener("change", (event) => {
+        if (isInvasion) { selectInvasionLocation(event.target.value); renderOverview(); return; }
+        state.crownIndex = clampInteger(event.target.value, 0, crownOptions.length - 1, 0); persistLocationLevel(); persistStoryRewardStates(); renderStageClassification(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
+      });
       $("rewardQualitySelect")?.addEventListener("change", (event) => { currentStoryRewardState().quality = clampInteger(event.target.value, 0, 3, 0); persistStoryRewardStates(); renderRewards(); });
       $("zombieClearToggle")?.addEventListener("click", () => { const acquired = currentStoryRewardState(); acquired.zombieCleared = !acquired.zombieCleared; persistStoryRewardStates(); renderRewards(); });
       $("treasureChanceToggle")?.addEventListener("click", () => { const acquired = currentStoryRewardState(); acquired.treasureChance = !acquired.treasureChance; persistStoryRewardStates(); renderRewards(); });
@@ -1219,9 +1315,10 @@
       $("distanceUnitResetButton")?.addEventListener("click", () => { state.stageLengthUnit = "rng"; state.bossSpawnUnit = "rng"; syncDistanceUnitInputs(); persistSharedSettings(); syncResetButtons(); renderOverview(); });
       $("overview")?.addEventListener("input", (event) => {
         if (event.target.id !== "previousClearCount") return;
-        state.previousClearCount = Math.max(0, Math.floor(Number(event.target.value) || 0));
+        setPreviousClearCount(event.target.value);
         if (event.target.value !== String(state.previousClearCount)) event.target.value = String(state.previousClearCount);
-        persistPreviousClearCount(); $("stageXpValue").textContent = stageXpText();
+        $("stageXpValue").textContent = stageXpText(); renderCastleImage(DATA.stageInfo || {});
+        if (isInvasion) $("invasionClearNote").innerHTML = invasionClearNote();
       });
       document.addEventListener("pointerdown", (event) => { if (!$("rewards")?.contains(event.target) && !$("scoreRewards")?.contains(event.target)) closeRewardTooltips(); });
       syncTimeButtons(); renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
