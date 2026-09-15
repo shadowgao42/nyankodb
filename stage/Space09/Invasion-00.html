@@ -1038,7 +1038,7 @@
     function renderCastleImage(info) {
       const invasion = currentInvasionLocation();
       if (invasion) {
-        $("castleIdRow").hidden = false;
+        $("castleIdRow").hidden = true;
         $("castleImage").hidden = false;
         $("castleImage").src = assetPath(`img/castle/${invasion.castle.resource_key}.png`);
         $("castleImage").alt = `${invasion.name} 성`;
