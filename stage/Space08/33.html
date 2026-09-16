@@ -285,6 +285,7 @@
     .stage-castle-card > .stat-label { grid-column: 1 / -1; grid-row: 1; }
     .stage-castle-image { display: block; grid-column: 1; grid-row: 2; align-self: center; width: auto; height: 132px; max-width: 92px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,.34)); }
     .stage-castle-image[hidden] { display: none; }
+    .stage-castle-image.enemy-castle-image { width: 128px; max-width: 128px; height: auto; }
     .range-stack { display: grid; gap: 8px; margin-top: 11px; }
     .range-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 13px; font-weight: 900; }
     .range-row[hidden] { display: none; }
@@ -1036,24 +1037,46 @@
       return `(${escapeHtml(currentInvasionLocation()?.name)} 클리어 ${fmt(state.invasionSourceClearCount)}회)`;
     }
     function renderCastleImage(info) {
-      const invasion = currentInvasionLocation();
-      if (invasion) {
-        $("castleIdRow").hidden = false;
-        $("castleImage").hidden = false;
-        $("castleImage").src = assetPath(`img/castle/${invasion.castle.resource_key}.png`);
-        $("castleImage").alt = `${invasion.name} 성`;
+      const invasion = typeof currentInvasionLocation === "function" ? currentInvasionLocation() : null;
+      const castle = invasion?.castle || info.castle || {};
+      const image = $("castleImage");
+      const idRow = $("castleIdRow");
+      // StageInfo stores enemy IDs with the same +2 offset as spawn rows.
+      const castleEnemyId = Number(info.castleEnemyId || 0) - 2;
+      const hasEnemyCastle = castleEnemyId >= 0;
+      const castleEnemy = hasEnemyCastle ? (DATA.enemies || []).find(row => Number(row.enemyId) === castleEnemyId) : null;
+      image.classList.toggle("enemy-castle-image", hasEnemyCastle);
+      const isClearedKorea = DATA.story?.family === 0 && DATA.story.stageIndex === 0
+        && ((currentStoryChapter()?.chapter ?? 1) >= 2 || state.previousClearCount >= 1);
+      const languageSuffix = !invasion && DATA.story?.family === 0 ? (isClearedKorea ? "_2_ko" : "_ko") : "";
+      if (!hasEnemyCastle && !castle.resource_key) {
+        image.onload = image.onerror = null;
+        image.removeAttribute("src");
+        image.hidden = true;
+        idRow.hidden = false;
         return;
       }
-      const hasStoryCastleImage = [0, 1, 2].includes(DATA.story?.family);
-      $("castleIdRow").hidden = hasStoryCastleImage;
-      $("castleImage").hidden = !hasStoryCastleImage;
-      if (!hasStoryCastleImage) return;
-      const castle = info.castle || {};
-      const isClearedKorea = DATA.story.family === 0 && DATA.story.stageIndex === 0
-        && ((currentStoryChapter()?.chapter ?? 1) >= 2 || state.previousClearCount >= 1);
-      const languageSuffix = DATA.story.family === 0 ? (isClearedKorea ? "_2_ko" : "_ko") : "";
-      $("castleImage").src = assetPath(`img/castle/${castle.resource_key}${languageSuffix}.png`);
-      $("castleImage").alt = `${stage.name || "스테이지"} 성`;
+      const src = assetPath(hasEnemyCastle ? (castleEnemy?.icon || `img/e/${castleEnemyId}/0.png`) : `img/castle/${castle.resource_key}${languageSuffix}.png`);
+      image.alt = hasEnemyCastle ? (castleEnemy?.name || `적 ${castleEnemyId}`) : `${invasion?.name || stage.name || "스테이지"} 성`;
+      $("castleId").textContent = hasEnemyCastle ? String(castleEnemyId) : (castle.resource_key || "—");
+      if (image.getAttribute("src") === src) return;
+      image.hidden = true;
+      idRow.hidden = false;
+      image.onload = () => { image.hidden = false; idRow.hidden = true; };
+      image.onerror = () => { image.hidden = true; idRow.hidden = false; };
+      image.src = src;
+    }
+    function castleHealth(info, storyChapter) {
+      const rawCastleEnemyId = Number(info.castleEnemyId || 0);
+      if (rawCastleEnemyId >= 2) {
+        const castleEnemy = (DATA.enemies || []).find((row) => Number(row.raw_enemy_id ?? (Number(row.enemyId) + 2)) === rawCastleEnemyId);
+        if (castleEnemy?.base?.hp != null) {
+          const healthPercent = rowMagnifications(castleEnemy).health;
+          const enemyMultiplier = enemyTreasureMultiplier(castleEnemy);
+          return Math.max(1, Math.floor(Number(castleEnemy.base.hp) * healthPercent * enemyMultiplier / 100));
+        }
+      }
+      return Number(storyChapter?.baseHealth ?? info.baseHp ?? 0);
     }
     function renderOverview() {
       if (isLocation) return;
@@ -1072,7 +1095,7 @@
       if (difficulty !== null && difficulty !== undefined) cards.push(difficultyCard(difficulty));
       cards.push(`<article class="stat-card stage-restrictions-card"><span class="stat-label">출격 조건</span><div class="stage-detail-content" id="restrictions"></div></article>`);
       $("overview").innerHTML = cards.join("");
-      $("castleHp").textContent = fmt(storyChapter?.baseHealth ?? info.baseHp);
+      $("castleHp").textContent = fmt(castleHealth(info, storyChapter));
       $("bossSpawnPosition").closest(".range-row").hidden = !(DATA.enemies || []).some((row) => Boolean(row.bossFlag));
       $("bossSpawnPosition").textContent = bossSpawnText(castle?.boss_spawn_rng);
       $("bossSpawnPosition").title = castle?.boss_spawn_rng == null ? "성 데이터에서 출현 위치를 확인할 수 없습니다." : `적 성 기준 · ${state.bossSpawnUnit}`;
@@ -1170,9 +1193,11 @@
     function rowMagnifications(row) {
       const crown = state.crownIndex + 1;
       const exact = (row.magnificationsByCrown || []).find((entry) => Number(entry.crown) === crown);
-      if (exact) return { health: Number(exact.hp_percent ?? exact.health_percent ?? row.hpMagnification ?? 100), attack: Number(exact.attack_percent ?? row.attackMagnification ?? row.hpMagnification ?? 100) };
+      const baseAttack = Number(row.attackMagnification ?? row.hpMagnification ?? 100);
+      const isCastleEnemy = Number(DATA.stageInfo?.castleEnemyId || 0) === Number(row.enemyId) + 2;
+      if (exact) return { health: Number(exact.hp_percent ?? exact.health_percent ?? row.hpMagnification ?? 100), attack: isCastleEnemy ? baseAttack : Number(exact.attack_percent ?? baseAttack) };
       const factor = Number(crownOptions[state.crownIndex] || 100) / 100;
-      return { health: Number(row.hpMagnification ?? 100) * factor, attack: Number(row.attackMagnification ?? row.hpMagnification ?? 100) * factor };
+      return { health: Number(row.hpMagnification ?? 100) * factor, attack: baseAttack * (isCastleEnemy ? 1 : factor) };
     }
     function enemyTreasureMultiplier(row) {
       const traits = row.mechanicTraits || [];
