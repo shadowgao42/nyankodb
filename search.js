@@ -156,7 +156,34 @@
           icon.src = source.startsWith("../") ? new URL(source, location.href).href : new URL(source, siteRoot).href;
           icon.alt = "";
           icon.loading = "lazy";
-          node.append(icon);
+          if (/\/stage_(?:N|NA|ND)\.png$/.test(new URL(icon.src).pathname)) {
+            icon.className = "stage-search-icon";
+            icon.style.objectFit = "none";
+            icon.style.objectPosition = "center";
+          }
+          if (entry.iconOverlay) {
+            const frame = document.createElement("span");
+            frame.style.cssText = "position:relative;display:block;width:100%;";
+            // 15.6 ARM64 0x4fa948..0x4fa998: cut 33 at
+            // (button.right - 173 * scale, button.top + 4 * scale), 164x72.
+            // Match the base image's contain fit, including letterboxing, at any size.
+            const svgNS = "http://www.w3.org/2000/svg";
+            const badge = document.createElementNS(svgNS, "svg");
+            badge.setAttribute("viewBox", "0 0 328 263");
+            badge.setAttribute("preserveAspectRatio", "xMidYMid meet");
+            badge.setAttribute("role", "img");
+            badge.setAttribute("aria-label", "좀비습격");
+            badge.style.cssText = "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;";
+            const overlay = document.createElementNS(svgNS, "image");
+            overlay.setAttribute("href", new URL(entry.iconOverlay, siteRoot).href);
+            overlay.setAttribute("x", "155");
+            overlay.setAttribute("y", "4");
+            overlay.setAttribute("width", "164");
+            overlay.setAttribute("height", "72");
+            badge.append(overlay);
+            frame.append(icon, badge);
+            node.append(frame);
+          } else node.append(icon);
         } else {
           const placeholder = document.createElement("span");
           placeholder.className = "unit-search-result-icon-empty";
