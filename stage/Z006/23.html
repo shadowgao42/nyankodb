@@ -766,10 +766,6 @@
           if (!isZombie && invasionLocations.some(({id}) => id === saved)) state.invasionLocationId = saved;
         } catch (_) {}
         state.invasionSourceClearCount = readLocationClearCount(state.invasionLocationId);
-        if (isZombie) {
-          restoreStoryRewardStates();
-          state.previousClearCount = currentStoryRewardState().zombieCleared ? 1 : 0;
-        }
       }
     }
     function persistPreviousClearCount() {
@@ -799,23 +795,13 @@
       }
       state.previousClearCount = count;
       persistPreviousClearCount();
-      if (isZombie) {
-        currentStoryRewardState().zombieCleared = Boolean(count);
-        persistStoryRewardStates();
-      }
     }
     function toggleZombieClear() {
       restoreStoryRewardStates(false);
-      if (isZombie) setPreviousClearCount(currentStoryRewardState().zombieCleared ? 0 : 1);
-      else {
-        const acquired = currentStoryRewardState();
-        const delta = acquired.zombieCleared ? -1 : 1;
-        acquired.zombieCleared = !acquired.zombieCleared;
-        persistStoryRewardStates();
-        adjustLocationClearCount(stageId, delta);
-        restorePreviousClearCount();
-      }
-      renderOverview(); renderRewards();
+      const acquired = currentStoryRewardState();
+      acquired.zombieCleared = !acquired.zombieCleared;
+      persistStoryRewardStates();
+      renderRewards();
     }
     function selectInvasionLocation(id) {
       if (!invasionLocations.some((location) => location.id === id)) return;
@@ -1600,7 +1586,6 @@
         if (event.target.value !== String(state.previousClearCount)) event.target.value = String(state.previousClearCount);
         $("stageXpValue").textContent = stageXpText(); renderCastleImage(DATA.stageInfo || {});
         if (isInvasion) $("invasionClearNote").innerHTML = invasionClearNote();
-        if (isZombie) renderRewards();
       });
       document.addEventListener("pointerdown", (event) => { if (!$("rewards")?.contains(event.target) && !$("scoreRewards")?.contains(event.target)) closeRewardTooltips(); });
       document.addEventListener("pointerdown", (event) => { if (!$("locationMaterials")?.contains(event.target)) closeMaterialTooltips(); });
