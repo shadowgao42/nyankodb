@@ -15,32 +15,108 @@
 
   function nameRank(name, query) {
     if (name === query) return 0;
-    if (name.includes(query)) return 1;
+    if (name.startsWith(query)) return 1;
+    if (name.includes(query)) return 2;
     let cursor = 0;
     for (const letter of name) if (letter === query[cursor]) cursor++;
-    if (cursor === query.length) return 2;
+    if (cursor === query.length) return 3;
     const remaining = [...name];
     for (const letter of query) {
       const index = remaining.indexOf(letter);
       if (index < 0) return 99;
       remaining.splice(index, 1);
     }
-    return 3;
+    return 4;
+  }
+
+  function entryRank(entry, query) {
+    if (compact(entry.id) === query || (/^\d+$/.test(query) && Number(entry.id) === Number(query))) {
+      return 0;
+    }
+    const displayName = String(entry.name || entry.label || "");
+    const name = compact(displayName);
+    if (entry.kind === "stage") {
+      const nameWithoutLocation = compact(displayName.replace(/\s+\([^()]*\)\s*$/, ""));
+      if (nameWithoutLocation === query) return 0;
+    }
+    return nameRank(name, query);
+  }
+
+  const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });
+
+  function compareText(left, right) {
+    return left < right ? -1 : left > right ? 1 : 0;
+  }
+
+  function stageSortKey(entry) {
+    const path = String(entry.href || entry.url || "")
+      .split(/[?#]/, 1)[0]
+      .replace(/\\/g, "/");
+    const segments = path.split("/").filter(Boolean);
+    const stageIndex = segments.findIndex(segment => segment.toLocaleLowerCase("en-US") === "stage");
+    let location = stageIndex >= 0 ? segments[stageIndex + 1] || "" : "";
+    let page = stageIndex >= 0 ? segments[stageIndex + 2] || "" : "";
+
+    // The catalogue normally supplies a stage URL. Keep ID parsing as a
+    // deterministic fallback for any future entry that omits it.
+    if (!location) {
+      const id = String(entry.id ?? "");
+      if (/^eoc$/i.test(id) || /^\d+$/.test(id)) {
+        location = "eoc";
+        page = /^\d+$/.test(id) ? `${id}.html` : "index.html";
+      } else {
+        const match = id.match(/^([a-z]+\d+)(?:-(.+))?$/i);
+        location = match?.[1] || id;
+        page = match?.[2] === undefined ? "index.html" : `${match[2]}.html`;
+      }
+    }
+
+    const eoc = /^eoc$/i.test(location);
+    const locationMatch = location.match(/^([a-z]+)(\d+)$/i);
+    const prefix = eoc ? "" : (locationMatch?.[1] || location).toLocaleUpperCase("en-US");
+    const locationNumber = eoc ? 0 : (locationMatch ? Number(locationMatch[2]) : Number.MAX_SAFE_INTEGER);
+    const pageName = page.replace(/\.html$/i, "");
+    const locationPage = !pageName || /^index$/i.test(pageName);
+    const stageNumber = /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
+    return { prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
+  }
+
+  function compareStageEntries(left, right) {
+    const a = stageSortKey(left);
+    const b = stageSortKey(right);
+    return compareText(a.prefix, b.prefix)
+      || a.locationNumber - b.locationNumber
+      || Number(b.locationPage) - Number(a.locationPage)
+      || a.stageNumber - b.stageNumber
+      || compareText(a.pageName, b.pageName)
+      || compareText(a.id, b.id);
+  }
+
+  function compareResults(left, right) {
+    const rankDifference = left.rank - right.rank;
+    if (rankDifference) return rankDifference;
+    const leftKind = kindOrder[left.entry.kind] ?? Number.MAX_SAFE_INTEGER;
+    const rightKind = kindOrder[right.entry.kind] ?? Number.MAX_SAFE_INTEGER;
+    if (leftKind !== rightKind) return leftKind - rightKind;
+    if (left.entry.kind === "stage" && right.entry.kind === "stage") {
+      return compareStageEntries(left.entry, right.entry);
+    }
+    const idDifference = Number(left.entry.id) - Number(right.entry.id);
+    if (Number.isFinite(idDifference) && idDifference) return idDifference;
+    const formDifference = Number(left.entry.form || 1) - Number(right.entry.form || 1);
+    if (formDifference) return formDifference;
+    return compareText(String(left.entry.id ?? ""), String(right.entry.id ?? ""));
   }
 
   function search(value) {
     const query = compact(value);
     if (!query) return [];
-    const numeric = /^\d+$/.test(query) ? Number(query) : null;
     return entries().map(entry => ({
       entry,
-      rank: compact(entry.id) === query || (numeric !== null && Number(entry.id) === numeric)
-        ? 0 : nameRank(compact(entry.name || entry.label), query),
-    })).filter(result => result.rank < 99).sort((a, b) =>
-      a.rank - b.rank || Number(a.entry.id) - Number(b.entry.id)
-      || String(a.entry.kind).localeCompare(String(b.entry.kind))
-      || Number(a.entry.form || 1) - Number(b.entry.form || 1)
-    ).map(result => result.entry);
+      rank: entryRank(entry, query),
+    })).filter(result => result.rank < 99)
+      .sort(compareResults)
+      .map(result => result.entry);
   }
 
   function identity(entry) {
