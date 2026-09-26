@@ -13,20 +13,34 @@
       .filter(entry => entry && (entry.name || entry.label));
   }
 
-  function nameRank(name, query) {
+  function startsAtLaterWord(displayName, query) {
+    const firstQueryCharacter = [...query][0];
+    for (const whitespace of String(displayName).matchAll(/\s+/gu)) {
+      const suffix = String(displayName).slice(whitespace.index + whitespace[0].length);
+      const firstSuffixCharacter = [...suffix][0] || "";
+      if (compact(firstSuffixCharacter) === firstQueryCharacter && compact(suffix).startsWith(query)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function nameRank(displayName, query) {
+    const name = compact(displayName);
     if (name === query) return 0;
     if (name.startsWith(query)) return 1;
-    if (name.includes(query)) return 2;
+    if (startsAtLaterWord(displayName, query)) return 2;
+    if (name.includes(query)) return 3;
     let cursor = 0;
     for (const letter of name) if (letter === query[cursor]) cursor++;
-    if (cursor === query.length) return 3;
+    if (cursor === query.length) return 4;
     const remaining = [...name];
     for (const letter of query) {
       const index = remaining.indexOf(letter);
       if (index < 0) return 99;
       remaining.splice(index, 1);
     }
-    return 4;
+    return 5;
   }
 
   function entryRank(entry, query) {
@@ -39,7 +53,7 @@
       const nameWithoutLocation = compact(displayName.replace(/\s+\([^()]*\)\s*$/, ""));
       if (nameWithoutLocation === query) return 0;
     }
-    return nameRank(name, query);
+    return nameRank(displayName, query);
   }
 
   const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });

@@ -38,18 +38,6 @@
         linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
     }
     .page { width: min(1220px, calc(100% - 36px)); padding: 24px 0 38px; }
-    .db-toolbar {
-      gap: 18px;
-      margin-bottom: 12px;
-      padding: 14px 18px;
-      background: rgba(14, 19, 26, .92);
-      box-shadow: var(--shadow);
-    }
-    .db-brand { flex: 0 0 auto; color: var(--text); }
-    .db-brand span { color: var(--accent-text); }
-    .unit-search { grid-template-columns: auto minmax(150px, 220px) auto; gap: 9px; }
-    .unit-search label { color: #dce3ed; white-space: nowrap; }
-    .unit-search input { padding:7px 11px; text-align:left; font-weight:400; font-variant-numeric:tabular-nums; }
 
     .treasure-settings {
       margin-bottom: 10px;
@@ -588,9 +576,6 @@
     }
     @media (max-width: 660px) {
       .page { width:min(100% - 20px,1220px); margin:0 auto; padding-top:12px; }
-      .db-toolbar { align-items:stretch; flex-direction:column; gap:10px; padding:13px 15px; }
-      .unit-search { grid-template-columns:72px minmax(0,1fr) 58px; gap:7px; }
-      .unit-search button { padding-inline:8px; }
       .treasure-settings summary,
       .misc-settings summary { flex-wrap:wrap; padding-inline:15px; }
       .treasure-panel,
@@ -643,37 +628,12 @@
 
     /* Shared controls from the current unit calculator. */
     .db-toolbar { display:flex; align-items:center; justify-content:space-between; gap:18px; margin-bottom:12px; padding:14px 18px; border:1px solid var(--line); border-radius:17px; background:rgba(14,19,26,.92); box-shadow:var(--shadow); }
-    .db-brand { flex:0 0 auto; text-decoration:none; cursor:pointer; color:var(--text); font-size:25px; font-weight:950; letter-spacing:-.05em; }
-    .db-brand span { color:var(--gold); }
     /* The calculator search is intentionally the exact unit-calculator UI. */
     .unit-search { display:grid; grid-template-columns:auto minmax(150px,220px) auto; align-items:center; gap:9px; }
-    .unit-search label { color:#dce3ed; font-size:13px; font-weight:900; white-space:nowrap; }
-    .unit-search input { min-width:0; height:38px; padding:7px 11px; border:1px solid #425267; border-radius:9px; color:var(--text); background:#0c1118; outline:none; font-variant-numeric:tabular-nums; }
-    .unit-search input:focus { border-color:var(--accent); box-shadow:0 0 0 2px rgba(255,91,45,.2); }
-    .unit-search button { height:38px; padding:7px 15px; border:0; border-radius:9px; color:#fff; background:var(--accent); font-size:13px; font-weight:900; cursor:pointer; }
-    .unit-search-field { position:relative; min-width:0; }
     /* Final computed palette of the unit calculator.  Its later generic
        input rule deliberately wins over the earlier field rule. */
     .unit-search-field > input { width:100%; border-color:#425267; color:#f4f7fb; background:#0c1118; }
-    .unit-search .unit-search-field > input:focus { border-color:#788697; box-shadow:0 0 0 2px rgba(145,158,173,.18); }
-    .unit-search button[type="submit"] { border:1px solid #596777; color:#f4f7fb; background:#303a47; }
-    .unit-search button[type="submit"]:hover { border-color:#718094; background:#3a4655; }
-    .unit-search-results { position:absolute; top:calc(100% + 7px); left:0; z-index:120; width:min(380px,calc(100vw - 44px)); max-height:360px; padding:6px; overflow-y:auto; border:1px solid #46566a; border-radius:12px; background:#080d14; box-shadow:0 16px 42px rgba(0,0,0,.52); scrollbar-width:thin; touch-action:pan-y; }
-    .unit-search-results[hidden] { display:none; }
-    .unit-search .unit-search-result { display:grid; grid-template-columns:54px minmax(0,1fr); align-items:center; gap:10px; width:100%; min-height:48px; padding:5px 9px; border:0; border-bottom:1px solid #465363; border-radius:0; color:#f4f7fb; background:#27313e; text-align:left; cursor:pointer; touch-action:pan-y; }
-    .unit-search .unit-search-result:last-child { border-bottom:0; }
-    .unit-search .unit-search-result:hover,.unit-search .unit-search-result[aria-selected="true"] { background:#354252; }
-    .unit-search-result img,.unit-search-result-icon-empty { display:block; width:54px; height:40px; object-fit:contain; image-rendering:pixelated; }
-    .unit-search-result-icon-empty { border:1px dashed #405066; border-radius:7px; }
-    .unit-search-result-copy { display:grid; min-width:0; gap:2px; }
-    .unit-search-result-name { min-width:0; overflow:hidden; font-size:13px; font-weight:900; text-overflow:ellipsis; white-space:nowrap; }
-    .unit-search-result-identity { color:var(--muted); font-size:10px; font-weight:850; letter-spacing:.03em; }
-    .unit-search-empty { padding:13px 10px; color:var(--muted); font-size:12px; font-weight:800; text-align:center; }
     @media (max-width:660px) {
-      .db-toolbar { align-items:stretch; flex-direction:column; gap:10px; padding:13px 15px; }
-      .unit-search { grid-template-columns:72px minmax(0,1fr) 58px; gap:7px; }
-      .unit-search button { padding-inline:8px; }
-      .unit-search-results { width:min(360px,calc(100vw - 106px)); }
     }
 
     /* Match the unit calculator's treasure and miscellaneous summaries exactly. */
@@ -895,24 +855,12 @@
     @media(max-width:620px){ .distance-unit-grid { grid-template-columns:1fr; } }
 
   </style>
+  <link rel="stylesheet" href="../gnb.css">
 </head>
 <body>
 <main class="page">
-  <header class="db-toolbar">
-    <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
-    <form class="unit-search" id="unitSearchForm" role="search">
-      <label for="unitSearchInput">검색</label>
-      <div class="unit-search-field">
-        <input id="unitSearchInput" type="search" autocomplete="off"
-              spellcheck="false" placeholder="이름 입력"
-              aria-label="검색할 유닛 이름" aria-autocomplete="list"
-              aria-controls="unitSearchResults" aria-expanded="false">
-        <div class="unit-search-results" id="unitSearchResults"
-             role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
-      </div>
-      <button type="submit">검색</button>
-    </form>
-  </header>
+  <header data-nyanko-gnb data-search-prefix="unitSearch" data-search-placeholder="이름 입력"></header>
+    <script src="../gnb.js"></script>
   <details class="treasure-settings" id="treasure-settings">
     <summary><span>보물/패시브 설정</span><span class="treasure-summary-actions"><button type="button" class="treasure-action-button" id="treasure-reset" disabled>초기화</button><span class="settings-toggle-control"><span class="treasure-toggle-label" id="treasure-toggle">펼치기</span><span class="settings-toggle-arrow" aria-hidden="true">▾</span></span></span></summary>
     <div class="treasure-panel"><div class="category-tabs" id="category-tabs" role="group" aria-label="보물 및 패시브 종류"></div><p class="treasure-note" id="treasure-note">보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.</p><div id="treasure-content"></div></div>

@@ -30,8 +30,10 @@
 
     body {
       min-width: 320px;
-      min-height: 100vh;
+      min-height: 143vh;
       margin: 0;
+      overflow-x: hidden;
+      zoom: .7;
       color: var(--text);
       background:
         radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
@@ -47,9 +49,12 @@
     a { -webkit-tap-highlight-color: transparent; }
 
     .page {
-      width: min(100% - 32px, 1040px);
+      width: min(1220px, calc(100% - 36px));
+      min-height: 143vh;
       margin: 0 auto;
-      padding: 28px 0 44px;
+      padding: 24px 0 38px;
+      display: flex;
+      flex-direction: column;
     }
 
     .db-toolbar,
@@ -61,30 +66,6 @@
       background: rgba(14, 19, 26, .94);
       box-shadow: var(--shadow);
     }
-
-    .db-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    .db-brand {
-      display: inline-block;
-      color: var(--text);
-      font-size: clamp(24px, 4vw, 31px);
-      font-weight: 900;
-      letter-spacing: -.06em;
-      text-decoration: none;
-    }
-
-    .db-brand span { color: var(--accent-2); }
 
     .toolbar-title {
       color: #dce3ed;
@@ -482,7 +463,13 @@
       opacity: 1;
     }
 
-    .results-panel { overflow: hidden; }
+    .results-panel {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      flex-direction: column;
+    }
 
     .results-panel > .section-heading {
       padding: 16px 18px;
@@ -538,7 +525,8 @@
     }
 
     .results-scroll {
-      max-height: min(72vh, 920px);
+      flex: 1 1 0;
+      min-height: 180px;
       overflow-y: auto;
       overscroll-behavior: contain;
       scrollbar-width: thin;
@@ -929,7 +917,7 @@
     }
 
     @media (max-width: 760px) {
-      .page { width: min(100% - 20px, 1040px); padding-top: 20px; }
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
       .search-panel { padding: 15px; }
       .search-controls { grid-template-columns: minmax(0, 1fr) auto; }
       .filter-actions { gap: 8px 11px; }
@@ -972,7 +960,7 @@
       .range-unit-link { grid-template-columns: 56px; padding-right: 2px; padding-left: 2px; }
       .range-unit-link .range-unit-icon { width: 56px; height: 46px; }
       .range-stack-preview .range-unit-icon { width: 40px; height: 43px; }
-      .results-scroll { max-height: 68vh; }
+      .results-scroll { min-height: 180px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -982,13 +970,12 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="../gnb.css">
 </head>
 <body>
   <main class="page">
-    <header class="db-toolbar">
-      <a class="db-brand" href="../index.html" aria-label="냥코DB 홈">냥코<span>DB</span></a>
-      <span class="toolbar-title">유닛 검색</span>
-    </header>
+    <header data-nyanko-gnb data-search-prefix="unitSearch"></header>
+    <script src="../gnb.js"></script>
 
     <section class="search-panel" aria-labelledby="searchTitle">
       <div class="section-heading">
@@ -1079,6 +1066,8 @@
     </section>
   </main>
 
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
   <script src="catalog.js"></script>
   <script>
     (() => {
@@ -1094,6 +1083,7 @@
         filterBody: document.getElementById("filterBody"),
         filterCollapse: document.getElementById("filterCollapse"),
         filterCollapseText: document.getElementById("filterCollapseText"),
+        resultsPanel: document.querySelector(".results-panel"),
         results: document.getElementById("unitResults"),
         rangeResults: document.getElementById("rangeResults"),
         resultsScroll: document.getElementById("resultsScroll"),
@@ -1341,6 +1331,13 @@
         elements.filterBody.hidden = collapsed;
         elements.filterCollapse.setAttribute("aria-expanded", String(!collapsed));
         elements.filterCollapseText.textContent = collapsed ? "펼치기" : "접기";
+      }
+
+      function lockInitialResultsHeight() {
+        const initialHeight = elements.resultsPanel.offsetHeight;
+        if (initialHeight <= 0) return;
+        elements.resultsPanel.style.height = `${initialHeight}px`;
+        elements.resultsPanel.style.flex = "0 0 auto";
       }
 
       function unitUrl(entry) {
@@ -1835,6 +1832,7 @@
       syncFilterCollapse();
       syncDisplayMode();
       updateResults();
+      lockInitialResultsHeight();
     })();
   </script>
 </body>
