@@ -597,6 +597,29 @@
       background: #354252;
       outline: none;
     }
+    @media (max-width: 500px) {
+      .unit-grid.display-two .unit-card.unit-switch-card {
+        grid-template-columns: minmax(0, 1fr) 40px;
+        gap: 0;
+        padding: 0;
+      }
+      .unit-grid.display-two .unit-switch-card .unit-card-link {
+        grid-template-columns: clamp(36px, 10vw, 46px) minmax(0, 1fr);
+        gap: 4px;
+        min-height: 82px;
+        padding: 5px 4px;
+      }
+      .unit-grid.display-two .unit-switch-card .unit-card-link img,
+      .unit-grid.display-two .unit-switch-card .unit-card-link .unit-image-empty {
+        width: clamp(36px, 10vw, 46px);
+        height: 48px;
+      }
+      .unit-grid.display-two .unit-switch-card .unit-identity { font-size: 10px; }
+      .unit-grid.display-two .unit-switch-card .unit-form-switch {
+        padding-inline: 2px;
+        font-size: 10px;
+      }
+    }
     /* UNIT_GROUP_STYLE_END */
 
     .unit-card:hover,
@@ -977,6 +1000,8 @@
     @media (max-width: 500px) {
       .toolbar-title { display: none; }
       .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .result-heading-actions { width: 100%; flex-wrap: wrap; justify-content: flex-start; gap: 6px; }
+      .result-heading-actions .result-status { margin-left: auto; }
       .search-controls { grid-template-columns: minmax(0, 1fr); }
       .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
       #rarityFilters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1086,6 +1111,10 @@
       <div class="section-heading">
         <h2 id="resultsTitle">모든 유닛</h2>
         <div class="result-heading-actions">
+          <div class="display-mode" role="group" aria-label="유닛 표시 방식">
+            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">목록</button>
+            <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
+          </div>
           <!-- UNIT_GROUP_CONTROL_START -->
           <label class="talent-toggle">
             <span>유닛 모아보기</span>
@@ -1093,10 +1122,6 @@
             <span class="talent-check" aria-hidden="true">✓</span>
           </label>
           <!-- UNIT_GROUP_CONTROL_END -->
-          <div class="display-mode" role="group" aria-label="유닛 표시 방식">
-            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">목록</button>
-            <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
-          </div>
           <p class="result-status" id="resultStatus" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
         </div>
       </div>
