@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>아이템 검색 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 143vh;
+      margin: 0;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: min(1220px, calc(100% - 36px));
+      min-height: 143vh;
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+    .search-panel, .results-panel {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+      margin-top: 12px;
+    }
+    .search-panel { padding: 18px; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(22px, 3vw, 29px); letter-spacing: -.045em; }
+    h2 { font-size: 18px; letter-spacing: -.035em; }
+    .search-description, .result-status { color: var(--muted); font-size: 13px; }
+    .search-description { margin-top: 6px; font-weight: 800; }
+    .result-status { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .search-controls { margin-top: 16px; }
+    .search-input {
+      width: 100%; height: 42px; padding: 8px 13px;
+      border: 1px solid #4d5a69; border-radius: 9px;
+      color: var(--text); background: #0c1118; outline: none;
+    }
+    .search-input:focus { border-color: #788697; box-shadow: 0 0 0 2px rgba(145,158,173,.18); }
+    .results-panel { display: flex; flex: 1 1 auto; min-height: 0; overflow: hidden; flex-direction: column; }
+    .results-panel > .section-heading {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; padding: 16px 18px; border-bottom: 1px solid var(--line);
+    }
+    .results-scroll {
+      flex: 1 1 0; min-height: 180px; overflow-y: auto;
+      overscroll-behavior: contain; scrollbar-width: thin;
+      scrollbar-color: #526174 #111720;
+    }
+    .item-section + .item-section { border-top: 1px solid var(--line); }
+    .item-section-heading {
+      display: flex; align-items: baseline; gap: 8px;
+      padding: 12px 17px; color: #fff;
+      background: rgba(28, 37, 49, .72);
+    }
+    .item-section-heading h3 { font-size: 15px; font-weight: 900; }
+    .item-section-heading small { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .item-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .item-card {
+      display: grid; grid-template-columns: 78px minmax(0, 1fr);
+      align-items: center; gap: 11px; min-width: 0; min-height: 82px;
+      padding: 9px 12px; border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line); color: var(--text);
+      background: rgba(23,31,41,.64); text-decoration: none;
+    }
+    .item-card:nth-child(2n) { border-right: 0; }
+    .item-card:hover, .item-card:focus-visible {
+      background: #263240; outline: none; box-shadow: inset 3px 0 var(--accent-2);
+    }
+    .item-card img, .item-image-empty {
+      display: block; width: 78px; height: 60px;
+      object-fit: contain; object-position: center; image-rendering: pixelated;
+    }
+    .item-image-empty { border: 1px dashed #405066; border-radius: 7px; }
+    .item-copy { min-width: 0; }
+    .item-name {
+      display: block; overflow: hidden; color: #fff; font-size: 14px;
+      font-weight: 950; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .item-identity {
+      display: block; margin-top: 5px; color: var(--accent-2);
+      font-size: 12px; font-weight: 900; font-variant-numeric: tabular-nums;
+    }
+    .empty-results {
+      padding: 42px 18px; color: var(--muted); font-size: 14px;
+      font-weight: 800; text-align: center;
+    }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .search-panel { padding: 15px; }
+      .results-panel > .section-heading { padding-inline: 15px; }
+    }
+    @media (max-width: 500px) {
+      .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .item-card { grid-template-columns: 58px minmax(0, 1fr); gap: 7px; padding: 8px; }
+      .item-card img, .item-image-empty { width: 58px; height: 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="../gnb.css">
+</head>
+<body>
+  <main class="page">
+    <header data-nyanko-gnb data-search-prefix="unitSearch" data-search-placeholder="이름 입력"></header>
+    <script src="../gnb.js"></script>
+
+    <section class="search-panel" aria-labelledby="searchTitle">
+      <h1 id="searchTitle">아이템 검색(공사중)</h1>
+      <p class="search-description">이름 또는 ID로 원하는 아이템을 찾을 수 있습니다.</p>
+      <div class="search-controls">
+        <input class="search-input" id="nameSearch" type="search" autocomplete="off"
+               spellcheck="false" placeholder="아이템 이름 또는 ID 입력" aria-label="아이템 이름 또는 ID 검색">
+      </div>
+    </section>
+
+    <section class="results-panel" aria-labelledby="resultsTitle">
+      <div class="section-heading">
+        <h2 id="resultsTitle">모든 아이템</h2>
+        <p class="result-status" id="resultStatus" aria-live="polite">아이템 목록을 불러오는 중입니다.</p>
+      </div>
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="아이템 검색 결과">
+        <div id="itemResults"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
+  <script>
+    (() => {
+      "use strict";
+      const catalog = window.NYANKODB_SEARCH_CATALOG;
+      const input = document.getElementById("nameSearch");
+      const results = document.getElementById("itemResults");
+      const status = document.getElementById("resultStatus");
+      const panel = document.querySelector(".results-panel");
+      const scroll = document.getElementById("resultsScroll");
+      const categoryOrder = ["전투 아이템", "티켓", "진화 재료", "캣츠아이", "성 재료", "기타"];
+      const combatIds = new Set([0, 1, 2, 3, 4, 5]);
+      const ticketOrder = [20, 21, 157, 29, 145, 212];
+      const ticketIds = new Set(ticketOrder);
+      const ticketPosition = new Map(ticketOrder.map((id, index) => [id, index]));
+      const evolutionOrder = [
+        30, 31, 32, 33, 34, 43, 160, 41, 164, 35, 36, 37, 38, 39, 40,
+        161, 42, 44, 167, 168, 169, 170, 171, 184, 179, 180, 181, 182, 183,
+      ];
+      const evolutionIds = new Set(evolutionOrder);
+      const evolutionPosition = new Map(evolutionOrder.map((id, index) => [id, index]));
+      const catseyeIds = new Set([50, 51, 52, 53, 54, 58]);
+      const castleIds = new Set([85, 86, 87, 88, 89, 90, 91, 140, 187, 188, 189, 190, 191, 192, 193, 194]);
+      function categoryFor(id) {
+        if (combatIds.has(id)) return "전투 아이템";
+        if (ticketIds.has(id)) return "티켓";
+        if (evolutionIds.has(id)) return "진화 재료";
+        if (catseyeIds.has(id)) return "캣츠아이";
+        if (castleIds.has(id)) return "성 재료";
+        return "기타";
+      }
+      function compact(value) {
+        return String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+      }
+      function rank(name, id, query) {
+        if (!query) return 0;
+        const idText = String(id);
+        const paddedId = idText.padStart(3, "0");
+        if (query === idText || query === paddedId) return 0;
+        if (name === query) return 0;
+        if (/^\d+$/.test(query) && (idText.startsWith(query) || paddedId.startsWith(query))) return 1;
+        if (name.includes(query)) return 1;
+        let cursor = 0;
+        for (const character of query) {
+          const position = name.indexOf(character, cursor);
+          if (position < 0) { cursor = -1; break; }
+          cursor = position + character.length;
+        }
+        if (cursor >= 0) return 2;
+        const counts = new Map();
+        for (const character of name) counts.set(character, (counts.get(character) || 0) + 1);
+        for (const character of query) {
+          const count = counts.get(character) || 0;
+          if (!count) return null;
+          counts.set(character, count - 1);
+        }
+        return 3;
+      }
+      function createCard(entry) {
+        const link = document.createElement("a");
+        link.className = "item-card";
+        link.href = `item${String(entry.id).padStart(3, "0")}.html`;
+        link.setAttribute("aria-label", `${entry.name}, ITEM ${String(entry.id).padStart(3, "0")}`);
+        if (entry.icon) {
+          const image = document.createElement("img");
+          image.src = `../${entry.icon}`;
+          image.alt = "";
+          image.width = 78;
+          image.height = 60;
+          image.loading = "lazy";
+          image.decoding = "async";
+          link.append(image);
+        } else {
+          const empty = document.createElement("span");
+          empty.className = "item-image-empty";
+          link.append(empty);
+        }
+        const copy = document.createElement("span");
+        copy.className = "item-copy";
+        const name = document.createElement("span");
+        name.className = "item-name";
+        name.textContent = entry.name;
+        const identity = document.createElement("span");
+        identity.className = "item-identity";
+        identity.textContent = `ITEM ${String(entry.id).padStart(3, "0")}`;
+        copy.append(name, identity);
+        link.append(copy);
+        return link;
+      }
+      if (!catalog || !Array.isArray(catalog.items)) {
+        results.innerHTML = '<p class="empty-results">아이템 카탈로그 데이터가 없습니다.</p>';
+        status.textContent = "목록을 불러오지 못했습니다.";
+        return;
+      }
+      const entries = catalog.items.map((entry) => ({
+        ...entry, id: Number(entry.id), name: String(entry.name || `아이템 ${entry.id}`),
+      }));
+      function render() {
+        const query = compact(input.value);
+        const matches = entries.map((entry) => ({ entry, matchRank: rank(compact(entry.name), entry.id, query) }))
+          .filter(({ matchRank }) => matchRank !== null);
+        const groups = new Map(categoryOrder.map((category) => [category, []]));
+        matches.forEach((match) => groups.get(categoryFor(match.entry.id)).push(match));
+        const fragment = document.createDocumentFragment();
+        groups.forEach((items, category) => {
+          if (!items.length) return;
+          const customOrder = category === "진화 재료" ? evolutionPosition
+            : category === "티켓" ? ticketPosition : null;
+          items.sort((left, right) => left.matchRank - right.matchRank
+            || (customOrder
+              ? customOrder.get(left.entry.id) - customOrder.get(right.entry.id)
+              : left.entry.id - right.entry.id));
+          const section = document.createElement("section");
+          section.className = "item-section";
+          section.setAttribute("aria-label", category);
+          const heading = document.createElement("div");
+          heading.className = "item-section-heading";
+          const title = document.createElement("h3");
+          title.textContent = category;
+          const count = document.createElement("small");
+          count.textContent = `${items.length}개`;
+          heading.append(title, count);
+          const grid = document.createElement("div");
+          grid.className = "item-grid";
+          items.forEach(({ entry }) => grid.append(createCard(entry)));
+          section.append(heading, grid);
+          fragment.append(section);
+        });
+        if (!matches.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-results";
+          empty.textContent = "조건에 맞는 아이템이 없습니다.";
+          fragment.append(empty);
+        }
+        results.replaceChildren(fragment);
+        status.textContent = `${new Intl.NumberFormat("ko-KR").format(matches.length)}개 아이템`;
+      }
+      input.addEventListener("input", () => { render(); scroll.scrollTop = 0; });
+      input.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !input.value) return;
+        input.value = "";
+        render();
+        scroll.scrollTop = 0;
+      });
+      render();
+      const initialHeight = panel.offsetHeight;
+      if (initialHeight > 0) {
+        panel.style.height = `${initialHeight}px`;
+        panel.style.flex = "0 0 auto";
+      }
+    })();
+  </script>
+</body>
+</html>

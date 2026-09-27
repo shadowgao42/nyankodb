@@ -1182,7 +1182,7 @@
       root.querySelectorAll("button.stage-reward-item[data-reward-index]").forEach((item) => {
         item.addEventListener("click", () => {
           const reward = rewards[Number(item.dataset.rewardIndex)];
-          if (item.dataset.tooltipOpen === "true" && reward?.itemHref) {
+          if (reward?.itemHref) {
             window.location.assign(SITE_PREFIX + String(reward.itemHref).replace(/^\.\//, ""));
             return;
           }
@@ -1384,7 +1384,7 @@
       $("locationMaterials").querySelectorAll(".location-material-button").forEach((item) => {
         item.addEventListener("click", () => {
           const itemId = Number(item.dataset.itemId);
-          if (openedMaterialButton === item && Number.isInteger(itemId) && itemId >= 0) {
+          if (Number.isInteger(itemId) && itemId >= 0) {
             window.location.href = `${SITE_PREFIX}item/item${String(itemId).padStart(3, "0")}.html`;
             return;
           }

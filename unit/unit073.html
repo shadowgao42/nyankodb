@@ -2786,6 +2786,8 @@
       color: var(--text);
       background: var(--surface-2);
       outline: none;
+      cursor: pointer;
+      transition: border-color .14s ease, transform .14s ease;
     }
 
     .evolution-xp-item {
@@ -2858,8 +2860,11 @@
       transform: translate(-50%, 0);
     }
 
+    .evolution-item:hover,
     .evolution-item:focus-visible {
-      box-shadow: 0 0 0 2px var(--accent);
+      border-color: var(--accent);
+      outline: none;
+      transform: translateY(-2px);
     }
 
     .nyancombo-section-heading {
@@ -8227,8 +8232,7 @@
       item.addEventListener("click", () => {
         const itemId = Number(item.dataset.itemId);
         if (
-          item.dataset.tooltipOpen === "true"
-          && Number.isInteger(itemId)
+          Number.isInteger(itemId)
           && itemId >= 0
         ) {
           window.location.assign(
@@ -9570,24 +9574,8 @@
       });
     }
 
-    function closeTalentTotalNpTooltip() {
-      delete talentTotalNpItem.dataset.tooltipOpen;
-      talentTotalNpItem.setAttribute("aria-expanded", "false");
-    }
-
     talentTotalNpItem.addEventListener("click", () => {
-      if (talentTotalNpItem.dataset.tooltipOpen === "true") {
-        window.location.assign("../item/item007.html");
-        return;
-      }
-      talentTotalNpItem.dataset.tooltipOpen = "true";
-      talentTotalNpItem.setAttribute("aria-expanded", "true");
-    });
-
-    document.addEventListener("click", (event) => {
-      if (!talentTotalNpItem.contains(event.target)) {
-        closeTalentTotalNpTooltip();
-      }
+      window.location.assign("../item/item007.html");
     });
 
     function syncTalentControls() {

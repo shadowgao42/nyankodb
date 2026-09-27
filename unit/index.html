@@ -108,7 +108,7 @@
       font-size: 13px;
     }
 
-    .search-description { margin-top: 6px; font-weight: 400; }
+    .search-description { margin-top: 6px; font-weight: 800; }
     .result-status { font-weight: 700; }
 
     .search-controls {
@@ -213,6 +213,7 @@
       outline: 2px solid rgba(255,173,61,.72);
       outline-offset: 2px;
     }
+    .result-heading-actions .talent-toggle[hidden] { display: none; }
 
     .filter-panel { overflow: visible; }
 
@@ -542,9 +543,6 @@
     .unit-grid[hidden],
     .range-chart[hidden] { display: none !important; }
 
-    .unit-grid.display-one { grid-template-columns: 1fr; }
-    .unit-grid.display-one .unit-card { border-right: 0; }
-
     .unit-card {
       display: grid;
       grid-template-columns: 78px minmax(0, 1fr);
@@ -561,6 +559,45 @@
     }
 
     .unit-card:nth-child(2n) { border-right: 0; }
+
+    /* UNIT_GROUP_STYLE_START */
+    .unit-switch-card {
+      grid-template-columns: minmax(0, 1fr) 58px;
+      gap: 0;
+      padding: 0;
+    }
+    .unit-card-link {
+      display: grid;
+      grid-template-columns: 78px minmax(0, 1fr);
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+      min-height: 81px;
+      padding: 9px 12px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .unit-card-link:hover, .unit-card-link:focus-visible { outline: none; }
+    .unit-form-switch {
+      display: grid;
+      place-content: center;
+      align-self: stretch;
+      gap: 2px;
+      padding: 6px 5px;
+      border: 0;
+      border-left: 1px solid var(--line);
+      color: #fff;
+      background: #202a36;
+      font-size: 11px;
+      font-weight: 950;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+    .unit-form-switch:hover, .unit-form-switch:focus-visible {
+      background: #354252;
+      outline: none;
+    }
+    /* UNIT_GROUP_STYLE_END */
 
     .unit-card:hover,
     .unit-card:focus-visible {
@@ -946,12 +983,10 @@
       #rarityFilters .icon-chip { width: 100%; padding-inline: 4px; }
       .icon-chip { width: 40px; height: 40px; min-height: 40px; }
       .icon-chip img { width: 32px; height: 32px; }
-      .unit-grid.display-one { grid-template-columns: 1fr; }
       .unit-grid.display-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .unit-grid.display-two .unit-card { grid-template-columns: 58px minmax(0, 1fr); gap: 7px; padding: 8px; }
       .unit-grid.display-two .unit-card img,
       .unit-grid.display-two .unit-image-empty { width: 58px; height: 48px; }
-      .unit-grid.display-one .unit-card { border-right: 0; }
       .range-chart::before { left: 62px; }
       .range-row { grid-template-columns: 62px minmax(0, 1fr); }
       .range-marker { font-size: 13px; }
@@ -981,12 +1016,12 @@
       <div class="section-heading">
         <div>
           <h1 id="searchTitle">유닛 검색</h1>
-          <p class="search-description">이름과 조건을 함께 선택하여 원하는 유닛을 찾을 수 있습니다.</p>
+          <p class="search-description">이름 또는 ID로 원하는 유닛을 찾고, 조건으로 결과를 좁힐 수 있습니다.</p>
         </div>
       </div>
       <div class="search-controls">
         <input class="search-input" id="nameSearch" type="search" autocomplete="off"
-               spellcheck="false" placeholder="유닛 이름 입력" aria-label="유닛 이름 검색">
+               spellcheck="false" placeholder="유닛 이름 또는 ID 입력" aria-label="유닛 이름 또는 ID 검색">
       </div>
     </section>
 
@@ -1051,9 +1086,15 @@
       <div class="section-heading">
         <h2 id="resultsTitle">모든 유닛</h2>
         <div class="result-heading-actions">
+          <!-- UNIT_GROUP_CONTROL_START -->
+          <label class="talent-toggle">
+            <span>유닛 모아보기</span>
+            <input id="groupUnits" type="checkbox">
+            <span class="talent-check" aria-hidden="true">✓</span>
+          </label>
+          <!-- UNIT_GROUP_CONTROL_END -->
           <div class="display-mode" role="group" aria-label="유닛 표시 방식">
-            <button class="display-button" type="button" data-display-mode="one" aria-pressed="false">1열</button>
-            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">2열</button>
+            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">목록</button>
             <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
           </div>
           <p class="result-status" id="resultStatus" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
@@ -1078,6 +1119,7 @@
         nameSearch: document.getElementById("nameSearch"),
         reset: document.getElementById("resetFilters"),
         includeTalents: document.getElementById("includeTalents"),
+        groupUnits: document.getElementById("groupUnits"),
         logicButtons: [...document.querySelectorAll("[data-filter-logic]")],
         filterPanel: document.querySelector(".filter-panel"),
         filterBody: document.getElementById("filterBody"),
@@ -1104,6 +1146,7 @@
       );
       let filterLogic = "or";
       let displayMode = "two";
+      const selectedForms = new Map();
       const numberFormatter = new Intl.NumberFormat("ko-KR");
       const abilityIconOverrides = {
         drain_immune: "../img/i/391.png",
@@ -1230,9 +1273,13 @@
         return true;
       }
 
-      function searchRank(name, query) {
+      function searchRank(name, query, id) {
         if (!query) return 0;
+        const idText = String(id);
+        const paddedId = idText.padStart(3, "0");
+        if (query === idText || query === paddedId) return 0;
         if (name === query) return 0;
+        if (/^\d+$/.test(query) && (idText.startsWith(query) || paddedId.startsWith(query))) return 1;
         if (name.includes(query)) return 1;
         if (orderedSubsequenceMatch(name, query)) return 2;
         if (containsAllLetters(name, query)) return 3;
@@ -1320,9 +1367,9 @@
         elements.displayButtons.forEach((button) => {
           button.setAttribute("aria-pressed", String(button.dataset.displayMode === displayMode));
         });
+        elements.groupUnits.closest("label").hidden = displayMode === "range";
         elements.results.hidden = displayMode === "range";
         elements.rangeResults.hidden = displayMode !== "range";
-        elements.results.classList.toggle("display-one", displayMode === "one");
         elements.results.classList.toggle("display-two", displayMode === "two");
       }
 
@@ -1378,6 +1425,33 @@
         return link;
       }
 
+      // UNIT_GROUP_SCRIPT_START
+      function createFormSwitch(id, variants) {
+        const button = document.createElement("button");
+        button.className = "unit-form-switch";
+        button.type = "button";
+        button.setAttribute("aria-label", `${id}번 유닛 형태 변경`);
+        button.innerHTML = "<span>형태</span><span>변경</span>";
+        button.addEventListener("click", () => {
+          const current = selectedForms.get(id) ?? variants[variants.length - 1].form;
+          const index = variants.findIndex((entry) => entry.form === current);
+          selectedForms.set(id, variants[(index + 1) % variants.length].form);
+          updateResults();
+        });
+        return button;
+      }
+
+      function createGroupedCard(entry) {
+        if (entry.variants.length < 2) return createUnitCard(entry);
+        const card = document.createElement("article");
+        card.className = "unit-card unit-switch-card";
+        const link = createUnitCard(entry);
+        link.className = "unit-card-link";
+        card.append(link, createFormSwitch(entry.id, entry.variants));
+        return card;
+      }
+      // UNIT_GROUP_SCRIPT_END
+
       function renderResults(entries) {
         const fragment = document.createDocumentFragment();
         if (!entries.length) {
@@ -1386,10 +1460,10 @@
           empty.textContent = "조건에 맞는 유닛이 없습니다.";
           fragment.append(empty);
         } else {
-          entries.forEach((entry) => fragment.append(createUnitCard(entry)));
+          entries.forEach((entry) => fragment.append(entry.variants ? createGroupedCard(entry) : createUnitCard(entry)));
         }
         elements.results.replaceChildren(fragment);
-        elements.status.textContent = `${numberFormatter.format(entries.length)}개 형태`;
+        elements.status.textContent = `${numberFormatter.format(entries.length)}개 ${elements.groupUnits.checked ? "유닛" : "형태"}`;
       }
 
       function formatRangeNumber(value) {
@@ -1687,7 +1761,7 @@
 
         return entries
           .map((entry) => {
-            const rank = searchRank(compactSearchText(entry.name), query);
+            const rank = searchRank(compactSearchText(entry.name), query, entry.id);
             if (rank === null) return null;
 
             const traits = entryKeys(entry.traits);
@@ -1763,10 +1837,30 @@
         .filter((item) => item.key !== "timed_life")
         .map((item) => (item.key === "limited_attacks" ? { ...item, label: "1회 공격" } : item)), "attack");
 
+      // UNIT_GROUP_ENTRIES_START
+      function groupUnitEntries(filtered) {
+        const groups = new Map();
+        filtered.forEach((entry) => {
+          if (!groups.has(entry.id)) groups.set(entry.id, []);
+          groups.get(entry.id).push(entry);
+        });
+        return [...groups].map(([id, variants]) => {
+          variants.sort((left, right) => left.form - right.form);
+          const preferred = variants.find((entry) => entry.form === selectedForms.get(id));
+          const chosen = preferred || variants[variants.length - 1];
+          return { ...chosen, variants };
+        });
+      }
+      // UNIT_GROUP_ENTRIES_END
+
       function updateResults({ resetScroll = false } = {}) {
         const filtered = filterEntries(entries, rarities);
-        renderResults(filtered);
+        const shown = elements.groupUnits.checked ? groupUnitEntries(filtered) : filtered;
+        renderResults(shown);
         renderRangeResults(filtered);
+        if (displayMode === "range") {
+          elements.status.textContent = `${numberFormatter.format(filtered.length)}개 형태`;
+        }
         syncDisplayMode();
         syncResetButton();
         if (resetScroll) elements.resultsScroll.scrollTop = 0;
@@ -1794,10 +1888,10 @@
 
       elements.displayButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          displayMode = ["one", "two", "range"].includes(button.dataset.displayMode)
+          displayMode = ["two", "range"].includes(button.dataset.displayMode)
             ? button.dataset.displayMode
             : "two";
-          syncDisplayMode();
+          updateResults();
         });
       });
 
@@ -1817,6 +1911,12 @@
       elements.includeTalents.addEventListener("change", () => {
         updateResults({ resetScroll: true });
       });
+      // UNIT_GROUP_LISTENER_START
+      elements.groupUnits.addEventListener("change", () => {
+        selectedForms.clear();
+        updateResults({ resetScroll: displayMode !== "range" });
+      });
+      // UNIT_GROUP_LISTENER_END
       elements.reset.addEventListener("click", () => {
         elements.nameSearch.value = "";
         elements.includeTalents.checked = false;

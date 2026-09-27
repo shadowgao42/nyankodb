@@ -108,7 +108,7 @@
       font-size: 13px;
     }
 
-    .search-description { margin-top: 6px; font-weight: 400; }
+    .search-description { margin-top: 6px; font-weight: 800; }
     .result-status { font-weight: 700; }
 
     .search-controls {
@@ -533,9 +533,6 @@
     .unit-grid[hidden],
     .range-chart[hidden] { display: none !important; }
 
-    .unit-grid.display-one { grid-template-columns: 1fr; }
-    .unit-grid.display-one .unit-card { border-right: 0; }
-
     .unit-card {
       display: grid;
       grid-template-columns: 78px minmax(0, 1fr);
@@ -937,12 +934,10 @@
       #rarityFilters .text-chip { padding-inline: 4px; font-size: 11px; }
       .icon-chip { width: 40px; height: 40px; min-height: 40px; }
       .icon-chip img { width: 32px; height: 32px; }
-      .unit-grid.display-one { grid-template-columns: 1fr; }
       .unit-grid.display-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .unit-grid.display-two .unit-card { grid-template-columns: 58px minmax(0, 1fr); gap: 7px; padding: 8px; }
       .unit-grid.display-two .unit-card img,
       .unit-grid.display-two .unit-image-empty { width: 58px; height: 48px; }
-      .unit-grid.display-one .unit-card { border-right: 0; }
       .range-chart::before { left: 62px; }
       .range-row { grid-template-columns: 62px minmax(0, 1fr); }
       .range-marker { font-size: 13px; }
@@ -1066,12 +1061,12 @@
       <div class="section-heading">
         <div>
           <h1 id="searchTitle">적 검색</h1>
-          <p class="search-description">이름과 조건을 함께 선택하여 원하는 적을 찾을 수 있습니다.</p>
+          <p class="search-description">이름 또는 ID로 원하는 적을 찾고, 조건으로 결과를 좁힐 수 있습니다.</p>
         </div>
       </div>
       <div class="search-controls">
         <input class="search-input" id="nameSearch" type="search" autocomplete="off"
-               spellcheck="false" placeholder="적 이름 입력" aria-label="적 이름 검색">
+               spellcheck="false" placeholder="적 이름 또는 ID 입력" aria-label="적 이름 또는 ID 검색">
       </div>
     </section>
 
@@ -1149,8 +1144,7 @@
         <h2 id="resultsTitle">모든 적</h2>
         <div class="result-heading-actions">
           <div class="display-mode" role="group" aria-label="적 표시 방식">
-            <button class="display-button" type="button" data-display-mode="one" aria-pressed="false">1열</button>
-            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">2열</button>
+            <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">목록</button>
             <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
           </div>
           <p class="result-status" id="resultStatus" aria-live="polite">적 목록을 불러오는 중입니다.</p>
@@ -1325,9 +1319,13 @@
         return true;
       }
 
-      function searchRank(name, query) {
+      function searchRank(name, query, id) {
         if (!query) return 0;
+        const idText = String(id);
+        const paddedId = idText.padStart(3, "0");
+        if (query === idText || query === paddedId) return 0;
         if (name === query) return 0;
+        if (/^\d+$/.test(query) && (idText.startsWith(query) || paddedId.startsWith(query))) return 1;
         if (name.includes(query)) return 1;
         if (orderedSubsequenceMatch(name, query)) return 2;
         if (containsAllLetters(name, query)) return 3;
@@ -1482,7 +1480,6 @@
         });
         elements.results.hidden = displayMode === "range";
         elements.rangeResults.hidden = displayMode !== "range";
-        elements.results.classList.toggle("display-one", displayMode === "one");
         elements.results.classList.toggle("display-two", displayMode === "two");
       }
 
@@ -1848,7 +1845,7 @@
         const query = compactSearchText(elements.nameSearch.value);
         return entries
           .map((entry) => {
-            const rank = searchRank(compactSearchText(entry.name), query);
+            const rank = searchRank(compactSearchText(entry.name), query, entry.id);
             if (rank === null) return null;
 
             const traits = entryKeys(entry.traits);
@@ -1984,7 +1981,7 @@
 
       elements.displayButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          displayMode = ["one", "two", "range"].includes(button.dataset.displayMode)
+          displayMode = ["two", "range"].includes(button.dataset.displayMode)
             ? button.dataset.displayMode
             : "two";
           syncDisplayMode();
