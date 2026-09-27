@@ -572,12 +572,17 @@
       align-items: center;
       gap: 11px;
       min-width: 0;
-      min-height: 81px;
+      min-height: 82px;
       padding: 9px 12px;
       color: var(--text);
       text-decoration: none;
     }
     .unit-card-link:hover, .unit-card-link:focus-visible { outline: none; }
+    .unit-switch-card .unit-identity {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .unit-form-switch {
       display: grid;
       place-content: center;
@@ -605,9 +610,9 @@
       }
       .unit-grid.display-two .unit-switch-card .unit-card-link {
         grid-template-columns: 58px minmax(0, 1fr);
-        gap: 4px;
+        gap: 7px;
         min-height: 82px;
-        padding: 5px 4px;
+        padding: 8px;
       }
       .unit-grid.display-two .unit-switch-card .unit-card-link img,
       .unit-grid.display-two .unit-switch-card .unit-card-link .unit-image-empty {
