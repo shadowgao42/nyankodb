@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>스테이지 검색 · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 143vh;
+      margin: 0;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: min(1220px, calc(100% - 36px));
+      min-height: 143vh;
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+    .search-panel, .filter-panel, .results-panel {
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+    }
+    .search-panel { padding: 18px; }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: clamp(22px, 3vw, 29px); letter-spacing: -.045em; }
+    h2 { font-size: 18px; letter-spacing: -.035em; }
+    .search-description, .result-status { color: var(--muted); font-size: 13px; }
+    .search-description { margin-top: 6px; font-weight: 800; }
+    .result-status { font-weight: 700; font-variant-numeric: tabular-nums; }
+    .search-controls { margin-top: 16px; }
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 8px 13px;
+      border: 1px solid #4d5a69;
+      border-radius: 9px;
+      color: var(--text);
+      background: #0c1118;
+      outline: none;
+    }
+    .search-input:focus { border-color: #788697; box-shadow: 0 0 0 2px rgba(145,158,173,.18); }
+    .filter-panel > .section-heading {
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--line);
+    }
+    .filter-panel.is-collapsed > .section-heading { border-bottom: 0; }
+    .filter-collapse {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      border: 0;
+      color: #dce3ed;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .filter-collapse:hover, .filter-collapse:focus-visible { color: #fff; outline: none; }
+    .filter-collapse-arrow {
+      color: var(--accent-2);
+      font-size: 22px;
+      line-height: .8;
+      transition: transform .16s ease;
+    }
+    .filter-panel:not(.is-collapsed) .filter-collapse-arrow { transform: rotate(180deg); }
+    .filter-body { padding: 15px; }
+    .filter-placeholder { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .results-panel {
+      display: flex;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    .results-panel > .section-heading {
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .results-scroll {
+      flex: 1 1 0;
+      min-height: 180px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: #526174 #111720;
+    }
+    .stage-section + .stage-section { border-top: 1px solid var(--line); }
+    .stage-section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 17px;
+      color: #fff;
+      background: rgba(28, 37, 49, .72);
+    }
+    .stage-section-heading h3 { flex: 0 1 auto; min-width: 0; }
+    .stage-section-toggle { margin-left: auto; }
+    .stage-section-toggle[aria-expanded="true"] .filter-collapse-arrow { transform: rotate(180deg); }
+    .stage-section-heading img {
+      display: block;
+      flex: 0 0 auto;
+      width: 78px;
+      height: 60px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+    .stage-section-heading h3 { font-size: 15px; font-weight: 900; }
+    .stage-section-heading small { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .stage-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
+    .stage-grid[hidden] { display: none; }
+    .stage-location { min-width: 0; border-bottom: 1px solid var(--line); }
+    .stage-location-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      min-width: 0;
+      background: rgba(23,31,41,.64);
+    }
+    .stage-card {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      min-height: 64px;
+      padding: 10px 17px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .stage-card:hover, .stage-card:focus-visible {
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }
+    .stage-toggle { padding: 0 17px; }
+    .stage-toggle[aria-expanded="true"] .filter-collapse-arrow { transform: rotate(180deg); }
+    .stage-detail-list { display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 0 4px 24px; background: #0c121a; }
+    .stage-detail-list[hidden] { display: none; }
+    .stage-detail-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 43px;
+      min-width: 0;
+      padding: 8px 17px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration: none;
+    }
+    .stage-detail-link:last-child { border-bottom: 0; }
+    .stage-detail-link:hover, .stage-detail-link:focus-visible {
+      color: #fff;
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }
+    .stage-detail-name { min-width: 0; overflow: hidden; font-size: 13px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }
+    .stage-detail-id { flex: 0 0 auto; color: var(--accent-2); font-size: 11px; font-weight: 850; font-variant-numeric: tabular-nums; }
+    .stage-copy { min-width: 0; }
+    .stage-name {
+      display: block;
+      overflow: hidden;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .stage-identity {
+      display: block;
+      margin-top: 5px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+    .empty-results {
+      padding: 42px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .search-panel { padding: 15px; }
+      .results-panel > .section-heading { padding-inline: 15px; }
+    }
+    @media (max-width: 500px) {
+      .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .stage-card { padding: 8px; }
+      .stage-toggle { padding-inline: 8px; }
+      .stage-detail-list { padding-left: 12px; }
+      .stage-detail-link { padding-inline: 8px; }
+      .stage-section-heading img { width: 58px; height: 48px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+  <link rel="stylesheet" href="../gnb.css">
+</head>
+<body>
+  <main class="page">
+    <header data-nyanko-gnb data-search-prefix="unitSearch" data-search-placeholder="이름 입력"></header>
+    <script src="../gnb.js"></script>
+
+    <section class="search-panel" aria-labelledby="searchTitle">
+      <div class="section-heading">
+        <div>
+          <h1 id="searchTitle">스테이지 검색(공사중)</h1>
+          <p class="search-description">이름 또는 ID로 스테이지와 위치를 찾을 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="search-controls">
+        <input class="search-input" id="nameSearch" type="search" autocomplete="off"
+               spellcheck="false" placeholder="스테이지 이름 또는 ID 입력" aria-label="스테이지 이름 또는 ID 검색">
+      </div>
+    </section>
+
+    <section class="filter-panel is-collapsed" aria-labelledby="filterTitle">
+      <div class="section-heading">
+        <h2 id="filterTitle">검색 필터</h2>
+        <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
+          <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+        </button>
+      </div>
+      <div class="filter-body" id="filterBody" hidden>
+        <p class="filter-placeholder">곧 추가 예정입니다!</p>
+      </div>
+    </section>
+
+    <section class="results-panel" aria-labelledby="resultsTitle">
+      <div class="section-heading">
+        <h2 id="resultsTitle">모든 스테이지</h2>
+        <p class="result-status" id="resultStatus" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p>
+      </div>
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="스테이지 위치 검색 결과">
+        <div id="stageResults"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../catalog.js"></script>
+  <script src="../search.js" data-stage-search defer></script>
+  <script>
+    (() => {
+      "use strict";
+      const catalog = window.NYANKODB_SEARCH_CATALOG;
+      const input = document.getElementById("nameSearch");
+      const results = document.getElementById("stageResults");
+      const status = document.getElementById("resultStatus");
+      const panel = document.querySelector(".results-panel");
+      const scroll = document.getElementById("resultsScroll");
+      const filterPanel = document.querySelector(".filter-panel");
+      const filterBody = document.getElementById("filterBody");
+      const filterCollapse = document.getElementById("filterCollapse");
+      const filterCollapseText = document.getElementById("filterCollapseText");
+      const categoryOrder = [
+        "세계편", "세계편 좀비습격", "미래편", "미래편 좀비습격",
+        "우주편", "우주편 좀비습격", "레전드 스토리",
+        "신 레전드 스토리", "레전드 스토리 0", "기타",
+      ];
+      const formatter = new Intl.NumberFormat("ko-KR");
+      const expandedLocations = new Set();
+      const expandedCategories = new Set();
+      const stagesByLocation = new Map();
+      if (catalog && Array.isArray(catalog.entries)) {
+        for (const entry of catalog.entries) {
+          if (entry.kind !== "stage") continue;
+          const match = String(entry.href || "").match(/^stage\/([^/]+)\/([^/]+\.html)$/i);
+          if (!match || /^index\.html$/i.test(match[2])) continue;
+          const key = `stage/${match[1]}/index.html`;
+          if (!stagesByLocation.has(key)) stagesByLocation.set(key, []);
+          stagesByLocation.get(key).push(entry);
+        }
+        for (const stages of stagesByLocation.values()) {
+          stages.sort((left, right) => left.href.localeCompare(right.href, "en", { numeric: true }));
+        }
+      }
+
+      function categoryFor(id) {
+        if (/^EoC$/i.test(id)) return "세계편";
+        if (/^W\d+$/i.test(id)) return "미래편";
+        if (/^Space\d+$/i.test(id)) return "우주편";
+        if (/^N\d{3}$/i.test(id)) return "레전드 스토리";
+        if (/^NA\d{3}$/i.test(id)) return "신 레전드 스토리";
+        if (/^ND\d{3}$/i.test(id)) return "레전드 스토리 0";
+        if (/^Z(?:000|001|002)$/i.test(id)) return "세계편 좀비습격";
+        if (/^Z(?:004|005|006)$/i.test(id)) return "미래편 좀비습격";
+        if (/^Z(?:007|008|009)$/i.test(id)) return "우주편 좀비습격";
+        return "기타";
+      }
+      function compact(value) {
+        return String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
+      }
+      function startsAtLaterWord(displayName, query) {
+        const firstQueryCharacter = [...query][0];
+        for (const boundary of String(displayName).matchAll(/[\s\p{Ps}]+/gu)) {
+          const suffix = String(displayName).slice(boundary.index + boundary[0].length);
+          const firstSuffixCharacter = [...suffix][0] || "";
+          if (compact(firstSuffixCharacter) === firstQueryCharacter && compact(suffix).startsWith(query)) return true;
+        }
+        return false;
+      }
+      function nameRank(displayName, query) {
+        const name = compact(displayName);
+        if (name === query) return 0;
+        if (name.startsWith(query)) return 1;
+        if (startsAtLaterWord(displayName, query)) return 2;
+        if (name.includes(query)) return 3;
+        let cursor = 0;
+        for (const letter of name) if (letter === query[cursor]) cursor++;
+        if (cursor === query.length) return 4;
+        const remaining = [...name];
+        for (const letter of query) {
+          const index = remaining.indexOf(letter);
+          if (index < 0) return null;
+          remaining.splice(index, 1);
+        }
+        return 5;
+      }
+      function entryRank(entry, query) {
+        const id = compact(entry.id);
+        if (id === query) return 0;
+        if (id.startsWith(query)) return 1;
+        return nameRank(entry.name, query);
+      }
+      function bestRank(...values) {
+        const matches = values.filter((value) => value !== null);
+        return matches.length ? Math.min(...matches) : null;
+      }
+      function bareStageName(stage) {
+        return String(stage.name).replace(/\s+\([^()]*\)\s*$/, "");
+      }
+      function stageRank(stage, category, query) {
+        const bare = bareStageName(stage);
+        return bestRank(
+          entryRank({ id: stage.id, name: bare }, query),
+          nameRank(stage.name, query),
+          nameRank(`${bare} (${category})`, query),
+          nameRank(`${stage.name} (${category})`, query),
+        );
+      }
+      function locationMatch(entry, query) {
+        if (!query) return { matchRank: 0, matchingStages: [] };
+        const category = categoryFor(entry.id);
+        const parentRank = bestRank(nameRank(category, query), entryRank(entry, query));
+        const matchingStages = childStages(entry).map((stage) => ({
+          stage, matchRank: stageRank(stage, category, query),
+        })).filter(({ stage, matchRank }) => matchRank !== null
+          && (parentRank === null || matchRank < parentRank
+            || (matchRank === 0 && compact(bareStageName(stage)) === query)));
+        if (parentRank === null && !matchingStages.length) return null;
+        return {
+          matchRank: bestRank(parentRank, ...matchingStages.map((match) => match.matchRank)),
+          matchingStages: matchingStages.map((match) => match.stage),
+        };
+      }
+      function createCard(entry) {
+        const link = document.createElement("a");
+        link.className = "stage-card";
+        link.href = `../${entry.href}`;
+        link.setAttribute("aria-label", `${entry.name}, STAGE ${entry.id}`);
+        const copy = document.createElement("span");
+        copy.className = "stage-copy";
+        const name = document.createElement("span");
+        name.className = "stage-name";
+        name.textContent = entry.name;
+        const identity = document.createElement("span");
+        identity.className = "stage-identity";
+        identity.textContent = `STAGE ${entry.id}`;
+        copy.append(name, identity);
+        link.append(copy);
+        return link;
+      }
+      function childStages(location) {
+        return stagesByLocation.get(location.href) || [];
+      }
+      function createLocation(entry, matchingStages = []) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "stage-location";
+        const row = document.createElement("div");
+        row.className = "stage-location-row";
+        row.append(createCard(entry));
+        const toggle = document.createElement("button");
+        toggle.className = "filter-collapse stage-toggle";
+        toggle.type = "button";
+        toggle.setAttribute("aria-label", `${entry.name} 상세 스테이지 펼치기`);
+        toggle.setAttribute("aria-expanded", "false");
+        const list = document.createElement("div");
+        list.className = "stage-detail-list";
+        list.id = `stageDetails-${entry.id}`;
+        list.hidden = true;
+        toggle.setAttribute("aria-controls", list.id);
+        const label = document.createElement("span");
+        label.textContent = "펼치기";
+        const arrow = document.createElement("span");
+        arrow.className = "filter-collapse-arrow";
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "▾";
+        toggle.append(label, arrow);
+        const stages = matchingStages.length ? matchingStages : childStages(entry);
+        function setExpanded(expanded, remember = true) {
+          if (expanded && !list.childElementCount) {
+            stages.forEach((stage) => {
+              const link = document.createElement("a");
+              link.className = "stage-detail-link";
+              link.href = `../${stage.href}`;
+              const name = document.createElement("span");
+              name.className = "stage-detail-name";
+              const suffix = ` (${entry.name})`;
+              name.textContent = stage.name.endsWith(suffix)
+                ? stage.name.slice(0, -suffix.length) : stage.name;
+              const id = document.createElement("span");
+              id.className = "stage-detail-id";
+              id.textContent = `STAGE ${stage.id}`;
+              link.append(name, id);
+              list.append(link);
+            });
+          }
+          list.hidden = !expanded;
+          toggle.setAttribute("aria-expanded", String(expanded));
+          toggle.setAttribute("aria-label", `${entry.name} 상세 스테이지 ${expanded ? "접기" : "펼치기"}`);
+          label.textContent = expanded ? "접기" : "펼치기";
+          if (remember) {
+            if (expanded) expandedLocations.add(entry.href);
+            else expandedLocations.delete(entry.href);
+          }
+        }
+        toggle.addEventListener("click", () => setExpanded(list.hidden));
+        if (matchingStages.length || expandedLocations.has(entry.href)) setExpanded(true, false);
+        row.append(toggle);
+        wrapper.append(row, list);
+        return wrapper;
+      }
+      function render(entries) {
+        const query = compact(input.value);
+        const matches = entries.map((entry) => ({ entry, match: locationMatch(entry, query) }))
+          .filter(({ match }) => match !== null);
+        const groups = new Map(categoryOrder.map((category) => [category, []]));
+        matches.forEach((result) => groups.get(categoryFor(result.entry.id)).push(result));
+        const fragment = document.createDocumentFragment();
+        groups.forEach((locations, category) => {
+          if (!locations.length) return;
+          locations.sort((left, right) => left.match.matchRank - right.match.matchRank
+            || left.entry.id.localeCompare(right.entry.id, "en", { numeric: true }));
+          const section = document.createElement("section");
+          section.className = "stage-section";
+          section.setAttribute("aria-label", category);
+          const heading = document.createElement("div");
+          heading.className = "stage-section-heading";
+          if (locations[0].entry.icon) {
+            const image = document.createElement("img");
+            image.src = `../${locations[0].entry.icon}`;
+            image.alt = "";
+            image.width = 78;
+            image.height = 60;
+            image.loading = "lazy";
+            image.decoding = "async";
+            heading.append(image);
+          }
+          const title = document.createElement("h3");
+          title.textContent = category;
+          const count = document.createElement("small");
+          count.textContent = `${locations.length}개`;
+          heading.append(title, count);
+          const toggle = document.createElement("button");
+          toggle.className = "filter-collapse stage-section-toggle";
+          toggle.type = "button";
+          toggle.setAttribute("aria-label", `${category} 펼치기`);
+          toggle.setAttribute("aria-expanded", "false");
+          const toggleLabel = document.createElement("span");
+          toggleLabel.textContent = "펼치기";
+          const arrow = document.createElement("span");
+          arrow.className = "filter-collapse-arrow";
+          arrow.setAttribute("aria-hidden", "true");
+          arrow.textContent = "▾";
+          toggle.append(toggleLabel, arrow);
+          heading.append(toggle);
+          const grid = document.createElement("div");
+          grid.className = "stage-grid";
+          grid.id = `stageCategory-${categoryOrder.indexOf(category)}`;
+          grid.hidden = true;
+          toggle.setAttribute("aria-controls", grid.id);
+          function setExpanded(expanded, remember = true) {
+            grid.hidden = !expanded;
+            toggle.setAttribute("aria-expanded", String(expanded));
+            toggle.setAttribute("aria-label", `${category} ${expanded ? "접기" : "펼치기"}`);
+            toggleLabel.textContent = expanded ? "접기" : "펼치기";
+            if (remember) {
+              if (expanded) expandedCategories.add(category);
+              else expandedCategories.delete(category);
+            }
+          }
+          toggle.addEventListener("click", () => setExpanded(grid.hidden));
+          if (query || expandedCategories.has(category)) setExpanded(true, false);
+          locations.forEach(({ entry, match }) => grid.append(createLocation(entry, match.matchingStages)));
+          section.append(heading, grid);
+          fragment.append(section);
+        });
+        if (!matches.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-results";
+          empty.textContent = "조건에 맞는 스테이지 또는 위치가 없습니다.";
+          fragment.append(empty);
+        }
+        results.replaceChildren(fragment);
+        const detailCount = matches.reduce((total, result) => total + result.match.matchingStages.length, 0);
+        status.textContent = query && detailCount
+          ? `${formatter.format(matches.length)}개 위치 · ${formatter.format(detailCount)}개 스테이지`
+          : `${formatter.format(matches.length)}개 위치`;
+      }
+
+      filterCollapse.addEventListener("click", () => {
+        const collapsed = filterPanel.classList.toggle("is-collapsed");
+        filterBody.hidden = collapsed;
+        filterCollapse.setAttribute("aria-expanded", String(!collapsed));
+        filterCollapseText.textContent = collapsed ? "펼치기" : "접기";
+      });
+      input.addEventListener("input", () => { if (locations) render(locations); scroll.scrollTop = 0; });
+      input.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !input.value) return;
+        input.value = "";
+        if (locations) render(locations);
+        scroll.scrollTop = 0;
+      });
+
+      const locations = catalog && Array.isArray(catalog.entries)
+        ? [...new Map(catalog.entries
+          .filter((entry) => entry.kind === "stage" && /^stage\/[^/]+\/index\.html$/i.test(entry.href || ""))
+          .map((entry) => [entry.href, { ...entry, id: String(entry.id), name: String(entry.name) }])).values()]
+        : null;
+      if (locations) {
+        render(locations);
+      } else {
+        results.innerHTML = '<p class="empty-results">스테이지 카탈로그 데이터가 없습니다.</p>';
+        status.textContent = "목록을 불러오지 못했습니다.";
+      }
+      const initialHeight = panel.offsetHeight;
+      if (initialHeight > 0) {
+        panel.style.height = `${initialHeight}px`;
+        panel.style.flex = "0 0 auto";
+      }
+    })();
+  </script>
+</body>
+</html>

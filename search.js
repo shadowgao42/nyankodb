@@ -15,8 +15,8 @@
 
   function startsAtLaterWord(displayName, query) {
     const firstQueryCharacter = [...query][0];
-    for (const whitespace of String(displayName).matchAll(/\s+/gu)) {
-      const suffix = String(displayName).slice(whitespace.index + whitespace[0].length);
+    for (const boundary of String(displayName).matchAll(/[\s\p{Ps}]+/gu)) {
+      const suffix = String(displayName).slice(boundary.index + boundary[0].length);
       const firstSuffixCharacter = [...suffix][0] || "";
       if (compact(firstSuffixCharacter) === firstQueryCharacter && compact(suffix).startsWith(query)) {
         return true;
@@ -43,15 +43,34 @@
     return 5;
   }
 
+  function stageCategory(entry) {
+    const location = String(entry.href || entry.url || "").match(/^stage\/([^/]+)\//i)?.[1] || "";
+    if (/^eoc$/i.test(location)) return "세계편";
+    if (/^W\d+$/i.test(location)) return "미래편";
+    if (/^Space\d+$/i.test(location)) return "우주편";
+    if (/^N\d{3}$/i.test(location)) return "레전드 스토리";
+    if (/^NA\d{3}$/i.test(location)) return "신 레전드 스토리";
+    if (/^ND\d{3}$/i.test(location)) return "레전드 스토리 0";
+    if (/^Z(?:000|001|002)$/i.test(location)) return "세계편 좀비습격";
+    if (/^Z(?:004|005|006)$/i.test(location)) return "미래편 좀비습격";
+    if (/^Z(?:007|008|009)$/i.test(location)) return "우주편 좀비습격";
+    return "";
+  }
+
   function entryRank(entry, query) {
     if (compact(entry.id) === query || (/^\d+$/.test(query) && Number(entry.id) === Number(query))) {
       return 0;
     }
     const displayName = String(entry.name || entry.label || "");
-    const name = compact(displayName);
     if (entry.kind === "stage") {
-      const nameWithoutLocation = compact(displayName.replace(/\s+\([^()]*\)\s*$/, ""));
-      if (nameWithoutLocation === query) return 0;
+      const bareName = displayName.replace(/\s+\([^()]*\)\s*$/, "");
+      if (compact(bareName) === query) return 0;
+      const category = stageCategory(entry);
+      if (category) return Math.min(
+        nameRank(displayName, query),
+        nameRank(`${bareName} (${category})`, query),
+        nameRank(`${displayName} (${category})`, query),
+      );
     }
     return nameRank(displayName, query);
   }
@@ -251,29 +270,7 @@
             icon.style.objectFit = "none";
             icon.style.objectPosition = "center";
           }
-          if (entry.iconOverlay) {
-            const frame = document.createElement("span");
-            frame.style.cssText = "position:relative;display:block;width:100%;";
-            // 15.6 ARM64 0x4fa948..0x4fa998: cut 33 at
-            // (button.right - 173 * scale, button.top + 4 * scale), 164x72.
-            // Match the base image's contain fit, including letterboxing, at any size.
-            const svgNS = "http://www.w3.org/2000/svg";
-            const badge = document.createElementNS(svgNS, "svg");
-            badge.setAttribute("viewBox", "0 0 328 263");
-            badge.setAttribute("preserveAspectRatio", "xMidYMid meet");
-            badge.setAttribute("role", "img");
-            badge.setAttribute("aria-label", "좀비습격");
-            badge.style.cssText = "position:absolute;inset:0;width:100%;height:100%;pointer-events:none;";
-            const overlay = document.createElementNS(svgNS, "image");
-            overlay.setAttribute("href", new URL(entry.iconOverlay, siteRoot).href);
-            overlay.setAttribute("x", "155");
-            overlay.setAttribute("y", "4");
-            overlay.setAttribute("width", "164");
-            overlay.setAttribute("height", "72");
-            badge.append(overlay);
-            frame.append(icon, badge);
-            node.append(frame);
-          } else node.append(icon);
+          node.append(icon);
         } else {
           const placeholder = document.createElement("span");
           placeholder.className = "unit-search-result-icon-empty";

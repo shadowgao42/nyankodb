@@ -14,6 +14,7 @@
         <a class="gnb-menu-link" data-section="unit"><img alt="" width="30" height="30"><span>유닛</span></a>
         <a class="gnb-menu-link" data-section="enemy"><img alt="" width="30" height="30"><span>적</span></a>
         <a class="gnb-menu-link" data-section="item"><img alt="" width="30" height="30"><span>아이템</span></a>
+        <a class="gnb-menu-link" data-section="stage"><img alt="" width="30" height="30"><span>스테이지</span></a>
         <span class="gnb-menu-indicator" aria-hidden="true"></span>
       </nav>
       </div>

@@ -253,7 +253,7 @@
 .nyanko-gnb[data-gnb-settling] .gnb-menu-indicator {
   transition: none;
 }
-@media (max-width: 660px) {
+@media (max-width: 820px) {
   .nyanko-gnb {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
@@ -292,6 +292,11 @@
     right: 0;
     left: auto;
   }
+}
+
+@media (max-width: 400px) {
+  .nyanko-gnb .gnb-menu { gap: 6px; }
+  .nyanko-gnb .gnb-menu-link { padding-inline: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
