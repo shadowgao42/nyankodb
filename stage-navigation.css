@@ -1,9 +1,50 @@
 .stage-neighbor-nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 0;
   margin-top: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(14, 19, 26, .94);
+  box-shadow: var(--shadow);
 }
+
+.stage-neighbor-nav--floating {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  width: min(360px, calc(100vw - 32px));
+  gap: 0;
+  margin: 0;
+  border-radius: 12px;
+  background: rgba(14, 19, 26, .86);
+  box-shadow: 0 8px 26px rgba(0,0,0,.45);
+}
+
+.stage-neighbor-nav--floating[hidden] { display: none; }
+.stage-neighbor-drag-handle {
+  grid-column: 1 / -1;
+  min-height: 34px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 18px;
+  text-align: center;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+}
+.stage-neighbor-nav--floating .stage-neighbor-link {
+  min-height: 54px;
+  padding: 7px 11px;
+}
+.stage-neighbor-nav--floating .stage-neighbor-name { font-size: 12px; }
+.stage-neighbor-nav--floating.is-dragging .stage-neighbor-drag-handle { cursor: grabbing; }
+.stage-neighbor-nav--floating .stage-neighbor-link:hover { background: rgba(32, 42, 54, .86); }
 
 .stage-neighbor-link {
   display: flex;
@@ -13,11 +54,9 @@
   min-width: 0;
   min-height: 72px;
   padding: 12px 17px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
+  border: 0;
   color: var(--text);
-  background: rgba(14, 19, 26, .94);
-  box-shadow: var(--shadow);
+  background: transparent;
   text-decoration: none;
 }
 
@@ -33,6 +72,7 @@
   align-items: flex-end;
   text-align: right;
 }
+.stage-neighbor-link--previous + .stage-neighbor-link--next { border-left: 1px solid var(--line); }
 
 .stage-neighbor-direction {
   color: var(--accent-text);
@@ -50,7 +90,7 @@
 }
 
 @media (max-width: 500px) {
-  .stage-neighbor-nav { gap: 8px; }
+  .stage-neighbor-nav--floating { right: 8px; bottom: 8px; width: min(300px, calc(100vw - 16px)); }
   .stage-neighbor-link { min-height: 66px; padding: 10px; }
   .stage-neighbor-name { font-size: 13px; }
 }

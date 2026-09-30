@@ -2,7 +2,8 @@
 (() => {
   "use strict";
   const root = new URL("./", document.currentScript.src);
-  const entries = window.NYANKODB_SEARCH_CATALOG?.entries;
+  const entries = window.NYANKODB_STAGE_NAVIGATION?.entries
+    || window.NYANKODB_SEARCH_CATALOG?.entries;
   const hero = document.querySelector(".hero");
   if (!Array.isArray(entries) || !hero) return;
 
@@ -14,21 +15,27 @@
   const parts = current.href.split("/");
   const locationId = parts[1];
   const isLocation = parts[2] === "index.html";
+  const locationFamily = (id) => {
+    const zombie = /^Z(\d{3})$/i.exec(String(id));
+    if (zombie) {
+      const group = Number(zombie[1]);
+      return group <= 2 ? "zombie-eoc" : group <= 6 ? "zombie-itf" : "zombie-cotc";
+    }
+    return String(id).match(/^([a-z]+)\d+$/i)?.[1]?.toLowerCase() || String(id).toLowerCase();
+  };
   let siblings;
   if (isLocation) {
-    const family = String(current.id).match(/^([a-z]+)\d+$/i)?.[1];
-    if (!family) return;
+    const family = locationFamily(current.id);
     siblings = entries.filter((entry) => entry.kind === "stage"
       && entry.href === `stage/${entry.id}/index.html`
-      && String(entry.id).match(/^([a-z]+)\d+$/i)?.[1]?.toLowerCase() === family.toLowerCase());
+      && locationFamily(entry.id) === family);
     siblings.sort((a, b) => Number(String(a.id).match(/\d+$/)?.[0])
       - Number(String(b.id).match(/\d+$/)?.[0]));
   } else {
     siblings = entries.filter((entry) => entry.kind === "stage"
       && String(entry.href || "").startsWith(`stage/${locationId}/`)
-      && /^\d+\.html$/i.test(String(entry.href).split("/").at(-1)));
-    siblings.sort((a, b) => Number(a.href.split("/").at(-1).replace(/\.html$/i, ""))
-      - Number(b.href.split("/").at(-1).replace(/\.html$/i, "")));
+      && String(entry.href).endsWith(".html")
+      && !String(entry.href).endsWith("/index.html"));
   }
 
   const position = siblings.findIndex((entry) => entry.href === current.href);
@@ -54,5 +61,64 @@
     link.append(label, name);
     nav.append(link);
   }
-  if (nav.childElementCount) hero.insertAdjacentElement("afterend", nav);
+  if (!nav.childElementCount) return;
+  hero.insertAdjacentElement("afterend", nav);
+
+  const floating = nav.cloneNode(true);
+  floating.classList.add("stage-neighbor-nav--floating");
+  floating.setAttribute("aria-label", `${nav.getAttribute("aria-label")} 빠른 이동`);
+  const handle = document.createElement("div");
+  handle.className = "stage-neighbor-drag-handle";
+  handle.textContent = "스테이지 이동";
+  floating.prepend(handle);
+  floating.hidden = true;
+  document.body.append(floating);
+  let drag = null;
+  let offsetX = 0;
+  let offsetY = 0;
+  const clamp = (value, maximum) => Math.max(0, Math.min(value, Math.max(0, maximum)));
+  const keepInViewport = () => {
+    if (floating.hidden) return;
+    const rect = floating.getBoundingClientRect();
+    const scaleX = rect.width / floating.offsetWidth || 1;
+    const scaleY = rect.height / floating.offsetHeight || 1;
+    offsetX += (clamp(rect.left, window.innerWidth - rect.width) - rect.left) / scaleX;
+    offsetY += (clamp(rect.top, window.innerHeight - rect.height) - rect.top) / scaleY;
+    floating.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+  };
+  handle.addEventListener("pointerdown", (event) => {
+    if (!event.isPrimary || event.button !== 0) return;
+    const rect = floating.getBoundingClientRect();
+    drag = { pointerId: event.pointerId, x: event.clientX, y: event.clientY,
+      left: rect.left, top: rect.top, width: rect.width, height: rect.height,
+      scaleX: rect.width / floating.offsetWidth || 1,
+      scaleY: rect.height / floating.offsetHeight || 1,
+      offsetX, offsetY };
+    handle.setPointerCapture(event.pointerId);
+    floating.classList.add("is-dragging");
+    event.preventDefault();
+  });
+  handle.addEventListener("pointermove", (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    const dx = event.clientX - drag.x;
+    const dy = event.clientY - drag.y;
+    offsetX = drag.offsetX + (clamp(drag.left + dx, window.innerWidth - drag.width) - drag.left) / drag.scaleX;
+    offsetY = drag.offsetY + (clamp(drag.top + dy, window.innerHeight - drag.height) - drag.top) / drag.scaleY;
+    floating.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+    event.preventDefault();
+  });
+  const endDrag = (event) => {
+    if (!drag || event.pointerId !== drag.pointerId) return;
+    floating.classList.remove("is-dragging");
+    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    drag = null;
+  };
+  handle.addEventListener("pointerup", endDrag);
+  handle.addEventListener("pointercancel", endDrag);
+  const updateFloating = () => {
+    floating.hidden = nav.getBoundingClientRect().bottom >= 0;
+  };
+  window.addEventListener("scroll", updateFloating, { passive: true });
+  window.addEventListener("resize", () => { updateFloating(); keepInViewport(); });
+  updateFloating();
 })();
