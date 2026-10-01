@@ -111,13 +111,24 @@
     const pageName = page.replace(/\.html$/i, "");
     const locationPage = !pageName || /^index$/i.test(pageName);
     const stageNumber = /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
-    return { prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
+    const familyOrder = eoc ? 0
+      : prefix === "W" ? 1
+      : prefix === "SPACE" ? 2
+      : prefix === "Z" && locationNumber <= 2 ? 3
+      : prefix === "Z" && locationNumber <= 6 ? 4
+      : prefix === "Z" && locationNumber <= 9 ? 5
+      : prefix === "N" ? 6
+      : prefix === "NA" ? 7
+      : prefix === "ND" ? 8
+      : 9;
+    return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
   }
 
   function compareStageEntries(left, right) {
     const a = stageSortKey(left);
     const b = stageSortKey(right);
-    return compareText(a.prefix, b.prefix)
+    return a.familyOrder - b.familyOrder
+      || compareText(a.prefix, b.prefix)
       || a.locationNumber - b.locationNumber
       || Number(b.locationPage) - Number(a.locationPage)
       || a.stageNumber - b.stageNumber

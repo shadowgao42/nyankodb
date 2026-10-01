@@ -696,7 +696,7 @@
       const rule = location?.xpClearRule || xpClearRule;
       const baseXp = Number(location?.xp ?? DATA.stageInfo?.xp ?? 0);
       const count = location ? state.invasionSourceClearCount : Math.max(0, Math.floor(Number(state.previousClearCount) || 0));
-      const initialXp = rule.key === "legend" ? baseXp * 9 : baseXp;
+      const initialXp = (rule.key === "legend" ? baseXp * 9 : baseXp) * (DATA.zombie_story ? 2 : 1);
       const divisor = rule.key === "legend" ? 5 : rule.key === "story" ? 14 : 0;
       if (!divisor) return initialXp;
       // Truncate the clear-count deduction before applying study/treasure bonuses.
