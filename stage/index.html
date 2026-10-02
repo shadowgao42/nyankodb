@@ -300,7 +300,7 @@
       const filterCollapseText = document.getElementById("filterCollapseText");
       const categoryOrder = [
         "세계편", "미래편", "우주편", "세계편 좀비습격",
-        "미래편 좀비습격", "우주편 좀비습격", "레전드 스토리",
+        "미래편 좀비습격", "우주편 좀비습격", "마계편", "레전드 스토리",
         "신 레전드 스토리", "레전드 스토리 0", "기타",
       ];
       const formatter = new Intl.NumberFormat("ko-KR");
@@ -312,12 +312,14 @@
           if (entry.kind !== "stage") continue;
           const match = String(entry.href || "").match(/^stage\/([^/]+)\/([^/]+\.html)$/i);
           if (!match || /^index\.html$/i.test(match[2])) continue;
-          const key = `stage/${match[1]}/index.html`;
+          const key = entry.locationHref || `stage/${match[1]}/index.html`;
           if (!stagesByLocation.has(key)) stagesByLocation.set(key, []);
           stagesByLocation.get(key).push(entry);
         }
         for (const stages of stagesByLocation.values()) {
-          stages.sort((left, right) => left.href.localeCompare(right.href, "en", { numeric: true }));
+          const order = (entry) => entry.stageOrder ?? Number(String(entry.href).match(/\/(\d+)\.html$/)?.[1] ?? Number.MAX_SAFE_INTEGER);
+          stages.sort((left, right) => order(left) - order(right)
+            || left.href.localeCompare(right.href, "en", { numeric: true }));
         }
       }
 
@@ -331,6 +333,7 @@
         if (/^Z(?:000|001|002)$/i.test(id)) return "세계편 좀비습격";
         if (/^Z(?:004|005|006)$/i.test(id)) return "미래편 좀비습격";
         if (/^Z(?:007|008|009)$/i.test(id)) return "우주편 좀비습격";
+        if (/^DM\d{3}$/i.test(id)) return "마계편";
         return "기타";
       }
       function compact(value) {

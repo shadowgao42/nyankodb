@@ -590,8 +590,13 @@
     };
     const crownOptions = (DATA.crownMagnifications || [100]).map(Number).filter((value) => Number.isFinite(value) && value > 0);
     if (!crownOptions.length) crownOptions.push(100);
+    const isAkuRealm = DATA.map_code === "DM" || /^DM\d{3}(?:-|$)/i.test(stageId);
+    const canSelectStageLevel = !isAkuRealm && stage.showStageLevel !== false
+      && DATA.location?.showStageLevel !== false
+      && !Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
     const currentStoryChapter = () => DATA.story?.chapters?.[state.crownIndex];
     function restoreLocationLevel() {
+      if (!canSelectStageLevel) return;
       try {
         const level = Number(localStorage.getItem(locationLevelStorageKey));
         if (!Number.isInteger(level) || level < 1) return;
@@ -600,6 +605,7 @@
       } catch (_) {}
     }
     function persistLocationLevel() {
+      if (!canSelectStageLevel) return;
       const level = currentStoryChapter()?.chapter ?? state.crownIndex + 1;
       try { localStorage.setItem(locationLevelStorageKey, String(level)); } catch (_) {}
     }
@@ -713,6 +719,15 @@
     }
     function persistPreviousClearCount() {
       try { localStorage.setItem(clearCountStorageKey, String(state.previousClearCount)); } catch (_) {}
+    }
+    function syncPreviousClearCountInput() {
+      const input = $("previousClearCount");
+      if (!input) return;
+      setPreviousClearCount(input.value);
+      input.value = String(state.previousClearCount);
+      $("stageXpValue").textContent = stageXpText();
+      renderCastleImage(DATA.stageInfo || {});
+      if (isInvasion) $("invasionClearNote").innerHTML = invasionClearNote();
     }
     function currentInvasionLocation() {
       return invasionLocations.find(({id}) => id === state.invasionLocationId);
@@ -1050,8 +1065,7 @@
       return fmt(Math.floor(clearAdjustedBaseXp() * xpMultiplier()));
     }
     function xpClearControl() {
-      if (!isInvasion && xpClearRule.key !== "legend" && xpClearRule.key !== "story") return "";
-      return `<label class="xp-clear-field"><span>클리어</span><input id="previousClearCount" type="number" inputmode="numeric" min="0" ${isInvasion ? 'max="1"' : ''} step="1" value="${state.previousClearCount}" aria-label="클리어 횟수"><span>회</span></label>${isInvasion ? `<small class="invasion-clear-note" id="invasionClearNote">${invasionClearNote()}</small>` : ""}`;
+      return `<label class="xp-clear-field"><span>클리어</span><input id="previousClearCount" type="number" inputmode="numeric" autocomplete="off" min="0" ${isInvasion ? 'max="1"' : ''} step="1" value="${state.previousClearCount}" aria-label="클리어 횟수"><span>회</span></label>${isInvasion ? `<small class="invasion-clear-note" id="invasionClearNote">${invasionClearNote()}</small>` : ""}`;
     }
     function invasionClearNote() {
       return `(${escapeHtml(currentInvasionLocation()?.name)} 클리어 ${fmt(state.invasionSourceClearCount)}회)`;
@@ -1486,18 +1500,23 @@
         restoreStoryRewardStates(false); restorePreviousClearCount(); $("crownSelect").value = isInvasion && !isZombie ? state.invasionLocationId : String(state.crownIndex); renderStageClassification();
         renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();
       };
-      window.addEventListener("pageshow", (event) => { if (event.persisted) restoreSharedView(); });
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) restoreSharedView();
+        else syncPreviousClearCountInput();
+      });
       window.addEventListener("storage", (event) => { if ([sharedSettingsStorageKey, enemySharedSettingsKey, locationLevelStorageKey, clearCountStorageKey, invasionLocationStorageKey, storyRewardStorageKey, null].includes(event.key) || (isInvasion && event.key === locationClearCountKey(state.invasionLocationId))) restoreSharedView(); });
       syncDistanceUnitInputs();
       $("crownSelect").innerHTML = crownOptions.map((value,index) => `<option value="${index}">${DATA.story ? `제${DATA.story.chapters[index].chapter}장` : DATA.location?.chapters?.length ? `제${DATA.location.chapters[index]}장` : `👑${index + 1} · ${fmtNumber(value)}%`}</option>`).join("");
-      $("crownSelect").closest(".crown-control").hidden = stage.showStageLevel === false || Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
+      const crownControl = $("crownSelect").closest(".crown-control");
+      crownControl.hidden = !canSelectStageLevel;
       $("crownSelect").value = String(state.crownIndex);
       if (isInvasion && !isZombie) {
         $("stageLevelLabel").textContent = "습격 위치";
-        $("crownSelect").closest(".crown-control").hidden = false;
+        crownControl.hidden = false;
         $("crownSelect").innerHTML = invasionLocations.map(({id, name}) => `<option value="${escapeHtml(id)}">${escapeHtml(name)}</option>`).join("");
         $("crownSelect").value = state.invasionLocationId;
       }
+      if (isLocation && crownControl.hidden) crownControl.closest(".hero-controls").hidden = true;
       const syncTimeButtons = () => { $("timeSeconds")?.setAttribute("aria-pressed", String(state.timeUnit === "seconds")); $("timeFrames")?.setAttribute("aria-pressed", String(state.timeUnit === "frames")); };
       $("timeSeconds")?.addEventListener("click", () => { state.timeUnit = "seconds"; syncTimeButtons(); renderOverview(); renderEnemies(); });
       $("timeFrames")?.addEventListener("click", () => { state.timeUnit = "frames"; syncTimeButtons(); renderOverview(); renderEnemies(); });
@@ -1523,13 +1542,11 @@
       $("stageLengthUnitSelect")?.addEventListener("change", (event) => { state.stageLengthUnit = event.target.value; persistSharedSettings(); syncResetButtons(); renderOverview(); });
       $("bossSpawnUnitSelect")?.addEventListener("change", (event) => { state.bossSpawnUnit = event.target.value; persistSharedSettings(); syncResetButtons(); renderOverview(); });
       $("distanceUnitResetButton")?.addEventListener("click", () => { state.stageLengthUnit = "rng"; state.bossSpawnUnit = "rng"; syncDistanceUnitInputs(); persistSharedSettings(); syncResetButtons(); renderOverview(); });
-      $("overview")?.addEventListener("input", (event) => {
-        if (event.target.id !== "previousClearCount") return;
-        setPreviousClearCount(event.target.value);
-        if (event.target.value !== String(state.previousClearCount)) event.target.value = String(state.previousClearCount);
-        $("stageXpValue").textContent = stageXpText(); renderCastleImage(DATA.stageInfo || {});
-        if (isInvasion) $("invasionClearNote").innerHTML = invasionClearNote();
-      });
+      for (const eventName of ["input", "change"]) {
+        $("overview")?.addEventListener(eventName, (event) => {
+          if (event.target.id === "previousClearCount") syncPreviousClearCountInput();
+        });
+      }
       document.addEventListener("pointerdown", (event) => { if (!$("rewards")?.contains(event.target) && !$("scoreRewards")?.contains(event.target)) closeRewardTooltips(); });
       document.addEventListener("pointerdown", (event) => { if (!$("locationMaterials")?.contains(event.target)) closeMaterialTooltips(); });
       syncTimeButtons(); renderTreasureTabs(); renderTreasureContent(); syncResetButtons(); renderOverview(); renderRewards(); renderRestrictions(); renderEnemies();

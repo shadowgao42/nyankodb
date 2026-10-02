@@ -13,7 +13,7 @@
   if (!current) return;
 
   const parts = current.href.split("/");
-  const locationId = parts[1];
+  const locationId = current.locationId || parts[1];
   const isLocation = parts[2] === "index.html";
   const locationFamily = (id) => {
     const zombie = /^Z(\d{3})$/i.exec(String(id));
@@ -33,7 +33,7 @@
       - Number(String(b.id).match(/\d+$/)?.[0]));
   } else {
     siblings = entries.filter((entry) => entry.kind === "stage"
-      && String(entry.href || "").startsWith(`stage/${locationId}/`)
+      && (entry.locationId || String(entry.href || "").split("/")[1]) === locationId
       && String(entry.href).endsWith(".html")
       && !String(entry.href).endsWith("/index.html"));
   }

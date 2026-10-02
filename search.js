@@ -44,7 +44,7 @@
   }
 
   function stageCategory(entry) {
-    const location = String(entry.href || entry.url || "").match(/^stage\/([^/]+)\//i)?.[1] || "";
+    const location = entry.locationId || String(entry.href || entry.url || "").match(/^stage\/([^/]+)\//i)?.[1] || "";
     if (/^eoc$/i.test(location)) return "세계편";
     if (/^W\d+$/i.test(location)) return "미래편";
     if (/^Space\d+$/i.test(location)) return "우주편";
@@ -54,6 +54,7 @@
     if (/^Z(?:000|001|002)$/i.test(location)) return "세계편 좀비습격";
     if (/^Z(?:004|005|006)$/i.test(location)) return "미래편 좀비습격";
     if (/^Z(?:007|008|009)$/i.test(location)) return "우주편 좀비습격";
+    if (/^DM\d{3}$/i.test(location)) return "마계편";
     return "";
   }
 
@@ -61,6 +62,7 @@
     if (compact(entry.id) === query || (/^\d+$/.test(query) && Number(entry.id) === Number(query))) {
       return 0;
     }
+    if (entry.kind === "stage" && compact(entry.id).startsWith(query)) return 1;
     const displayName = String(entry.name || entry.label || "");
     if (entry.kind === "stage") {
       const bareName = displayName.replace(/\s+\([^()]*\)\s*$/, "");
@@ -76,6 +78,13 @@
   }
 
   const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });
+  const ticketOrder = new Map([20, 21, 157, 29, 145, 212].map((id, index) => [id, index]));
+  const evolutionOrder = new Map([
+    30, 31, 32, 33, 34, 43, 160, 41, 164, 35, 36, 37, 38, 39, 40,
+    161, 42, 44, 167, 168, 169, 170, 171, 184, 179, 180, 181, 182, 183,
+  ].map((id, index) => [id, index]));
+  const catseyeIds = new Set([50, 51, 52, 53, 54, 58]);
+  const castleIds = new Set([85, 86, 87, 88, 89, 90, 91, 140, 187, 188, 189, 190, 191, 192, 193, 194]);
 
   function compareText(left, right) {
     return left < right ? -1 : left > right ? 1 : 0;
@@ -87,7 +96,7 @@
       .replace(/\\/g, "/");
     const segments = path.split("/").filter(Boolean);
     const stageIndex = segments.findIndex(segment => segment.toLocaleLowerCase("en-US") === "stage");
-    let location = stageIndex >= 0 ? segments[stageIndex + 1] || "" : "";
+    let location = entry.locationId || (stageIndex >= 0 ? segments[stageIndex + 1] || "" : "");
     let page = stageIndex >= 0 ? segments[stageIndex + 2] || "" : "";
 
     // The catalogue normally supplies a stage URL. Keep ID parsing as a
@@ -110,17 +119,19 @@
     const locationNumber = eoc ? 0 : (locationMatch ? Number(locationMatch[2]) : Number.MAX_SAFE_INTEGER);
     const pageName = page.replace(/\.html$/i, "");
     const locationPage = !pageName || /^index$/i.test(pageName);
-    const stageNumber = /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
+    const stageNumber = Number.isInteger(entry.stageOrder) ? entry.stageOrder
+      : /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
     const familyOrder = eoc ? 0
       : prefix === "W" ? 1
       : prefix === "SPACE" ? 2
       : prefix === "Z" && locationNumber <= 2 ? 3
       : prefix === "Z" && locationNumber <= 6 ? 4
       : prefix === "Z" && locationNumber <= 9 ? 5
-      : prefix === "N" ? 6
-      : prefix === "NA" ? 7
-      : prefix === "ND" ? 8
-      : 9;
+      : prefix === "DM" ? 6
+      : prefix === "N" ? 7
+      : prefix === "NA" ? 8
+      : prefix === "ND" ? 9
+      : 10;
     return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
   }
 
@@ -136,6 +147,16 @@
       || compareText(a.id, b.id);
   }
 
+  function itemSortKey(entry) {
+    const id = Number(entry.id);
+    if (id >= 0 && id <= 5) return { category: 0, position: id };
+    if (ticketOrder.has(id)) return { category: 1, position: ticketOrder.get(id) };
+    if (evolutionOrder.has(id)) return { category: 2, position: evolutionOrder.get(id) };
+    if (catseyeIds.has(id)) return { category: 3, position: id };
+    if (castleIds.has(id)) return { category: 4, position: id };
+    return { category: 5, position: id };
+  }
+
   function compareResults(left, right) {
     const rankDifference = left.rank - right.rank;
     if (rankDifference) return rankDifference;
@@ -143,7 +164,13 @@
     const rightKind = kindOrder[right.entry.kind] ?? Number.MAX_SAFE_INTEGER;
     if (leftKind !== rightKind) return leftKind - rightKind;
     if (left.entry.kind === "stage" && right.entry.kind === "stage") {
-      return compareStageEntries(left.entry, right.entry);
+      const categoryDifference = stageSortKey(left.entry).familyOrder - stageSortKey(right.entry).familyOrder;
+      return categoryDifference || compareStageEntries(left.entry, right.entry);
+    }
+    if (left.entry.kind === "item" && right.entry.kind === "item") {
+      const a = itemSortKey(left.entry);
+      const b = itemSortKey(right.entry);
+      return a.category - b.category || a.position - b.position;
     }
     const idDifference = Number(left.entry.id) - Number(right.entry.id);
     if (Number.isFinite(idDifference) && idDifference) return idDifference;
