@@ -291,6 +291,8 @@
     .empty { color: var(--muted); font-size: 11px; font-weight: 800; }
 
     .stage-reward-list { display: grid; width: 100%; gap: 9px; }
+    .stage-reward-group { display: grid; gap: 9px; min-width: 0; padding: 10px; border: 1px solid #3c4a5b; border-radius: 10px; }
+    .stage-reward-group-note { color: var(--muted); font-size: 12px; font-weight: 800; }
     .story-reward-settings { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 11px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
     .story-reward-settings[hidden] { display: none; }
     .story-reward-acquired { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; color: #d9e1eb; font-size: 12px; font-weight: 800; }
@@ -593,10 +595,7 @@
     };
     const crownOptions = (DATA.crownMagnifications || [100]).map(Number).filter((value) => Number.isFinite(value) && value > 0);
     if (!crownOptions.length) crownOptions.push(100);
-    const isAkuRealm = DATA.map_code === "DM" || /^DM\d{3}(?:-|$)/i.test(stageId);
-    const canSelectStageLevel = !isAkuRealm && stage.showStageLevel !== false
-      && DATA.location?.showStageLevel !== false
-      && !Boolean(DATA.story && (DATA.story.family !== 0 || DATA.story.stageIndex === 47));
+    const canSelectStageLevel = crownOptions.length > 1;
     const currentStoryChapter = () => DATA.story?.chapters?.[state.crownIndex];
     function restoreLocationLevel() {
       if (!canSelectStageLevel) return;
@@ -1166,17 +1165,21 @@
     }
     function renderRewardList(root, rewards, scoreOnly = false) {
       rewards = rewards.filter((reward) => {
+        if (reward.kind === "mission") return false;
+        if (reward.kind === "unlock") return reward.chapter == null || Number(reward.chapter) === Number(currentStoryChapter()?.chapter);
         if (reward.kind === "score") return true;
         if (reward.kind === "treasure") return treasureDropProbability(reward.treasureGrade) > 0;
         if (reward.probabilityPercent != null) return Number(reward.probabilityPercent) > 0;
         if (reward.criterionKind === "reward_number" || reward.kind === "clear") return true;
         return reward.chance == null || Number(reward.chance) > 0;
       });
-      root.innerHTML = rewards.length ? rewards.map((reward, index) => {
+      const entries = rewards.map((reward, index) => {
         const criterion = Number(reward.chance || 0);
         const amountValue = fmt(reward.amount || 1);
         const isXpOrNp = [6, 7].includes(Number(reward.itemId)) || ["XP", "NP"].includes(String(reward.displayUnit || "").trim());
-        const amount = isXpOrNp ? amountValue : `×${amountValue}`;
+        const amount = ["unlock", "mission"].includes(reward.kind) && reward.unlockType !== "item"
+          ? (reward.unlockType === "form" ? `제${reward.unitForm}형태 해방` : `×${amountValue}`)
+          : isXpOrNp ? amountValue : `×${amountValue}`;
         const name = reward.name || `아이템 ${reward.itemId}`;
         const probability = reward.kind === "treasure" ? treasureDropProbability(reward.treasureGrade) : Number(reward.probabilityPercent ?? criterion);
         const condition = reward.kind === "score"
@@ -1184,8 +1187,10 @@
           : reward.criterionKind === "reward_number" && reward.probabilityPercent === undefined
           ? "확률 미확인"
           : (reward.kind === "treasure" || reward.probabilityPercent !== undefined || probability ? `확률 ${fmtNumber(probability)}%` : "");
-        const availability = reward.oneTime ? "1회만" : "중복 가능";
-        const details = scoreOnly ? `${fmt(criterion)}점` : [condition, availability].filter(Boolean).join(" · ");
+        const availability = reward.selectionGroup ? "" : reward.oneTime ? "1회만" : "중복 가능";
+        const details = reward.kind === "mission" ? "미션에서 수령 · 이미 수령 시 제외"
+          : reward.kind === "unlock" ? "첫 클리어 보너스"
+          : scoreOnly ? `${fmt(criterion)}점` : [condition, availability].filter(Boolean).join(" · ");
         const copy = `<span class="stage-reward-copy">${reward.itemIcon ? "" : `<strong>${escapeHtml(name)}</strong>`}<em>${escapeHtml(amount)}</em><small>${escapeHtml(details)}</small></span>`;
         const radar = reward.treasureRadarGuaranteed
           ? `<img class="stage-reward-radar" src="${escapeHtml(assetPath("img/icon/icon_treasure.png"))}" alt="트레저 레이더 보장">`
@@ -1195,8 +1200,18 @@
           ? `<button class="stage-reward-item" type="button" data-reward-index="${index}" data-tooltip="${escapeHtml(name)}" aria-label="${escapeHtml(name)} ${escapeHtml(amount)}" aria-expanded="false">${icon}</button>`
           : `<span class="stage-reward-item" tabindex="0" data-tooltip="${escapeHtml(name)}">${icon}</span>`;
         return `<div class="stage-reward-entry">${item}${copy}${radar}</div>`;
-      }).join("") : `<span class="empty">보상 없음</span>`;
-      if (rewards.length) root.innerHTML = `<div class="stage-reward-list">${root.innerHTML}</div>`;
+      });
+      const emittedGroups = new Set();
+      const content = rewards.map((reward, index) => {
+        const group = reward.selectionGroup;
+        if (!group) return entries[index];
+        if (emittedGroups.has(group)) return "";
+        emittedGroups.add(group);
+        const members = rewards.map((member, i) => member.selectionGroup === group ? entries[i] : "").join("");
+        const note = `위 아이템 중 하나 · ${reward.selectionOneTime ? "1회만" : "중복 가능"}`;
+        return `<div class="stage-reward-group" role="group" aria-label="${escapeHtml(note)}">${members}<small class="stage-reward-group-note">${escapeHtml(note)}</small></div>`;
+      }).join("");
+      root.innerHTML = rewards.length ? `<div class="stage-reward-list">${content}</div>` : `<span class="empty">보상 없음</span>`;
       root.querySelectorAll("button.stage-reward-item[data-reward-index]").forEach((item) => {
         item.addEventListener("click", () => {
           const reward = rewards[Number(item.dataset.rewardIndex)];

@@ -55,6 +55,7 @@
     if (/^Z(?:004|005|006)$/i.test(location)) return "미래편 좀비습격";
     if (/^Z(?:007|008|009)$/i.test(location)) return "우주편 좀비습격";
     if (/^DM\d{3}$/i.test(location)) return "마계편";
+    if (/^V\d{3}$/i.test(location)) return "냥코탑";
     return "";
   }
 
@@ -131,7 +132,8 @@
       : prefix === "N" ? 7
       : prefix === "NA" ? 8
       : prefix === "ND" ? 9
-      : 10;
+      : prefix === "V" ? 10
+      : 11;
     return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
   }
 
@@ -307,6 +309,8 @@
             icon.className = "stage-search-icon";
             icon.style.objectFit = "none";
             icon.style.objectPosition = "center";
+            // Compact results use a 54x40 slot instead of the full 78x60 slot.
+            if (!home) icon.style.transform = "scale(0.6666666667)";
           }
           node.append(icon);
         } else {

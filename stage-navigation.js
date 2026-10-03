@@ -1,4 +1,13 @@
-/* Previous/next links shared by stage details and location pages. */
+/* Shared stage bootstrap: location images and previous/next links. */
+(() => {
+  // Existing pages already include this bootstrap. Load the common image
+  // resolver independently of navigation, including locations with no siblings.
+  if (typeof DATA === "undefined" || !DATA.location) return;
+  const script = document.createElement("script");
+  script.src = new URL("stage-location-background.js", document.currentScript.src).href;
+  document.head.append(script);
+})();
+
 (() => {
   "use strict";
   const root = new URL("./", document.currentScript.src);
