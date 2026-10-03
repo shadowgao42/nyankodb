@@ -181,15 +181,24 @@
     return compareText(String(left.entry.id ?? ""), String(right.entry.id ?? ""));
   }
 
-  function search(value) {
+  const resultLimit = 200;
+
+  function searchResults(value) {
     const query = compact(value);
-    if (!query) return [];
-    return entries().map(entry => ({
+    if (!query) return { matches: [], total: 0 };
+    const ranked = entries().map(entry => ({
       entry,
       rank: entryRank(entry, query),
     })).filter(result => result.rank < 99)
-      .sort(compareResults)
-      .map(result => result.entry);
+      .sort(compareResults);
+    return {
+      matches: ranked.slice(0, resultLimit).map(result => result.entry),
+      total: ranked.length,
+    };
+  }
+
+  function search(value) {
+    return searchResults(value).matches;
   }
 
   function identity(entry) {
@@ -274,7 +283,8 @@
     }
 
     function render() {
-      visible = search(input.value);
+      const found = searchResults(input.value);
+      visible = found.matches;
       results.replaceChildren();
       close();
       if (!compact(input.value)) {
@@ -283,7 +293,15 @@
           : "검색 목록을 불러오지 못했습니다.";
         return;
       }
-      if (status) status.textContent = visible.length ? `${visible.length}개의 결과` : "일치하는 결과가 없습니다.";
+      const countText = found.total > resultLimit ? `${resultLimit}+개의 결과` : `${found.total}개의 결과`;
+      if (status) status.textContent = visible.length ? countText : "일치하는 결과가 없습니다.";
+      if (visible.length && !home) {
+        const count = document.createElement("div");
+        count.className = "unit-search-empty unit-search-count";
+        count.setAttribute("role", "status");
+        count.textContent = countText;
+        results.append(count);
+      }
       if (!visible.length && !home) {
         const empty = document.createElement("div");
         empty.className = "unit-search-empty";
