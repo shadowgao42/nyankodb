@@ -216,6 +216,7 @@
       font-weight: 900;
       font-variant-numeric: tabular-nums;
     }
+    .stage-card-count { display: inline-block; margin-left: 8px; color: var(--muted); font-size: 11px; font-weight: 800; white-space: nowrap; }
     .empty-results {
       padding: 42px 18px;
       color: var(--muted);
@@ -277,7 +278,7 @@
         <h2 id="resultsTitle">모든 스테이지</h2>
         <p class="result-status" id="resultStatus" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p>
       </div>
-      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="스테이지 위치 검색 결과">
+      <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="장 및 스테이지 검색 결과">
         <div id="stageResults"></div>
       </div>
     </section>
@@ -301,7 +302,7 @@
       const categoryOrder = [
         "세계편", "미래편", "우주편", "세계편 좀비습격",
         "미래편 좀비습격", "우주편 좀비습격", "마계편", "레전드 스토리",
-        "신 레전드 스토리", "레전드 스토리 0", "냥코탑", "초수 토벌 스테이지", "지하 미궁", "기타",
+        "신 레전드 스토리", "레전드 스토리 0", "드링크 스테이지", "냥코탑", "초수 토벌 스테이지", "지하 미궁", "EX 스테이지", "기타",
       ];
       const formatter = new Intl.NumberFormat("ko-KR");
       const expandedLocations = new Set();
@@ -337,6 +338,8 @@
         if (/^V\d{3}$/i.test(id)) return "냥코탑";
         if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
         if (/^L\d{3}$/i.test(id)) return "지하 미궁";
+        if (/^B\d{3}$/i.test(id)) return "드링크 스테이지";
+        if (/^EX\d{3}$/i.test(id)) return "EX 스테이지";
         return "기타";
       }
       function compact(value) {
@@ -405,11 +408,11 @@
           matchingStages: matchingStages.map((match) => match.stage),
         };
       }
-      function createCard(entry) {
+      function createCard(entry, stageCount) {
         const link = document.createElement("a");
         link.className = "stage-card";
         link.href = `../${entry.href}`;
-        link.setAttribute("aria-label", `${entry.name}, STAGE ${entry.id}`);
+        link.setAttribute("aria-label", `${entry.name}, STAGE ${entry.id}, ${formatter.format(stageCount)}개 스테이지`);
         const copy = document.createElement("span");
         copy.className = "stage-copy";
         const name = document.createElement("span");
@@ -418,6 +421,10 @@
         const identity = document.createElement("span");
         identity.className = "stage-identity";
         identity.textContent = `STAGE ${entry.id}`;
+        const count = document.createElement("span");
+        count.className = "stage-card-count";
+        count.textContent = `${formatter.format(stageCount)}개 스테이지`;
+        identity.append(count);
         copy.append(name, identity);
         link.append(copy);
         return link;
@@ -425,12 +432,19 @@
       function childStages(location) {
         return stagesByLocation.get(location.href) || [];
       }
+      function displayedStages(location, matchingStages = []) {
+        return matchingStages.length ? matchingStages : childStages(location);
+      }
+      function countSummary(chapters, stages) {
+        return `${formatter.format(chapters)}개 장 · ${formatter.format(stages)}개 스테이지`;
+      }
       function createLocation(entry, matchingStages = []) {
+        const stages = displayedStages(entry, matchingStages);
         const wrapper = document.createElement("div");
         wrapper.className = "stage-location";
         const row = document.createElement("div");
         row.className = "stage-location-row";
-        row.append(createCard(entry));
+        row.append(createCard(entry, stages.length));
         const toggle = document.createElement("button");
         toggle.className = "filter-collapse stage-toggle";
         toggle.type = "button";
@@ -448,7 +462,6 @@
         arrow.setAttribute("aria-hidden", "true");
         arrow.textContent = "▾";
         toggle.append(label, arrow);
-        const stages = matchingStages.length ? matchingStages : childStages(entry);
         function setExpanded(expanded, remember = true) {
           if (expanded && !list.childElementCount) {
             stages.forEach((stage) => {
@@ -501,7 +514,7 @@
           if (locations[0].entry.icon) {
             const image = document.createElement("img");
             image.src = `../${locations[0].entry.icon}`;
-            if (/\/stage_(?:N|NA|ND)\.png$/.test(locations[0].entry.icon)) {
+            if (/\/stage_(?:N|NA|ND|B)\.png$/.test(locations[0].entry.icon)) {
               image.className = "stage-search-icon";
             }
             image.alt = "";
@@ -514,7 +527,8 @@
           const title = document.createElement("h3");
           title.textContent = category;
           const count = document.createElement("small");
-          count.textContent = `${locations.length}개`;
+          const stageCount = locations.reduce((total, { entry, match }) => total + displayedStages(entry, match.matchingStages).length, 0);
+          count.textContent = countSummary(locations.length, stageCount);
           heading.append(title, count);
           const toggle = document.createElement("button");
           toggle.className = "filter-collapse stage-section-toggle";
@@ -553,14 +567,12 @@
         if (!matches.length) {
           const empty = document.createElement("p");
           empty.className = "empty-results";
-          empty.textContent = "조건에 맞는 스테이지 또는 위치가 없습니다.";
+          empty.textContent = "조건에 맞는 장 또는 스테이지가 없습니다.";
           fragment.append(empty);
         }
         results.replaceChildren(fragment);
-        const detailCount = matches.reduce((total, result) => total + result.match.matchingStages.length, 0);
-        status.textContent = query && detailCount
-          ? `${formatter.format(matches.length)}개 위치 · ${formatter.format(detailCount)}개 스테이지`
-          : `${formatter.format(matches.length)}개 위치`;
+        const detailCount = matches.reduce((total, result) => total + displayedStages(result.entry, result.match.matchingStages).length, 0);
+        status.textContent = countSummary(matches.length, detailCount);
       }
 
       filterCollapse.addEventListener("click", () => {

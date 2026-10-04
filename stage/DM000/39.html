@@ -529,7 +529,7 @@
           </div>
           <div class="stage-rewards-section stage-score-rewards" id="scoreRewardsSection" hidden><span class="stat-label">채점보상</span><div class="stage-detail-content" id="scoreRewards"></div></div>
         </article>
-        <article class="stat-card stage-castle-card"><span class="stat-label">성 정보</span><div class="range-stack"><div class="range-row"><span>성 체력</span><strong id="castleHp"></strong></div><div class="range-row" hidden><span>보스 출현 위치</span><strong id="bossSpawnPosition"></strong></div><div class="range-row castle-seal-row" id="castleSealRow" hidden><label for="castleSealLevel">봉인 Lv.</label><select id="castleSealLevel" aria-label="봉인 Lv."></select></div><div class="range-row" id="castleIdRow"><span>성 ID</span><strong id="castleId"></strong></div></div><img class="stage-castle-image" id="castleImage" alt="" hidden></article>
+        <article class="stat-card stage-castle-card"><span class="stat-label">성 정보</span><div class="range-stack"><div class="range-row"><span>성 체력</span><strong id="castleHp"></strong></div><div class="range-row" hidden><span>보스 출현 위치</span><strong id="bossSpawnPosition"></strong></div><div class="range-row castle-seal-row" id="castleSealRow" hidden><label for="castleSealLevel">해방 Lv.</label><select id="castleSealLevel" aria-label="해방 Lv."></select></div><div class="range-row" id="castleIdRow"><span>성 ID</span><strong id="castleId"></strong></div></div><img class="stage-castle-image" id="castleImage" alt="" hidden></article>
       </div>
     </section>
 
@@ -1490,7 +1490,7 @@
     function initialize() {
       initializeStageBackground();
       if (!isLocation) {
-        $("castleSealLevel").innerHTML = '<option value="0">없음</option>' + Array.from({ length: 50 }, (_, index) => `<option value="${index + 1}">${index + 1}</option>`).join("");
+        $("castleSealLevel").innerHTML = '<option value="0">MAX</option>' + Array.from({ length: 50 }, (_, index) => `<option value="${index + 1}">${index + 1}</option>`).join("");
         $("castleSealLevel").addEventListener("change", (event) => {
           state.sealLevel = clampInteger(event.target.value, 0, 50, 0);
           persistSharedSettings();
