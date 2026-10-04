@@ -57,6 +57,7 @@
     if (/^DM\d{3}$/i.test(location)) return "마계편";
     if (/^V\d{3}$/i.test(location)) return "냥코탑";
     if (/^Q\d{3}$/i.test(location)) return "초수 토벌 스테이지";
+    if (/^L\d{3}$/i.test(location)) return "지하 미궁";
     return "";
   }
 
@@ -135,7 +136,8 @@
       : prefix === "ND" ? 9
       : prefix === "V" ? 10
       : prefix === "Q" ? 11
-      : 12;
+      : prefix === "L" ? 12
+      : 13;
     return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
   }
 

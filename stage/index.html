@@ -301,7 +301,7 @@
       const categoryOrder = [
         "세계편", "미래편", "우주편", "세계편 좀비습격",
         "미래편 좀비습격", "우주편 좀비습격", "마계편", "레전드 스토리",
-        "신 레전드 스토리", "레전드 스토리 0", "냥코탑", "초수 토벌 스테이지", "기타",
+        "신 레전드 스토리", "레전드 스토리 0", "냥코탑", "초수 토벌 스테이지", "지하 미궁", "기타",
       ];
       const formatter = new Intl.NumberFormat("ko-KR");
       const expandedLocations = new Set();
@@ -336,6 +336,7 @@
         if (/^DM\d{3}$/i.test(id)) return "마계편";
         if (/^V\d{3}$/i.test(id)) return "냥코탑";
         if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
+        if (/^L\d{3}$/i.test(id)) return "지하 미궁";
         return "기타";
       }
       function compact(value) {
