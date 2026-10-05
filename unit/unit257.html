@@ -6697,10 +6697,7 @@
         ),
         60,
       );
-      const productionPercent = Math.max(0, Math.min(100, Number(raw[118]) || 0));
-      const cooldownOrbAbility = productionPercent > 0
-        ? null
-        : selectedConditionalOrbAbility(abilities, 19);
+      const cooldownOrbAbility = selectedConditionalOrbAbility(abilities, 19);
       if (cooldownOrbAbility) {
         cooldownFrames = Math.max(
           Math.floor(
@@ -6713,6 +6710,7 @@
         );
         markProvenance(statKinds, "cooldown", "orb");
       }
+      const productionPercent = Math.max(0, Math.min(100, Number(raw[118]) || 0));
       if (productionPercent > 0 && activeAttackEffectKeys.has("production_speed")) {
         cooldownFrames = Math.max(Math.floor(cooldownFrames * (100 - productionPercent) / 100 + 1e-9), 60);
         markProvenance(statKinds, "cooldown", records.some(r => Number(r.talent.abilityId) === 72) ? "ultra" : "ability");
