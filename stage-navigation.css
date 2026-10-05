@@ -1,3 +1,5 @@
+.enemy-magnification .enemy-magnification-label { color: var(--text); }
+
 .stage-neighbor-nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

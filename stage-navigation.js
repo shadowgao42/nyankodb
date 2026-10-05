@@ -1,5 +1,27 @@
 /* Shared stage bootstrap: location images and previous/next links. */
 (() => {
+  // Older detail pages render multiplier labels as plain text. Normalize each
+  // render so changing crowns or treasure settings retains the shared colors.
+  const rows = document.getElementById("enemyRows");
+  if (!rows) return;
+  const formatLabels = () => {
+    for (const element of rows.querySelectorAll(".enemy-magnification")) {
+      if (element.firstElementChild || !element.textContent.startsWith("체력 ")) continue;
+      const parts = element.textContent.split(/(체력|공격력| · )/);
+      element.replaceChildren(...parts.filter(Boolean).map((part) => {
+        if (!["체력", "공격력", " · "].includes(part)) return document.createTextNode(part);
+        const label = document.createElement("span");
+        label.className = "enemy-magnification-label";
+        label.textContent = part;
+        return label;
+      }));
+    }
+  };
+  formatLabels();
+  new MutationObserver(formatLabels).observe(rows, { childList: true, subtree: true });
+})();
+
+(() => {
   // Existing pages already include this bootstrap. Load the common image
   // resolver independently of navigation, including locations with no siblings.
   if (typeof DATA === "undefined" || !DATA.location) return;

@@ -8655,6 +8655,10 @@
       spiritView = null,
     ) {
       container.replaceChildren();
+      const hasProductionSpeed = abilities.some(ability => ability.key === "production_speed");
+      if (hasProductionSpeed) {
+        abilities = abilities.filter(ability => Number(ability.orbContentId) !== 19);
+      }
       const abilityDisplayOrder = new Map(
         ["weaken", "freeze", "slow", "attack_only", "strong", "resistant", "insanely_tough", "massive_damage", "insane_damage", "knockback", "warp", "curse", "dodge", "strengthen", "survive", "base_destroyer", "critical", "metal_killer", "zombie_killer", "soulstrike", "witch_killer", "eva_killer", "barrier_breaker", "shield_piercer", "savage_blow", "double_bounty", "metal", "mini_wave", "wave", "mini_surge", "surge", "explosion", "counter_surge", "wave_blocker", "conjure", "colossus_slayer", "behemoth_slayer", "sage_slayer", "weaken_immune", "freeze_immune", "slow_immune", "knockback_immune", "wave_immune", "surge_immune", "explosion_immune", "warp_immune", "curse_immune", "toxic_immune", "drain_immune", "boss_wave_immune", "timed_life", "single", "area", "long_distance", "omni_strike", "multi_hit", "limited_attacks"].map((key, index) => [key, index]),
       );

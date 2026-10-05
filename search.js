@@ -60,6 +60,7 @@
     if (/^L\d{3}$/i.test(location)) return "지하 미궁";
     if (/^B\d{3}$/i.test(location)) return "드링크 스테이지";
     if (/^EX\d{3}$/i.test(location)) return "EX 스테이지";
+    if (/^H\d{3}$/i.test(location)) return "발굴 스테이지";
     return "";
   }
 
@@ -136,12 +137,16 @@
       : prefix === "N" ? 7
       : prefix === "NA" ? 8
       : prefix === "ND" ? 9
-      : prefix === "B" ? 10
-      : prefix === "V" ? 11
-      : prefix === "Q" ? 12
+      : prefix === "M" ? 10
+      : prefix === "H" ? 11
+      : prefix === "B" ? 12
       : prefix === "L" ? 13
-      : prefix === "EX" ? 14
-      : 15;
+      : prefix === "V" ? 14
+      : prefix === "Q" ? 15
+      : prefix === "SR" ? 16
+      : prefix === "A" ? 17
+      : prefix === "EX" ? 18
+      : 19;
     return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
   }
 
@@ -331,7 +336,7 @@
           icon.src = source.startsWith("../") ? new URL(source, location.href).href : new URL(source, siteRoot).href;
           icon.alt = "";
           icon.loading = "lazy";
-          if (/\/stage_(?:N|NA|ND|B)\.png$/.test(new URL(icon.src).pathname)) {
+          if (/\/stage_(?:N|NA|ND|B|M|H)\.png$/.test(new URL(icon.src).pathname)) {
             icon.className = "stage-search-icon";
             icon.style.objectFit = "none";
             icon.style.objectPosition = "center";
