@@ -213,7 +213,7 @@
       function createCard(entry) {
         const link = document.createElement("a");
         link.className = "item-card";
-        link.href = `item${String(entry.id).padStart(3, "0")}.html`;
+        link.href = entry.href ? `../${entry.href}` : `item${String(entry.id).padStart(3, "0")}.html`;
         link.setAttribute("aria-label", `${entry.name}, ITEM ${String(entry.id).padStart(3, "0")}`);
         if (entry.icon) {
           const image = document.createElement("img");

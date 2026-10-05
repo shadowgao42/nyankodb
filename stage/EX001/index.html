@@ -328,6 +328,7 @@
     .stage-restriction-list { display: grid; width: 100%; align-content: start; gap: 7px; }
     .stage-restriction { display: block; color: #f4f7fb; font-size: 15px; font-weight: 800; line-height: 1.45; word-break: keep-all; overflow-wrap: normal; }
     .stage-restriction-value { color: var(--accent-text); font-style: normal; font-variant-numeric: tabular-nums; }
+    .stage-special-rule-description { display: block; margin-top: 4px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
     .stage-seal-level { display: inline-block; white-space: nowrap; }
     .empty { color: var(--muted); font-size: 11px; font-weight: 800; }
 
@@ -1249,7 +1250,10 @@
         const criterion = Number(reward.chance || 0);
         const amountValue = fmt(reward.amount || 1);
         const isXpOrNp = [6, 7].includes(Number(reward.itemId)) || ["XP", "NP"].includes(String(reward.displayUnit || "").trim());
-        const amount = ["unlock", "mission"].includes(reward.kind) && reward.unlockType !== "item"
+        const unitForm = Number(reward.unitForm ?? String(reward.itemHref || "").match(/[?&]form=(\d+)/)?.[1] ?? (reward.itemKind === "true_form" ? 3 : 1));
+        const isFormUnlock = ["unit", "true_form"].includes(reward.itemKind) && unitForm > 1;
+        const amount = isFormUnlock ? `제${unitForm}형태 해방`
+          : ["unlock", "mission"].includes(reward.kind) && reward.unlockType !== "item"
           ? (reward.unlockType === "form" ? `제${reward.unitForm}형태 해방` : `×${amountValue}`)
           : isXpOrNp ? amountValue : `×${amountValue}`;
         const name = reward.name || `아이템 ${reward.itemId}`;
@@ -1319,6 +1323,7 @@
         kind: "castle_seal", prefix: "캐릭터 레벨 봉인: ", value: state.sealLevel,
       });
       const restrictionHtml = (restriction) => {
+        if (restriction.kind === "special_rule") return `<em class="stage-restriction-value">【${escapeHtml(restriction.label)}】</em>${restriction.descriptionLines?.length ? `<span class="stage-special-rule-description">${restriction.descriptionLines.map(escapeHtml).join("<br>")}</span>` : ""}`;
         if (typeof restriction === "string" || restriction.value === undefined) return escapeHtml(typeof restriction === "string" ? restriction : restriction.label);
         if (restriction.kind === "castle_seal") return `${escapeHtml(restriction.prefix)}<span class="stage-seal-level">Lv. <em class="stage-restriction-value">${escapeHtml(restriction.value)}</em></span>`;
         return `${escapeHtml(restriction.prefix || "")}<em class="stage-restriction-value">${escapeHtml(restriction.value)}</em>${escapeHtml(restriction.suffix || "")}`;
@@ -1576,7 +1581,7 @@
         initializeStageBackground(); renderOverview(); renderEnemies();
       });
       if (!isLocation) {
-        $("castleSealLevel").innerHTML = '<option value="0">없음</option>' + Array.from({ length: 50 }, (_, index) => `<option value="${index + 1}">${index + 1}</option>`).join("");
+        $("castleSealLevel").innerHTML = '<option value="0">MAX</option>' + Array.from({ length: 50 }, (_, index) => `<option value="${index + 1}">${index + 1}</option>`).join("");
         $("castleSealLevel").addEventListener("change", (event) => {
           state.sealLevel = clampInteger(event.target.value, 0, 50, 0);
           persistSharedSettings();

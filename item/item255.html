@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>냥코DB · 전설의 성수</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      min-height: 143vh;
+      min-width: 320px;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .22), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.035) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button, input { font: inherit; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: clamp(112px, 20vw, 260px) minmax(0, 1fr);
+      min-height: 238px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(14, 19, 26, .9);
+      box-shadow: var(--shadow);
+    }
+
+    .portrait {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 238px;
+      overflow: hidden;
+      background: linear-gradient(140deg, rgba(255, 91, 45, .16), rgba(8, 11, 16, .15));
+    }
+
+    .portrait img {
+      width: min(86%, 500px);
+      max-height: 180px;
+      object-fit: contain;
+      image-rendering: pixelated;
+      filter: drop-shadow(10px 14px 18px rgba(0, 0, 0, .42));
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 28px 38px;
+      border-left: 1px solid rgba(255,255,255,.06);
+    }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: var(--accent-text);
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Yu Gothic", "Malgun Gothic", sans-serif;
+      font-size: clamp(31px, 3.6vw, 49px);
+      line-height: 1.12;
+      letter-spacing: -.045em;
+    }
+
+    .name-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+    }
+
+    .unit-description {
+      max-width: 760px;
+      margin: 9px 0 0;
+      color: #aeb9c8;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.55;
+      white-space: pre-line;
+    }
+
+    .unit-description:empty { display: none; }
+
+    .rarity-badge {
+      flex: 0 0 auto;
+      padding: 7px 12px;
+      border: 1px solid rgba(255, 173, 61, .34);
+      border-radius: 999px;
+      color: var(--accent-text);
+      background: rgba(255, 173, 61, .1);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+    }
+
+    .section {
+      margin-top: 16px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: rgba(15, 20, 28, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 19px 22px 14px;
+    }
+
+    .section-heading h2 {
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: -.025em;
+    }
+
+    .mother-members {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      align-items: stretch;
+      padding: 0 14px 14px;
+    }
+
+    .mother-member {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      min-width: 0;
+      min-height: 76px;
+      padding: 10px 13px;
+      border: 1px solid #2d3948;
+      border-radius: 18px;
+      color: #f4f7fb;
+      background: var(--surface-2);
+      text-decoration: none;
+    }
+
+    .mother-member:hover,
+    .mother-member:focus-visible {
+      border-color: #788697;
+      background: #273341;
+    }
+
+    .mother-member-image {
+      display: grid;
+      width: 46px;
+      height: 36px;
+      place-items: center;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .mother-member-image img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .mother-member-name {
+      overflow: hidden;
+      font-size: 14px;
+      font-weight: 950;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mother-member-copy {
+      display: grid;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .mother-member-identity {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .03em;
+    }
+
+    .required-material-quantity {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-left: auto;
+      flex: 0 0 auto;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .required-material-quantity img {
+      display: block;
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .required-unit-groups {
+      display: grid;
+      gap: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 13px;
+      padding-bottom: 14px;
+    }
+
+    .required-unit-rarity-group { display: grid; gap: 6px; }
+
+    .required-unit-rarity-title {
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 0 15px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .required-unit-rarity-title img {
+      display: block;
+      width: 90px;
+      height: 28px;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .required-unit-rarity-group .mother-members { padding-bottom: 0; }
+
+    @media (max-width: 660px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .hero-copy { padding: 20px 16px; }
+      .name-row h1 { font-size: clamp(22px, 6vw, 32px); }
+      .mother-members { grid-template-columns: 1fr; gap: 8px; }
+      .mother-member { min-height: 66px; padding: 8px 10px; }
+      .mother-member-image { width: 40px; height: 32px; }
+      .required-material-quantity { gap: 4px; font-size: 13px; }
+      .required-material-quantity img { width: 26px; height: 26px; }
+      .required-unit-groups { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+</style>
+  <link rel="stylesheet" href="../gnb.css">
+</head>
+<body>
+  <main class="page">
+    <header data-nyanko-gnb data-search-prefix="itemSearch" data-search-placeholder="이름 입력"></header>
+    <script src="../gnb.js"></script>
+
+    <header class="hero" id="itemPanel" role="tabpanel">
+      <div class="portrait">
+        <img id="itemPortrait" src="../img/r/255.png" alt="전설의 성수 아이콘">
+      </div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span id="itemIdentity">ITEM 255</span></div>
+        <div class="name-row">
+          <h1 id="itemName">전설의 성수</h1>
+
+        </div>
+        <p class="unit-description" id="itemDescription"></p>
+      </div>
+    </header>
+
+  </main>
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
+</body>
+</html>
+
+
+  <script>
+    (() => {
+      const panel = document.getElementById("requiredUnitsPanel");
+      const members = document.getElementById("requiredUnitsMembers");
+      if (!panel || !members) return;
+
+      const itemId = String(Number(panel.dataset.itemId));
+      const users = window.NYANKODB_SEARCH_CATALOG?.evolutionMaterialUsers?.[itemId];
+      if (!Array.isArray(users) || !users.length) return;
+
+      const rarityGroups = [
+        { label: "기본", icon: 153 }, { label: "EX", icon: 154 },
+        { label: "레어", icon: 155 }, { label: "슈퍼 레어", icon: 156 },
+        { label: "울트라 슈퍼 레어", icon: 157 }, { label: "레전드 레어", icon: 158 },
+      ];
+      const groups = new Map(rarityGroups.map((rarity) => [rarity.label, []]));
+      users.forEach((user) => {
+        const rarity = String(user?.rarity || "기타");
+        if (!groups.has(rarity)) groups.set(rarity, []);
+        groups.get(rarity).push(user);
+      });
+
+      groups.forEach((groupUsers, rarity) => {
+        if (!groupUsers.length) return;
+        const group = document.createElement("section");
+        group.className = "required-unit-rarity-group";
+        const title = document.createElement("h3");
+        title.className = "required-unit-rarity-title";
+        const rarityIcon = rarityGroups.find((entry) => entry.label === rarity);
+        if (rarityIcon) {
+          const image = document.createElement("img");
+          image.src = `../img/i/${rarityIcon.icon}.png`;
+          image.alt = rarity;
+          title.append(image);
+        } else title.textContent = rarity;
+        const grid = document.createElement("div");
+        grid.className = "mother-members";
+
+        groupUsers.forEach((user) => {
+          const unitId = Number(user?.id);
+          const form = Number(user?.form);
+          if (!Number.isInteger(unitId) || unitId < 0 || !Number.isInteger(form) || form < 1) return;
+          const card = document.createElement("a");
+          card.className = "mother-member";
+          card.href = `../unit/unit${String(unitId).padStart(3, "0")}.html?form=${form}`;
+          card.setAttribute("aria-label", `${user?.name || `UNIT ${String(unitId).padStart(3, "0")}-${form}`} 유닛 계산기로 이동`);
+
+          const imageWrap = document.createElement("span");
+          imageWrap.className = "mother-member-image";
+          const unitImage = document.createElement("img");
+          unitImage.src = `../${String(user?.icon || "").replace(/^\.\.\//, "")}`;
+          unitImage.alt = "";
+          unitImage.loading = "lazy";
+          imageWrap.append(unitImage);
+
+          const copy = document.createElement("span");
+          copy.className = "mother-member-copy";
+          const name = document.createElement("span");
+          name.className = "mother-member-name";
+          name.textContent = String(user?.name || `UNIT ${String(unitId).padStart(3, "0")}-${form}`);
+          const identity = document.createElement("small");
+          identity.className = "mother-member-identity";
+          identity.textContent = `UNIT ${String(unitId).padStart(3, "0")}-${form}`;
+          copy.append(name, identity);
+
+          const quantity = Number(user?.quantity);
+          if (Number.isFinite(quantity) && quantity > 0) {
+            const requirement = document.createElement("span");
+            requirement.className = "required-material-quantity";
+            const materialImage = document.createElement("img");
+            materialImage.src = `../img/r/${itemId}.png`;
+            materialImage.alt = "";
+            materialImage.loading = "lazy";
+            const amount = document.createElement("span");
+            amount.textContent = `×${quantity}`;
+            requirement.append(materialImage, amount);
+            card.append(imageWrap, copy, requirement);
+          } else card.append(imageWrap, copy);
+          grid.append(card);
+        });
+
+        if (grid.childElementCount) {
+          group.append(title, grid);
+          members.append(group);
+        }
+      });
+      if (members.childElementCount) panel.hidden = false;
+    })();
+  </script>
