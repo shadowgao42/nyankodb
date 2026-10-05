@@ -388,9 +388,18 @@
       gap: 6px;
     }
 
-    #rarityFilters .text-chip {
-      min-width: 0;
-      white-space: nowrap;
+    #rarityFilters .icon-chip {
+      width: 112px;
+      height: 40px;
+      min-height: 40px;
+      padding: 5px 10px;
+      justify-self: stretch;
+    }
+
+    #rarityFilters .icon-chip img {
+      width: 63px;
+      height: 20px;
+      max-width: 100%;
     }
 
     .icon-chip {
@@ -549,6 +558,8 @@
     }
 
     .unit-card:nth-child(2n) { border-right: 0; }
+
+    
 
     .unit-card:hover,
     .unit-card:focus-visible {
@@ -933,7 +944,7 @@
       .search-controls { grid-template-columns: minmax(0, 1fr); }
       .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); }
       #rarityFilters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      #rarityFilters .text-chip { padding-inline: 4px; font-size: 11px; }
+      #rarityFilters .icon-chip { width: 100%; padding-inline: 4px; }
       .icon-chip { width: 40px; height: 40px; min-height: 40px; }
       .icon-chip img { width: 32px; height: 32px; }
       .unit-grid.display-two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1149,6 +1160,7 @@
             <button class="display-button" type="button" data-display-mode="two" aria-pressed="true">목록</button>
             <button class="display-button" type="button" data-display-mode="range" aria-pressed="false">사거리표</button>
           </div>
+          
           <p class="result-status" id="resultStatus" aria-live="polite">적 목록을 불러오는 중입니다.</p>
         </div>
       </div>
@@ -1381,8 +1393,25 @@
       function renderFilterGroup(items, group, iconMode = true, targetOverride = null) {
         const target = targetOverride || groupTargets[group];
         const fragment = document.createDocumentFragment();
-        items.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
+        const renderedItems = group === "rarity"
+          ? items.map((item, index) => ({ ...item, icon: `img/i/${153 + index}.png` }))
+          : items;
+        renderedItems.forEach((item) => fragment.append(createFilterChip(item, group, iconMode)));
         target.replaceChildren(fragment);
+      }
+
+      function rarityKey(entry, rarities) {
+        const raw = String(entry.rarity ?? "");
+        const match = rarities.find((item) => (
+          item.key === raw || item.label === raw || String(item.id ?? "") === raw
+        ));
+        return match?.key || raw;
+      }
+
+      function categoryMatches(entryKeysSet, selectedKeys, logic = filterLogic) {
+        if (!selectedKeys.size) return true;
+        const matches = [...selectedKeys].map((key) => entryKeysSet.has(key));
+        return logic === "and" ? matches.every(Boolean) : matches.some(Boolean);
       }
 
       const alienChoiceKeys = ["alien", "starred_alien", "alien_all"];
@@ -1445,20 +1474,6 @@
         selected.trait.add(choice);
         closeAlienChoice();
         syncAlienTrigger();
-      }
-
-      function rarityKey(entry, rarities) {
-        const raw = String(entry.rarity ?? "");
-        const match = rarities.find((item) => (
-          item.key === raw || item.label === raw || String(item.id ?? "") === raw
-        ));
-        return match?.key || raw;
-      }
-
-      function categoryMatches(entryKeysSet, selectedKeys) {
-        if (!selectedKeys.size) return true;
-        const matches = [...selectedKeys].map((key) => entryKeysSet.has(key));
-        return filterLogic === "and" ? matches.every(Boolean) : matches.some(Boolean);
       }
 
       function hasActiveFilters() {
@@ -1986,7 +2001,7 @@
           displayMode = ["two", "range"].includes(button.dataset.displayMode)
             ? button.dataset.displayMode
             : "two";
-          syncDisplayMode();
+          updateResults();
         });
       });
 
@@ -2004,6 +2019,7 @@
         elements.nameSearch.value = "";
         updateResults({ resetScroll: true });
       });
+      
       elements.reset.addEventListener("click", () => {
         elements.nameSearch.value = "";
         filterLogic = "or";
