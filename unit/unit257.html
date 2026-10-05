@@ -5844,6 +5844,10 @@
 
     function orbIsEligible(record, abilities, traits) {
       if (!record) return false;
+      if (
+        Number(record.contentId) === 19
+        && abilities.some(ability => ability.key === "production_speed")
+      ) return false;
       if (!record.content.abilityKey) return true;
       const abilityKeys = new Set(abilities.map((ability) => ability.key));
       const traitKeys = new Set(traits.map((trait) => trait.key));
