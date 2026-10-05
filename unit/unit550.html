@@ -6026,7 +6026,9 @@ A.T. 필드를 다중 전개할 수 있으며 예리한 촉수로 공격한다
           key,
           firstRecord.content.label,
           "본능 구슬",
-          standardMeta.icon || firstRecord.content.icon,
+          contentId === 19
+            ? "../img/i/396.png"
+            : standardMeta.icon || firstRecord.content.icon,
           summaryText,
           tooltipText,
         );

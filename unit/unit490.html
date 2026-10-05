@@ -6017,7 +6017,9 @@ NERV 기술 개발부에 소속된 쿨한 여성 연구자
           key,
           firstRecord.content.label,
           "본능 구슬",
-          standardMeta.icon || firstRecord.content.icon,
+          contentId === 19
+            ? "../img/i/396.png"
+            : standardMeta.icon || firstRecord.content.icon,
           summaryText,
           tooltipText,
         );

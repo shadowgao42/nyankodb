@@ -6024,7 +6024,9 @@ MAGICAL MIRAI 2020 in TOKYO를 장식하는 특별한 여가수
           key,
           firstRecord.content.label,
           "본능 구슬",
-          standardMeta.icon || firstRecord.content.icon,
+          contentId === 19
+            ? "../img/i/396.png"
+            : standardMeta.icon || firstRecord.content.icon,
           summaryText,
           tooltipText,
         );

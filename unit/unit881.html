@@ -4071,8 +4071,6 @@
           <span class="stat-label">재생산</span>
           <div class="conditional-stat-row">
             <strong class="stat-value"><span id="cooldownTime" class="time-value" data-seconds="137.87초" data-frames="4136f">137.87초</span></strong>
-            <button class="stat-orb-toggle" id="cooldownOrbToggle" type="button"
-                    aria-pressed="false" hidden></button>
             <button class="stat-orb-toggle" id="productionSpeedToggle" type="button" aria-pressed="false" hidden></button>
           </div>
         </article>
@@ -4400,7 +4398,6 @@
     const expectedRangeResult = document.getElementById("expectedRangeResult");
     const cooldownTime = document.getElementById("cooldownTime");
     const productionSpeedToggle = document.getElementById("productionSpeedToggle");
-    const cooldownOrbToggle = document.getElementById("cooldownOrbToggle");
     const unitSpeed = document.getElementById("unitSpeed");
     const unitCost = document.getElementById("unitCost");
     const costOrbToggle = document.getElementById("costOrbToggle");
@@ -6044,7 +6041,9 @@
           key,
           firstRecord.content.label,
           "본능 구슬",
-          standardMeta.icon || firstRecord.content.icon,
+          contentId === 19
+            ? "../img/i/396.png"
+            : standardMeta.icon || firstRecord.content.icon,
           summaryText,
           tooltipText,
         );
@@ -7708,10 +7707,21 @@
       const nativePercent = Number(currentData.rawValues[118]) || 0;
       const record = activeTalentRecords().find(record => Number(record.talent.abilityId) === 72);
       const percent = Math.max(nativePercent, record ? Number(record.levelData.values[0]) : 0);
-      productionSpeedToggle.hidden = percent <= 0;
+      const orbAbility = abilities.find(ability => Number(ability.orbContentId) === 19);
+      const key = percent > 0 ? "production_speed" : "orb_content_19";
+      const ability = percent > 0
+        ? abilities.find(ability => ability.key === "production_speed")
+        : orbAbility;
+      productionSpeedToggle.hidden = percent <= 0 && !orbAbility;
       productionSpeedToggle.replaceChildren();
-      productionSpeedToggle.setAttribute("aria-pressed", String(activeAttackEffectKeys.has("production_speed")));
-      if (percent <= 0) return;
+      productionSpeedToggle.dataset.effectKey = key;
+      productionSpeedToggle.setAttribute("aria-pressed", String(activeAttackEffectKeys.has(key)));
+      setProvenance(productionSpeedToggle, ability?.provenance);
+      if (productionSpeedToggle.hidden) {
+        productionSpeedToggle.removeAttribute("data-tooltip");
+        productionSpeedToggle.removeAttribute("aria-label");
+        return;
+      }
       const meta = unitData.productionSpeed;
       if (meta.icon) {
         const icon = document.createElement("img"); icon.src = meta.icon; icon.alt = "";
@@ -7722,7 +7732,6 @@
     }
     function renderConditionalStatOrbButtons(abilities) {
       renderProductionSpeedToggle(abilities);
-      renderStatOrbToggle(cooldownOrbToggle, abilities, 19);
       renderStatOrbToggle(costOrbToggle, abilities, 22);
     }
 
@@ -10283,7 +10292,6 @@
     secondsButton.addEventListener("click", () => setTimeUnit("seconds"));
     framesButton.addEventListener("click", () => setTimeUnit("frames"));
     [
-      [cooldownOrbToggle, 19],
       [costOrbToggle, 22],
     ].forEach(([button, contentId]) => {
       button.addEventListener("click", () => {
@@ -10298,8 +10306,9 @@
       });
     });
     productionSpeedToggle.addEventListener("click", () => {
-      if (activeAttackEffectKeys.has("production_speed")) activeAttackEffectKeys.delete("production_speed");
-      else activeAttackEffectKeys.add("production_speed");
+      const key = productionSpeedToggle.dataset.effectKey;
+      if (activeAttackEffectKeys.has(key)) activeAttackEffectKeys.delete(key);
+      else activeAttackEffectKeys.add(key);
       persistViewState(); updateStats(baseLevelNumber.value, plusLevelNumber.value);
     });
     highlightCheckboxes.forEach((checkbox) => {

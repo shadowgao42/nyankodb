@@ -5993,7 +5993,9 @@ ALICE의 중범죄자를 단속하고 있는 AI
           key,
           firstRecord.content.label,
           "본능 구슬",
-          standardMeta.icon || firstRecord.content.icon,
+          contentId === 19
+            ? "../img/i/396.png"
+            : standardMeta.icon || firstRecord.content.icon,
           summaryText,
           tooltipText,
         );
