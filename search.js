@@ -4,7 +4,7 @@
   const script = document.currentScript;
   const siteRoot = new URL("./", script.src);
   const stageSearch = script.hasAttribute("data-stage-search");
-  const compact = value => String(value ?? "").toLocaleLowerCase("ko-KR")
+  const compact = value => String(value ?? "").toLowerCase()
     .replace(/[\s\p{P}\p{S}_]/gu, "");
 
   function entries() {
@@ -13,33 +13,27 @@
       .filter(entry => entry && (entry.name || entry.label));
   }
 
-  function startsAtLaterWord(displayName, query) {
-    const firstQueryCharacter = [...query][0];
-    for (const boundary of String(displayName).matchAll(/[\s\p{Ps}]+/gu)) {
-      const suffix = String(displayName).slice(boundary.index + boundary[0].length);
-      const firstSuffixCharacter = [...suffix][0] || "";
-      if (compact(firstSuffixCharacter) === firstQueryCharacter && compact(suffix).startsWith(query)) {
-        return true;
-      }
-    }
-    return false;
+  function prepareName(displayName) {
+    const name = compact(displayName);
+    const words = [...displayName.matchAll(/[\s\p{Ps}]+/gu)].map(boundary => {
+      const suffix = displayName.slice(boundary.index + boundary[0].length);
+      return { first: compact([...suffix][0] || ""), name: compact(suffix) };
+    });
+    const letters = new Map();
+    for (const letter of name) letters.set(letter, (letters.get(letter) || 0) + 1);
+    return { name, words, letters };
   }
 
-  function nameRank(displayName, query) {
-    const name = compact(displayName);
+  function nameRank(prepared, query, queryLetters, firstCharacter) {
+    const { name, words, letters } = prepared;
     if (name === query) return 0;
     if (name.startsWith(query)) return 1;
-    if (startsAtLaterWord(displayName, query)) return 2;
+    if (words.some(word => word.first === firstCharacter && word.name.startsWith(query))) return 2;
     if (name.includes(query)) return 3;
     let cursor = 0;
     for (const letter of name) if (letter === query[cursor]) cursor++;
     if (cursor === query.length) return 4;
-    const remaining = [...name];
-    for (const letter of query) {
-      const index = remaining.indexOf(letter);
-      if (index < 0) return 99;
-      remaining.splice(index, 1);
-    }
+    for (const [letter, count] of queryLetters) if ((letters.get(letter) || 0) < count) return 99;
     return 5;
   }
 
@@ -58,29 +52,41 @@
     if (/^V\d{3}$/i.test(location)) return "냥코탑";
     if (/^Q\d{3}$/i.test(location)) return "초수 토벌 스테이지";
     if (/^L\d{3}$/i.test(location)) return "지하 미궁";
-    if (/^B\d{3}$/i.test(location)) return "드링크 스테이지";
+    if (/^B\d{3}$/i.test(location)) return "고양이 드링크 스테이지";
+    if (/^G\d{3}$/i.test(location)) return "냥코도 승단 시험";
+    if (/^T\d{3}$/i.test(location)) return "냥코도장 스테이지";
+    if (/^R\d{3}$/i.test(location)) return "랭킹 스테이지";
     if (/^EX\d{3}$/i.test(location)) return "EX 스테이지";
     if (/^H\d{3}$/i.test(location)) return "발굴 스테이지";
     return "";
   }
 
-  function entryRank(entry, query) {
-    if (compact(entry.id) === query || (/^\d+$/.test(query) && Number(entry.id) === Number(query))) {
+  function prepareEntry(entry) {
+    const displayName = String(entry.name || entry.label || "");
+    const names = [displayName];
+    let bareName = "";
+    if (entry.kind === "stage") {
+      bareName = displayName.replace(/\s+\([^()]*\)\s*$/, "");
+      const category = stageCategory(entry);
+      if (category) names.push(`${category} ${bareName}`, `${bareName} (${category})`, `${displayName} (${category})`);
+    }
+    return { entry, rank: 0, id: compact(entry.id), numericId: Number(entry.id),
+      bareName: compact(bareName), names: [...new Set(names)].map(prepareName) };
+  }
+
+  function entryRank(prepared, query, numericQuery, queryLetters, firstCharacter) {
+    const { entry } = prepared;
+    if (prepared.id === query || (numericQuery !== null && prepared.numericId === numericQuery)) {
       return 0;
     }
-    if (entry.kind === "stage" && compact(entry.id).startsWith(query)) return 1;
-    const displayName = String(entry.name || entry.label || "");
-    if (entry.kind === "stage") {
-      const bareName = displayName.replace(/\s+\([^()]*\)\s*$/, "");
-      if (compact(bareName) === query) return 0;
-      const category = stageCategory(entry);
-      if (category) return Math.min(
-        nameRank(displayName, query),
-        nameRank(`${bareName} (${category})`, query),
-        nameRank(`${displayName} (${category})`, query),
-      );
+    if (entry.kind === "stage" && prepared.id.startsWith(query)) return 1;
+    if (entry.kind === "stage" && prepared.bareName === query) return 0;
+    let rank = 99;
+    for (const name of prepared.names) {
+      rank = Math.min(rank, nameRank(name, query, queryLetters, firstCharacter));
+      if (rank === 0) break;
     }
-    return nameRank(displayName, query);
+    return rank;
   }
 
   const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });
@@ -96,7 +102,9 @@
     return left < right ? -1 : left > right ? 1 : 0;
   }
 
+  const stageSortKeys = new WeakMap();
   function stageSortKey(entry) {
+    if (stageSortKeys.has(entry)) return stageSortKeys.get(entry);
     const path = String(entry.href || entry.url || "")
       .split(/[?#]/, 1)[0]
       .replace(/\\/g, "/");
@@ -147,7 +155,9 @@
       : prefix === "A" ? 17
       : prefix === "EX" ? 18
       : 19;
-    return { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
+    const key = { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
+    stageSortKeys.set(entry, key);
+    return key;
   }
 
   function compareStageEntries(left, right) {
@@ -195,23 +205,51 @@
   }
 
   const resultLimit = 200;
+  let indexedCatalog, indexedEntries, indexedItems, indexedCount = -1, preparedEntries = [];
+  const resultCache = new Map();
+
+  function searchIndex() {
+    const catalog = window.NYANKODB_SEARCH_CATALOG;
+    const catalogEntries = Array.isArray(catalog) ? catalog : catalog?.entries;
+    const catalogItems = Array.isArray(catalog) ? null : catalog?.items;
+    const count = (catalogEntries?.length || 0) + (catalogItems?.length || 0);
+    if (catalog !== indexedCatalog || catalogEntries !== indexedEntries || catalogItems !== indexedItems || count !== indexedCount) {
+      // Name normalization and tie-break ordering are independent of the query.
+      preparedEntries = entries().map(prepareEntry).sort(compareResults);
+      indexedCatalog = catalog;
+      indexedEntries = catalogEntries;
+      indexedItems = catalogItems;
+      indexedCount = count;
+      resultCache.clear();
+    }
+    return preparedEntries;
+  }
 
   function searchResults(value) {
     const query = compact(value);
     if (!query) return { matches: [], total: 0 };
-    const ranked = entries().map(entry => ({
-      entry,
-      rank: entryRank(entry, query),
-    })).filter(result => result.rank < 99)
-      .sort(compareResults);
-    return {
-      matches: ranked.slice(0, resultLimit).map(result => result.entry),
-      total: ranked.length,
-    };
+    const index = searchIndex();
+    if (resultCache.has(query)) return resultCache.get(query);
+    const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
+    const queryLetters = new Map();
+    for (const letter of query) queryLetters.set(letter, (queryLetters.get(letter) || 0) + 1);
+    const firstCharacter = [...query][0];
+    const buckets = Array.from({ length: 6 }, () => []);
+    let total = 0;
+    for (const prepared of index) {
+      const rank = entryRank(prepared, query, numericQuery, queryLetters, firstCharacter);
+      if (rank >= 99) continue;
+      total++;
+      if (buckets[rank].length < resultLimit) buckets[rank].push(prepared.entry);
+    }
+    const found = { matches: buckets.flat().slice(0, resultLimit), total };
+    if (resultCache.size >= 40) resultCache.delete(resultCache.keys().next().value);
+    resultCache.set(query, found);
+    return found;
   }
 
   function search(value) {
-    return searchResults(value).matches;
+    return searchResults(value).matches.slice();
   }
 
   function identity(entry) {
@@ -267,8 +305,20 @@
     input.setAttribute("aria-controls", results.id);
     input.setAttribute("aria-autocomplete", "list");
     let visible = [], active = -1;
+    let pendingRender = 0, composing = false, renderedQuery = null;
+
+    function cancelRender() {
+      if (pendingRender) cancelAnimationFrame(pendingRender);
+      pendingRender = 0;
+    }
+
+    function scheduleRender() {
+      cancelRender();
+      pendingRender = requestAnimationFrame(render);
+    }
 
     function close() {
+      cancelRender();
       if (!home) results.hidden = true;
       input.setAttribute("aria-expanded", "false");
       input.removeAttribute("aria-activedescendant");
@@ -278,7 +328,9 @@
 
     function setActive(index) {
       if (!visible.length) return;
-      active = (index + visible.length) % visible.length;
+      const next = (index + visible.length) % visible.length;
+      if (active === next && !results.hidden) return;
+      active = next;
       results.hidden = false;
       input.setAttribute("aria-expanded", "true");
       [...results.querySelectorAll('[role="option"]')].forEach((node, i) => {
@@ -296,11 +348,21 @@
     }
 
     function render() {
+      cancelRender();
+      const query = compact(input.value);
+      if (query === renderedQuery) {
+        if (query) {
+          results.hidden = false;
+          input.setAttribute("aria-expanded", "true");
+        }
+        return;
+      }
       const found = searchResults(input.value);
+      renderedQuery = query;
       visible = found.matches;
       results.replaceChildren();
       close();
-      if (!compact(input.value)) {
+      if (!query) {
         if (status) status.textContent = entries().length
           ? "유닛, 적, 아이템 또는 스테이지 이름/ID를 입력해 검색하세요."
           : "검색 목록을 불러오지 못했습니다.";
@@ -336,7 +398,7 @@
           icon.src = source.startsWith("../") ? new URL(source, location.href).href : new URL(source, siteRoot).href;
           icon.alt = "";
           icon.loading = "lazy";
-          if (/\/stage_(?:N|NA|ND|B|M|H)\.png$/.test(new URL(icon.src).pathname)) {
+          if (/\/stage_(?:N|NA|ND|B|M|H|T|R|C|S)\.png$/.test(new URL(icon.src).pathname)) {
             icon.className = "stage-search-icon";
             icon.style.objectFit = "none";
             icon.style.objectPosition = "center";
@@ -382,16 +444,25 @@
       input.setAttribute("aria-expanded", "true");
     }
 
-    input.addEventListener("input", render);
-    input.addEventListener("focus", render);
+    input.addEventListener("compositionstart", () => { composing = true; });
+    input.addEventListener("compositionend", () => { composing = false; scheduleRender(); });
+    // Korean IME keeps the last syllable composing while the user pauses.
+    // Show those partial queries too; only navigation waits for composition.
+    input.addEventListener("input", scheduleRender);
+    input.addEventListener("focus", scheduleRender);
     input.addEventListener("keydown", event => {
+      if (composing || event.isComposing || event.keyCode === 229) return;
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
+        if (renderedQuery !== compact(input.value)) render();
         setActive(active + (event.key === "ArrowDown" ? 1 : -1));
       } else if (event.key === "Escape") close();
     });
     form.addEventListener("submit", event => {
       event.preventDefault();
+      if (composing) return;
+      // Enter may arrive before the queued frame. Never use stale matches.
+      if (renderedQuery !== compact(input.value)) render();
       const entry = visible[active >= 0 ? active : 0];
       if (entry) navigate(entry);
       else {
@@ -404,6 +475,8 @@
     });
     window.addEventListener("pageshow", render);
     render();
+    if (window.requestIdleCallback) window.requestIdleCallback(searchIndex, { timeout: 1000 });
+    else setTimeout(searchIndex, 0);
   }
 
   window.NyankoSearch = Object.freeze({ search, identity, destination });

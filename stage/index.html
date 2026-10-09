@@ -302,7 +302,7 @@
       const categoryOrder = [
         "세계편", "미래편", "우주편", "세계편 좀비습격",
         "미래편 좀비습격", "우주편 좀비습격", "마계편", "레전드 스토리",
-        "신 레전드 스토리", "레전드 스토리 0", "챌린지 배틀", "발굴 스테이지", "드링크 스테이지", "지하 미궁", "냥코탑", "초수 토벌 스테이지", "이차원 콜로세움", "강습", "EX 스테이지", "기타",
+        "신 레전드 스토리", "레전드 스토리 0", "챌린지 배틀", "발굴 스테이지", "고양이 드링크 스테이지", "지하 미궁", "냥코탑", "초수 토벌 스테이지", "이차원 콜로세움", "강습", "EX 스테이지", "냥코도장 스테이지", "냥코도 승단 시험", "랭킹 스테이지", "기타",
       ];
       const formatter = new Intl.NumberFormat("ko-KR");
       const expandedLocations = new Set();
@@ -338,7 +338,10 @@
         if (/^V\d{3}$/i.test(id)) return "냥코탑";
         if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
         if (/^L\d{3}$/i.test(id)) return "지하 미궁";
-        if (/^B\d{3}$/i.test(id)) return "드링크 스테이지";
+        if (/^B\d{3}$/i.test(id)) return "고양이 드링크 스테이지";
+        if (/^G\d{3}$/i.test(id)) return "냥코도 승단 시험";
+        if (/^T\d{3}$/i.test(id)) return "냥코도장 스테이지";
+        if (/^R\d{3}$/i.test(id)) return "랭킹 스테이지";
         if (/^SR\d{3}$/i.test(id)) return "이차원 콜로세움";
         if (/^A\d{3}$/i.test(id)) return "강습";
         if (/^EX\d{3}$/i.test(id)) return "EX 스테이지";
@@ -400,7 +403,7 @@
       function locationMatch(entry, query) {
         if (!query) return { matchRank: 0, matchingStages: [] };
         const category = categoryFor(entry.id);
-        const parentRank = bestRank(nameRank(category, query), entryRank(entry, query));
+        const parentRank = bestRank(nameRank(category, query), entryRank(entry, query), nameRank(`${category} ${entry.name}`, query));
         const matchingStages = childStages(entry).map((stage) => ({
           stage, matchRank: stageRank(stage, category, query),
         })).filter(({ stage, matchRank }) => matchRank !== null
@@ -475,8 +478,11 @@
               const name = document.createElement("span");
               name.className = "stage-detail-name";
               const suffix = ` (${entry.name})`;
-              name.textContent = stage.name.endsWith(suffix)
-                ? stage.name.slice(0, -suffix.length) : stage.name;
+              const category = categoryFor(entry.id);
+              const categorizedSuffix = ` (${entry.name} · ${category})`;
+              name.textContent = stage.name.endsWith(categorizedSuffix)
+                ? `${stage.name.slice(0, -categorizedSuffix.length)} (${category})`
+                : stage.name.endsWith(suffix) ? stage.name.slice(0, -suffix.length) : stage.name;
               const id = document.createElement("span");
               id.className = "stage-detail-id";
               id.textContent = `STAGE ${stage.id}`;
@@ -518,7 +524,7 @@
           if (locations[0].entry.icon) {
             const image = document.createElement("img");
             image.src = `../${locations[0].entry.icon}`;
-            if (/\/stage_(?:N|NA|ND|B|M|H)\.png$/.test(locations[0].entry.icon)) {
+            if (/\/stage_(?:N|NA|ND|B|M|H|T|R|C|S)\.png$/.test(locations[0].entry.icon)) {
               image.className = "stage-search-icon";
             }
             image.alt = "";

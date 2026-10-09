@@ -259,8 +259,8 @@
     @media (max-width: 650px) {
       .page { width: min(100% - 20px, 1040px); padding-top: 18px; }
       .search-card { padding: 15px; }
-      .search-header { display: grid; }
-      .search-nav { width: 100%; }
+      .search-header { display: grid; grid-template-columns: minmax(0, 1fr); }
+      .search-nav { width: 100%; min-width: 0; }
       .search-nav a { flex: 1 1 0; min-width: 0; padding-inline: 6px; font-size: 12px; }
       .intro { font-size: 13px; }
       form { gap: 6px; }
@@ -282,9 +282,10 @@
           <h1 id="unit-search-title">검색</h1>
         </div>
         <nav class="search-nav" aria-label="검색 도구">
-          <a href="unit/">유닛 검색</a>
-          <a href="enemy/">적 검색</a>
-          <a href="item/">아이템 검색</a>
+          <a href="unit/">유닛</a>
+          <a href="enemy/">적</a>
+          <a href="item/">아이템</a>
+          <a href="stage/">스테이지</a>
         </nav>
       </div>
       <form id="unit-search-form" role="search">
