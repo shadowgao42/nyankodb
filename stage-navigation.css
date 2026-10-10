@@ -1,5 +1,21 @@
 .enemy-magnification .enemy-magnification-label { color: var(--text); }
 
+.labyrinth-trap-actions { display: flex; align-items: center; flex-wrap: nowrap; gap: 7px; }
+.labyrinth-trap-actions > span { min-width: 0; }
+.labyrinth-trap-view { display: inline-grid; flex: 0 0 auto; place-items: center; width: 30px; height: 30px; padding: 4px; border: 1px solid #526278; border-radius: 8px; color: var(--text); background: #101923; font: inherit; cursor: pointer; }
+.labyrinth-trap-view svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.labyrinth-trap-view:hover { border-color: var(--accent-text); color: var(--accent-text); }
+.labyrinth-trap-view:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+.labyrinth-trap-wrap[hidden] { display: none; }
+.labyrinth-trap-wrap { padding: 0 14px 14px; }
+.labyrinth-trap-card { width: 100%; padding: 17px 18px 19px; }
+.labyrinth-trap-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.labyrinth-trap-table { width: 100%; margin-top: 14px; border-collapse: collapse; text-align: center; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.labyrinth-trap-table th, .labyrinth-trap-table td { border: 1px solid #405065; padding: 10px 8px; }
+.labyrinth-trap-table th { background: #101923; }
+.labyrinth-trap-table td { background: #171f29; }
+.labyrinth-trap-table td div + div { margin-top: 5px; }
+
 .stage-neighbor-nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
