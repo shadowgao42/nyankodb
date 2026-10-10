@@ -91,6 +91,19 @@
   white-space: nowrap;
 }
 
+.enemy-heading-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; flex-shrink: 0; max-width: 100%; gap: 8px; }
+.enemy-heading-controls > .time-toggle { flex: 0 0 auto; flex-direction: row; flex-wrap: nowrap; }
+.enemy-heading-controls > .time-toggle[aria-label="시간 단위"] { width: 148px; }
+.enemy-heading-controls > .enemy-view-toggle { width: 136px; }
+.enemy-heading-controls > .time-toggle button { flex: 1 1 0; min-width: 0; padding-inline: 6px; white-space: nowrap; }
+/* Override the wide inline selector retained by existing Legend Quest pages. */
+.enemy-heading-controls > #stageConfigurationSelect { width: 106px !important; min-width: 0; flex: 0 1 106px; }
+.enemy-heading-controls > #stageConfigurationSelect[aria-label="스테이지 선택"] { width: 132px !important; flex-basis: 132px; }
+@media (max-width: 660px) {
+  .enemy-heading { flex-wrap: wrap; gap: 8px; }
+  .enemy-heading-controls { gap: 6px; }
+}
+
 @media (max-width: 500px) {
   .stage-neighbor-nav--floating { right: 8px; bottom: 8px; width: min(300px, calc(100vw - 16px)); }
   .stage-neighbor-link { min-height: 66px; padding: 10px; }
