@@ -1,5 +1,36 @@
 /* Shared stage bootstrap: location images and previous/next links. */
 (() => {
+  // Existing non-story pages kept timed scores in the ordinary reward list.
+  // Reuse their existing ItF score renderer without regenerating the pages.
+  if (typeof DATA === "undefined" || DATA.location
+      || typeof renderRewards !== "function"
+      || !document.getElementById("scoreRewardsSection")) return;
+  const scores = (DATA.rewards || []).filter((reward) => reward.kind === "score");
+  if (!scores.length) return;
+  DATA.scoreRewards = [...(DATA.scoreRewards || []), ...scores];
+  DATA.rewards = DATA.rewards.filter((reward) => reward.kind !== "score");
+  renderRewards();
+})();
+
+(() => {
+  // Move the existing controls with their listeners intact on older pages.
+  const time = document.getElementById("timeSeconds")?.closest(".time-toggle");
+  const view = document.getElementById("enemyCompact")?.closest(".time-toggle");
+  if (!time || !view) return;
+  let controls = view.closest(".enemy-heading-controls");
+  if (!controls) {
+    view.parentElement.classList.add("enemy-heading");
+    controls = document.createElement("div");
+    controls.className = "enemy-heading-controls";
+    view.before(controls);
+    controls.append(view);
+  }
+  controls.insertBefore(time, view);
+  const heroControls = document.querySelector(".hero-controls");
+  if (heroControls && ![...heroControls.children].some((child) => !child.hidden)) heroControls.hidden = true;
+})();
+
+(() => {
   // Older detail pages render multiplier labels as plain text. Normalize each
   // render so changing crowns or treasure settings retains the shared colors.
   const rows = document.getElementById("enemyRows");
