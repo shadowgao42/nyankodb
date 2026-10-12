@@ -241,6 +241,14 @@
     @media (prefers-reduced-motion: reduce) {
       * { scroll-behavior: auto !important; transition: none !important; }
     }
+      .stage-section-heading img.stage-pr-icon {
+      box-sizing: border-box;
+      padding: 0 9px;
+      image-rendering: auto;
+    }
+    @media (max-width: 500px) {
+      .stage-section-heading img.stage-pr-icon { padding-inline: 5px; }
+    }
   </style>
   <link rel="stylesheet" href="../gnb.css">
 </head>
@@ -536,6 +544,7 @@
             image.height = 60;
             image.loading = "lazy";
             image.decoding = "async";
+            window.NyankoSearch.applyStageIconSize(image);
             heading.append(image);
           }
           const title = document.createElement("h3");

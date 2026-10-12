@@ -306,3 +306,9 @@
     transition: none !important;
   }
 }
+
+    .unit-search-result img.stage-pr-icon {
+      box-sizing: border-box;
+      padding: 0 7px;
+      image-rendering: auto;
+    }

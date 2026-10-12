@@ -269,6 +269,12 @@
     return new URL(path, siteRoot).href;
   }
 
+  function applyStageIconSize(image) {
+    if (!/\/stage_PR\.png$/i.test(new URL(image.src, siteRoot).pathname)) return false;
+    image.classList.add("stage-pr-icon");
+    return true;
+  }
+
   function rememberForm(entry) {
     if (entry.kind !== "unit") return;
     try {
@@ -406,6 +412,7 @@
             // Compact results use a 54x40 slot instead of the full 78x60 slot.
             if (!home) icon.style.transform = "scale(0.6666666667)";
           }
+          applyStageIconSize(icon);
           node.append(icon);
         } else {
           const placeholder = document.createElement("span");
@@ -480,7 +487,7 @@
     else setTimeout(searchIndex, 0);
   }
 
-  window.NyankoSearch = Object.freeze({ search, identity, destination });
+  window.NyankoSearch = Object.freeze({ search, identity, destination, applyStageIconSize });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
   else mount();
 })();
