@@ -296,7 +296,7 @@
   <script src="../catalog.js"></script>
   <script src="../search.js" data-stage-search defer></script>
   <script>
-    (() => {
+    document.addEventListener("DOMContentLoaded", () => {
       "use strict";
       const catalog = window.NYANKODB_SEARCH_CATALOG;
       const input = document.getElementById("nameSearch");
@@ -628,7 +628,7 @@
         panel.style.height = `${initialHeight}px`;
         panel.style.flex = "0 0 auto";
       }
-    })();
+    });
   </script>
 </body>
 </html>
