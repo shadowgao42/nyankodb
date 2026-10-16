@@ -44,7 +44,11 @@
     }
     hero.classList.add("location-hero");
     hero.style.setProperty("--location-background", `url("${image.src}")`);
-    alignTowerPart();
+    if (index === 0 && canonical === "map027") {
+      hero.style.setProperty("--location-background-position", "center top");
+    } else {
+      alignTowerPart();
+    }
     if (index === 0 && towerParts[canonical] !== undefined) {
       new ResizeObserver(alignTowerPart).observe(hero);
     }

@@ -146,6 +146,11 @@
       object-fit: none;
       object-position: center;
     }
+    .stage-section-heading img.stage-pr-icon {
+      box-sizing: border-box;
+      padding: 0 9px;
+      image-rendering: auto;
+    }
     .stage-section-heading h3 { font-size: 15px; font-weight: 900; }
     .stage-section-heading small { flex-shrink: 0; white-space: nowrap; color: var(--muted); font-size: 11px; font-weight: 800; }
     .stage-grid { display: grid; grid-template-columns: minmax(0, 1fr); }
@@ -237,17 +242,10 @@
       .stage-detail-list { padding-left: 12px; }
       .stage-detail-link { padding-inline: 8px; }
       .stage-section-heading img { width: 58px; height: 48px; }
+      .stage-section-heading img.stage-pr-icon { padding-inline: 5px; }
     }
     @media (prefers-reduced-motion: reduce) {
       * { scroll-behavior: auto !important; transition: none !important; }
-    }
-      .stage-section-heading img.stage-pr-icon {
-      box-sizing: border-box;
-      padding: 0 9px;
-      image-rendering: auto;
-    }
-    @media (max-width: 500px) {
-      .stage-section-heading img.stage-pr-icon { padding-inline: 5px; }
     }
   </style>
   <link rel="stylesheet" href="../gnb.css">
@@ -308,12 +306,9 @@
       const filterBody = document.getElementById("filterBody");
       const filterCollapse = document.getElementById("filterCollapse");
       const filterCollapseText = document.getElementById("filterCollapseText");
-      const categoryOrder = [
-        "세계편", "미래편", "우주편", "세계편 좀비습격",
-        "미래편 좀비습격", "우주편 좀비습격", "마계편", "레전드 스토리",
-        "신 레전드 스토리", "레전드 스토리 0", "스페셜 스테이지", "챌린지 배틀", "발굴 스테이지", "고양이 드링크 스테이지", "초수 토벌 스테이지", "이차원 콜로세움", "냥코탑", "전설의 퀘스트", "강습", "LIVE On Stage! 꼬꼬미", "EX 스테이지", "지하 미궁", "냥코도장 스테이지", "냥코도 승단 시험", "랭킹 스테이지", "기타",
-      ];
+      const categoryOrder = window.NyankoSearch.stageCategoryOrder;
       const formatter = new Intl.NumberFormat("ko-KR");
+      const idCollator = new Intl.Collator("en", { numeric: true });
       const expandedLocations = new Set();
       const expandedCategories = new Set();
       const stagesByLocation = new Map();
@@ -329,103 +324,106 @@
         for (const stages of stagesByLocation.values()) {
           const order = (entry) => entry.stageOrder ?? Number(String(entry.href).match(/\/(\d+)\.html$/)?.[1] ?? Number.MAX_SAFE_INTEGER);
           stages.sort((left, right) => order(left) - order(right)
-            || left.href.localeCompare(right.href, "en", { numeric: true }));
+            || idCollator.compare(left.href, right.href));
         }
       }
 
-      function categoryFor(id) {
-        if (/^EoC$/i.test(id)) return "세계편";
-        if (/^W\d+$/i.test(id)) return "미래편";
-        if (/^Space\d+$/i.test(id)) return "우주편";
-        if (/^N\d{3}$/i.test(id)) return "레전드 스토리";
-        if (/^NA\d{3}$/i.test(id)) return "신 레전드 스토리";
-        if (/^ND\d{3}$/i.test(id)) return "레전드 스토리 0";
-        if (/^Z(?:000|001|002)$/i.test(id)) return "세계편 좀비습격";
-        if (/^Z(?:004|005|006)$/i.test(id)) return "미래편 좀비습격";
-        if (/^Z(?:007|008|009)$/i.test(id)) return "우주편 좀비습격";
-        if (/^DM\d{3}$/i.test(id)) return "마계편";
-        if (/^V\d{3}$/i.test(id)) return "냥코탑";
-        if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
-        if (/^L\d{3}$/i.test(id)) return "지하 미궁";
-        if (/^B\d{3}$/i.test(id)) return "고양이 드링크 스테이지";
-        if (/^PR\d{3}$/i.test(id)) return "LIVE On Stage! 꼬꼬미";
-        if (/^G\d{3}$/i.test(id)) return "냥코도 승단 시험";
-        if (/^T\d{3}$/i.test(id)) return "냥코도장 스테이지";
-        if (/^R\d{3}$/i.test(id)) return "랭킹 스테이지";
-        if (/^D\d{3}$/i.test(id)) return "전설의 퀘스트";
-        if (/^S\d{3}$/i.test(id)) return "스페셜 스테이지";
-        if (/^SR\d{3}$/i.test(id)) return "이차원 콜로세움";
-        if (/^A\d{3}$/i.test(id)) return "강습";
-        if (/^EX\d{3}$/i.test(id)) return "EX 스테이지";
-        if (/^M\d{3}$/i.test(id)) return "챌린지 배틀";
-        if (/^H\d{3}$/i.test(id)) return "발굴 스테이지";
-        return "기타";
-      }
+      const categoryFor = window.NyankoSearch.stageCategoryForLocation;
       function compact(value) {
         return String(value || "").toLocaleLowerCase("ko-KR").replace(/[\s\p{P}\p{S}_]/gu, "");
       }
-      function startsAtLaterWord(displayName, query) {
-        const firstQueryCharacter = [...query][0];
-        for (const boundary of String(displayName).matchAll(/[\s\p{Ps}]+/gu)) {
-          const suffix = String(displayName).slice(boundary.index + boundary[0].length);
-          const firstSuffixCharacter = [...suffix][0] || "";
-          if (compact(firstSuffixCharacter) === firstQueryCharacter && compact(suffix).startsWith(query)) return true;
-        }
-        return false;
-      }
-      function nameRank(displayName, query) {
+      // Prepare names once, instead of repeating Unicode work for every keystroke.
+      const preparedNames = new Map();
+      const locationProfiles = new WeakMap();
+      const matchCache = new Map();
+      let queryLetters = new Map();
+      let firstQueryCharacter = "";
+      function prepareName(displayName) {
+        if (preparedNames.has(displayName)) return preparedNames.get(displayName);
         const name = compact(displayName);
+        const words = [...String(displayName).matchAll(/[\s\p{Ps}]+/gu)].map((boundary) => {
+          const suffix = String(displayName).slice(boundary.index + boundary[0].length);
+          return { first: compact([...suffix][0] || ""), name: compact(suffix) };
+        });
+        const letters = new Map();
+        for (const letter of name) letters.set(letter, (letters.get(letter) || 0) + 1);
+        const prepared = { name, words, letters };
+        preparedNames.set(displayName, prepared);
+        return prepared;
+      }
+      function prepareLocation(entry) {
+        const category = categoryFor(entry.id);
+        const profile = {
+          category, id: compact(entry.id), name: prepareName(entry.name),
+          categoryName: prepareName(category), fullName: prepareName(`${category} ${entry.name}`),
+          stages: childStages(entry).map((stage) => {
+            const bare = String(stage.name).replace(/\s+\([^()]*\)\s*$/, "");
+            return { entry: stage, id: compact(stage.id), bare: compact(bare),
+              names: [bare, stage.name, `${bare} (${category})`, `${stage.name} (${category})`].map(prepareName) };
+          }),
+        };
+        locationProfiles.set(entry, profile);
+      }
+      function nameRank(prepared, query) {
+        const { name, words, letters } = prepared;
         if (name === query) return 0;
+        // Every supported match needs these characters, including repetitions.
+        for (const [letter, count] of queryLetters) if ((letters.get(letter) || 0) < count) return null;
         if (name.startsWith(query)) return 1;
-        if (startsAtLaterWord(displayName, query)) return 2;
+        if (words.some((word) => word.first === firstQueryCharacter && word.name.startsWith(query))) return 2;
         if (name.includes(query)) return 3;
         let cursor = 0;
         for (const letter of name) if (letter === query[cursor]) cursor++;
         if (cursor === query.length) return 4;
-        const remaining = [...name];
-        for (const letter of query) {
-          const index = remaining.indexOf(letter);
-          if (index < 0) return null;
-          remaining.splice(index, 1);
-        }
         return 5;
       }
       function entryRank(entry, query) {
-        const id = compact(entry.id);
-        if (id === query) return 0;
-        if (id.startsWith(query)) return 1;
+        if (entry.id === query) return 0;
+        if (entry.id.startsWith(query)) return 1;
         return nameRank(entry.name, query);
       }
       function bestRank(...values) {
-        const matches = values.filter((value) => value !== null);
-        return matches.length ? Math.min(...matches) : null;
+        let best = null;
+        for (const value of values) if (value !== null && (best === null || value < best)) best = value;
+        return best;
       }
-      function bareStageName(stage) {
-        return String(stage.name).replace(/\s+\([^()]*\)\s*$/, "");
-      }
-      function stageRank(stage, category, query) {
-        const bare = bareStageName(stage);
-        return bestRank(
-          entryRank({ id: stage.id, name: bare }, query),
-          nameRank(stage.name, query),
-          nameRank(`${bare} (${category})`, query),
-          nameRank(`${stage.name} (${category})`, query),
-        );
+      function stageRank(stage, query) {
+        const idRank = stage.id === query ? 0 : stage.id.startsWith(query) ? 1 : null;
+        // Preserve the existing ID-prefix precedence for the bare-name candidate.
+        let best = idRank ?? nameRank(stage.names[0], query);
+        for (let index = 1; index < stage.names.length && best !== 0; index++) {
+          const rank = nameRank(stage.names[index], query);
+          if (rank !== null && (best === null || rank < best)) best = rank;
+        }
+        return best;
       }
       function locationMatch(entry, query) {
         if (!query) return { matchRank: 0, matchingStages: [] };
-        const category = categoryFor(entry.id);
-        const parentRank = bestRank(nameRank(category, query), entryRank(entry, query), nameRank(`${category} ${entry.name}`, query));
-        const matchingStages = childStages(entry).map((stage) => ({
-          stage, matchRank: stageRank(stage, category, query),
-        })).filter(({ stage, matchRank }) => matchRank !== null
-          && (parentRank === null || matchRank < parentRank
-            || (matchRank === 0 && compact(bareStageName(stage)) === query)));
-        if (parentRank === null && !matchingStages.length) return null;
-        return {
-          matchRank: bestRank(parentRank, ...matchingStages.map((match) => match.matchRank)),
-          matchingStages: matchingStages.map((match) => match.stage),
-        };
+        const profile = locationProfiles.get(entry);
+        const parentRank = bestRank(nameRank(profile.categoryName, query), entryRank(profile, query), nameRank(profile.fullName, query));
+        let matchRank = parentRank;
+        const matchingStages = [];
+        for (const stage of profile.stages) {
+          if (parentRank === 0 && stage.bare !== query) continue;
+          const rank = stageRank(stage, query);
+          if (rank !== null && (parentRank === null || rank < parentRank || (rank === 0 && stage.bare === query))) {
+            matchingStages.push(stage.entry);
+            matchRank = bestRank(matchRank, rank);
+          }
+        }
+        if (matchRank === null) return null;
+        return { matchRank, matchingStages };
+      }
+      function matchingLocations(entries, query) {
+        if (matchCache.has(query)) return matchCache.get(query);
+        firstQueryCharacter = [...query][0] || "";
+        queryLetters = new Map();
+        for (const letter of query) queryLetters.set(letter, (queryLetters.get(letter) || 0) + 1);
+        const matches = entries.map((entry) => ({ entry, match: locationMatch(entry, query) }))
+          .filter(({ match }) => match !== null);
+        if (matchCache.size >= 40) matchCache.delete(matchCache.keys().next().value);
+        matchCache.set(query, matches);
+        return matches;
       }
       function createCard(entry, stageCount) {
         const link = document.createElement("a");
@@ -519,15 +517,14 @@
       }
       function render(entries) {
         const query = compact(input.value);
-        const matches = entries.map((entry) => ({ entry, match: locationMatch(entry, query) }))
-          .filter(({ match }) => match !== null);
+        const matches = matchingLocations(entries, query);
         const groups = new Map(categoryOrder.map((category) => [category, []]));
         matches.forEach((result) => groups.get(categoryFor(result.entry.id)).push(result));
         const fragment = document.createDocumentFragment();
         groups.forEach((locations, category) => {
           if (!locations.length) return;
           locations.sort((left, right) => left.match.matchRank - right.match.matchRank
-            || left.entry.id.localeCompare(right.entry.id, "en", { numeric: true }));
+            || idCollator.compare(left.entry.id, right.entry.id));
           const section = document.createElement("section");
           section.className = "stage-section";
           section.setAttribute("aria-label", category);
@@ -604,12 +601,35 @@
         filterCollapse.setAttribute("aria-expanded", String(!collapsed));
         filterCollapseText.textContent = collapsed ? "펼치기" : "접기";
       });
-      input.addEventListener("input", () => { if (locations) render(locations); scroll.scrollTop = 0; });
-      input.addEventListener("keydown", (event) => {
-        if (event.key !== "Escape" || !input.value) return;
-        input.value = "";
-        if (locations) render(locations);
+      let searchFrame = 0;
+      let composing = false;
+      let renderedQuery = "";
+      function updateSearch() {
+        searchFrame = 0;
+        if (composing || !locations) return;
+        const query = compact(input.value);
+        if (query === renderedQuery) return;
+        render(locations);
+        renderedQuery = query;
         scroll.scrollTop = 0;
+      }
+      function scheduleSearch() {
+        if (!searchFrame) searchFrame = requestAnimationFrame(updateSearch);
+      }
+      input.addEventListener("compositionstart", () => {
+        composing = true;
+        cancelAnimationFrame(searchFrame);
+        searchFrame = 0;
+      });
+      input.addEventListener("compositionend", () => { composing = false; scheduleSearch(); });
+      input.addEventListener("input", (event) => {
+        if (!composing && !event.isComposing) scheduleSearch();
+      });
+      input.addEventListener("keydown", (event) => {
+        if (composing || event.isComposing || event.keyCode === 229 || event.key !== "Escape" || !input.value) return;
+        input.value = "";
+        cancelAnimationFrame(searchFrame);
+        updateSearch();
       });
 
       const locations = catalog && Array.isArray(catalog.entries)
@@ -618,6 +638,7 @@
           .map((entry) => [entry.href, { ...entry, id: String(entry.id), name: String(entry.name) }])).values()]
         : null;
       if (locations) {
+        locations.forEach(prepareLocation);
         render(locations);
       } else {
         results.innerHTML = '<p class="empty-results">스테이지 카탈로그 데이터가 없습니다.</p>';
@@ -628,7 +649,7 @@
         panel.style.height = `${initialHeight}px`;
         panel.style.flex = "0 0 auto";
       }
-    });
+    }, { once: true });
   </script>
 </body>
 </html>

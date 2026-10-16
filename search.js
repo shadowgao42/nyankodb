@@ -37,8 +37,74 @@
     return 5;
   }
 
+  // Edit this list to change BOTH the stage index and shared-search category order.
+  const stageCategoryOrder = Object.freeze([
+    "세계편",
+    "미래편",
+    "우주편",
+    "세계편 좀비습격",
+    "미래편 좀비습격",
+    "우주편 좀비습격",
+    "마계편",
+    "레전드 스토리",
+    "신 레전드 스토리",
+    "레전드 스토리 0",
+    "스페셜 스테이지",
+    "챌린지 배틀",
+    "기간한정 콜라보 스테이지",
+    "기간한정 콜라보 강습",
+    "발굴 스테이지",
+    "고양이 드링크 스테이지",
+    "초수 토벌 스테이지",
+    "이차원 콜로세움",
+    "냥코탑",
+    "전설의 퀘스트",
+    "강습",
+    "LIVE On Stage! 꼬꼬미",
+    "EX 스테이지",
+    "지하 미궁",
+    "냥코도장 스테이지",
+    "냥코도 승단 시험",
+    "랭킹 스테이지",
+    "기타",
+  ]);
+
+  function stageCategoryForLocation(id) {
+    if (/^C\d{3}$/i.test(id)) return "기간한정 콜라보 스테이지";
+    if (/^CA\d{3}$/i.test(id)) return "기간한정 콜라보 강습";
+    if (/^EoC$/i.test(id)) return "세계편";
+    if (/^W\d+$/i.test(id)) return "미래편";
+    if (/^Space\d+$/i.test(id)) return "우주편";
+    if (/^N\d{3}$/i.test(id)) return "레전드 스토리";
+    if (/^NA\d{3}$/i.test(id)) return "신 레전드 스토리";
+    if (/^ND\d{3}$/i.test(id)) return "레전드 스토리 0";
+    if (/^Z(?:000|001|002)$/i.test(id)) return "세계편 좀비습격";
+    if (/^Z(?:004|005|006)$/i.test(id)) return "미래편 좀비습격";
+    if (/^Z(?:007|008|009)$/i.test(id)) return "우주편 좀비습격";
+    if (/^DM\d{3}$/i.test(id)) return "마계편";
+    if (/^V\d{3}$/i.test(id)) return "냥코탑";
+    if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
+    if (/^L\d{3}$/i.test(id)) return "지하 미궁";
+    if (/^B\d{3}$/i.test(id)) return "고양이 드링크 스테이지";
+    if (/^PR\d{3}$/i.test(id)) return "LIVE On Stage! 꼬꼬미";
+    if (/^G\d{3}$/i.test(id)) return "냥코도 승단 시험";
+    if (/^T\d{3}$/i.test(id)) return "냥코도장 스테이지";
+    if (/^R\d{3}$/i.test(id)) return "랭킹 스테이지";
+    if (/^D\d{3}$/i.test(id)) return "전설의 퀘스트";
+    if (/^S\d{3}$/i.test(id)) return "스페셜 스테이지";
+    if (/^SR\d{3}$/i.test(id)) return "이차원 콜로세움";
+    if (/^A\d{3}$/i.test(id)) return "강습";
+    if (/^EX\d{3}$/i.test(id)) return "EX 스테이지";
+    if (/^M\d{3}$/i.test(id)) return "챌린지 배틀";
+    if (/^H\d{3}$/i.test(id)) return "발굴 스테이지";
+    return "기타";
+  }
+
+  // Preserve existing name-matching aliases; the shared list above controls sorting.
   function stageCategory(entry) {
     const location = entry.locationId || String(entry.href || entry.url || "").match(/^stage\/([^/]+)\//i)?.[1] || "";
+    if (/^C\d{3}$/i.test(location)) return "기간한정 콜라보 스테이지";
+    if (/^CA\d{3}$/i.test(location)) return "기간한정 콜라보 강습";
     if (/^eoc$/i.test(location)) return "세계편";
     if (/^W\d+$/i.test(location)) return "미래편";
     if (/^Space\d+$/i.test(location)) return "우주편";
@@ -136,26 +202,7 @@
     const locationPage = !pageName || /^index$/i.test(pageName);
     const stageNumber = Number.isInteger(entry.stageOrder) ? entry.stageOrder
       : /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
-    const familyOrder = eoc ? 0
-      : prefix === "W" ? 1
-      : prefix === "SPACE" ? 2
-      : prefix === "Z" && locationNumber <= 2 ? 3
-      : prefix === "Z" && locationNumber <= 6 ? 4
-      : prefix === "Z" && locationNumber <= 9 ? 5
-      : prefix === "DM" ? 6
-      : prefix === "N" ? 7
-      : prefix === "NA" ? 8
-      : prefix === "ND" ? 9
-      : prefix === "M" ? 10
-      : prefix === "H" ? 11
-      : prefix === "B" ? 12
-      : prefix === "L" ? 13
-      : prefix === "V" ? 14
-      : prefix === "Q" ? 15
-      : prefix === "SR" ? 16
-      : prefix === "A" ? 17
-      : prefix === "EX" ? 18
-      : 19;
+    const familyOrder = stageCategoryOrder.indexOf(stageCategoryForLocation(location));
     const key = { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
     stageSortKeys.set(entry, key);
     return key;
@@ -487,7 +534,7 @@
     else setTimeout(searchIndex, 0);
   }
 
-  window.NyankoSearch = Object.freeze({ search, identity, destination, applyStageIconSize });
+  window.NyankoSearch = Object.freeze({ search, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
   else mount();
 })();
