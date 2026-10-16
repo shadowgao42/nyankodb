@@ -292,6 +292,153 @@
     }
 </style>
   <link rel="stylesheet" href="../gnb.css">
+<!-- item-stage-sources:style:start -->
+<style id="itemStagesStyles">
+:where(#itemStagesPanel) { color-scheme: dark; }
+:where(#itemStagesPanel) button, :where(#itemStagesPanel) input { font: inherit; }
+:where(#itemStagesPanel) select { font: inherit; }
+:where(#itemStagesPanel) button { cursor: pointer; }
+.time-toggle { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #364456; border-radius: 11px; background: #0d1219; }
+.time-toggle button { min-width: 62px; padding: 7px 10px; border: 0; border-radius: 8px; color: #aeb9c8; background: transparent; font-size: 12px; font-weight: 800; }
+.time-toggle button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(255,91,45,.22); }
+.enemy-heading-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; flex-shrink: 0; max-width: 100%; gap: 8px; }
+.enemy-heading-controls > .time-toggle { flex: 0 0 auto; flex-direction: row; flex-wrap: nowrap; }
+.enemy-heading-controls > .time-toggle[aria-label="획득 스테이지 정렬"] { width: 148px; }
+.enemy-heading-controls > .time-toggle button { flex: 1 1 0; min-width: 0; padding-inline: 6px; white-space: nowrap; }
+.story-reward-acquired { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; color: #d9e1eb; font-size: 12px; font-weight: 800; }
+.story-reward-acquired select { min-width: 0; max-width: 100%; height: 34px; padding: 5px 8px; border: 1px solid #405065; border-radius: 8px; color: #fff; background: #0b1017; font-weight: 800; }:where(#itemStagesPanel) .talent-summary-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+:where(#itemStagesPanel) .talent-reset-button {
+      min-height: 30px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px;
+      color: #dce3ed;
+      background: rgba(255,255,255,.06);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+:where(#itemStagesPanel) .talent-reset-button:hover:not(:disabled),
+:where(#itemStagesPanel) .talent-reset-button:focus-visible {
+      border-color: rgba(255,255,255,.42);
+      background: rgba(255,255,255,.12);
+      outline: none;
+    }
+:where(#itemStagesPanel) .talent-reset-button:disabled {
+      color: #707d8e;
+      cursor: default;
+      opacity: .62;
+    }:where(#itemStagesPanel) .talent-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 8px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #dce3ed;
+      background: #202a36;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+:where(#itemStagesPanel) .talent-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+    }
+:where(#itemStagesPanel) .talent-check {
+      display: grid;
+      place-items: center;
+      order: 2;
+      width: 15px;
+      height: 15px;
+      border: 1px solid #697789;
+      border-radius: 4px;
+      color: transparent;
+      background: #101721;
+      line-height: 1;
+      transition: .15s ease;
+    }
+:where(#itemStagesPanel) .talent-toggle input:checked + .talent-check {
+      border-color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18);
+    }
+:where(#itemStagesPanel) .talent-toggle:has(input:focus-visible) {
+      outline: 2px solid rgba(255,173,61,.72);
+      outline-offset: 2px;
+    }.stage-ex-id { margin-left: 6px; color: var(--accent-2); font-size: 11px; font-weight: 950; white-space: nowrap; }.item-source-background::before {
+      content: ""; position: absolute; z-index: -1; inset: -3px; pointer-events: none;
+      background-image: var(--stage-background, none); background-repeat: repeat-x;
+      background-position: center bottom; background-size: auto var(--stage-background-height, 100%); filter: blur(2px); opacity: .5;
+      -webkit-mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+      mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+    }
+    #itemStagesPanel .section-heading { flex-wrap: wrap; gap: 10px; }
+    .item-source-claim-all { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 12px; padding: 0 22px 16px; color: #dce3ed; font-size: 13px; font-weight: 900; }
+    .item-source-group { padding: 0 14px 16px; }
+    .item-source-group h3 { margin: 2px 8px 11px; color: #dce3ed; font-size: 14px; }
+    .item-source-group h3 small { margin-left: 8px; color: var(--muted); font-size: 12px; }
+    .item-source-list { display: grid; gap: 9px; }
+    .item-source-groups { border-top: 1px solid var(--line); padding-top: 13px; }
+    .item-source-empty { margin: 0; padding: 0 22px 18px; color: var(--muted); font-size: 13px; }
+    .item-source-crown { margin-left: 6px; white-space: nowrap; }
+    .item-source-more { display: flex; justify-content: center; padding: 0 14px 16px; }
+    .item-source-options { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 0 22px 16px; }
+    .item-source-row { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px 20px; align-items: center; padding: 13px 15px; border: 1px solid #2d3948; border-radius: 15px; background: rgba(14,19,26,.9); }
+    .item-source-background { position: relative; z-index: -1; grid-column: 1; grid-row: 1; align-self: stretch; margin: -13px 0 -13px -15px; overflow: hidden; pointer-events: none; }
+    .item-source-link { grid-column: 1; grid-row: 1; min-width: 0; color: #f4f7fb; text-decoration: none; }
+    .item-source-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+    .item-source-link:focus-visible { outline: none; }
+    .item-source-link:focus-visible::after { outline: 1px auto -webkit-focus-ring-color; outline-offset: -2px; }
+    .item-source-row:has(> .item-source-link:hover), .item-source-row:has(> .item-source-link:focus-visible) { border-color: #788697; background: #273341; }
+    .item-source-link .mother-member-name { white-space: normal; overflow-wrap: anywhere; }
+    .item-source-map { color: var(--muted); font-size: 12px; font-weight: 900; overflow-wrap: anywhere; }
+    .item-source-metrics { grid-column: 2; grid-row: 1; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px 19px; }
+    .item-source-metric { display: grid; gap: 4px; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+    .item-source-metric span { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .item-source-metric strong { color: #f4f7fb; font-weight: 900; }
+    .item-source-metric.item-source-efficiency strong { color: var(--accent-text); font-size: 20px; }
+    .item-source-cost { display: flex; align-items: center; gap: 6px; }
+    .item-source-cost img { width: 28px; height: 28px; object-fit: contain; }
+    .item-source-row > .story-reward-acquired { position: relative; z-index: 2; grid-column: 2; grid-row: 2; justify-self: end; }
+    .item-source-has-claim > .item-source-background, .item-source-has-claim > .item-source-link { grid-row: 1 / span 2; }
+    #itemStagesPanel [hidden] { display: none; }
+    @media (max-width: 660px) {
+      #itemStagesPanel .section-heading { padding: 15px 16px 12px; }
+      #itemStagesPanel .enemy-heading-controls { gap: 6px; }
+      .item-source-row { grid-template-columns: minmax(0,1fr); padding: 11px 12px; gap: 12px; }
+      .item-source-background, .item-source-has-claim > .item-source-background { grid-row: 1; margin: -11px -12px 0; }
+      .item-source-link, .item-source-has-claim > .item-source-link { grid-row: 1; }
+      .item-source-claim-all { padding: 0 16px 14px; }
+      .item-source-options { padding: 0 16px 14px; }
+      .item-source-has-claim { grid-template-columns: minmax(0,1fr) auto; }
+      .item-source-background, .item-source-has-claim > .item-source-background { grid-column: 1 / -1; }
+      .item-source-metrics { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; gap: 12px 22px; }
+      .item-source-metric { text-align: left; }
+      .item-source-row > .story-reward-acquired { grid-column: 2; grid-row: 1; justify-self: end; flex-direction: column; align-items: flex-end; gap: 4px; }
+    }
+.item-icon-tooltip { position: fixed; left: 0; top: 0; z-index: 30; width: max-content; max-width: min(330px,calc(100vw - 48px)); padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-size: 13px; font-weight: 900; white-space: normal; box-sizing: border-box; overflow-wrap: anywhere; pointer-events: none; opacity: 0; transform: translateY(6px); transition: opacity .14s ease,transform .14s ease; }
+.item-icon-tooltip[data-open="true"] { opacity: 1; transform: translateY(0); }
+.item-icon-tooltip[hidden] { display: none; }
+
+</style>
+<!-- item-stage-sources:style:end -->
 </head>
 <body>
   <main class="page">
@@ -312,6 +459,40 @@
       </div>
     </header>
 
+  
+  
+  
+  <!-- item-stage-sources:panel:start -->
+    <section class="section" id="itemStagesPanel" aria-labelledby="itemStagesTitle">
+      <div class="section-heading">
+        <h2 id="itemStagesTitle">획득 가능 스테이지</h2>
+        <div class="enemy-heading-controls"><div class="time-toggle" role="group" aria-label="획득 스테이지 정렬"><button id="itemStagesDefault" type="button" aria-pressed="false">기본</button><button id="itemStagesEfficiency" type="button" aria-pressed="true">효율순</button></div></div>
+      </div>
+      <div class="item-source-options"><label class="talent-toggle"><span>합성 · 교환 아이템 고려</span><input id="itemStagesConversions" type="checkbox"><span class="talent-check" aria-hidden="true">✓</span></label></div>
+      <div class="item-source-claim-all">
+        <span>1회 한정 보상 일괄</span>
+        <span class="talent-summary-actions" role="group" aria-label="1회 한정 보상 일괄">
+          <button class="talent-reset-button" id="itemStagesUnclaimed" type="button" disabled>미획득</button>
+          <button class="talent-reset-button" id="itemStagesClaimed" type="button">획득</button>
+        </span>
+      </div>
+      <div class="item-source-groups">
+      <div class="item-source-group" id="itemEnergyGroup">
+        <h3>통솔력 소모 스테이지<small id="itemEnergyCount"></small></h3>
+        <div class="item-source-list" id="itemEnergyStages" role="list"></div>
+      </div>
+      <div class="item-source-group" id="itemCostGroup">
+        <h3>아이템 소모 스테이지<small id="itemCostCount"></small></h3>
+        <div class="item-source-list" id="itemCostStages" role="list"></div>
+      </div>
+      <p class="item-source-empty" id="itemStagesEmpty" hidden>등록된 획득 스테이지가 없습니다.</p>
+      <div class="item-source-more" id="itemStagesMoreContainer" hidden><button class="talent-reset-button" id="itemStagesMore" type="button" aria-controls="itemEnergyStages itemCostStages" aria-expanded="false">더보기</button></div>
+      </div>
+      <script type="application/json" id="itemStageSourcesData">{"itemId":178,"stages":[{"id":"A057-0","name":"2012년","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/0.html","stageOrder":0,"energy":10.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":0.25,"expectedClaimed":0.25,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-1","name":"2013년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/1.html","stageOrder":1,"energy":20.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.35,"expectedClaimed":0.35,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-10","name":"2017년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/10.html","stageOrder":10,"energy":110.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":1.1,"expectedClaimed":1.1,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-11","name":"2018년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/11.html","stageOrder":11,"energy":120.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":1.2,"expectedClaimed":1.2,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-12","name":"2018년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/12.html","stageOrder":12,"energy":130.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":1.35,"expectedClaimed":1.35,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-13","name":"2020년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/13.html","stageOrder":13,"energy":140.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":1.45,"expectedClaimed":1.45,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-14","name":"2020년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/14.html","stageOrder":14,"energy":150.0,"itemCost":null,"background":"img/bg/bg005.png","expectedUnclaimed":1.55,"expectedClaimed":1.55,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-15","name":"2021년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/15.html","stageOrder":15,"energy":160.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":1.7000000000000002,"expectedClaimed":1.7000000000000002,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-16","name":"2021년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/16.html","stageOrder":16,"energy":170.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":1.85,"expectedClaimed":1.85,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-17","name":"2023년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/17.html","stageOrder":17,"energy":180.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":2.0,"expectedClaimed":2.0,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-18","name":"2023년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/18.html","stageOrder":18,"energy":190.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":2.1500000000000004,"expectedClaimed":2.1500000000000004,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-19","name":"2024년","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/19.html","stageOrder":19,"energy":200.0,"itemCost":null,"background":"img/bg/bg169.png","expectedUnclaimed":2.3,"expectedClaimed":2.3,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-2","name":"2013년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/2.html","stageOrder":2,"energy":30.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":0.45,"expectedClaimed":0.45,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-3","name":"2014년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/3.html","stageOrder":3,"energy":40.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.55,"expectedClaimed":0.55,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-4","name":"2014년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/4.html","stageOrder":4,"energy":50.0,"itemCost":null,"background":"img/bg/bg005.png","expectedUnclaimed":0.65,"expectedClaimed":0.65,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-5","name":"2015년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/5.html","stageOrder":5,"energy":60.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":0.75,"expectedClaimed":0.75,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-6","name":"2015년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/6.html","stageOrder":6,"energy":70.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.8,"expectedClaimed":0.8,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-7","name":"2016년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/7.html","stageOrder":7,"energy":80.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":0.9,"expectedClaimed":0.9,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-8","name":"2016년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/8.html","stageOrder":8,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":1.0,"expectedClaimed":1.0,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-9","name":"2017년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/9.html","stageOrder":9,"energy":100.0,"itemCost":null,"background":"img/bg/bg169.png","expectedUnclaimed":1.08,"expectedClaimed":1.08,"hasClaimState":false,"backgroundHeightPercent":100}],"indirectStages":[],"combinedStages":[{"id":"A057-0","name":"2012년","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/0.html","stageOrder":0,"energy":10.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":0.25,"expectedClaimed":0.25,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-1","name":"2013년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/1.html","stageOrder":1,"energy":20.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.35,"expectedClaimed":0.35,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-10","name":"2017년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/10.html","stageOrder":10,"energy":110.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":1.1,"expectedClaimed":1.1,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-11","name":"2018년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/11.html","stageOrder":11,"energy":120.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":1.2,"expectedClaimed":1.2,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-12","name":"2018년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/12.html","stageOrder":12,"energy":130.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":1.35,"expectedClaimed":1.35,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-13","name":"2020년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/13.html","stageOrder":13,"energy":140.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":1.45,"expectedClaimed":1.45,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-14","name":"2020년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/14.html","stageOrder":14,"energy":150.0,"itemCost":null,"background":"img/bg/bg005.png","expectedUnclaimed":1.55,"expectedClaimed":1.55,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-15","name":"2021년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/15.html","stageOrder":15,"energy":160.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":1.7000000000000002,"expectedClaimed":1.7000000000000002,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-16","name":"2021년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/16.html","stageOrder":16,"energy":170.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":1.85,"expectedClaimed":1.85,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-17","name":"2023년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/17.html","stageOrder":17,"energy":180.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":2.0,"expectedClaimed":2.0,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-18","name":"2023년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/18.html","stageOrder":18,"energy":190.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":2.1500000000000004,"expectedClaimed":2.1500000000000004,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-19","name":"2024년","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/19.html","stageOrder":19,"energy":200.0,"itemCost":null,"background":"img/bg/bg169.png","expectedUnclaimed":2.3,"expectedClaimed":2.3,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-2","name":"2013년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/2.html","stageOrder":2,"energy":30.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":0.45,"expectedClaimed":0.45,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-3","name":"2014년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/3.html","stageOrder":3,"energy":40.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.55,"expectedClaimed":0.55,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-4","name":"2014년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/4.html","stageOrder":4,"energy":50.0,"itemCost":null,"background":"img/bg/bg005.png","expectedUnclaimed":0.65,"expectedClaimed":0.65,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-5","name":"2015년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/5.html","stageOrder":5,"energy":60.0,"itemCost":null,"background":"img/bg/bg000.png","expectedUnclaimed":0.75,"expectedClaimed":0.75,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-6","name":"2015년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/6.html","stageOrder":6,"energy":70.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.8,"expectedClaimed":0.8,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-7","name":"2016년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/7.html","stageOrder":7,"energy":80.0,"itemCost":null,"background":"img/bg/bg009.png","expectedUnclaimed":0.9,"expectedClaimed":0.9,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-8","name":"2016년: ②","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/8.html","stageOrder":8,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":1.0,"expectedClaimed":1.0,"hasClaimState":false,"backgroundHeightPercent":100},{"id":"A057-9","name":"2017년: ①","mapName":"제1부 히스토리 퍼레이드","locationId":"A057","href":"stage/A057/9.html","stageOrder":9,"energy":100.0,"itemCost":null,"background":"img/bg/bg169.png","expectedUnclaimed":1.08,"expectedClaimed":1.08,"hasClaimState":false,"backgroundHeightPercent":100}]}</script>
+    </section>
+    <script src="item-stage-sources.js" defer></script>
+    <script src="item-tooltips.js" defer></script>
+<!-- item-stage-sources:panel:end -->
   </main>
   <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>

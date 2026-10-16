@@ -15,6 +15,58 @@
   const grades = new Map(catalog.grades.map(row => [row.id, row]));
   const records = new Map(catalog.items.map(row => [row.id + 30000, row]));
   const state = { attribute: "", effect: "", grade: "" };
+  const stagesPanel = document.getElementById("itemStagesPanel");
+  const stagesData = document.getElementById("itemStageSourcesData");
+  const synthesisPanel = document.getElementById("itemSynthesisPanel");
+  const sourcesNotice = document.getElementById("orbSourcesNotice");
+  const acquisitionCache = new Map();
+  if (stagesData) {
+    const initial = JSON.parse(stagesData.textContent);
+    acquisitionCache.set(initial.itemId, initial);
+  }
+  let acquisitionRequest = 0;
+
+  function applyAcquisition(data) {
+    stagesData.textContent = JSON.stringify(data);
+    stagesPanel.dispatchEvent(new CustomEvent("item-sources-change", { detail: data }));
+    synthesisPanel.querySelector(".item-synthesis-list").innerHTML = data.synthesisHtml || "";
+    stagesPanel.hidden = false;
+    synthesisPanel.hidden = !data.synthesisHtml;
+  }
+
+  async function updateAcquisition(record) {
+    if (!stagesPanel || !stagesData || !synthesisPanel) return;
+    const request = ++acquisitionRequest;
+    stagesPanel.hidden = synthesisPanel.hidden = true;
+    sourcesNotice.hidden = true;
+    const empty = { stages: [], combinedStages: [] };
+    stagesData.textContent = JSON.stringify(empty);
+    stagesPanel.dispatchEvent(new CustomEvent("item-sources-change", { detail: empty }));
+    if (!record) return;
+    const itemId = record.id + 30000;
+    if (acquisitionCache.has(itemId)) {
+      applyAcquisition(acquisitionCache.get(itemId));
+      return;
+    }
+    sourcesNotice.textContent = "획득 스테이지를 불러오는 중입니다.";
+    sourcesNotice.hidden = false;
+    try {
+      const response = await fetch(`orb-sources/${itemId}.json`);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      if (data.itemId !== itemId || !Array.isArray(data.stages) || !Array.isArray(data.combinedStages)) {
+        throw new Error("Invalid orb acquisition data");
+      }
+      acquisitionCache.set(itemId, data);
+      if (request !== acquisitionRequest) return;
+      applyAcquisition(data);
+      sourcesNotice.hidden = true;
+    } catch (_) {
+      if (request !== acquisitionRequest) return;
+      sourcesNotice.textContent = "획득 스테이지를 불러오지 못했습니다. 설정을 다시 선택해주세요.";
+      sourcesNotice.hidden = false;
+    }
+  }
 
       function formatOrbNumber(value) {
       return String(Number(Number(value).toFixed(3)));
@@ -159,6 +211,8 @@
     summary.textContent = record ? describeOrb(record) : "속성, 효과/능력, 등급을 선택하세요.";
     document.title = `${title} · 냥코DB`;
     preview.setAttribute("aria-label", title);
+    if (record) preview.dataset.itemId = String(record.id + 30000);
+    else delete preview.dataset.itemId;
     preview.replaceChildren();
     for (const [value, selected, className] of [
       [attribute, state.attribute, "orb-attribute-layer"],
@@ -172,6 +226,7 @@
       image.className = className;
       preview.append(image);
     }
+    updateAcquisition(record);
     if (updateUrl) {
       const url = new URL(location.href);
       for (const key of ["orb", "attribute", "effect", "grade"]) url.searchParams.delete(key);

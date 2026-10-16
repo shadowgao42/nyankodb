@@ -292,6 +292,272 @@
     }
 </style>
   <link rel="stylesheet" href="../gnb.css">
+<!-- item-required-views:style:start -->
+<style id="requiredUnitViewStyles">
+:where(#requiredUnitsPanel) { color-scheme: dark; }
+:where(#requiredUnitsPanel) .nyancombo-members {
+      display: flex;
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow: visible;
+      padding: 13px 15px 15px;
+    }
+:where(#requiredUnitsPanel) .nyancombo-member {
+      position: relative;
+      display: block;
+      flex: 0 1 clamp(56px, calc(7vw + 29px), 96px);
+      width: clamp(56px, calc(7vw + 29px), 96px);
+      min-width: 56px;
+      padding: 4px;
+      border: 1px solid #344253;
+      border-radius: 10px;
+      color: inherit;
+      background: #0b1017;
+      text-decoration: none;
+      transition: border-color .14s ease, transform .14s ease;
+    }
+:where(#requiredUnitsPanel) .nyancombo-member::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      z-index: 30;
+      width: max-content;
+      max-width: min(330px, calc(100vw - 48px));
+      padding: 10px 12px;
+      border: 1px solid #53657a;
+      border-radius: 11px;
+      color: #fff;
+      background: #080c12;
+      box-shadow: 0 12px 34px rgba(0,0,0,.48);
+      font-size: 13px;
+      font-weight: 900;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 6px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+:where(#requiredUnitsPanel) .nyancombo-member:hover,
+:where(#requiredUnitsPanel) .nyancombo-member:focus-visible {
+      border-color: var(--accent);
+      outline: none;
+      transform: translateY(-2px);
+    }
+:where(#requiredUnitsPanel) .nyancombo-member:hover::after,
+:where(#requiredUnitsPanel) .nyancombo-member:focus-visible::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+:where(#requiredUnitsPanel) .nyancombo-member-image {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      aspect-ratio: 104 / 79;
+      overflow: hidden;
+      border-radius: 6px;
+      background: rgba(255,255,255,.04);
+    }
+:where(#requiredUnitsPanel) .nyancombo-member-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+:where(#requiredUnitsPanel) button,
+:where(#requiredUnitsPanel) input { font: inherit; }
+:where(#requiredUnitsPanel) button { cursor: pointer; }
+:where(#requiredUnitsPanel) .time-toggle { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #364456; border-radius: 11px; background: #0d1219; }
+:where(#requiredUnitsPanel) .time-toggle button { min-width: 62px; padding: 7px 10px; border: 0; border-radius: 8px; color: #aeb9c8; background: transparent; font-size: 12px; font-weight: 800; }
+:where(#requiredUnitsPanel) .time-toggle button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(255,91,45,.22); }
+:where(#requiredUnitsPanel) .enemy-heading-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; flex-shrink: 0; max-width: 100%; gap: 8px; }
+:where(#requiredUnitsPanel) .enemy-heading-controls > .time-toggle { flex: 0 0 auto; flex-direction: row; flex-wrap: nowrap; }
+:where(#requiredUnitsPanel) .enemy-heading-controls > .enemy-view-toggle { width: 136px; }
+:where(#requiredUnitsPanel) .enemy-heading-controls > .time-toggle button { flex: 1 1 0; min-width: 0; padding-inline: 6px; white-space: nowrap; }
+    #requiredUnitsPanel .nyancombo-members { flex-wrap: wrap; }
+    #requiredUnitsPanel .nyancombo-member::after { display: none; }
+    #requiredUnitsPanel .nyancombo-member:hover::after,
+    #requiredUnitsPanel .nyancombo-member:focus-visible::after { display: block; }
+
+    #requiredUnitsPanel .section-heading { flex-wrap: wrap; gap: 10px; }
+    #requiredUnitsPanel [hidden] { display: none; }
+    #requiredUnitsPanel .required-unit-compact-entry { display: grid; justify-items: center; gap: 5px; }
+    #requiredUnitsPanel .required-unit-compact-entry > .required-material-quantity { margin-left: 0; }
+    @media (max-width: 660px) {
+      #requiredUnitsPanel .section-heading { padding: 15px 16px 12px; }
+      #requiredUnitsPanel .enemy-heading-controls { gap: 6px; }
+    }
+</style>
+<!-- item-required-views:style:end -->
+<!-- item-synthesis:style:start -->
+<style id="itemSynthesisStyles">
+:where(#itemSynthesisPanel) { color-scheme: dark; }
+:where(#itemSynthesisPanel) .stat-value { display: block; margin-top: 11px; overflow-wrap: anywhere; font-size: clamp(25px,2.5vw,34px); font-weight: 900; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+:where(#itemSynthesisPanel) .stage-drink-cost { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+:where(#itemSynthesisPanel) .stage-drink-icon { display: block; width: 40px; height: 40px; object-fit: contain; }
+:where(#itemSynthesisPanel) .stage-drink-link { position: relative; z-index: 1; display: block; border: 1px solid transparent; border-radius: 8px; transition: border-color .14s ease, transform .14s ease; }
+:where(#itemSynthesisPanel) .stage-drink-link:hover,
+:where(#itemSynthesisPanel) .stage-drink-link:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
+    .item-synthesis-list { display: grid; gap: 12px; padding: 0 22px 18px; }
+    .item-synthesis-recipe { display: flex; align-items: center; gap: 16px; }
+    .item-synthesis-probability { color: var(--muted); font-size: 12px; font-weight: 800; margin-top: 11px; }
+    .item-synthesis-arrow { display: block; width: 37px; height: 44px; margin-top: 11px; object-fit: contain; }
+    .item-synthesis-arrow[data-direction="left"] { transform: scaleX(-1); }
+    @media (max-width: 660px) {
+      #itemSynthesisPanel .section-heading { padding: 15px 16px 12px; }
+      .item-synthesis-list { padding: 0 16px 16px; }
+      .item-synthesis-recipe { gap: 8px; }
+    }
+</style>
+<!-- item-synthesis:style:end -->
+<!-- item-stage-sources:style:start -->
+<style id="itemStagesStyles">
+:where(#itemStagesPanel) { color-scheme: dark; }
+:where(#itemStagesPanel) button, :where(#itemStagesPanel) input { font: inherit; }
+:where(#itemStagesPanel) select { font: inherit; }
+:where(#itemStagesPanel) button { cursor: pointer; }
+.time-toggle { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid #364456; border-radius: 11px; background: #0d1219; }
+.time-toggle button { min-width: 62px; padding: 7px 10px; border: 0; border-radius: 8px; color: #aeb9c8; background: transparent; font-size: 12px; font-weight: 800; }
+.time-toggle button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 4px 12px rgba(255,91,45,.22); }
+.enemy-heading-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: nowrap; flex-shrink: 0; max-width: 100%; gap: 8px; }
+.enemy-heading-controls > .time-toggle { flex: 0 0 auto; flex-direction: row; flex-wrap: nowrap; }
+.enemy-heading-controls > .time-toggle[aria-label="획득 스테이지 정렬"] { width: 148px; }
+.enemy-heading-controls > .time-toggle button { flex: 1 1 0; min-width: 0; padding-inline: 6px; white-space: nowrap; }
+.story-reward-acquired { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; min-width: 0; color: #d9e1eb; font-size: 12px; font-weight: 800; }
+.story-reward-acquired select { min-width: 0; max-width: 100%; height: 34px; padding: 5px 8px; border: 1px solid #405065; border-radius: 8px; color: #fff; background: #0b1017; font-weight: 800; }:where(#itemStagesPanel) .talent-summary-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+:where(#itemStagesPanel) .talent-reset-button {
+      min-height: 30px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px;
+      color: #dce3ed;
+      background: rgba(255,255,255,.06);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+:where(#itemStagesPanel) .talent-reset-button:hover:not(:disabled),
+:where(#itemStagesPanel) .talent-reset-button:focus-visible {
+      border-color: rgba(255,255,255,.42);
+      background: rgba(255,255,255,.12);
+      outline: none;
+    }
+:where(#itemStagesPanel) .talent-reset-button:disabled {
+      color: #707d8e;
+      cursor: default;
+      opacity: .62;
+    }:where(#itemStagesPanel) .talent-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 30px;
+      padding: 4px 8px;
+      border: 1px solid #526071;
+      border-radius: 6px;
+      color: #dce3ed;
+      background: #202a36;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+:where(#itemStagesPanel) .talent-toggle input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+    }
+:where(#itemStagesPanel) .talent-check {
+      display: grid;
+      place-items: center;
+      order: 2;
+      width: 15px;
+      height: 15px;
+      border: 1px solid #697789;
+      border-radius: 4px;
+      color: transparent;
+      background: #101721;
+      line-height: 1;
+      transition: .15s ease;
+    }
+:where(#itemStagesPanel) .talent-toggle input:checked + .talent-check {
+      border-color: var(--accent);
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 0 0 2px rgba(255,91,45,.18);
+    }
+:where(#itemStagesPanel) .talent-toggle:has(input:focus-visible) {
+      outline: 2px solid rgba(255,173,61,.72);
+      outline-offset: 2px;
+    }.stage-ex-id { margin-left: 6px; color: var(--accent-2); font-size: 11px; font-weight: 950; white-space: nowrap; }.item-source-background::before {
+      content: ""; position: absolute; z-index: -1; inset: -3px; pointer-events: none;
+      background-image: var(--stage-background, none); background-repeat: repeat-x;
+      background-position: center bottom; background-size: auto var(--stage-background-height, 100%); filter: blur(2px); opacity: .5;
+      -webkit-mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+      mask-image: linear-gradient(90deg,transparent 0%,transparent 18%,rgba(0,0,0,.25) 40%,#000 78%);
+    }
+    #itemStagesPanel .section-heading { flex-wrap: wrap; gap: 10px; }
+    .item-source-claim-all { display: flex; align-items: center; flex-wrap: wrap; gap: 7px 12px; padding: 0 22px 16px; color: #dce3ed; font-size: 13px; font-weight: 900; }
+    .item-source-group { padding: 0 14px 16px; }
+    .item-source-group h3 { margin: 2px 8px 11px; color: #dce3ed; font-size: 14px; }
+    .item-source-group h3 small { margin-left: 8px; color: var(--muted); font-size: 12px; }
+    .item-source-list { display: grid; gap: 9px; }
+    .item-source-groups { border-top: 1px solid var(--line); padding-top: 13px; }
+    .item-source-empty { margin: 0; padding: 0 22px 18px; color: var(--muted); font-size: 13px; }
+    .item-source-crown { margin-left: 6px; white-space: nowrap; }
+    .item-source-more { display: flex; justify-content: center; padding: 0 14px 16px; }
+    .item-source-options { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 0 22px 16px; }
+    .item-source-row { position: relative; isolation: isolate; overflow: hidden; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px 20px; align-items: center; padding: 13px 15px; border: 1px solid #2d3948; border-radius: 15px; background: rgba(14,19,26,.9); }
+    .item-source-background { position: relative; z-index: -1; grid-column: 1; grid-row: 1; align-self: stretch; margin: -13px 0 -13px -15px; overflow: hidden; pointer-events: none; }
+    .item-source-link { grid-column: 1; grid-row: 1; min-width: 0; color: #f4f7fb; text-decoration: none; }
+    .item-source-link::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: inherit; }
+    .item-source-link:focus-visible { outline: none; }
+    .item-source-link:focus-visible::after { outline: 1px auto -webkit-focus-ring-color; outline-offset: -2px; }
+    .item-source-row:has(> .item-source-link:hover), .item-source-row:has(> .item-source-link:focus-visible) { border-color: #788697; background: #273341; }
+    .item-source-link .mother-member-name { white-space: normal; overflow-wrap: anywhere; }
+    .item-source-map { color: var(--muted); font-size: 12px; font-weight: 900; overflow-wrap: anywhere; }
+    .item-source-metrics { grid-column: 2; grid-row: 1; display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px 19px; }
+    .item-source-metric { display: grid; gap: 4px; font-size: 13px; text-align: right; font-variant-numeric: tabular-nums; }
+    .item-source-metric span { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .item-source-metric strong { color: #f4f7fb; font-weight: 900; }
+    .item-source-metric.item-source-efficiency strong { color: var(--accent-text); font-size: 20px; }
+    .item-source-cost { display: flex; align-items: center; gap: 6px; }
+    .item-source-cost img { width: 28px; height: 28px; object-fit: contain; }
+    .item-source-row > .story-reward-acquired { position: relative; z-index: 2; grid-column: 2; grid-row: 2; justify-self: end; }
+    .item-source-has-claim > .item-source-background, .item-source-has-claim > .item-source-link { grid-row: 1 / span 2; }
+    #itemStagesPanel [hidden] { display: none; }
+    @media (max-width: 660px) {
+      #itemStagesPanel .section-heading { padding: 15px 16px 12px; }
+      #itemStagesPanel .enemy-heading-controls { gap: 6px; }
+      .item-source-row { grid-template-columns: minmax(0,1fr); padding: 11px 12px; gap: 12px; }
+      .item-source-background, .item-source-has-claim > .item-source-background { grid-row: 1; margin: -11px -12px 0; }
+      .item-source-link, .item-source-has-claim > .item-source-link { grid-row: 1; }
+      .item-source-claim-all { padding: 0 16px 14px; }
+      .item-source-options { padding: 0 16px 14px; }
+      .item-source-has-claim { grid-template-columns: minmax(0,1fr) auto; }
+      .item-source-background, .item-source-has-claim > .item-source-background { grid-column: 1 / -1; }
+      .item-source-metrics { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; gap: 12px 22px; }
+      .item-source-metric { text-align: left; }
+      .item-source-row > .story-reward-acquired { grid-column: 2; grid-row: 1; justify-self: end; flex-direction: column; align-items: flex-end; gap: 4px; }
+    }
+.item-icon-tooltip { position: fixed; left: 0; top: 0; z-index: 30; width: max-content; max-width: min(330px,calc(100vw - 48px)); padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-size: 13px; font-weight: 900; white-space: normal; box-sizing: border-box; overflow-wrap: anywhere; pointer-events: none; opacity: 0; transform: translateY(6px); transition: opacity .14s ease,transform .14s ease; }
+.item-icon-tooltip[data-open="true"] { opacity: 1; transform: translateY(0); }
+.item-icon-tooltip[hidden] { display: none; }
+
+</style>
+<!-- item-stage-sources:style:end -->
 </head>
 <body>
   <main class="page">
@@ -313,13 +579,58 @@
       </div>
     </header>
     <section class="section mother-section" id="requiredUnitsPanel" data-item-id="36" aria-labelledby="requiredUnitsTitle" hidden>
-      <div class="section-heading"><h2 id="requiredUnitsTitle">요구 캐릭터</h2></div>
+      <div class="section-heading"><h2 id="requiredUnitsTitle">요구 캐릭터</h2>
+        <div class="enemy-heading-controls"><div class="time-toggle enemy-view-toggle" role="group" aria-label="요구 캐릭터 표시 방식"><button id="requiredUnitsCompact" type="button" aria-pressed="true" aria-controls="requiredUnitsMembers">간략</button><button id="requiredUnitsDetailed" type="button" aria-pressed="false" aria-controls="requiredUnitsMembers">상세</button></div></div>
+      </div>
       <div class="required-unit-groups" id="requiredUnitsMembers"></div>
     </section>
 
+  
+  
+  
+  <!-- item-synthesis:panel:start -->
+    <section class="section" id="itemSynthesisPanel" aria-labelledby="itemSynthesisTitle">
+      <div class="section-heading"><h2 id="itemSynthesisTitle">아이템 합성 · 교환</h2></div>
+      <div class="item-synthesis-list"><div class="item-synthesis-recipe"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item036.html" aria-label="빨강 개다래 열매"><img class="stage-drink-icon" src="../img/r/36.png" alt="빨강 개다래 열매" title="빨강 개다래 열매"></a><span>×1</span></strong><img class="item-synthesis-arrow" src="../img/icon/arrow.png" data-direction="left" alt="←" width="37" height="44"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item031.html" aria-label="빨강 개다래나무의 씨앗"><img class="stage-drink-icon" src="../img/r/31.png" alt="빨강 개다래나무의 씨앗" title="빨강 개다래나무의 씨앗"></a><span>×5</span></strong><small class="item-synthesis-probability">(확률 97%)</small></div><div class="item-synthesis-recipe"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item036.html" aria-label="빨강 개다래 열매"><img class="stage-drink-icon" src="../img/r/36.png" alt="빨강 개다래 열매" title="빨강 개다래 열매"></a><span>×1</span></strong><img class="item-synthesis-arrow" src="../img/icon/arrow.png" data-direction="right" alt="→" width="37" height="44"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item006.html" aria-label="XP"><img class="stage-drink-icon" src="../img/r/6.png" alt="XP" title="XP"></a><span>50,000</span></strong></div></div>
+    </section>
+<!-- item-synthesis:panel:end -->
+  <!-- item-stage-sources:panel:start -->
+    <section class="section" id="itemStagesPanel" aria-labelledby="itemStagesTitle">
+      <div class="section-heading">
+        <h2 id="itemStagesTitle">획득 가능 스테이지</h2>
+        <div class="enemy-heading-controls"><div class="time-toggle" role="group" aria-label="획득 스테이지 정렬"><button id="itemStagesDefault" type="button" aria-pressed="false">기본</button><button id="itemStagesEfficiency" type="button" aria-pressed="true">효율순</button></div></div>
+      </div>
+      <div class="item-source-options"><label class="talent-toggle"><span>합성 · 교환 아이템 고려</span><input id="itemStagesConversions" type="checkbox"><span class="talent-check" aria-hidden="true">✓</span></label></div>
+      <div class="item-source-claim-all">
+        <span>1회 한정 보상 일괄</span>
+        <span class="talent-summary-actions" role="group" aria-label="1회 한정 보상 일괄">
+          <button class="talent-reset-button" id="itemStagesUnclaimed" type="button" disabled>미획득</button>
+          <button class="talent-reset-button" id="itemStagesClaimed" type="button">획득</button>
+        </span>
+      </div>
+      <div class="item-source-groups">
+      <div class="item-source-group" id="itemEnergyGroup">
+        <h3>통솔력 소모 스테이지<small id="itemEnergyCount"></small></h3>
+        <div class="item-source-list" id="itemEnergyStages" role="list"></div>
+      </div>
+      <div class="item-source-group" id="itemCostGroup">
+        <h3>아이템 소모 스테이지<small id="itemCostCount"></small></h3>
+        <div class="item-source-list" id="itemCostStages" role="list"></div>
+      </div>
+      <p class="item-source-empty" id="itemStagesEmpty" hidden>등록된 획득 스테이지가 없습니다.</p>
+      <div class="item-source-more" id="itemStagesMoreContainer" hidden><button class="talent-reset-button" id="itemStagesMore" type="button" aria-controls="itemEnergyStages itemCostStages" aria-expanded="false">더보기</button></div>
+      </div>
+      <script type="application/json" id="itemStageSourcesData">{"itemId":36,"stages":[{"id":"A002-11","name":"경계 Lv.52","mapName":"거대 바・다레오파드 강습!!!","locationId":"A002","href":"stage/A002/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A005-11","name":"폭주 Lv.52","mapName":"자이언트 블랙 빠옹 강습!!!","locationId":"A005","href":"stage/A005/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A008-11","name":"비행 Lv.52","mapName":"슈퍼 나나나난나방 강습!!!","locationId":"A008","href":"stage/A008/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A011-11","name":"침략 Lv.52","mapName":"빅 하앜마양 강습!!!","locationId":"A011","href":"stage/A011/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"B002-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/0.html","stageOrder":0,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.31934166666666663,"expectedClaimed":0.31934166666666663,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"backgroundHeightPercent":100},{"id":"B002-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/1.html","stageOrder":1,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.48868333333333336,"expectedClaimed":0.48868333333333336,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"backgroundHeightPercent":100},{"id":"B002-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/2.html","stageOrder":2,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg001.png","expectedUnclaimed":0.658025,"expectedClaimed":0.658025,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"CA000-10","name":"꿈의 세계 Lv.11","mapName":"메시에 강습!","locationId":"CA000","href":"stage/CA000/10.html","stageOrder":10,"energy":110.0,"itemCost":null,"background":"img/bg/bg108.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA003-5","name":"천성계 Lv.6","mapName":"천사군 강습!","locationId":"CA003","href":"stage/CA003/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg136.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA004-5","name":"유술사와 동료들 Lv.6","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg060.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA007-14","name":"경계 Lv.15","mapName":"사도 강습","locationId":"CA007","href":"stage/CA007/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg088.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA011-5","name":"攻城戦 Lv.6","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg028.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA017-14","name":"어정번중 Lv.15","mapName":"강습! 두령・시노모리 아오시","locationId":"CA017","href":"stage/CA017/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg217.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":125.78125},{"id":"CA023-14","name":"카오스 컨트롤 Lv.15","mapName":"래디컬 하이웨이","locationId":"CA023","href":"stage/CA023/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg242.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA024-2","name":"섬멸 Lv.3","mapName":"에바 양산기 강습","locationId":"CA024","href":"stage/CA024/2.html","stageOrder":2,"energy":120.0,"itemCost":null,"background":"img/bg/bg089.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA025-14","name":"너도 혈귀가 되지 않겠나? Lv.15","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg257.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"S099-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/0.html","stageOrder":0,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.31934166666666663,"expectedClaimed":0.31934166666666663,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"backgroundHeightPercent":100},{"id":"S099-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/1.html","stageOrder":1,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.48868333333333336,"expectedClaimed":0.48868333333333336,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"backgroundHeightPercent":100},{"id":"S099-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg001.png","expectedUnclaimed":0.658025,"expectedClaimed":0.658025,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"S118-0","name":"비취의 유혹 상급","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/0.html","stageOrder":0,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.39666666666666667,"expectedClaimed":0.39666666666666667,"hasClaimState":false,"exSources":[{"id":"EX009-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S118-1","name":"비취의 유혹 고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/1.html","stageOrder":1,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.5466666666666667,"expectedClaimed":0.5466666666666667,"hasClaimState":false,"exSources":[{"id":"EX013-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S118-2","name":"비취의 유혹 초고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/2.html","stageOrder":2,"energy":500.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.6966666666666667,"expectedClaimed":0.6966666666666667,"hasClaimState":false,"exSources":[{"id":"EX017-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S420-0","name":"신발뿐인 신발장","mapName":"씁쓸한 발렌타인","locationId":"S420","href":"stage/S420/0.html","stageOrder":0,"energy":100.0,"itemCost":null,"background":"img/bg/bg066.png","expectedUnclaimed":1.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"S422-2","name":"타오르는 정열","mapName":"진화의 개다래 열매","locationId":"S422","href":"stage/S422/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.7180249999999999,"expectedClaimed":0.7180249999999999,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"V000-20","name":"21층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/20.html","stageOrder":20,"energy":200.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"V010-20","name":"21층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/20.html","stageOrder":20,"energy":200.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":6.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100}],"indirectStages":[{"id":"A001-4","name":"경계 Lv.25","mapName":"거대 바・다레오파드 강습!!","locationId":"A001","href":"stage/A001/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A001-4:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"A004-4","name":"폭주 Lv.25","mapName":"자이언트 블랙 빠옹 강습!!","locationId":"A004","href":"stage/A004/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A004-4:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"A007-4","name":"비행 Lv.25","mapName":"슈퍼 나나나난나방 강습!!","locationId":"A007","href":"stage/A007/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A007-4:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"A010-4","name":"침략 Lv.25","mapName":"빅 하앜마양 강습!!","locationId":"A010","href":"stage/A010/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A010-4:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"A076-3","name":"잔악무도한 채찍 Lv.4","mapName":"제3화 검은 귀부인","locationId":"A076","href":"stage/A076/3.html","stageOrder":3,"energy":80.0,"itemCost":null,"background":"img/bg/bg190.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A076-3:synthesis:31>36:3","backgroundHeightPercent":162.5},{"id":"A080-3","name":"非道なる鞭 Lv.4","mapName":"제3화 검은 귀부인","locationId":"A080","href":"stage/A080/3.html","stageOrder":3,"energy":80.0,"itemCost":null,"background":"img/bg/bg190.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"A080-3:synthesis:31>36:3","backgroundHeightPercent":162.5},{"id":"B002-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/0.html","stageOrder":0,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.11636605,"expectedClaimed":0.11636605,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"B002-0:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"B002-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/1.html","stageOrder":1,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.08616510000000001,"expectedClaimed":0.08616510000000001,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"B002-1:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"B002-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/2.html","stageOrder":2,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg001.png","expectedUnclaimed":0.05557615000000001,"expectedClaimed":0.05557615000000001,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"B002-2:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"CA000-1","name":"꿈의 세계 Lv.2","mapName":"메시에 강습!","locationId":"CA000","href":"stage/CA000/1.html","stageOrder":1,"energy":70.0,"itemCost":null,"background":"img/bg/bg108.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"CA000-1:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S099-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/0.html","stageOrder":0,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.11636605,"expectedClaimed":0.11636605,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S099-0:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S099-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/1.html","stageOrder":1,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.08616510000000001,"expectedClaimed":0.08616510000000001,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S099-1:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S099-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg001.png","expectedUnclaimed":0.05557615000000001,"expectedClaimed":0.05557615000000001,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S099-2:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S118-0","name":"비취의 유혹 상급","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/0.html","stageOrder":0,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.11543,"expectedClaimed":0.11543,"hasClaimState":false,"exSources":[{"id":"EX009-0","probabilityPercent":100.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S118-0:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S118-1","name":"비취의 유혹 고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/1.html","stageOrder":1,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.084293,"expectedClaimed":0.084293,"hasClaimState":false,"exSources":[{"id":"EX013-0","probabilityPercent":100.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S118-1:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S118-2","name":"비취의 유혹 초고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/2.html","stageOrder":2,"energy":500.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.052768,"expectedClaimed":0.052768,"hasClaimState":false,"exSources":[{"id":"EX017-0","probabilityPercent":100.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S118-2:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"S422-2","name":"타오르는 정열","mapName":"진화의 개다래 열매","locationId":"S422","href":"stage/S422/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.21814815000000004,"expectedClaimed":0.21814815000000004,"hasClaimState":false,"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"S422-2:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"V000-13","name":"14층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/13.html","stageOrder":13,"energy":120.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"V000-13:synthesis:31>36:3","backgroundHeightPercent":100},{"id":"V010-13","name":"14층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/13.html","stageOrder":13,"energy":120.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":1.94,"expectedClaimed":0.0,"hasClaimState":true,"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","sourceItemIcon":"img/r/31.png","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"},"routeId":"V010-13:synthesis:31>36:3","backgroundHeightPercent":100}],"combinedStages":[{"id":"A002-11","name":"경계 Lv.52","mapName":"거대 바・다레오파드 강습!!!","locationId":"A002","href":"stage/A002/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A005-11","name":"폭주 Lv.52","mapName":"자이언트 블랙 빠옹 강습!!!","locationId":"A005","href":"stage/A005/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A008-11","name":"비행 Lv.52","mapName":"슈퍼 나나나난나방 강습!!!","locationId":"A008","href":"stage/A008/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A011-11","name":"침략 Lv.52","mapName":"빅 하앜마양 강습!!!","locationId":"A011","href":"stage/A011/11.html","stageOrder":11,"energy":130.0,"itemCost":null,"background":"img/bg/bg002.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"B002-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/0.html","stageOrder":0,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.43570771666666663,"expectedClaimed":0.43570771666666663,"hasClaimState":false,"rewardComponents":[{"id":"B002-0","expectedUnclaimed":0.43570771666666663,"expectedClaimed":0.43570771666666663}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"backgroundHeightPercent":100},{"id":"B002-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/1.html","stageOrder":1,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg004.png","expectedUnclaimed":0.5748484333333334,"expectedClaimed":0.5748484333333334,"hasClaimState":false,"rewardComponents":[{"id":"B002-1","expectedUnclaimed":0.5748484333333334,"expectedClaimed":0.5748484333333334}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"backgroundHeightPercent":100},{"id":"B002-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"B002","href":"stage/B002/2.html","stageOrder":2,"energy":null,"itemCost":{"itemId":55,"name":"고양이 드링크A","icon":"img/r/55.png","amount":3},"background":"img/bg/bg001.png","expectedUnclaimed":0.71360115,"expectedClaimed":0.71360115,"hasClaimState":false,"rewardComponents":[{"id":"B002-2","expectedUnclaimed":0.71360115,"expectedClaimed":0.71360115}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"CA000-10","name":"꿈의 세계 Lv.11","mapName":"메시에 강습!","locationId":"CA000","href":"stage/CA000/10.html","stageOrder":10,"energy":110.0,"itemCost":null,"background":"img/bg/bg108.png","expectedUnclaimed":5.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA003-5","name":"천성계 Lv.6","mapName":"천사군 강습!","locationId":"CA003","href":"stage/CA003/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg136.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA004-5","name":"유술사와 동료들 Lv.6","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg060.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA007-14","name":"경계 Lv.15","mapName":"사도 강습","locationId":"CA007","href":"stage/CA007/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg088.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA011-5","name":"攻城戦 Lv.6","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/5.html","stageOrder":5,"energy":90.0,"itemCost":null,"background":"img/bg/bg028.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA017-14","name":"어정번중 Lv.15","mapName":"강습! 두령・시노모리 아오시","locationId":"CA017","href":"stage/CA017/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg217.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":125.78125},{"id":"CA023-14","name":"카오스 컨트롤 Lv.15","mapName":"래디컬 하이웨이","locationId":"CA023","href":"stage/CA023/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg242.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA024-2","name":"섬멸 Lv.3","mapName":"에바 양산기 강습","locationId":"CA024","href":"stage/CA024/2.html","stageOrder":2,"energy":120.0,"itemCost":null,"background":"img/bg/bg089.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"CA025-14","name":"너도 혈귀가 되지 않겠나? Lv.15","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/14.html","stageOrder":14,"energy":130.0,"itemCost":null,"background":"img/bg/bg257.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"S099-0","name":"타오르는 정열 상급","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/0.html","stageOrder":0,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.43570771666666663,"expectedClaimed":0.43570771666666663,"hasClaimState":false,"rewardComponents":[{"id":"S099-0","expectedUnclaimed":0.43570771666666663,"expectedClaimed":0.43570771666666663}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":1.6666666666666667},{"id":"EX002-1","probabilityPercent":1.6666666666666667},{"id":"EX002-2","probabilityPercent":1.6666666666666667}],"backgroundHeightPercent":100},{"id":"S099-1","name":"타오르는 정열 고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/1.html","stageOrder":1,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.5748484333333334,"expectedClaimed":0.5748484333333334,"hasClaimState":false,"rewardComponents":[{"id":"S099-1","expectedUnclaimed":0.5748484333333334,"expectedClaimed":0.5748484333333334}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":3.3333333333333335},{"id":"EX002-1","probabilityPercent":3.3333333333333335},{"id":"EX002-2","probabilityPercent":3.3333333333333335}],"backgroundHeightPercent":100},{"id":"S099-2","name":"타오르는 정열 초고난도","mapName":"진화의 빨강 개다래 열매 (구)","locationId":"S099","href":"stage/S099/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg001.png","expectedUnclaimed":0.71360115,"expectedClaimed":0.71360115,"hasClaimState":false,"rewardComponents":[{"id":"S099-2","expectedUnclaimed":0.71360115,"expectedClaimed":0.71360115}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"S118-0","name":"비취의 유혹 상급","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/0.html","stageOrder":0,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.5120966666666666,"expectedClaimed":0.5120966666666666,"hasClaimState":false,"rewardComponents":[{"id":"S118-0","expectedUnclaimed":0.5120966666666666,"expectedClaimed":0.5120966666666666}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX009-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S118-1","name":"비취의 유혹 고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/1.html","stageOrder":1,"energy":500.0,"itemCost":null,"background":"img/bg/bg007.png","expectedUnclaimed":0.6309596666666668,"expectedClaimed":0.6309596666666668,"hasClaimState":false,"rewardComponents":[{"id":"S118-1","expectedUnclaimed":0.6309596666666668,"expectedClaimed":0.6309596666666668}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX013-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S118-2","name":"비취의 유혹 초고난도","mapName":"개다래 챌린지","locationId":"S118","href":"stage/S118/2.html","stageOrder":2,"energy":500.0,"itemCost":null,"background":"img/bg/bg012.png","expectedUnclaimed":0.7494346666666667,"expectedClaimed":0.7494346666666667,"hasClaimState":false,"rewardComponents":[{"id":"S118-2","expectedUnclaimed":0.7494346666666667,"expectedClaimed":0.7494346666666667}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX017-0","probabilityPercent":100.0},{"id":"EX020-0","probabilityPercent":33.333333333333336},{"id":"EX020-1","probabilityPercent":33.333333333333336},{"id":"EX020-2","probabilityPercent":33.333333333333336}],"backgroundHeightPercent":100},{"id":"S420-0","name":"신발뿐인 신발장","mapName":"씁쓸한 발렌타인","locationId":"S420","href":"stage/S420/0.html","stageOrder":0,"energy":100.0,"itemCost":null,"background":"img/bg/bg066.png","expectedUnclaimed":1.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"S422-2","name":"타오르는 정열","mapName":"진화의 개다래 열매","locationId":"S422","href":"stage/S422/2.html","stageOrder":2,"energy":200.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.9361731499999999,"expectedClaimed":0.9361731499999999,"hasClaimState":false,"rewardComponents":[{"id":"S422-2","expectedUnclaimed":0.9361731499999999,"expectedClaimed":0.9361731499999999}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"exSources":[{"id":"EX002-0","probabilityPercent":5.0},{"id":"EX002-1","probabilityPercent":5.0},{"id":"EX002-2","probabilityPercent":5.0}],"backgroundHeightPercent":100},{"id":"V000-20","name":"21층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/20.html","stageOrder":20,"energy":200.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":3.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"V010-20","name":"21층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/20.html","stageOrder":20,"energy":200.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":6.0,"expectedClaimed":0.0,"hasClaimState":true,"backgroundHeightPercent":100},{"id":"A001-4","name":"경계 Lv.25","mapName":"거대 바・다레오파드 강습!!","locationId":"A001","href":"stage/A001/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A001-4","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"A004-4","name":"폭주 Lv.25","mapName":"자이언트 블랙 빠옹 강습!!","locationId":"A004","href":"stage/A004/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A004-4","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"A007-4","name":"비행 Lv.25","mapName":"슈퍼 나나나난나방 강습!!","locationId":"A007","href":"stage/A007/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A007-4","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"A010-4","name":"침략 Lv.25","mapName":"빅 하앜마양 강습!!","locationId":"A010","href":"stage/A010/4.html","stageOrder":4,"energy":90.0,"itemCost":null,"background":"img/bg/bg004.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A010-4","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"A076-3","name":"잔악무도한 채찍 Lv.4","mapName":"제3화 검은 귀부인","locationId":"A076","href":"stage/A076/3.html","stageOrder":3,"energy":80.0,"itemCost":null,"background":"img/bg/bg190.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A076-3","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":162.5},{"id":"A080-3","name":"非道なる鞭 Lv.4","mapName":"제3화 검은 귀부인","locationId":"A080","href":"stage/A080/3.html","stageOrder":3,"energy":80.0,"itemCost":null,"background":"img/bg/bg190.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"A080-3","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":162.5},{"id":"CA000-1","name":"꿈의 세계 Lv.2","mapName":"메시에 강습!","locationId":"CA000","href":"stage/CA000/1.html","stageOrder":1,"energy":70.0,"itemCost":null,"background":"img/bg/bg108.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"CA000-1","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"V000-13","name":"14층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/13.html","stageOrder":13,"energy":120.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":0.97,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"V000-13","expectedUnclaimed":0.97,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100},{"id":"V010-13","name":"14층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/13.html","stageOrder":13,"energy":120.0,"itemCost":null,"background":"img/bg/bg010.png","expectedUnclaimed":1.94,"expectedClaimed":0.0,"hasClaimState":true,"rewardComponents":[{"id":"V010-13","expectedUnclaimed":1.94,"expectedClaimed":0.0}],"conversionSources":[{"sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","conversion":{"kind":"synthesis","sourceQuantity":1,"resultQuantity":0.194,"steps":[{"kind":"synthesis","sourceItemId":31,"sourceItemName":"빨강 개다래나무의 씨앗","targetItemId":36,"targetName":"빨강 개다래 열매","sourceQuantity":5,"resultQuantity":1,"probability":0.97}],"targetItemId":36,"targetName":"빨강 개다래 열매"}}],"backgroundHeightPercent":100}]}</script>
+    </section>
+    <script src="item-stage-sources.js" defer></script>
+    <script src="item-tooltips.js" defer></script>
+<!-- item-stage-sources:panel:end -->
   </main>
   <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
+<!-- item-required-views:script:start -->
+<script src="item-required-units.js" defer></script>
+<!-- item-required-views:script:end -->
 </body>
 </html>
 

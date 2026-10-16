@@ -157,7 +157,8 @@
   }
 
   const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });
-  const ticketOrder = new Map([20, 21, 157, 29, 145, 212].map((id, index) => [id, index]));
+  const ticketOrder = new Map([20, 21, 157, 29, 145, 212, 155, 156].map((id, index) => [id, index]));
+  const legacyItemIds = new Set([23, 196, 204, 231]);
   const evolutionOrder = new Map([
     30, 31, 32, 33, 34, 43, 160, 41, 164, 35, 36, 37, 38, 39, 40,
     161, 42, 44, 167, 168, 169, 170, 171, 184, 179, 180, 181, 182, 183,
@@ -222,6 +223,7 @@
 
   function itemSortKey(entry) {
     const id = Number(entry.id);
+    if (legacyItemIds.has(id)) return { category: 6, position: id };
     if (id >= 0 && id <= 5) return { category: 0, position: id };
     if (ticketOrder.has(id)) return { category: 1, position: ticketOrder.get(id) };
     if (evolutionOrder.has(id)) return { category: 2, position: evolutionOrder.get(id) };

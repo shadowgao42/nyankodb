@@ -162,9 +162,9 @@
       const status = document.getElementById("resultStatus");
       const panel = document.querySelector(".results-panel");
       const scroll = document.getElementById("resultsScroll");
-      const categoryOrder = ["전투 아이템", "티켓", "진화 재료", "캣츠아이", "성 재료", "기타"];
+      const categoryOrder = ["전투 아이템", "티켓", "진화 재료", "캣츠아이", "성 재료", "기타", "(구) 아이템"];
       const combatIds = new Set([0, 1, 2, 3, 4, 5]);
-      const ticketOrder = [20, 21, 157, 29, 145, 212];
+      const ticketOrder = [20, 21, 157, 29, 145, 212, 155, 156];
       const ticketIds = new Set(ticketOrder);
       const ticketPosition = new Map(ticketOrder.map((id, index) => [id, index]));
       const evolutionOrder = [
@@ -175,7 +175,9 @@
       const evolutionPosition = new Map(evolutionOrder.map((id, index) => [id, index]));
       const catseyeIds = new Set([50, 51, 52, 53, 54, 58]);
       const castleIds = new Set([85, 86, 87, 88, 89, 90, 91, 140, 187, 188, 189, 190, 191, 192, 193, 194]);
+      const legacyIds = new Set([23, 196, 204, 231]);
       function categoryFor(id) {
+        if (legacyIds.has(id)) return "(구) 아이템";
         if (combatIds.has(id)) return "전투 아이템";
         if (ticketIds.has(id)) return "티켓";
         if (evolutionIds.has(id)) return "진화 재료";
