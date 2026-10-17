@@ -345,10 +345,12 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
     event_maps = {}
     day_maps = {}
     recurring_maps = {}
+    regular_maps = {}
     # Include completed slots in the visible month's leading week as well.
     day_start = now.astimezone(KST).replace(day=1, hour=0, minute=0, second=0, microsecond=0) - timedelta(days=7)
     day_horizon = 400 + (now.astimezone(KST).date() - day_start.date()).days
     event_records = [record for record in records if not is_regular_record(record)]
+    regular_records = [record for record in records if is_regular_record(record)]
     recurring_records = [record for record in records if is_recurring_record(record)]
     for code, map_id in load_site_map_ids().items():
         windows, rows = expand_windows(records, map_id, now, game_version)
@@ -360,6 +362,9 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
         windows, rows = expand_windows(records, map_id, day_start, game_version, day_horizon)
         if windows:
             day_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
+        windows, rows = expand_windows(regular_records, map_id, day_start, game_version, day_horizon)
+        if windows:
+            regular_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
         # Priority is used only for currently active rows. One day covers the
         # entire freshness interval without duplicating the 400-day daily feed.
         windows, rows = expand_windows(recurring_records, map_id, now, game_version, 1)
@@ -388,6 +393,12 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
             "rangeStart": iso(now),
             "rangeEnd": iso(now + timedelta(days=1)),
             "maps": recurring_maps,
+        },
+        "regularCalendar": {
+            "schemaVersion": 1,
+            "rangeStart": iso(day_start),
+            "rangeEnd": iso(day_start + timedelta(days=day_horizon)),
+            "maps": regular_maps,
         },
     }
 

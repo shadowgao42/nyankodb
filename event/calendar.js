@@ -1,4 +1,4 @@
-/* Korean stage schedule calendar, using the shared official-feed parser. */
+/* Regional stage schedule calendar, using the shared official-feed parser. */
 (() => {
   "use strict";
   const days = document.getElementById("calendarDays");
@@ -134,7 +134,7 @@
   const catalog = new Map((window.NYANKODB_SEARCH_CATALOG?.entries || [])
     .filter(entry => entry.kind === "stage" && /^[A-Z]+\d{3}$/.test(String(entry.id)))
     .map(entry => [entry.id, entry]));
-  let events = [], dayEvents = [], recurringEvents = [], calendar = null, loading = true, failed = false, inFlight = false;
+  let events = [], dayEvents = [], recurringEvents = [], regularEvents = [], calendar = null, loading = true, failed = false, inFlight = false;
   function selectedRegion() { return displaySettings.region; }
   let activeRegion = selectedRegion(), requestController = null;
   function applyDisplaySettings() {
@@ -144,7 +144,7 @@
       requestController?.abort();
       requestController = null;
       inFlight = false;
-      events = []; dayEvents = []; recurringEvents = []; calendar = null;
+      events = []; dayEvents = []; recurringEvents = []; regularEvents = []; calendar = null;
       loading = true; failed = false;
       render();
       void refresh();
@@ -289,6 +289,7 @@
     label.dataset.position = fraction < .2 ? "start" : fraction > .8 ? "end" : "middle";
   }
   function selectedDayEvents(start, now = Date.now()) {
+    if (!calendar || calendar.region !== selectedRegion()) return [];
     const selectedEvents = dayEvents.filter(event => event.start < start + DAY && event.end > start
       && displaySettings.daily[stageCategoryName(event.code)]);
     if (!dailyActiveOnly.checked) return selectedEvents;
@@ -387,6 +388,26 @@
     }
     return lanes;
   }
+  function monthlyEvents() {
+    if (!calendar || calendar.region !== selectedRegion()) return [];
+    if (!displaySettings.includeRegular) return events;
+    // Add only regular windows from this region; daily maps also contain past
+    // campaigns and windows merged with campaigns, so are not a monthly source.
+    const grouped = new Map();
+    for (const event of [...events, ...regularEvents]) {
+      if (!grouped.has(event.code)) grouped.set(event.code, []);
+      grouped.get(event.code).push(event);
+    }
+    const merged = [];
+    for (const group of grouped.values()) {
+      let previous = null;
+      for (const event of group.sort((a, b) => a.start - b.start || a.end - b.end)) {
+        if (previous && event.start <= previous.end) previous.end = Math.max(previous.end, event.end);
+        else { previous = { ...event }; merged.push(previous); }
+      }
+    }
+    return merged;
+  }
   function renderWeek(week, weekStart, lanes, visibleEvents) {
     const start = weekStart.getTime() / DAY;
     const segments = visibleEvents.map(event => ({ event,
@@ -449,7 +470,7 @@
     const first = civilDate(year, month, 1);
     const todayKey = key(today());
     const firstDay = civilDate(year, month, 1 - first.getUTCDay()).getTime() / DAY;
-    const visibleEvents = (displaySettings.includeRegular ? dayEvents : events)
+    const visibleEvents = monthlyEvents()
       .filter(event => displaySettings.calendar[stageCategoryName(event.code)]
         && (displaySettings.durationDays === null || (displaySettings.durationComparison === "gte"
           ? (event.end - event.start) / DAY >= displaySettings.durationDays
@@ -574,7 +595,12 @@
       || typeof recurring.maps !== "object" || Array.isArray(recurring.maps)) {
       throw new Error("Recurring calendar export required");
     }
-    return { ...feed, maps: data.maps, dayMaps: feed.dayCalendar?.maps ?? feed.maps, recurringMaps: recurring.maps };
+    const regular = feed.regularCalendar;
+    if (regular?.schemaVersion !== 1 || !regular.maps
+      || typeof regular.maps !== "object" || Array.isArray(regular.maps)) {
+      throw new Error("Regular calendar export required");
+    }
+    return { ...feed, maps: data.maps, dayMaps: feed.dayCalendar?.maps ?? feed.maps, recurringMaps: recurring.maps, regularMaps: regular.maps };
   }
   async function fetchEventFeed(signal, region) {
     try {
@@ -615,11 +641,13 @@
       const next = readEvents(feed, region);
       const nextDay = readEvents({ ...feed, maps: feed.dayMaps }, region);
       const nextRecurring = readEvents({ ...feed, maps: feed.recurringMaps }, region);
+      const nextRegular = readEvents({ ...feed, maps: feed.regularMaps }, region);
       if (requestController !== controller || region !== selectedRegion()) return;
       events = next;
       dayEvents = nextDay;
       recurringEvents = nextRecurring;
-      calendar = metadata;
+      regularEvents = nextRegular;
+      calendar = { ...metadata, region };
       failed = false;
     } catch (_) {
       if (requestController === controller) failed = true;

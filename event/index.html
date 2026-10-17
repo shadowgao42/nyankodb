@@ -96,10 +96,8 @@
             <option value="jp">일본판</option>
           </select>
         </section>
-        <section class="event-settings-section" aria-labelledby="eventStageDisplayTitle">
-        <h2 id="eventStageDisplayTitle">표시 스테이지</h2>
-        <section class="event-category-options" aria-labelledby="eventCalendarSettingsTitle">
-          <h3 id="eventCalendarSettingsTitle">달력</h3>
+        <section class="event-settings-section event-category-options" aria-labelledby="eventCalendarSettingsTitle">
+          <h2 id="eventCalendarSettingsTitle">표시 스테이지(달력)</h2>
           <div class="calendar-duration-filter">
             <label for="calendarDurationDays">개최 기간</label>
             <input id="calendarDurationDays" type="number" min="0" step="any" inputmode="decimal" aria-label="개최 기간 일수" aria-controls="calendarDays">
@@ -118,10 +116,9 @@
           </div>
           <div class="event-category-grid" id="calendarCategoryOptions"></div>
         </section>
-        <section class="event-category-options" aria-labelledby="eventDailySettingsTitle">
-          <h3 id="eventDailySettingsTitle">일일</h3>
+        <section class="event-settings-section event-category-options" aria-labelledby="eventDailySettingsTitle">
+          <h2 id="eventDailySettingsTitle">표시 스테이지(일일)</h2>
           <div class="event-category-grid" id="dailyCategoryOptions"></div>
-        </section>
         </section>
       </div>
     </details>
