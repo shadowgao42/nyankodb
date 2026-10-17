@@ -73,7 +73,7 @@
       <div class="section-heading">
         <div>
           <h1 id="eventTitle">이벤트 일정 <span class="event-construction">(공사중)</span></h1>
-          <p class="search-description">한국판 이벤트 일정을 조회할 수 있습니다. <time id="eventUpdatedAt" hidden></time></p>
+          <p class="search-description">이벤트 일정을 조회할 수 있습니다. <time id="eventUpdatedAt" hidden></time></p>
         </div>
       </div>
     </section>
@@ -89,9 +89,17 @@
         </span>
       </summary>
       <div class="event-settings-panel">
-        <h2>표시 스테이지</h2>
-        <fieldset class="event-category-options">
-          <legend>달력</legend>
+        <section class="event-settings-section event-language-options" aria-labelledby="eventLanguageTitle">
+          <h2 id="eventLanguageTitle">언어</h2>
+          <select id="eventRegion" aria-labelledby="eventLanguageTitle" aria-controls="calendarDays calendarDayEvents">
+            <option value="kr">한국판</option>
+            <option value="jp">일본판</option>
+          </select>
+        </section>
+        <section class="event-settings-section" aria-labelledby="eventStageDisplayTitle">
+        <h2 id="eventStageDisplayTitle">표시 스테이지</h2>
+        <section class="event-category-options" aria-labelledby="eventCalendarSettingsTitle">
+          <h3 id="eventCalendarSettingsTitle">달력</h3>
           <div class="calendar-duration-filter">
             <label for="calendarDurationDays">개최 기간</label>
             <input id="calendarDurationDays" type="number" min="0" step="any" inputmode="decimal" aria-label="개최 기간 일수" aria-controls="calendarDays">
@@ -109,11 +117,12 @@
             </label>
           </div>
           <div class="event-category-grid" id="calendarCategoryOptions"></div>
-        </fieldset>
-        <fieldset class="event-category-options">
-          <legend>일일</legend>
+        </section>
+        <section class="event-category-options" aria-labelledby="eventDailySettingsTitle">
+          <h3 id="eventDailySettingsTitle">일일</h3>
           <div class="event-category-grid" id="dailyCategoryOptions"></div>
-        </fieldset>
+        </section>
+        </section>
       </div>
     </details>
     <section class="event-calendar" aria-labelledby="calendarMonth">

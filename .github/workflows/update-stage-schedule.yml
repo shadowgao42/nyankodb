@@ -1,4 +1,4 @@
-name: Update official KR stage schedule
+name: Update official stage schedules
 
 on:
   workflow_dispatch:
@@ -38,10 +38,28 @@ jobs:
         with:
           python-version: '3.12'
       - name: Fetch directly from PONOS
+        id: collect
         env:
           PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}
-        run: python .github/scripts/update_stage_schedule.py --output "$RUNNER_TEMP/stage-schedule-kr.json"
-      - name: Publish only the calendar JSON on the data branch
+        run: |
+          python .github/scripts/update_stage_schedule.py --region kr --output "$RUNNER_TEMP/stage-schedule-kr.json" &
+          kr_pid=$!
+          python .github/scripts/update_stage_schedule.py --region jp --output "$RUNNER_TEMP/stage-schedule-jp.json" &
+          jp_pid=$!
+          kr_status=0; wait "$kr_pid" || kr_status=$?
+          jp_status=0; wait "$jp_pid" || jp_status=$?
+          if [ "$kr_status" -eq 0 ]; then echo "kr_ok=true" >> "$GITHUB_OUTPUT"; fi
+          if [ "$jp_status" -eq 0 ]; then echo "jp_ok=true" >> "$GITHUB_OUTPUT"; fi
+      - name: Publish Korean calendar JSON on the data branch
+        if: ${{ steps.collect.outputs.kr_ok == 'true' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/stage-schedule-kr.json"
+      - name: Publish Japanese calendar JSON on the data branch
+        if: ${{ always() && steps.collect.outputs.jp_ok == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/stage-schedule-jp.json"
+      - name: Check both collections
+        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true') }}
+        run: exit 1

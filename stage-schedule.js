@@ -1,6 +1,10 @@
 (function (root) {
   "use strict";
   const SOURCE = "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv";
+  const REGIONS = {
+    kr: { source: SOURCE, timezone: "Asia/Seoul" },
+    jp: { source: "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv", timezone: "Asia/Tokyo" },
+  };
   const MAX_AGE = 30 * 60 * 1000;
   const POLL_MS = 60 * 1000;
   const MAP_BASES = { A:24000, B:14000, C:2000, CA:27000, D:16000, DM:30000, EX:4000,
@@ -11,8 +15,9 @@
     return match && Object.hasOwn(MAP_BASES, match[1]) ? MAP_BASES[match[1]] + Number(match[2]) : null;
   }
 
-  function parseFeed(feed, mapCode) {
-    if (feed?.schemaVersion !== 1 || feed.region !== "kr" || feed.timezone !== "Asia/Seoul" || feed.source?.url !== SOURCE) {
+  function parseFeed(feed, mapCode, region = "kr") {
+    const config = Object.hasOwn(REGIONS, region) ? REGIONS[region] : null;
+    if (!config || feed?.schemaVersion !== 1 || feed.region !== region || feed.timezone !== config.timezone || feed.source?.url !== config.source) {
       throw new Error("Invalid official calendar export");
     }
     const fetchedAt = Date.parse(feed.fetchedAt);
@@ -72,12 +77,15 @@
     return `개최 ${first.date} ${first.time}~${first.date === last.date ? "" : last.date + " "}${last.time}`;
   }
 
-  async function fetchFeed(script, signal) {
+  async function fetchFeed(script, signal, region = "kr") {
+    if (!Object.hasOwn(REGIONS, region)) throw new Error("Invalid calendar region");
+    const filename = `stage-schedule-${region}.json`;
     const local = ["localhost", "127.0.0.1", "[::1]"].includes(root.location.hostname);
-    const url = local ? new URL("stage-schedule-kr.json", script.src) : new URL(script.dataset.scheduleFeed);
+    const url = local ? new URL(filename, script.src) : new URL(region === "kr" ? script.dataset.scheduleFeed
+      : new URL(filename, script.dataset.scheduleFeed).href);
     if (url.hostname === "raw.githubusercontent.com" &&
-        url.pathname === "/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json") {
-      url.pathname = "/shadowgao42/nyankodb/refs/heads/event-schedule-data/stage-schedule-kr.json";
+        url.pathname === `/shadowgao42/nyankodb/event-schedule-data/${filename}`) {
+      url.pathname = `/shadowgao42/nyankodb/refs/heads/event-schedule-data/${filename}`;
     }
     url.searchParams.set("t", String(Math.floor(Date.now() / POLL_MS)));
     const response = await root.fetch(url, { cache: "no-store", credentials: "omit", signal });

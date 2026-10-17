@@ -9,14 +9,14 @@ import urllib.error
 import urllib.request
 
 BRANCH = "event-schedule-data"
-FILENAME = "stage-schedule-kr.json"
 
 
 def main():
     content = Path(sys.argv[1]).read_bytes()
     feed = json.loads(content)
-    if feed.get("schemaVersion") != 1 or feed.get("region") != "kr":
+    if feed.get("schemaVersion") != 1 or feed.get("region") not in ("kr", "jp"):
         raise RuntimeError("Invalid calendar export")
+    filename = f"stage-schedule-{feed['region']}.json"
     repo = os.environ["GITHUB_REPOSITORY"]
     if not re.fullmatch(r"[\w.-]+/[\w.-]+", repo):
         raise RuntimeError("Invalid repository")
@@ -43,12 +43,12 @@ def main():
         default = api("")["default_branch"]
         head = api("git/ref/heads/" + default)["object"]["sha"]
         api("git/refs", {"ref": "refs/heads/" + BRANCH, "sha": head})
-    previous = api(f"contents/{FILENAME}?ref={BRANCH}", allow_missing=True)
-    body = {"message": "Update official Korean stage schedule", "branch": BRANCH,
+    previous = api(f"contents/{filename}?ref={BRANCH}", allow_missing=True)
+    body = {"message": f"Update official {feed['region'].upper()} stage schedule", "branch": BRANCH,
             "content": base64.b64encode(content).decode()}
     if previous:
         body["sha"] = previous["sha"]
-    api("contents/" + FILENAME, body)
+    api("contents/" + filename, body)
     print("Published official schedule JSON on " + BRANCH)
 
 

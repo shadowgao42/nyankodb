@@ -12,6 +12,7 @@
   const calendarIncludeRegular = document.getElementById("calendarIncludeRegular");
   const calendarDurationDays = document.getElementById("calendarDurationDays");
   const calendarDurationComparison = document.getElementById("calendarDurationComparison");
+  const eventRegion = document.getElementById("eventRegion");
   const api = window.NyankoStageSchedule;
   const source = document.getElementById("eventScheduleSource");
   const siteRoot = new URL("./", source.src);
@@ -48,7 +49,7 @@
     "H": ["hsl(238 80% 80%)", "hsl(238 38% 25%)", "hsl(238 42% 44%)"]
   };
   function defaultDisplaySettings() {
-    return { includeRegular: false, durationDays: null, durationComparison: "lte", ...Object.fromEntries(["calendar", "daily"].map(scope => [scope,
+    return { region: "kr", includeRegular: false, durationDays: null, durationComparison: "lte", ...Object.fromEntries(["calendar", "daily"].map(scope => [scope,
       Object.fromEntries(stageCategories.map(name => [name,
         defaultCalendarNames.has(name)]))])) };
   }
@@ -57,6 +58,7 @@
     try {
       const current = localStorage.getItem(SETTINGS_KEY);
       const saved = JSON.parse(current ?? localStorage.getItem(LEGACY_SETTINGS_KEY));
+      if (saved?.region === "jp") next.region = "jp";
       if (typeof saved?.includeRegular === "boolean") next.includeRegular = saved.includeRegular;
       if (typeof saved?.durationDays === "number" && Number.isFinite(saved.durationDays) && saved.durationDays >= 0) next.durationDays = saved.durationDays;
       if (saved?.durationComparison === "gte") next.durationComparison = "gte";
@@ -74,6 +76,7 @@
     try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(displaySettings)); } catch (_) { /* Keep the current page usable. */ }
   }
   function syncDisplayControls() {
+    eventRegion.value = displaySettings.region;
     calendarIncludeRegular.checked = displaySettings.includeRegular;
     calendarDurationDays.value = displaySettings.durationDays ?? "";
     calendarDurationComparison.value = displaySettings.durationComparison;
@@ -124,8 +127,7 @@
       event.stopPropagation();
       displaySettings = defaultDisplaySettings();
       saveDisplaySettings();
-      syncDisplayControls();
-      render();
+      applyDisplaySettings();
     });
     syncDisplayControls();
   }
@@ -133,6 +135,21 @@
     .filter(entry => entry.kind === "stage" && /^[A-Z]+\d{3}$/.test(String(entry.id)))
     .map(entry => [entry.id, entry]));
   let events = [], dayEvents = [], recurringEvents = [], calendar = null, loading = true, failed = false, inFlight = false;
+  function selectedRegion() { return displaySettings.region; }
+  let activeRegion = selectedRegion(), requestController = null;
+  function applyDisplaySettings() {
+    syncDisplayControls();
+    if (activeRegion !== selectedRegion()) {
+      activeRegion = selectedRegion();
+      requestController?.abort();
+      requestController = null;
+      inFlight = false;
+      events = []; dayEvents = []; recurringEvents = []; calendar = null;
+      loading = true; failed = false;
+      render();
+      void refresh();
+    } else render();
+  }
   const dateFormat = new Intl.DateTimeFormat("ko-KR", {
     timeZone: "UTC", year: "numeric", month: "long", day: "numeric", weekday: "long",
   });
@@ -541,6 +558,11 @@
     syncDisplayControls();
   });
   calendarDurationComparison.addEventListener("change", updateDurationFilter);
+  eventRegion.addEventListener("change", () => {
+    displaySettings.region = eventRegion.value === "jp" ? "jp" : "kr";
+    saveDisplaySettings();
+    applyDisplaySettings();
+  });
   function eventFeed(feed) {
     const data = feed?.eventCalendar;
     if (data?.schemaVersion !== 1 || data.regularMinimumDays !== 365
@@ -554,26 +576,26 @@
     }
     return { ...feed, maps: data.maps, dayMaps: feed.dayCalendar?.maps ?? feed.maps, recurringMaps: recurring.maps };
   }
-  async function fetchEventFeed(signal) {
+  async function fetchEventFeed(signal, region) {
     try {
-      return eventFeed(await api.fetchFeed(source, signal));
+      return eventFeed(await api.fetchFeed(source, signal, region));
     } catch (error) {
       // An older public data branch may not have the calendar extensions yet.
       // Use the bundled export, never the unfiltered maps as a fallback.
       if (signal.aborted || ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname)) throw error;
-      const response = await fetch(new URL("stage-schedule-kr.json", source.src), {
+      const response = await fetch(new URL(`stage-schedule-${region}.json`, source.src), {
         cache: "no-store", credentials: "omit", signal,
       });
       if (!response.ok) throw new Error("Event calendar unavailable");
       return eventFeed(await response.json());
     }
   }
-  function readEvents(feed) {
-    api.parseFeed(feed, "S000");
+  function readEvents(feed, region) {
+    api.parseFeed(feed, "S000", region);
     const result = [];
     for (const code of Object.keys(feed.maps)) {
       if (api.eventMapId(code) === null) continue;
-      const map = api.parseFeed(feed, code);
+      const map = api.parseFeed(feed, code, region);
       const entry = catalog.get(code);
       if (!entry || entry.href !== `stage/${code}/index.html`) continue;
       for (const window of map.windows) result.push({ code, entry, ...window });
@@ -583,26 +605,32 @@
   async function refresh() {
     if (inFlight || document.hidden) return;
     inFlight = true;
+    const region = selectedRegion();
     const controller = new AbortController();
+    requestController = controller;
     const timeout = window.setTimeout(() => controller.abort(), 15000);
     try {
-      const feed = await fetchEventFeed(controller.signal);
-      const metadata = api.parseFeed(feed, "S000");
-      const next = readEvents(feed);
-      const nextDay = readEvents({ ...feed, maps: feed.dayMaps });
-      const nextRecurring = readEvents({ ...feed, maps: feed.recurringMaps });
+      const feed = await fetchEventFeed(controller.signal, region);
+      const metadata = api.parseFeed(feed, "S000", region);
+      const next = readEvents(feed, region);
+      const nextDay = readEvents({ ...feed, maps: feed.dayMaps }, region);
+      const nextRecurring = readEvents({ ...feed, maps: feed.recurringMaps }, region);
+      if (requestController !== controller || region !== selectedRegion()) return;
       events = next;
       dayEvents = nextDay;
       recurringEvents = nextRecurring;
       calendar = metadata;
       failed = false;
     } catch (_) {
-      failed = true;
+      if (requestController === controller) failed = true;
     } finally {
       window.clearTimeout(timeout);
-      inFlight = false;
-      loading = false;
-      render();
+      if (requestController === controller) {
+        requestController = null;
+        inFlight = false;
+        loading = false;
+        render();
+      }
     }
   }
   initializeDisplayControls();
@@ -616,8 +644,7 @@
   document.addEventListener("visibilitychange", () => { if (!document.hidden) void refresh(); });
   function restoreDisplaySettings() {
     displaySettings = readDisplaySettings();
-    syncDisplayControls();
-    render();
+    applyDisplaySettings();
   }
   window.addEventListener("storage", event => { if (event.key === SETTINGS_KEY || event.key === null) restoreDisplaySettings(); });
   window.addEventListener("pageshow", () => { restoreDisplaySettings(); void refresh(); });

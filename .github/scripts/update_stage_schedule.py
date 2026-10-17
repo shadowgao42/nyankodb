@@ -1,4 +1,4 @@
-"""Fetch Korean PONOS sale.tsv and export stage windows (no third party feed).
+"""Fetch Korean/Japanese PONOS sale.tsv and export stage windows.
 
 Published maps are discovered from stage page folders using compact family rules. Authentication stays in a private file or
 the PONOS_EVENT_AUTH Actions secret; the exported JSON never contains a JWT.
@@ -22,6 +22,13 @@ import urllib.request
 
 KST = timezone(timedelta(hours=9))
 SOURCE = "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv"
+REGIONS = {
+    "kr": {"source": SOURCE, "countryCode": "kr", "timezone": "Asia/Seoul", "gameVersion": 150601},
+    "jp": {"source": "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv",
+           "countryCode": "kr", "timezone": "Asia/Tokyo", "gameVersion": 150700},
+}
+# The existing dedicated reader authenticates as KR; its JWT also authorizes
+# the Japanese resource. Source URL and exported region select the schedule.
 AUTH_BASE = "https://nyanko-auth.ponosgames.com/v1/"
 MAP_RULES = Path(__file__).resolve().parents[1] / "stage-schedule-maps.json"
 STAGE_ROOT = Path(__file__).resolve().parents[2] / "stage"
@@ -84,25 +91,29 @@ def bootstrap_auth() -> dict:
     result = _json_request(AUTH_BASE + "users", {
         "accountCode": account, "accountCreatedAt": str(int(datetime.now(timezone.utc).timestamp())),
         "nonce": secrets.token_hex(16),
-    }, account).get("payload", {})
+    }, account).get("payload") or {}
     if not result.get("password"):
         raise ScheduleError("PONOS anonymous reader registration failed")
     return {"accountCode": account, "password": result["password"]}
 
 
-def fetch_sale(auth: dict, game_version: int = GAME_VERSION) -> tuple[bytes, dict]:
+def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr") -> tuple[bytes, dict]:
+    config = REGIONS[region]
+    game_version = config["gameVersion"] if game_version is None else game_version
     account, password = auth.get("accountCode"), auth.get("password")
     if not isinstance(account, str) or not account or not isinstance(password, str) or not password:
         raise ScheduleError("PONOS_EVENT_AUTH requires accountCode and password")
     result = _json_request(AUTH_BASE + "tokens", {
         "accountCode": account, "password": password, "nonce": secrets.token_hex(16),
-        "clientInfo": {"client": {"countryCode": "kr", "version": str(game_version)},
+        "clientInfo": {"client": {"countryCode": config["countryCode"], "version": str(game_version)},
                        "device": {"model": "XQ-BC52"}, "os": {"type": "android", "version": "13"}},
-    }, account).get("payload", {})
+    }, account).get("payload")
+    if not isinstance(result, dict):
+        raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
     token = result.get("token")
     if not isinstance(token, str) or not token:
         raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
-    return _request(SOURCE + "?jwt=" + urllib.parse.quote(token, safe=""))
+    return _request(config["source"] + "?jwt=" + urllib.parse.quote(token, safe=""))
 
 
 def minutes(value: int) -> int:
@@ -177,9 +188,9 @@ def parse_sale(content: bytes) -> list[dict]:
                 sections.append({"dateRanges": ranges, "monthDays": days,
                                  "weekMask": week_mask, "times": times})
             ids = [take() for _ in range(count())]
-            # Preserve the observed optional zero without assigning it a meaning.
+            # Preserve observed optional 0/1 values without assigning a meaning.
             # PackPack also stops at map count; this is never an extra map ID.
-            if values[cursor:] not in ([], [0]):
+            if values[cursor:] not in ([], [0], [1]):
                 raise ValueError("unsupported trailing fields")
             records.append({"row": number, "start": start, "end": end, "minVersion": minimum,
                             "maxVersion": maximum, "sections": sections, "mapIds": ids,
@@ -325,7 +336,10 @@ def is_recurring_record(record: dict) -> bool:
     )
 
 
-def make_feed(content: bytes, headers: dict, now: datetime, game_version: int = GAME_VERSION) -> dict:
+def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | None = None,
+              region: str = "kr") -> dict:
+    config = REGIONS[region]
+    game_version = config["gameVersion"] if game_version is None else game_version
     records = parse_sale(content)
     maps = {}
     event_maps = {}
@@ -352,9 +366,9 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int = 
         if windows:
             recurring_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
     return {
-        "schemaVersion": 1, "region": "kr", "timezone": "Asia/Seoul", "gameVersion": game_version,
+        "schemaVersion": 1, "region": region, "timezone": config["timezone"], "gameVersion": game_version,
         "fetchedAt": iso(now), "validUntil": iso(now + timedelta(seconds=FRESHNESS_SECONDS)),
-        "source": {"url": SOURCE, "sha256": hashlib.sha256(content).hexdigest(),
+        "source": {"url": config["source"], "sha256": hashlib.sha256(content).hexdigest(),
                    "lastModified": headers.get("Last-Modified"), "recordCount": len(records)},
         "maps": maps,
         "eventCalendar": {
@@ -380,11 +394,14 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int = 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=Path("stage-schedule-kr.json"))
+    parser.add_argument("--region", choices=REGIONS, default="kr")
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--auth-file", type=Path)
     parser.add_argument("--bootstrap-auth", action="store_true")
-    parser.add_argument("--game-version", type=int, default=GAME_VERSION)
+    parser.add_argument("--game-version", type=int)
     args = parser.parse_args()
+    args.output = args.output or Path(f"stage-schedule-{args.region}.json")
+    args.game_version = args.game_version if args.game_version is not None else REGIONS[args.region]["gameVersion"]
     try:
         if args.auth_file:
             site_root = Path(__file__).resolve().parents[2]
@@ -401,13 +418,13 @@ def main() -> int:
         auth_text = args.auth_file.read_text("utf-8") if args.auth_file else os.environ.get("PONOS_EVENT_AUTH", "")
         if not auth_text:
             raise ScheduleError("Set the PONOS_EVENT_AUTH secret or a private --auth-file")
-        content, headers = fetch_sale(json.loads(auth_text), args.game_version)
-        feed = make_feed(content, headers, datetime.now(KST), args.game_version)
+        content, headers = fetch_sale(json.loads(auth_text), args.game_version, args.region)
+        feed = make_feed(content, headers, datetime.now(KST), args.game_version, args.region)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         pending = args.output.with_suffix(".pending.json")
         pending.write_text(json.dumps(feed, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         os.replace(pending, args.output)
-        print(f"Official KR feed updated: {feed['source']['recordCount']} rows; {len(feed['maps'])} map calendars")
+        print(f"Official {args.region.upper()} feed updated: {feed['source']['recordCount']} rows; {len(feed['maps'])} map calendars")
         return 0
     except ScheduleError as error:
         print(f"Stage schedule refresh failed: {error}. Existing public feed was preserved.", file=sys.stderr)
