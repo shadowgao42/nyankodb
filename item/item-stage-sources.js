@@ -137,22 +137,22 @@
       const link = document.createElement("a");
       link.className = "item-source-link"; link.href = `../${entry.href}`;
       const routeDescription = conversionDescription(entry);
-      const crownLabel = entry.crown ? ` 👑${entry.crown}` : "";
+      const crownLabel = entry.abyss ? " 👑어비스" : entry.crown ? ` 👑${entry.crown}` : "";
       link.setAttribute("aria-label", `${entry.name}${crownLabel}, STAGE ${entry.id}${routeDescription ? `, ${routeDescription}` : ""}`);
-      if (entry.crown) link.addEventListener("click", () => {
-        try { localStorage.setItem(`nyanko-db:stage-location:${entry.locationId}:level:v1`, String(entry.crown)); } catch (_) {}
+      if (entry.abyss || entry.crown) link.addEventListener("click", () => {
+        try { localStorage.setItem(`nyanko-db:stage-location:${entry.locationId}:level:v1`, entry.abyss ? "abyss" : String(entry.crown)); } catch (_) {}
       });
       const copy = document.createElement("span"); copy.className = "mother-member-copy";
       const name = document.createElement("span"); name.className = "mother-member-name"; name.textContent = entry.name;
       const identity = document.createElement("span"); identity.className = "stage-ex-id"; identity.textContent = `STAGE ${entry.id}`;
       const map = document.createElement("small"); map.className = "item-source-map"; map.textContent = entry.mapName;
-      if (entry.crown) {
+      if (entry.abyss || entry.crown) {
         const crown = document.createElement("span"); crown.className = "item-source-crown";
-        crown.textContent = `👑${entry.crown}`; name.append(crown);
+        crown.textContent = crownLabel.trim(); name.append(crown);
       }
       name.append(identity); copy.append(name, map); link.append(copy);
       const values = document.createElement("div"); values.className = "item-source-metrics";
-      const cost = metric(entry.itemCost ? "소모 아이템" : "통솔력");
+      const cost = metric(entry.itemCost ? (entry.abyss ? "총 소모 아이템" : "소모 아이템") : entry.abyss ? "총 통솔력" : "통솔력");
       if (entry.itemCost) {
         cost.value.className = "item-source-cost";
         if (entry.itemCost.icon) {
@@ -161,7 +161,7 @@
         }
         cost.value.append(`${entry.itemCost.name} ×${format(entry.itemCost.amount)}`);
       } else cost.value.textContent = format(entry.energy);
-      const payout = metric("획득 기댓값", "item-source-payout");
+      const payout = metric(entry.abyss ? "누적 획득량" : "획득 기댓값", "item-source-payout");
       values.append(cost.box, payout.box);
       let ratio;
       if (!entry.itemCost) {
