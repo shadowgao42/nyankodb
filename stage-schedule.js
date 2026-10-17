@@ -5,7 +5,7 @@
   const POLL_MS = 60 * 1000;
   const MAP_BASES = { A:24000, B:14000, C:2000, CA:27000, D:16000, DM:30000, EX:4000,
     G:37000, H:25000, L:33000, M:12000, NA:13000, ND:34000, PR:39000, Q:31000,
-    R:11000, RE:4000, S:1000, SR:36000, T:6000, V:7000 };
+    R:11000, S:1000, SR:36000, T:6000, V:7000 };
   function eventMapId(code) {
     const match = /^([A-Z]+)(\d{3})$/.exec(code);
     return match && Object.hasOwn(MAP_BASES, match[1]) ? MAP_BASES[match[1]] + Number(match[2]) : null;

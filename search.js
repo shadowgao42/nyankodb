@@ -66,7 +66,6 @@
     "냥코도장 스테이지",
     "냥코도 승단 시험",
     "랭킹 스테이지",
-    "기타",
   ]);
 
   function stageCategoryForLocation(id) {
@@ -97,7 +96,7 @@
     if (/^EX\d{3}$/i.test(id)) return "EX 스테이지";
     if (/^M\d{3}$/i.test(id)) return "챌린지 배틀";
     if (/^H\d{3}$/i.test(id)) return "발굴 스테이지";
-    return "기타";
+    return "";
   }
 
   // Preserve existing name-matching aliases; the shared list above controls sorting.
@@ -203,7 +202,8 @@
     const locationPage = !pageName || /^index$/i.test(pageName);
     const stageNumber = Number.isInteger(entry.stageOrder) ? entry.stageOrder
       : /^\d+$/.test(pageName) ? Number(pageName) : Number.MAX_SAFE_INTEGER;
-    const familyOrder = stageCategoryOrder.indexOf(stageCategoryForLocation(location));
+    const categoryIndex = stageCategoryOrder.indexOf(stageCategoryForLocation(location));
+    const familyOrder = categoryIndex < 0 ? Number.MAX_SAFE_INTEGER : categoryIndex;
     const key = { familyOrder, prefix, locationNumber, locationPage, stageNumber, pageName, id: String(entry.id ?? "") };
     stageSortKeys.set(entry, key);
     return key;

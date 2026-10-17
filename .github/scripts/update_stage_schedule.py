@@ -28,6 +28,7 @@ STAGE_ROOT = Path(__file__).resolve().parents[2] / "stage"
 MAX_WINDOWS_PER_MAP = 32
 GAME_VERSION = 150601  # This site's Korean source: 15.6.1.
 FRESHNESS_SECONDS = 1800
+REGULAR_MINIMUM_DAYS = 365
 
 
 class ScheduleError(Exception):
@@ -302,19 +303,78 @@ def load_site_map_ids() -> dict[str, int]:
     return dict(sorted(maps.items()))
 
 
+def is_regular_record(record: dict) -> bool:
+    """Calendar policy: yearlong or longer schedules are regular/permanent.
+
+    This is a display policy, not a flag supplied by PONOS. Short campaigns
+    keep their own rows even when the same map also has a regular schedule.
+    """
+    return record["end"] - record["start"] >= timedelta(days=REGULAR_MINIMUM_DAYS)
+
+
+def is_recurring_record(record: dict) -> bool:
+    """Split the existing long-term group by explicit scheduling conditions."""
+    if not is_regular_record(record) or not record["sections"]:
+        return False
+    # Sections are alternatives: one unrestricted section makes the row continuous.
+    return not any(
+        not section["dateRanges"] and not section["monthDays"]
+        and section["weekMask"] in (0, 127)
+        and (not section["times"] or section["times"] == [[0, 2400]])
+        for section in record["sections"]
+    )
+
+
 def make_feed(content: bytes, headers: dict, now: datetime, game_version: int = GAME_VERSION) -> dict:
     records = parse_sale(content)
     maps = {}
+    event_maps = {}
+    day_maps = {}
+    recurring_maps = {}
+    # Include completed slots in the visible month's leading week as well.
+    day_start = now.astimezone(KST).replace(day=1, hour=0, minute=0, second=0, microsecond=0) - timedelta(days=7)
+    day_horizon = 400 + (now.astimezone(KST).date() - day_start.date()).days
+    event_records = [record for record in records if not is_regular_record(record)]
+    recurring_records = [record for record in records if is_recurring_record(record)]
     for code, map_id in load_site_map_ids().items():
         windows, rows = expand_windows(records, map_id, now, game_version)
         if windows:
             maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows[:MAX_WINDOWS_PER_MAP]}
+        windows, rows = expand_windows(event_records, map_id, now, game_version)
+        if windows:
+            event_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
+        windows, rows = expand_windows(records, map_id, day_start, game_version, day_horizon)
+        if windows:
+            day_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
+        # Priority is used only for currently active rows. One day covers the
+        # entire freshness interval without duplicating the 400-day daily feed.
+        windows, rows = expand_windows(recurring_records, map_id, now, game_version, 1)
+        if windows:
+            recurring_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
     return {
         "schemaVersion": 1, "region": "kr", "timezone": "Asia/Seoul", "gameVersion": game_version,
         "fetchedAt": iso(now), "validUntil": iso(now + timedelta(seconds=FRESHNESS_SECONDS)),
         "source": {"url": SOURCE, "sha256": hashlib.sha256(content).hexdigest(),
                    "lastModified": headers.get("Last-Modified"), "recordCount": len(records)},
         "maps": maps,
+        "eventCalendar": {
+            "schemaVersion": 1,
+            "regularMinimumDays": REGULAR_MINIMUM_DAYS,
+            "excludedSourceRows": [record["row"] for record in records if is_regular_record(record)],
+            "maps": event_maps,
+        },
+        "dayCalendar": {
+            "schemaVersion": 1,
+            "rangeStart": iso(day_start),
+            "rangeEnd": iso(day_start + timedelta(days=day_horizon)),
+            "maps": day_maps,
+        },
+        "recurringCalendar": {
+            "schemaVersion": 1,
+            "rangeStart": iso(now),
+            "rangeEnd": iso(now + timedelta(days=1)),
+            "maps": recurring_maps,
+        },
     }
 
 

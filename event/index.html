@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>이벤트 일정 (공사중) · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --line: #293645;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent-text: #ffad3d;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      min-width: 320px;
+      min-height: 143vh;
+      margin: 0;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .page {
+      display: flex;
+      flex-direction: column;
+      width: min(1220px, calc(100% - 36px));
+      min-height: 143vh;
+      margin: 0 auto;
+      padding: 24px 0 38px;
+    }
+    .search-panel {
+      margin-top: 12px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+    }
+    .section-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-width: 0;
+    }
+    h1, h2, p { margin: 0; }
+    h1 { font-size: clamp(22px, 3vw, 29px); letter-spacing: -.045em; }
+    .search-description { margin-top: 6px; color: var(--muted); font-size: 13px; font-weight: 800; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+      .search-panel { padding: 15px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="calendar.css">
+</head>
+<body>
+  <main class="page">
+    <header data-nyanko-gnb data-search-prefix="unitSearch" data-search-placeholder="이름 입력"></header>
+    <script src="../gnb.js"></script>
+    <section class="search-panel" aria-labelledby="eventTitle">
+      <div class="section-heading">
+        <div>
+          <h1 id="eventTitle">이벤트 일정 <span class="event-construction">(공사중)</span></h1>
+          <p class="search-description">한국판 이벤트 일정을 조회할 수 있습니다. <time id="eventUpdatedAt" hidden></time></p>
+        </div>
+      </div>
+    </section>
+    <details class="event-settings" id="eventSettings">
+      <summary>
+        <span>설정</span>
+        <span class="event-settings-actions">
+          <button class="event-settings-reset" id="eventSettingsReset" type="button" disabled>초기화</button>
+          <span class="event-settings-toggle">
+            <span id="eventSettingsToggleLabel">펼치기</span>
+            <span class="event-settings-arrow" aria-hidden="true">▾</span>
+          </span>
+        </span>
+      </summary>
+      <div class="event-settings-panel">
+        <h2>표시 스테이지</h2>
+        <fieldset class="event-category-options">
+          <legend>달력</legend>
+          <div class="calendar-duration-filter">
+            <label for="calendarDurationDays">개최 기간</label>
+            <input id="calendarDurationDays" type="number" min="0" step="any" inputmode="decimal" aria-label="개최 기간 일수" aria-controls="calendarDays">
+            <span>일</span>
+            <select id="calendarDurationComparison" aria-label="개최 기간 비교" aria-controls="calendarDays">
+              <option value="lte">이하</option>
+              <option value="gte">이상</option>
+            </select>
+          </div>
+          <div class="calendar-regular-option event-category-grid">
+            <label class="calendar-filter-toggle">
+              <span>정규 스테이지</span>
+              <input id="calendarIncludeRegular" type="checkbox" aria-controls="calendarDays">
+              <span class="calendar-filter-check" aria-hidden="true">✓</span>
+            </label>
+          </div>
+          <div class="event-category-grid" id="calendarCategoryOptions"></div>
+        </fieldset>
+        <fieldset class="event-category-options">
+          <legend>일일</legend>
+          <div class="event-category-grid" id="dailyCategoryOptions"></div>
+        </fieldset>
+      </div>
+    </details>
+    <section class="event-calendar" aria-labelledby="calendarMonth">
+      <div class="calendar-toolbar">
+        <h2 id="calendarMonth" aria-live="polite"></h2>
+        <div class="calendar-navigation" aria-label="캘린더 이동">
+          <button type="button" id="previousMonth" aria-label="이전 달">‹</button>
+          <button type="button" id="calendarToday">오늘</button>
+          <button type="button" id="nextMonth" aria-label="다음 달">›</button>
+        </div>
+      </div>
+      <p class="calendar-status" id="calendarStatus" role="status">스테이지 일정을 불러오는 중입니다.</p>
+      <div class="calendar-legend" id="calendarLegend" role="group" aria-label="스테이지 대분류 색상" hidden></div>
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
+      </div>
+      <div class="calendar-days" id="calendarDays" role="group" aria-labelledby="calendarMonth"></div>
+      <noscript><p class="calendar-noscript">캘린더를 사용하려면 JavaScript를 켜 주세요.</p></noscript>
+    </section>
+    <section class="event-day-panel" aria-labelledby="selectedDate">
+      <div class="calendar-selection">
+        <span>선택한 날짜</span>
+        <p id="selectedDate" aria-live="polite"></p>
+        <span id="selectedEventCount"></span>
+        <label class="calendar-filter-toggle">
+          <span>현재 개최 중</span>
+          <input id="dailyActiveOnly" type="checkbox">
+          <span class="calendar-filter-check" aria-hidden="true">✓</span>
+        </label>
+      </div>
+      <div class="calendar-day-events" id="calendarDayEvents" aria-labelledby="selectedDate"></div>
+    </section>
+  </main>
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
+  <script id="eventScheduleSource" src="../stage-schedule.js" data-schedule-feed="https://raw.githubusercontent.com/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json"></script>
+  <script src="calendar.js" defer></script>
+</body>
+</html>

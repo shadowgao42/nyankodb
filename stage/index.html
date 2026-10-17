@@ -519,7 +519,7 @@
         const query = compact(input.value);
         const matches = matchingLocations(entries, query);
         const groups = new Map(categoryOrder.map((category) => [category, []]));
-        matches.forEach((result) => groups.get(categoryFor(result.entry.id)).push(result));
+        matches.forEach((result) => groups.get(categoryFor(result.entry.id))?.push(result));
         const fragment = document.createDocumentFragment();
         groups.forEach((locations, category) => {
           if (!locations.length) return;
