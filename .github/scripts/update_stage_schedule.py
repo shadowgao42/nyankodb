@@ -1,6 +1,6 @@
 """Fetch Korean PONOS sale.tsv and export stage windows (no third party feed).
 
-Existing site maps are listed in the adjacent map manifest. Authentication stays in a private file or
+Published maps are discovered from stage page folders using compact family rules. Authentication stays in a private file or
 the PONOS_EVENT_AUTH Actions secret; the exported JSON never contains a JWT.
 Protocol reference: battlecatsultimate/PackPack's EventFileGrabber/StageSchedule.
 """
@@ -13,6 +13,7 @@ import hmac
 import json
 import os
 from pathlib import Path
+import re
 import secrets
 import sys
 import urllib.error
@@ -22,7 +23,8 @@ import urllib.request
 KST = timezone(timedelta(hours=9))
 SOURCE = "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv"
 AUTH_BASE = "https://nyanko-auth.ponosgames.com/v1/"
-MAP_MANIFEST = Path(__file__).resolve().parents[1] / "stage-schedule-maps.json"
+MAP_RULES = Path(__file__).resolve().parents[1] / "stage-schedule-maps.json"
+STAGE_ROOT = Path(__file__).resolve().parents[2] / "stage"
 MAX_WINDOWS_PER_MAP = 32
 GAME_VERSION = 150601  # This site's Korean source: 15.6.1.
 FRESHNESS_SECONDS = 1800
@@ -276,13 +278,28 @@ def expand_windows(records: list[dict], map_id: int, now: datetime, game_version
 
 
 def load_site_map_ids() -> dict[str, int]:
-    value = json.loads(MAP_MANIFEST.read_text("utf-8"))
-    maps = value.get("mapIds")
-    if value.get("schemaVersion") != 1 or not isinstance(maps, dict) or not maps:
-        raise ScheduleError("Invalid site map manifest")
-    if any(not isinstance(code, str) or type(map_id) is not int or map_id < 1000 for code, map_id in maps.items()):
-        raise ScheduleError("Invalid site map identifier")
-    return maps
+    value = json.loads(MAP_RULES.read_text("utf-8"))
+    if not isinstance(value, dict):
+        raise ScheduleError("Invalid stage family rules")
+    bases = value.get("mapBases")
+    if value.get("schemaVersion") != 2 or not isinstance(bases, dict) or not bases:
+        raise ScheduleError("Invalid stage family rules")
+    if any(not isinstance(code, str) or not re.fullmatch(r"[A-Z]+", code)
+           or type(base) is not int or base < 1000 or base % 1000
+           for code, base in bases.items()):
+        raise ScheduleError("Invalid stage family identifier")
+    if not STAGE_ROOT.is_dir():
+        raise ScheduleError("Published stage directory is missing")
+    maps = {}
+    # A map index or a child battle is enough; future maps need no ID-list edit.
+    for page in STAGE_ROOT.glob("*/*.html"):
+        code = page.parent.name
+        match = re.fullmatch(r"([A-Z]+)(\d{3})", code)
+        if match and match[1] in bases and page.is_file():
+            maps[code] = bases[match[1]] + int(match[2])
+    if not maps:
+        raise ScheduleError("No published event-stage pages found")
+    return dict(sorted(maps.items()))
 
 
 def make_feed(content: bytes, headers: dict, now: datetime, game_version: int = GAME_VERSION) -> dict:
