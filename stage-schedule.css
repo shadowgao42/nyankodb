@@ -1,0 +1,9 @@
+/* Shared official calendar indicator for stage map and child pages. */
+.hero-controls.has-stage-schedule { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.stage-schedule { position: relative; margin-left: auto; max-width: 100%; padding: 5px 10px; border: 1px solid #2d3948; border-radius: 8px; color: var(--accent-text, #ffad3d); background: var(--surface-2,var(--surface2,#171f29)); font-size: 16px; font-weight: 800; line-height: 1.6; font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+.stage-schedule[hidden] { display: none; }
+.stage-schedule[data-state="active"] { color: #8ee2ac; }
+.stage-schedule[data-state="stale"] { color: var(--muted, #94a2b6); }
+/* Same data-tooltip surface as stage reward items, aligned to the right edge. */
+.stage-schedule[data-tooltip]::after { content: attr(data-tooltip); box-sizing: border-box; position: absolute; right: 0; bottom: calc(100% + 8px); z-index: 30; width: max-content; max-width: min(420px,calc(100vw - 48px)); padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-size: 13px; font-weight: 900; text-align: left; white-space: normal; overflow-wrap: anywhere; opacity: 0; pointer-events: none; transform: translateY(6px); transition: opacity .14s ease,transform .14s ease; }
+.stage-schedule[data-tooltip]:hover::after, .stage-schedule[data-tooltip]:focus::after { opacity: 1; transform: translateY(0); }

@@ -184,3 +184,32 @@
   window.addEventListener("resize", () => { updateFloating(); keepInViewport(); });
   updateFloating();
 })();
+
+/* Shared official stage calendars. Existing pages use this bootstrap too. */
+(() => {
+  const source = document.currentScript;
+  if (!source?.src) return;
+  const base = new URL(".", source.src);
+  const initializeCalendar = () => {
+    if (document.getElementById("stageScheduleScript")) return;
+    const pathCode = location.pathname.match(/\/stage\/([A-Z]+\d{3})\//)?.[1];
+    const info = typeof DATA === "undefined" ? null : DATA.stage;
+    const code = pathCode || info?.locationId || String(info?.id || "").split("-", 1)[0];
+    if (!/^(?:A|B|C|CA|D|DM|EX|G|H|L|M|NA|ND|PR|Q|R|RE|S|SR|T|V)\d{3}$/.test(code)) return;
+    if (!document.querySelector("#crownSelect")?.closest(".hero-controls")) return;
+    if (!document.querySelector('link[href$="stage-schedule.css"]')) {
+      const css = document.createElement("link");
+      css.rel = "stylesheet";
+      css.href = new URL("stage-schedule.css", base).href;
+      document.head.append(css);
+    }
+    const script = document.createElement("script");
+    script.id = "stageScheduleScript";
+    script.src = new URL("stage-schedule.js", base).href;
+    script.dataset.stageSchedule = code;
+    script.dataset.scheduleFeed = "https://raw.githubusercontent.com/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json";
+    document.body.append(script);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeCalendar, {once:true});
+  else initializeCalendar();
+})();

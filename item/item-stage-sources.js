@@ -1,16 +1,35 @@
 /* Acquisition-stage prototype. Probabilities come from generated stage pages. */
 (() => {
   "use strict";
+  const sourceScript = document.currentScript;
   function initialize() {
     const panel = document.getElementById("itemStagesPanel");
     const source = document.getElementById("itemStageSourcesData");
     if (!panel || !source) return;
     const initialData = JSON.parse(source.textContent);
     const conversions = document.getElementById("itemStagesConversions");
+    let activeOnly = document.getElementById("itemStagesActiveOnly");
+    if (!activeOnly && conversions) {
+      const label = document.createElement("label"); label.className = "talent-toggle";
+      const text = document.createElement("span"); text.textContent = "현재 개최 중";
+      activeOnly = document.createElement("input"); activeOnly.id = "itemStagesActiveOnly"; activeOnly.type = "checkbox";
+      const check = document.createElement("span"); check.className = "talent-check";
+      check.setAttribute("aria-hidden", "true"); check.textContent = "✓";
+      label.append(text, activeOnly, check);
+      conversions.parentElement.after(label);
+    }
     const rowKey = entry => entry.routeId || entry.id;
     const isIndirect = entry => Boolean(entry.conversion);
     const collator = new Intl.Collator("en", { numeric: true });
     const search = window.NyankoSearch;
+    const alwaysAvailable = new Set([
+      "세계편", "미래편", "우주편", "세계편 좀비습격", "미래편 좀비습격", "우주편 좀비습격",
+      "마계편", "레전드 스토리", "신 레전드 스토리", "레전드 스토리 0", "발굴 스테이지",
+    ]);
+    let activeLocations = new Set();
+    let calendarApi, calendarScript, calendarLoading;
+    let calendars = new Map();
+    let refreshing = false, watching = false;
     function defaultCompare(left, right) {
       const category = entry => search.stageCategoryOrder.indexOf(search.stageCategoryForLocation(entry.locationId));
       return category(left) - category(right)
@@ -41,7 +60,12 @@
       const amount = expected(entry);
       return entry.energy === 0 ? (amount === 0 ? 0 : Infinity) : amount * 1000 / entry.energy;
     };
-    const visibleEntries = () => includeConversions ? combinedOrdered : directOrdered;
+    const visibleEntries = () => {
+      const entries = includeConversions ? combinedOrdered : directOrdered;
+      return activeOnly?.checked ? entries.filter(entry =>
+        alwaysAvailable.has(search.stageCategoryForLocation(entry.locationId)) || activeLocations.has(entry.locationId)
+      ) : entries;
+    };
     const visibleClaimStages = () => new Set(visibleEntries().flatMap(claimIds));
     function sortedEnergy(entries) {
       return entries.filter(entry => !entry.itemCost).sort((left, right) => {
@@ -201,6 +225,60 @@
     document.getElementById("itemStagesDefault").addEventListener("click", () => { sorting = "default"; render(); });
     document.getElementById("itemStagesEfficiency").addEventListener("click", () => { sorting = "efficiency"; render(); });
     document.getElementById("itemStagesMore")?.addEventListener("click", () => { showAll = true; render(); });
+    function syncActiveLocations() {
+      const now = Date.now();
+      const next = new Set([...calendars].filter(([, calendar]) => calendarApi.stateAt(calendar, now).state === "active").map(([code]) => code));
+      const changed = next.size !== activeLocations.size || [...next].some(code => !activeLocations.has(code));
+      activeLocations = next;
+      if (changed && activeOnly?.checked) render();
+    }
+    function loadCalendarApi() {
+      if (calendarLoading) return calendarLoading;
+      calendarScript = document.createElement("script");
+      calendarScript.src = new URL("../stage-schedule.js", sourceScript.src).href;
+      calendarScript.dataset.scheduleFeed = "https://raw.githubusercontent.com/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json";
+      if (window.NyankoStageSchedule) return Promise.resolve(window.NyankoStageSchedule);
+      calendarLoading = new Promise((resolve, reject) => {
+        calendarScript.onload = () => resolve(window.NyankoStageSchedule);
+        calendarScript.onerror = () => { calendarScript.remove(); calendarLoading = null; reject(new Error("Calendar unavailable")); };
+        document.head.append(calendarScript);
+      });
+      return calendarLoading;
+    }
+    async function refreshCalendar() {
+      if (!activeOnly?.checked || document.hidden || refreshing) return;
+      refreshing = true;
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 15000);
+      try {
+        calendarApi = await loadCalendarApi();
+        const feed = await calendarApi.fetchFeed(calendarScript, controller.signal);
+        // Validate even an empty map list with the same official-feed checks.
+        calendarApi.parseFeed(feed, "S000");
+        const next = new Map(Object.keys(feed.maps).map(code => [code, calendarApi.parseFeed(feed, code)]));
+        calendars = next;
+      } catch (_) {
+        // Only still-valid official intervals can survive a failed refresh.
+      } finally {
+        window.clearTimeout(timeout);
+        refreshing = false;
+        syncActiveLocations();
+      }
+    }
+    function syncActiveFilter() {
+      syncActiveLocations();
+      render();
+      if (!activeOnly?.checked) return;
+      if (!watching) {
+        watching = true;
+        window.setInterval(() => { if (activeOnly.checked && !document.hidden) syncActiveLocations(); }, 1000);
+        window.setInterval(refreshCalendar, 60000);
+      }
+      void refreshCalendar();
+    }
+    activeOnly?.addEventListener("change", syncActiveFilter);
+    window.addEventListener("pageshow", syncActiveFilter);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden && activeOnly?.checked) syncActiveFilter(); });
     if (conversions) {
       const syncConversions = () => { includeConversions = conversions.checked; render(); };
       conversions.addEventListener("change", syncConversions);
@@ -223,6 +301,7 @@
     // physical-stage claims, the selected sort, checkbox and expansion state.
     panel.addEventListener("item-sources-change", event => replaceData(event.detail));
     replaceData(initialData);
+    if (activeOnly?.checked) syncActiveFilter();
   }
   if (document.readyState !== "complete") document.addEventListener("DOMContentLoaded", initialize, { once: true });
   else initialize();
