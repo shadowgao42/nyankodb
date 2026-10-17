@@ -1,0 +1,15 @@
+name: Scheduled official KR stage refresh
+
+on:
+  schedule:
+    - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    uses: ./.github/workflows/update-stage-schedule.yml
+    secrets:
+      PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}

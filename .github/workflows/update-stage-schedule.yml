@@ -1,13 +1,16 @@
 name: Update official KR stage schedule
 
 on:
-  schedule:
-    - cron: '2-59/5 * * * *'
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      PONOS_EVENT_AUTH:
+        required: true
   push:
     branches: [main]
     paths:
       - '.github/workflows/update-stage-schedule.yml'
+      - '.github/workflows/stage-schedule-timer.yml'
       - '.github/scripts/update_stage_schedule.py'
       - '.github/scripts/publish_stage_schedule.py'
       - '.github/stage-schedule-maps.json'
