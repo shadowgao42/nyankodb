@@ -75,6 +75,10 @@
   async function fetchFeed(script, signal) {
     const local = ["localhost", "127.0.0.1", "[::1]"].includes(root.location.hostname);
     const url = local ? new URL("stage-schedule-kr.json", script.src) : new URL(script.dataset.scheduleFeed);
+    if (url.hostname === "raw.githubusercontent.com" &&
+        url.pathname === "/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json") {
+      url.pathname = "/shadowgao42/nyankodb/refs/heads/event-schedule-data/stage-schedule-kr.json";
+    }
     url.searchParams.set("t", String(Math.floor(Date.now() / POLL_MS)));
     const response = await root.fetch(url, { cache: "no-store", credentials: "omit", signal });
     if (!response.ok) throw new Error("Calendar unavailable");

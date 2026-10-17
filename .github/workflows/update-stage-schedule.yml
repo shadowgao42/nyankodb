@@ -2,8 +2,15 @@ name: Update official KR stage schedule
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '2-59/5 * * * *'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/update-stage-schedule.yml'
+      - '.github/scripts/update_stage_schedule.py'
+      - '.github/scripts/publish_stage_schedule.py'
+      - '.github/stage-schedule-maps.json'
 
 permissions:
   contents: write
