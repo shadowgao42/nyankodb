@@ -3,6 +3,10 @@ name: Update official KR stage schedule
 on:
   workflow_dispatch:
   workflow_call:
+    inputs:
+      delay_refresh:
+        type: boolean
+        default: false
     secrets:
       PONOS_EVENT_AUTH:
         required: true
@@ -26,6 +30,8 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    environment:
+      name: ${{ inputs.delay_refresh && 'official-kr-stage-schedule-5min' || 'official-kr-stage-schedule-direct' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

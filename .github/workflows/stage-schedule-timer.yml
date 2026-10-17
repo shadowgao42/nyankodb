@@ -1,15 +1,50 @@
 name: Scheduled official KR stage refresh
+run-name: KR schedule refresh (after ${{ inputs.previous_run_id || github.event_name }})
 
 on:
   schedule:
     - cron: '2,7,12,17,22,27,32,37,42,47,52,57 * * * *'
   workflow_dispatch:
+    inputs:
+      previous_run_id:
+        description: Previous automatic refresh run
+        type: string
+        required: false
 
-permissions:
-  contents: write
+permissions: {}
+
+concurrency:
+  group: official-kr-stage-schedule-timer
+  cancel-in-progress: false
 
 jobs:
   refresh:
+    if: ${{ vars.STAGE_SCHEDULE_AUTOMATION == 'enabled' }}
+    permissions:
+      contents: write
     uses: ./.github/workflows/update-stage-schedule.yml
+    with:
+      delay_refresh: ${{ inputs.previous_run_id != '' }}
     secrets:
       PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}
+  queue-next:
+    needs: refresh
+    if: ${{ always() && !cancelled() && vars.STAGE_SCHEDULE_AUTOMATION == 'enabled' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      actions: write
+    steps:
+      - name: Queue the next automatic refresh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in 1 2 3; do
+            if jq -n --arg parent "$GITHUB_RUN_ID" '{ref:"main",inputs:{previous_run_id:$parent}}' |
+              gh api --method POST "repos/$GITHUB_REPOSITORY/actions/workflows/stage-schedule-timer.yml/dispatches" --input -; then
+              echo "Queued the next automatic refresh after run $GITHUB_RUN_ID"
+              exit 0
+            fi
+            sleep 10
+          done
+          exit 1
