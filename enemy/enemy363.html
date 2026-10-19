@@ -948,10 +948,9 @@ if(stageHealthMagnification!==null&&stageAttackMagnification!==null&&stageHealth
 const save=()=>{if(enemyFixedPreset)return;try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
 const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
 const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
-// Enemy magnification uses one final floor.  Do not reduce the intermediate
-// product to f32: repeated shields at very high magnification would otherwise
-// lose HP through floating-point precision before the final truncation.
-const scaleEnemy=(base,mag)=>Math.floor(Number(base)*Number(mag)/100);
+// Native stage scaling adds 50 before integer division by 100 (positive round).
+// Treasure correction is applied separately to the rounded stage statistic.
+const scaleEnemy=(base,mag)=>Math.floor((Number(base)*Number(mag)+50)/100);
 const enemyDps=(attack,cycle)=>cycle>0?rustRound(Math.fround(Math.fround(attack*30)/Math.fround(cycle))):0;
 const frameText=f=>state.timeUnit==='f'?`${fmt(f)}f`:`${(f/30).toFixed(2)}초`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1005,7 +1004,7 @@ function renderStats(){
   document.querySelectorAll('.attack-timeline-hit').forEach(el=>el.addEventListener('click',event=>{event.stopPropagation();const open=el.dataset.tooltipOpen==='true';closeInlineTooltips();if(!open)el.dataset.tooltipOpen='true'}));
 }
 function renderTraits(){const root=$('traits'),items=DATA.traits||[];if(!items.length){root.replaceChildren();return}root.innerHTML=items.map((x,i)=>`<button class="trait trait-chip${x.key==='starred_alien'?' starred-alien':''}" type="button" data-i="${i}" data-tooltip="${attrText(x.label||'속성')}" aria-label="${esc(x.label||'속성')}">${x.icon?`<img src="${x.icon}" alt="">`:`<span class="fallback-icon">${esc((x.label||'?')[0])}</span>`}</button>`).join('');bindInlineTooltips(root)}
-function effectSummary(x){if(x.key==='survive')return x.chance!==undefined?`확률 ${fmt(x.chance)}%`:'';const p=[];const compactRange=(minimum,maximum)=>Math.abs(Number(minimum)-Number(maximum))<1e-9?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`;if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(compactRange(x.minimum,x.maximum));if(x.range)p.push(compactRange(x.range.minimum,x.range.maximum));if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
+function effectSummary(x){if(x.key==='survive')return x.chance!==undefined?`확률 ${fmt(x.chance)}%`:'';const p=[];const compactRange=(minimum,maximum)=>Math.abs(Number(minimum)-Number(maximum))<1e-9?fmt(minimum):`${fmt(minimum)}~${fmt(maximum)}`;if(x.chance!==undefined)p.push(`확률 ${fmt(x.chance)}%`);if(x.duration_frames!==undefined)p.push(frameText(x.duration_frames));if(x.level!==undefined)p.push(`Lv.${fmt(x.level)}`);if(x.hit_count!==undefined)p.push(`${fmt(x.hit_count)}타`);if(x.attack_percent!==undefined)p.push(`공격력 ${fmt(x.attack_percent)}%`);if(x.damage_multiplier!==undefined)p.push(`주는 피해 ${Number(x.damage_multiplier).toFixed(2).replace(/\.00$/,'')}x`);if(x.hitpoints_threshold_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_threshold_percent)}% 이하`);if(x.damage_boost_percent!==undefined)p.push(`공격력 +${fmt(x.damage_boost_percent)}%`);if(x.max_hitpoints_damage_percent!==undefined)p.push(`최대 체력의 ${fmt(x.max_hitpoints_damage_percent)}%`);if(x.cooldown_extension_percent!==undefined)p.push(`생산 시간 +${fmt(x.cooldown_extension_percent)}%`);if(x.hitpoints!==undefined)p.push(`HP ${fmt(x.key==='shield'?enemyScaleShield(x.hitpoints):x.hitpoints)}`);if(x.regeneration_percent!==undefined&&!(x.key==='shield'&&Number(x.regeneration_percent)===100))p.push(`재생 ${fmt(x.regeneration_percent)}%`);if(x.distance!==undefined)p.push(`거리 ${fmt(x.distance)}`);if(x.delay_frames!==undefined)p.push(`부활 ${frameText(x.delay_frames)}`);if(x.hitpoints_percent!==undefined)p.push(`체력 ${fmt(x.hitpoints_percent)}%`);if(x.count!==undefined&&x.key!=='attack_count')p.push(x.infinite?'무제한':`${fmt(x.count)}회`);if(x.minimum!==undefined&&x.maximum!==undefined)p.push(compactRange(x.minimum,x.maximum));if(x.range)p.push(compactRange(x.range.minimum,x.range.maximum));if(Array.isArray(x.applies_to_attacks)&&x.applies_to_attacks.length)p.push(`${x.applies_to_attacks.join('·')}타 적용`);return p.join(' · ')}
 function renderEffects(){
   const all=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');
   if(!all.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}
@@ -1139,15 +1138,30 @@ const enemyTreasureItem=key=>DATA.treasure.categories.flatMap(category=>category
 const enemyTreasurePercent=key=>{const item=enemyTreasureItem(key);return item?treasurePercent(item):0};
 const enemyAccountingLevel=()=>state.accounting.baseLevel+state.accounting.plusLevel;
 const enemyAccountingMultiplier=()=>Math.max(0,enemyAccountingLevel()-1)*(Number(enemyAccountingConfig.moneyMultiplierPerLevel)||.05);
-const enemyCashTreasureMultiplier=()=>Math.max(0,Math.min(300,enemyTreasurePercent('super_register')))/200;
+const enemyCashTreasureEffect=()=>[0,1,2].reduce((total,chapter)=>total+enemyTreasureChapterEffect(enemyTreasureItem('super_register'),chapter,50),0);
+const enemyCashTreasureMultiplier=()=>enemyCashTreasureEffect()/100;
 const enemyCashMultiplier=()=>1+enemyCashTreasureMultiplier()+enemyAccountingMultiplier();
 const enemyCashDrop=()=>{
   const raw=Number(DATA.raw?.cash_drop_raw??0);
-  // The cash formula is f32 arithmetic followed by exactly one final floor.
-  return Math.floor(Math.fround(Math.fround(raw)*Math.fround(enemyCashMultiplier()))+1e-9);
+  // Native money uses integer-percent arithmetic after per-chapter effects.
+  return Math.floor(raw*(100+Math.max(0,enemyAccountingLevel()-1)*5+enemyCashTreasureEffect())/100);
 };
 const enemyAccountingMaximum=()=>state.accounting.baseLevel===enemyAccountingBaseBounds[1]&&state.accounting.plusLevel===enemyAccountingPlusBounds[1];
+function enemyTreasureChapterEffect(item,chapter,effectPercent=100){
+  if(!item)return 0;
+  const qualities=Array.from({length:item.slotCount},(_,slot)=>Number(state.treasures[`${item.key}.${chapter}.${slot}`]||0));
+  if(qualities.some(quality=>quality===0))return 0;
+  const percent=Math.floor(qualities.reduce((sum,quality)=>sum+quality,0)*100/(item.slotCount*3));
+  return Math.floor(percent*effectPercent/100);
+}
 function enemyTraitTreasureEffect(){
+  // Native treasure effects truncate each chapter/set's collection rate,
+  // then its effect, before summing. Visible collection rates stay unchanged.
+  const chapterEffect=enemyTreasureChapterEffect;
+  const crystalEffect=keys=>keys.reduce((sum,key)=>{
+    const item=enemyTreasureItem(key);
+    return sum+[0,1,2].reduce((total,chapter)=>total+chapterEffect(item,chapter),0);
+  },0);
   // Cat God traits are deliberately hidden from the visible attribute row,
   // but each chapter is still affected by its own Mysterious Mask.
   const mechanicTraits=DATA.mechanicTraits||DATA.traits||[];
@@ -1156,32 +1170,33 @@ function enemyTraitTreasureEffect(){
     const chapter=Math.min(3,Math.max(1,Math.trunc(Number(catGod.chapter)||1)));
     const mask=enemyTreasureItem('mysterious_mask');
     const collected=mask?treasureChapterPercent(mask,chapter-1):0;
-    // 0% = 11x and 100% = 1x, decreasing linearly for the relevant chapter.
-    return {multiplier:Math.max(1,11-collected/10),treasurePercent:collected,maxTreasurePercent:100};
+    const boostPercent=Math.max(0,1000-chapterEffect(mask,chapter-1,1000));
+    return {multiplier:1+boostPercent/100,boostPercent,treasurePercent:collected,maxTreasurePercent:100};
   }
   const traits=new Set(mechanicTraits.map(trait=>trait.key));
   if(traits.has('starred_alien')){
     const keys=['green_crystal','yellow_crystal','orange_crystal','lightblue_crystal','purple_crystal'];
     const collected=keys.reduce((sum,key)=>sum+enemyTreasurePercent(key),0);
-    // 우주편 크리스탈은 각 장의 수집률이 그대로 합산된다. 최대 1,500%를
-    // 모으면 별 있음 에이리언의 기본 16배 보정이 1배까지 내려간다.
-    return {multiplier:Math.max(1,16-collected/100),treasurePercent:collected,maxTreasurePercent:1500};
+    const boostPercent=Math.max(0,1500-crystalEffect(keys));
+    return {multiplier:1+boostPercent/100,boostPercent,treasurePercent:collected,maxTreasurePercent:1500};
   }
   if(traits.has('alien')){
     const keys=['blue_crystal','red_crystal'];
     const collected=keys.reduce((sum,key)=>sum+enemyTreasurePercent(key),0);
     // Blue and Red Crystals across all three chapters total 600%.
     // No active sets = 7x; all six sets at full gold = 1x.
-    return {multiplier:Math.max(1,7-collected/100),treasurePercent:collected,maxTreasurePercent:600};
+    const boostPercent=Math.max(0,600-crystalEffect(keys));
+    return {multiplier:1+boostPercent/100,boostPercent,treasurePercent:collected,maxTreasurePercent:600};
   }
-  return {multiplier:1,treasurePercent:null,maxTreasurePercent:null};
+  return {multiplier:1,boostPercent:0,treasurePercent:null,maxTreasurePercent:null};
 }
 const enemyTraitMultiplier=()=>enemyTraitTreasureEffect().multiplier;
-const enemyEffectiveMagnification=(stat='attack')=>{
+function enemyScale(value,stat='attack'){
   const selected=stat==='hp'?state.hpMagnification:state.attackMagnification;
-  return selected*enemyTraitMultiplier();
-};
-const enemyScale=(value,stat='attack')=>scaleEnemy(value,enemyEffectiveMagnification(stat));
+  const scaled=scaleEnemy(value,selected);
+  return scaled+Math.floor(scaled*enemyTraitTreasureEffect().boostPercent/100);
+}
+const enemyScaleShield=value=>scaleEnemy(value,state.hpMagnification);
 function renderEnemyTreasureApplication(){
   const element=$('treasure-application');
   if(!element)return;
@@ -1204,7 +1219,7 @@ function enemyShieldHealthState(stats=enemyCurrentStatValues()){
   const barrier=barrierEnabled?Math.max(0,Number(barrierAbility.hitpoints)||0):0;
   const shieldAbility=enemyAttackAbility('shield');
   const enabled=!!shieldAbility&&enemyActiveHealthEffectKeys.has('shield');
-  const shield=enabled?enemyScale(Math.max(0,Number(shieldAbility.hitpoints)||0),'hp'):0;
+  const shield=enabled?enemyScaleShield(Math.max(0,Number(shieldAbility.hitpoints)||0)):0;
   const regeneration=Math.max(0,Math.min(100,Number(shieldAbility?.regeneration_percent)||0));
   const regeneratedShield=Math.floor(shield*regeneration/100+1e-9);
   const reviveAbility=enemyAttackAbility('revive');
@@ -1291,10 +1306,11 @@ function enemyStrengthenedAttack(attack,hitNumber){
   return Math.floor(attack*(1+(Number(ability.damage_boost_percent)||0)/100)+1e-9);
 }
 function enemyForcedAttackDamage(attack,hitNumber){
-  let value=enemyStrengthenedAttack(attack,hitNumber);
+  let value=attack;
   const critical=enemyAttackAbility('critical');
   const savage=enemyAttackAbility('savage_blow');
   if(critical&&enemyActiveAttackEffectKeys.has('critical')&&enemyAbilityAppliesToHit(critical,hitNumber))value=Math.floor(value*2+1e-9);
+  value=enemyStrengthenedAttack(value,hitNumber);
   if(savage&&enemyActiveAttackEffectKeys.has('savage_blow')&&enemyAbilityAppliesToHit(savage,hitNumber))value=Math.floor(value*(Number(savage.damage_multiplier)||1+(Number(savage.damage_boost_percent)||0)/100)+1e-9);
   return value;
 }
@@ -1415,7 +1431,7 @@ function enemyHealthEffectDetail(ability){
     return `${count} \u00b7 \uc7ac\uc0dd ${enemyDetailNumber(Math.max(0,Number(ability.hitpoints_percent)||0))}%`;
   }
   const rawHitpoints=Math.max(0,Number(ability.hitpoints)||0);
-  const hitpoints=ability.key==='shield'?enemyScale(rawHitpoints,'hp'):rawHitpoints;
+  const hitpoints=ability.key==='shield'?enemyScaleShield(rawHitpoints):rawHitpoints;
   const parts=[`\uccb4\ub825 ${enemyDetailNumber(hitpoints)}`];
   const regeneration=Number(ability.regeneration_percent);
   if(ability.key==='shield'&&Number.isFinite(regeneration)&&regeneration!==100)parts.push(`\uc7ac\uc0dd ${enemyDetailNumber(regeneration)}%`);
@@ -1462,7 +1478,7 @@ function enemyHealthDetailPanel(rows){
   return details;
 }
 function enemyAttackEffectDetail(ability){
-  if(ability.key==='strengthen'){const boost=Number(ability.damage_boost_percent)||0;return `\uccb4\ub825 ${fmt(ability.hitpoints_threshold_percent||0)}% \uc774\ud558 \u00b7 \uacf5\uaca9\ub825 +${fmt(boost)}% (${fmt(1+boost/100)}\u00d7)`;}
+  if(ability.key==='strengthen'){const boost=Number(ability.damage_boost_percent)||0;return `\uccb4\ub825 ${fmt(ability.hitpoints_threshold_percent||0)}% \uc774\ud558 \u00b7 \uacf5\uaca9\ub825 +${fmt(boost)}% (${enemyDetailNumber(1+boost/100)}\u00d7)`;}
   if(['wave','mini_wave','surge','mini_surge','explosion'].includes(ability.key)){
     let text=`\ud655\ub960 ${fmt(ability.chance||0)}%`;
     if(ability.key!=='explosion')text+=` \u00b7 Lv.${fmt(ability.level||1)}`;
@@ -1525,13 +1541,21 @@ function enemyAttackDetailPanel(rows){
   return details;
 }
 function enemyExpectedAttackForHit(attack,hitNumber){
-  const strengthened=enemyStrengthenedAttack(attack,hitNumber);
   const critical=enemyAttackAbility('critical');
   const savage=enemyAttackAbility('savage_blow');
   const criticalChance=critical&&enemyAbilityAppliesToHit(critical,hitNumber)?Math.max(0,Math.min(100,Number(critical.chance)||0))/100:0;
   const savageChance=savage&&enemyAbilityAppliesToHit(savage,hitNumber)?Math.max(0,Math.min(100,Number(savage.chance)||0))/100:0;
-  const savageBoost=savage?Math.max(0,Number(savage.damage_boost_percent)||0)/100:0;
-  return strengthened*(1+criticalChance)*(1+savageChance*savageBoost);
+  const savageMultiplier=savage?Math.max(0,Number(savage.damage_multiplier)||1+(Number(savage.damage_boost_percent)||0)/100):1;
+  let expected=0;
+  for(const [criticalTriggered,criticalProbability] of [[false,1-criticalChance],[true,criticalChance]]){
+    if(criticalProbability<=0)continue;
+    const strengthened=enemyStrengthenedAttack(criticalTriggered?Math.floor(attack*2+1e-9):attack,hitNumber);
+    for(const [savageTriggered,savageProbability] of [[false,1-savageChance],[true,savageChance]]){
+      const damage=savageTriggered?Math.floor(strengthened*savageMultiplier+1e-9):strengthened;
+      expected+=damage*criticalProbability*savageProbability;
+    }
+  }
+  return expected;
 }
 function enemyExpectedRangeEntries(){
   const base=DATA.base||DATA.stats||{};
@@ -2028,7 +2052,7 @@ function effectSummary(x){
   if(key==='explosion')p.push(`\ud53c\ud574\ub300 ${(x.damage_bands_percent||[100,70,40]).join('/')}%`);
   if(key==='toxic'&&x.max_hitpoints_damage_percent!==undefined)p.push(`\ucd5c\ub300 \uccb4\ub825\uc758 ${number(x.max_hitpoints_damage_percent)}%`);
   if(key==='drain'&&x.cooldown_extension_percent!==undefined)p.push(`\uc0dd\uc0b0 \uc2dc\uac04 +${number(x.cooldown_extension_percent)}%`);
-  if(['barrier','shield'].includes(key)&&x.hitpoints!==undefined)p.push(`\uccb4\ub825 ${number(key==='shield'?enemyScale(x.hitpoints,'hp'):x.hitpoints)}`);
+  if(['barrier','shield'].includes(key)&&x.hitpoints!==undefined)p.push(`\uccb4\ub825 ${number(key==='shield'?enemyScaleShield(x.hitpoints):x.hitpoints)}`);
   if(key==='shield'&&x.regeneration_percent!==undefined&&Number(x.regeneration_percent)!==100)p.push(`\uc7ac\uc0dd ${number(x.regeneration_percent)}%`);
   if(key==='burrow'){
     if(x.count!==undefined)p.push(x.infinite?'\ubb34\uc81c\ud55c':`${number(x.count)}\ud68c`);

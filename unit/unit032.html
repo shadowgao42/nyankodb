@@ -4474,13 +4474,12 @@
     }
 
     function levelMultiplierForCurve(level, curve) {
-      let multiplier = 1;
+      let percent = 100;
       for (let current = 2; current <= level; current += 1) {
         const curveIndex = Math.floor((current - 1) / 10);
-        const increment = curve[Math.min(curveIndex, curve.length - 1)];
-        multiplier += increment / 100;
+        percent += Number(curve[Math.min(curveIndex, curve.length - 1)]) || 0;
       }
-      return multiplier;
+      return percent;
     }
 
     function levelMultiplier(level) {
@@ -4503,13 +4502,13 @@
     }
 
     function currentTreasureMultipliers() {
+      const effect = (key, maximum) => (treasureState.get(key) || []).reduce(
+        (sum, slots) => sum + Math.floor(chapterTreasurePercent(slots) * maximum / 100), 0);
       return {
-        hp: 1 + treasurePercent("shield") / 200,
-        attack: 1 + treasurePercent("sword") / 200,
-        researchReductionFrames: Math.min(
-          unitData.treasures.researchMaxReductionFrames,
-          treasurePercent("research") * 0.3,
-        ),
+        hp: 1 + effect("shield", 50) / 100,
+        attack: 1 + effect("sword", 50) / 100,
+        researchReductionFrames: Math.min(unitData.treasures.researchMaxReductionFrames,
+          effect("research", 30)),
       };
     }
 
@@ -4564,7 +4563,7 @@
       const profiles = fruitValueProfiles(
         traits,
         (percent) => Math.floor(
-          baseFrames * fruitLinearValue(percent, 1, 1.2) + 1e-9
+          baseFrames * (1500 + percent) / 1500
         ),
       );
       const values = profiles.map((profile) => profile.value);
@@ -4579,7 +4578,7 @@
         details: fruitValueProfiles(
           detailTraits,
           (percent) => Math.floor(
-            baseFrames * fruitLinearValue(percent, 1, 1.2) + 1e-9
+            baseFrames * (1500 + percent) / 1500
           ),
         )
           .filter((profile) => profile.label)
@@ -4782,10 +4781,10 @@
       };
     }
 
-    function scaleStat(rawValue, multiplier, treasureMultiplier) {
-      return Math.floor(
-        roundAway(rawValue * multiplier) * treasureMultiplier
-      );
+    function scaleStat(rawValue, levelPercent, treasureMultiplier) {
+      const base = Math.floor((rawValue * levelPercent + 50) / 100);
+      const treasureEffect = Math.round((treasureMultiplier - 1) * 100);
+      return base + Math.floor(base * treasureEffect / 100);
     }
 
     function calculateCounterMultipliers(abilities, traits, activeOrbs = []) {
@@ -4799,50 +4798,38 @@
       );
 
       let basicAttackMultiplier = 1;
+      let basicAttackSteps = [];
       let basicReceivedMultiplier = 1;
       matchingBasicKeys.forEach((key) => {
         const treasureKey = fruitTreasureKeyByTrait[key];
         const fruitPercent = treasureKey ? treasurePercent(treasureKey) : 0;
         let traitAttackMultiplier = 1;
+        const traitAttackSteps = [];
         let traitReceivedMultiplier = 1;
         if (abilityKeys.has("strong")) {
-          traitAttackMultiplier = Math.max(
-            traitAttackMultiplier,
-            fruitLinearValue(fruitPercent, 1.5, 1.8)
-              + orbAttackAddition(activeOrbs, 2, key, 1000),
-          );
-          traitReceivedMultiplier = Math.min(
-            traitReceivedMultiplier,
-            fruitLinearValue(fruitPercent, 0.5, 0.4)
-              * orbReceivedDamageFactor(activeOrbs, 2, key, 1),
-          );
+          traitAttackSteps.push(fruitLinearValue(fruitPercent, 1.5, 1.8)
+              + orbAttackAddition(activeOrbs, 2, key, 1000));
+          traitAttackMultiplier *= traitAttackSteps.at(-1);
+          traitReceivedMultiplier *= (fruitLinearValue(fruitPercent, 0.5, 0.4)
+              * orbReceivedDamageFactor(activeOrbs, 2, key, 1));
         }
         if (abilityKeys.has("massive_damage")) {
-          traitAttackMultiplier = Math.max(
-            traitAttackMultiplier,
-            fruitLinearValue(fruitPercent, 3, 4)
-              + orbAttackAddition(activeOrbs, 3, key, 300),
-          );
+          traitAttackSteps.push(fruitLinearValue(fruitPercent, 3, 4)
+              + orbAttackAddition(activeOrbs, 3, key, 300));
+          traitAttackMultiplier *= traitAttackSteps.at(-1);
         }
         if (abilityKeys.has("insane_damage")) {
-          traitAttackMultiplier = Math.max(
-            traitAttackMultiplier,
-            fruitLinearValue(fruitPercent, 5, 6),
-          );
+          traitAttackSteps.push(fruitLinearValue(fruitPercent, 5, 6));
+          traitAttackMultiplier *= traitAttackSteps.at(-1);
         }
         if (abilityKeys.has("resistant")) {
-          traitReceivedMultiplier = Math.min(
-            traitReceivedMultiplier,
-            fruitLinearValue(fruitPercent, 1 / 4, 1 / 5)
-              * orbReceivedDamageFactor(activeOrbs, 4, key),
-          );
+          traitReceivedMultiplier *= (fruitLinearValue(fruitPercent, 1 / 4, 1 / 5)
+              * orbReceivedDamageFactor(activeOrbs, 4, key));
         }
         if (abilityKeys.has("insanely_tough")) {
-          traitReceivedMultiplier = Math.min(
-            traitReceivedMultiplier,
-            fruitLinearValue(fruitPercent, 1 / 6, 1 / 7),
-          );
+          traitReceivedMultiplier *= (fruitLinearValue(fruitPercent, 1 / 6, 1 / 7));
         }
+        if (traitAttackMultiplier > basicAttackMultiplier) basicAttackSteps = traitAttackSteps;
         basicAttackMultiplier = Math.max(
           basicAttackMultiplier,
           traitAttackMultiplier,
@@ -4886,9 +4873,11 @@
         && !matchingBasicKeys.length
       ) {
         basicAttackMultiplier = 0;
+        basicAttackSteps = [0];
       }
 
       let specialAttackMultiplier = 1;
+      const specialAttackSteps = [];
       let specialReceivedMultiplier = 1;
       unitData.targetCatalog.special.forEach((target) => {
         const orbTargetAbility = abilities.find(
@@ -4898,9 +4887,9 @@
           selectedTargetKeys.has(target.key)
           && (abilityKeys.has(target.abilityKey) || orbTargetAbility)
         ) {
-          specialAttackMultiplier *= orbTargetAbility
-            ? orbTargetAbility.orbAttackMultiplier
-            : target.attackMultiplier;
+          const step = orbTargetAbility ? orbTargetAbility.orbAttackMultiplier : target.attackMultiplier;
+          specialAttackSteps.push(step);
+          specialAttackMultiplier *= step;
           specialReceivedMultiplier *= orbTargetAbility
             ? orbTargetAbility.orbReceivedMultiplier
             : target.receivedMultiplier;
@@ -4916,6 +4905,7 @@
       return {
         active: selectedTargetKeys.size > 0,
         attackMultiplier,
+        attackSteps: [...basicAttackSteps, ...specialAttackSteps],
         attackOrbRawPercent,
         receivedMultiplier,
         hpMultiplier: receivedMultiplier > 0
@@ -4941,8 +4931,6 @@
     }
 
     const conditionalAttackOrbValueIndexes = new Map([
-      [9, 1],
-      [16, 1],
       [18, 0],
     ]);
 
@@ -4983,62 +4971,30 @@
       return adjustedAttack;
     }
 
-    function derivedAttackBeforeEffects(
-      baseAttack,
-      attackOrbAddition,
-      counterMultiplier,
-      damageScale,
-    ) {
-      const scaledBaseAttack = Math.floor(
-        (Number(baseAttack) || 0) * damageScale + 1e-9
-      );
-      return Math.floor(
-        scaledBaseAttack * counterMultiplier + 1e-9
-      );
+    function derivedAttackBeforeEffects(baseAttack, attackOrbAddition, counterMultiplier, damageScale) {
+      return Math.floor((Number(baseAttack) || 0) * damageScale + 1e-9);
     }
 
     function derivedAttackDamageScale(key) {
       return ["mini_wave", "mini_surge"].includes(key) ? 0.2 : 1;
     }
 
-    function applyForcedAttackEffectsToHit(
-      attack,
-      attackOrbAddition,
-      hitNumber,
-      abilities,
-      isMetalTarget,
-    ) {
-      if (attack <= 0) return 0;
-      const critical = activeAttackEffectAbility(abilities, "critical");
-      const savage = activeAttackEffectAbility(abilities, "savage_blow");
-      const effectHits = effectHitNumberSet(abilities);
-      const applies = effectAppliesToHit(hitNumber, effectHits);
-      const forceCritical = Boolean(
-        critical
-        && activeAttackEffectKeys.has("critical")
-        && applies
-      );
-      const forceSavage = Boolean(
-        savage
-        && activeAttackEffectKeys.has("savage_blow")
-        && applies
-      );
-      const strengthenedAttack = attackWithSelectedStrengthen(
-        attack,
-        abilities,
-      );
-      const criticalMultiplier = forceCritical ? 2 : 1;
-      const savageMultiplier = forceSavage
-        ? 1 + (Number(savage.boost_percent) || 0) / 100
-        : 1;
-      if (isMetalTarget && !forceCritical) return 1;
-      const ordinaryDamage = Math.floor(
-        strengthenedAttack
-        * criticalMultiplier
-        * savageMultiplier
-        + 1e-9
-      );
-      return ordinaryDamage + (Number(attackOrbAddition) || 0);
+    function nativeUnitDamage(attack, attackOrbAddition, abilities, isMetalTarget, critical, savage, counterSteps = []) {
+      if (attack <= 0 || counterSteps.includes(0)) return 0;
+      let value = attackWithSelectedStrengthen(attack * (critical ? 2 : 1), abilities);
+      if (savage) value = Math.floor(value * (100 + (Number(savage.boost_percent) || 0)) / 100);
+      for (const step of counterSteps) value = Math.floor(value * step + 1e-9);
+      if (isMetalTarget && !critical) return 1;
+      return value + (Number(attackOrbAddition) || 0);
+    }
+
+    function applyForcedAttackEffectsToHit(attack, attackOrbAddition, hitNumber, abilities, isMetalTarget, counterSteps = []) {
+      const applies = effectAppliesToHit(hitNumber, effectHitNumberSet(abilities));
+      const critical = applies && activeAttackEffectKeys.has("critical")
+        && activeAttackEffectAbility(abilities, "critical");
+      const savage = applies && activeAttackEffectKeys.has("savage_blow")
+        && activeAttackEffectAbility(abilities, "savage_blow");
+      return nativeUnitDamage(attack, attackOrbAddition, abilities, isMetalTarget, critical, savage, counterSteps);
     }
 
     function applySelectedAttackEffects(
@@ -5065,6 +5021,7 @@
           hitNumber,
           abilities,
           isMetalTarget,
+          counterMultiplier,
         );
         if (!effectAppliesToHit(hitNumber, effectHits)) return totalAttack;
         if (!isWaveImmune) {
@@ -5083,6 +5040,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             );
           });
         }
@@ -5103,6 +5061,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             ) * level;
           });
         }
@@ -5121,6 +5080,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             );
           }
         }
@@ -5128,51 +5088,21 @@
       });
     }
 
-    function expectedAttackForHit(
-      attack,
-      attackOrbAddition,
-      hitNumber,
-      abilities,
-      isMetalTarget,
-    ) {
-      attack = attackWithSelectedStrengthen(attack, abilities);
-      const effectHits = effectHitNumberSet(abilities);
-      const applies = effectAppliesToHit(hitNumber, effectHits);
-      const critical = applies
-        ? activeAttackEffectAbility(abilities, "critical")
-        : null;
-      const savage = applies
-        ? activeAttackEffectAbility(abilities, "savage_blow")
-        : null;
-      const criticalChance = Math.max(
-        0,
-        Math.min(100, Number(critical?.chance) || 0),
-      ) / 100;
-      const savageChance = Math.max(
-        0,
-        Math.min(100, Number(savage?.chance) || 0),
-      ) / 100;
-      const savageBoost = Math.max(
-        0,
-        Number(savage?.boost_percent) || 0,
-      ) / 100;
-      const savageExpectedMultiplier = 1 + savageChance * savageBoost;
-      const orbAddition = Number(attackOrbAddition) || 0;
-      if (isMetalTarget) {
-        if (criticalChance <= 0) return 1;
-        return (
-          (1 - criticalChance)
-          + criticalChance * (
-            attack * 2 * savageExpectedMultiplier + orbAddition
-          )
-        );
+    function expectedAttackForHit(attack, attackOrbAddition, hitNumber, abilities, isMetalTarget, counterSteps = []) {
+      const applies = effectAppliesToHit(hitNumber, effectHitNumberSet(abilities));
+      const critical = applies ? activeAttackEffectAbility(abilities, "critical") : null;
+      const savage = applies ? activeAttackEffectAbility(abilities, "savage_blow") : null;
+      const criticalChance = Math.max(0, Math.min(100, Number(critical?.chance) || 0)) / 100;
+      const savageChance = Math.max(0, Math.min(100, Number(savage?.chance) || 0)) / 100;
+      let expected = 0;
+      for (const [isCritical, cp] of [[false, 1 - criticalChance], [true, criticalChance]]) {
+        for (const [isSavage, sp] of [[false, 1 - savageChance], [true, savageChance]]) {
+          if (cp * sp === 0) continue;
+          expected += cp * sp * nativeUnitDamage(attack, attackOrbAddition, abilities,
+            isMetalTarget, isCritical, isSavage ? savage : null, counterSteps);
+        }
       }
-      return (
-        attack
-        * (1 + criticalChance)
-        * savageExpectedMultiplier
-        + orbAddition
-      );
+      return expected;
     }
 
     function calculateExpectedRangeDamage(
@@ -5209,6 +5139,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             ),
           };
         })
@@ -5246,6 +5177,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             );
             const expectedAttack = waveDamage * chance;
             if (expectedAttack <= 0) return;
@@ -5307,6 +5239,7 @@
               hitNumber,
               abilities,
               isMetalTarget,
+              counterMultiplier,
             );
             const expectedAttackPerPosition = (
               surgeDamage * chance * level / generationCount
@@ -5401,6 +5334,7 @@
                   hitNumber,
                   abilities,
                   isMetalTarget,
+                  counterMultiplier,
                 )
                 * chance
                 / generationCount
@@ -6442,13 +6376,13 @@
           case 29: raw[79] = 1; break;
           case 70:
           case 31:
-            attackMultipliers.push({ percent: v1, kind });
+            attackMultipliers.push({ percent: v1, kind, abilityId: Number(talent.abilityId) });
             markProvenance(statKinds, "attack", kind);
             markProvenance(statKinds, "dps", kind);
             break;
           case 71:
           case 32:
-            hpMultipliers.push({ percent: v1, kind });
+            hpMultipliers.push({ percent: v1, kind, abilityId: Number(talent.abilityId) });
             markProvenance(statKinds, "hp", kind);
             break;
           case 43: raw[43] = 1; break;
@@ -6522,17 +6456,22 @@
       });
 
       const multiplier = levelMultiplier(baseLevel + plusLevel);
-      const applyMultipliers = (value, entries) => entries.reduce(
-        (current, entry) => Math.floor(current * (100 + entry.percent) / 100),
-        value,
-      );
+      const applyMultipliers = (value, entries, legendPercent = 0) => {
+        const basicPercent = entries.filter(entry => [31, 32].includes(entry.abilityId))
+          .reduce((sum, entry) => sum + entry.percent, legendPercent);
+        let result = Math.floor(value * (100 + basicPercent) / 100);
+        for (const entry of entries.filter(entry => ![31, 32].includes(entry.abilityId))) {
+          result = Math.floor(result * (100 + entry.percent) / 100);
+        }
+        return result;
+      };
       const treasureMultipliers = currentTreasureMultipliers();
       const hp = applyMultipliers(
         scaleStat(raw[0], multiplier, treasureMultipliers.hp),
         hpMultipliers,
       );
       const rawAttacks = [raw[3], raw[59], raw[60]];
-      const attackHits = rawAttacks
+      let attackHits = rawAttacks
         .map((value) => applyMultipliers(
           scaleStat(value, multiplier, treasureMultipliers.attack),
           attackMultipliers,
@@ -6611,20 +6550,15 @@
         traits,
         activeOrbs,
       );
-      let orbAdjustedHp = hp;
-      [9, 16].forEach((contentId) => {
-        const ability = selectedConditionalOrbAbility(
-          orbAdjustedAbilities,
-          contentId,
-        );
-        if (!ability) return;
-        orbAdjustedHp = Math.floor(
-          orbAdjustedHp
-          * (1 + conditionalOrbPercent(ability, 0) / 100)
-          + 1e-9
-        );
-        markProvenance(statKinds, "hp", "orb");
-      });
+      const attackBeforeLegend = attackHits.reduce((sum, value) => sum + value, 0);
+      const legendPercent = (valueIndex) => [9, 16].reduce((sum, contentId) =>
+        sum + conditionalOrbPercent(selectedConditionalOrbAbility(orbAdjustedAbilities, contentId), valueIndex), 0);
+      const orbAdjustedHp = applyMultipliers(
+        scaleStat(raw[0], multiplier, treasureMultipliers.hp), hpMultipliers, legendPercent(0));
+      if (legendPercent(0) > 0) markProvenance(statKinds, "hp", "orb");
+      attackHits = rawAttacks.map(value => applyMultipliers(
+        scaleStat(value, multiplier, treasureMultipliers.attack), attackMultipliers, legendPercent(1)))
+        .filter(value => value > 0);
       const effectiveHp = Math.floor(
         orbAdjustedHp * counter.hpMultiplier + 1e-9
       );
@@ -6644,16 +6578,14 @@
           rawAttacks[rawIndex] * counter.attackOrbRawPercent / 100 + 1e-9
         )
       );
-      const counterAttackHits = attackHits.map(
-        (value) => Math.floor(value * counter.attackMultiplier + 1e-9)
-      );
+      const counterAttackHits = attackHits;
       const hitNumbers = activeHitIndexes.map((index) => index + 1);
       const isMetalTarget = selectedTargetKeys.has("metal");
       const effectiveAttackHits = applySelectedAttackEffects(
         counterAttackHits,
         attackHits,
         attackOrbAdditions,
-        counter.attackMultiplier,
+        counter.attackSteps,
         hitNumbers,
         orbAdjustedAbilities,
         isMetalTarget,
@@ -6665,7 +6597,7 @@
         (sum, value) => sum + value,
         0,
       );
-      const baseAttack = attackHits.reduce((sum, value) => sum + value, 0);
+      const baseAttack = attackBeforeLegend;
       counter.displayAttackMultiplier = baseAttack > 0
         ? effectiveAttack / baseAttack
         : counter.attackMultiplier;
@@ -6699,7 +6631,7 @@
         counterAttackHits,
         attackHits,
         attackOrbAdditions,
-        counter.attackMultiplier,
+        counter.attackSteps,
         hitNumbers,
         abilities,
         isMetalTarget,
@@ -6777,10 +6709,8 @@
       const costOrbMultiplier = costOrbAbility
         ? (100 - conditionalOrbPercent(costOrbAbility, 0)) / 100
         : 1;
-      // 본능 코스트 다운은 raw[6]에 먼저 반영된다. 특수 능력 본능옥의
-      // 할인도 이 원본 코스트에 적용한 뒤, 세계편 2·3장 표시값으로
-      // 변환하고 마지막에 한 번만 소수점을 버린다.
-      const cost = Math.floor(raw[6] * costOrbMultiplier * 1.5 + 1e-9);
+      // Apply the chapter conversion and truncate before the cost orb discount.
+      const cost = Math.floor(Math.floor(raw[6] * 1.5) * costOrbMultiplier + 1e-9);
       if (costOrbAbility) {
         markProvenance(statKinds, "cost", "orb");
       }
@@ -6851,7 +6781,7 @@
       }));
       const counter = calculateCounterMultipliers(baseAbilities, traits);
       const effectiveAttackHits = attackHits.map(
-        (value) => Math.floor(value * counter.attackMultiplier + 1e-9)
+        (value) => counter.attackSteps.reduce((damage, step) => Math.floor(damage * step + 1e-9), value)
       );
       const abilities = baseAbilities.map(
         (ability) => applyFruitEffectsToAbility(ability, raw, traits, [], selectedTargetKeys.has("sage") && !baseAbilities.some((entry) => entry.key === "sage_slayer"))
@@ -9384,10 +9314,8 @@
 
     function chapterTreasurePercent(slots) {
       if (!slots.length || slots.some((quality) => quality === 0)) return 0;
-      return slots.reduce(
-        (sum, quality) => sum + treasureQualityWeights[quality],
-        0,
-      ) / slots.length * 100;
+      return Math.floor(slots.reduce((sum, quality) => sum + Number(quality), 0)
+        * 100 / (slots.length * 3));
     }
 
     function allTreasuresMaximum() {
