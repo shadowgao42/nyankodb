@@ -3640,6 +3640,7 @@
 
 </style>
   <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="../animation-viewer.css">
 </head>
 <body>
   <main class="page">
@@ -4273,6 +4274,40 @@
       <div class="nyancombo-list"><p class="nyancombo-empty">이 유닛이 포함된 냥콤보가 없습니다.</p></div>
     </section>
     
+      <section class="section animation-viewer" id="animationViewer"
+             aria-labelledby="animationViewerTitle" data-animation-viewer
+             data-kind="unit" data-animation-source="../img/u/543/a" data-sprite-source="../img/u/543/c{form}.png">
+      <div class="animation-viewer-heading">
+        <h2 id="animationViewerTitle">애니메이션 뷰어</h2>
+        <div class="animation-viewer-controls">
+          <div class="animation-viewer-playback">
+            <label for="animationViewerMode">동작</label>
+            <select id="animationViewerMode" data-animation-mode disabled aria-label="애니메이션 동작"></select>
+          </div>
+        </div>
+      </div>
+      <div class="animation-viewer-stage" data-animation-stage tabindex="0" role="group" aria-label="애니메이션 재생 화면">
+        <canvas role="img" aria-label="캐릭터 애니메이션"></canvas>
+        <div class="animation-viewer-overlay" data-animation-overlay hidden inert>
+          <div class="animation-viewer-center-controls">
+            <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
+            <button type="button" class="animation-viewer-toggle" data-animation-toggle disabled aria-label="일시정지">
+              <svg class="animation-viewer-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+              <svg class="animation-viewer-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z" /></svg>
+            </button>
+            <button type="button" class="animation-viewer-step" data-animation-step-forward hidden aria-label="1f 앞으로">+1f</button>
+          </div>
+          <div class="animation-viewer-timeline">
+            <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+            <div class="animation-viewer-readout">
+              <span data-animation-time>0.00초 / 0.00초</span>
+              <span data-animation-zoom-label aria-label="현재 배율">100%</span>
+            </div>
+          </div>
+        </div>
+        <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
+      </div>
+    </section>
   </main>
 
   <script src="../catalog.js"></script>
@@ -8649,7 +8684,12 @@
         (ability) => ability.category !== "무효" && ability.category !== "내성"
       ));
       const immunityAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "무효"));
-      const resistanceAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "내성"));
+      const resistanceDisplayOrder = new Map(
+        ["weaken_resist","freeze_resist","slow_resist","knockback_resist","wave_resist","surge_resist","warp_resist","explosion_resist","curse_resist","toxic_resist"].map((key, index) => [key, index]),
+      );
+      const resistanceAbilities = abilities.filter((ability) => ability.category === "내성")
+        .sort((left, right) => (resistanceDisplayOrder.get(left.key) ?? Number.MAX_SAFE_INTEGER)
+          - (resistanceDisplayOrder.get(right.key) ?? Number.MAX_SAFE_INTEGER));
 
       ordinaryAbilities.forEach((sourceAbility) => {
         const isLimitedAttack = sourceAbility.key === "limited_attacks";
@@ -10520,5 +10560,7 @@
     }
     requestAnimationFrame(lockAttackTimingPeerHeights);
   </script>
+  <script src="../animation-viewer-core.js" defer></script>
+  <script src="../animation-viewer.js" defer></script>
 </body>
 </html>
