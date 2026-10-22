@@ -10,6 +10,8 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
+  const DEFAULT_ZOOM = .5;
+
   class PlaybackClock {
     constructor(animation, fps = 30) {
       this.animation = animation;
@@ -65,14 +67,18 @@
     return modes;
   }
 
-  function cameraFor(bounds, width, height, zoom = 1) {
-    const padding = Math.min(32, width * .06);
-    const baseScale = Math.min((width - padding * 2) / Math.max(bounds.width, 1), (height - padding * 2) / Math.max(bounds.height, 1), 1.8);
-    const scale = baseScale * zoom;
+  function cameraFor(width, height, zoom = 1, displayScale = 1, groundInset = 64) {
     return {
-      scale,
-      originX: width / 2 - (bounds.minX + bounds.maxX) * scale / 2,
-      originY: height / 2 - (bounds.minY + bounds.maxY) * scale / 2,
+      scale: zoom / displayScale,
+      originX: width / 2,
+      originY: height - groundInset / displayScale,
+    };
+  }
+
+  function fullscreenLayoutFor(inlineWidth, inlineHeight, width, height) {
+    return {
+      scale: Math.min(width / Math.max(1, inlineWidth), height / Math.max(1, inlineHeight)),
+      controls: Math.min(1.75, Math.max(1, Math.min(width, height) / 480)),
     };
   }
 
@@ -83,6 +89,7 @@
     const canvas = panel.querySelector('canvas');
     const context = canvas.getContext('2d');
     const select = panel.querySelector('[data-animation-mode]');
+    const fullscreenSelect = panel.querySelector('[data-animation-fullscreen-mode]');
     const stage = panel.querySelector('[data-animation-stage]');
     const overlay = panel.querySelector('[data-animation-overlay]');
     const toggle = panel.querySelector('[data-animation-toggle]');
@@ -91,19 +98,24 @@
     const seek = panel.querySelector('[data-animation-seek]');
     const time = panel.querySelector('[data-animation-time]');
     const zoomLabel = panel.querySelector('[data-animation-zoom-label]');
+    const fullscreen = panel.querySelector('[data-animation-fullscreen]');
     const status = panel.querySelector('[data-animation-status]');
     const cache = new Map();
     let bundle = null;
     let sprite = null;
     let clock = null;
     let clip = 1;
-    let bounds = null;
     let frameRequest = 0;
     let revision = 0;
     let lastFrame = -1;
     let lastForm = -1;
     let visible = true;
-    let zoom = 1;
+    let zoom = DEFAULT_ZOOM;
+    let fallbackFullscreen = false;
+    let fullscreenReference = null;
+    let presentationScale = 1;
+    let presentationDisplayScale = 1;
+    let controlScale = 1;
     let panX = 0;
     let panY = 0;
     let controlsVisible = false;
@@ -126,6 +138,7 @@
       stepBack.hidden = playing || !clock;
       stepForward.hidden = playing || !clock;
       seek.disabled = !clock;
+      fullscreen.disabled = !clock;
       overlay.hidden = !clock;
       overlay.dataset.visible = String(controlsVisible && Boolean(clock));
       overlay.inert = !controlsVisible || !clock;
@@ -166,14 +179,20 @@
       syncTimeline(performance.now());
       autoHide();
     }
+    function displayScale() {
+      return canvas.getBoundingClientRect().width / canvas.clientWidth || 1;
+    }
+    function baseCamera(atZoom = zoom) {
+      return cameraFor(canvas.clientWidth, canvas.clientHeight, atZoom * presentationScale, displayScale(), 64 * controlScale);
+    }
     function currentCamera(atZoom = zoom) {
-      const camera = cameraFor(bounds, canvas.clientWidth, canvas.clientHeight, atZoom);
+      const camera = baseCamera(atZoom);
       camera.originX += panX;
       camera.originY += panY;
       return camera;
     }
     function draw(now, force = false) {
-      if (!clock || !bundle || !sprite || !bounds) return;
+      if (!clock || !bundle || !sprite) return;
       const frame = clock.frame(now);
       panel.dataset.frame = String(frame);
       syncTimeline(now);
@@ -195,7 +214,10 @@
       panel.dataset.renderScale = String(camera.scale);
       panel.dataset.originX = String(camera.originX);
       panel.dataset.originY = String(camera.originY);
-      panel.dataset.zoom = String(zoom);
+      panel.dataset.zoom = String(zoom * presentationScale);
+      panel.dataset.baseZoom = String(zoom);
+      panel.dataset.presentationScale = String(presentationScale);
+      panel.dataset.controlScale = String(controlScale);
       panel.dataset.panX = String(panX);
       panel.dataset.panY = String(panY);
       context.save();
@@ -210,27 +232,10 @@
     function schedule() {
       if (!frameRequest && clock?.playing && visible && !document.hidden) frameRequest = requestAnimationFrame(tick);
     }
-    function fitReference() {
-      if (bounds) return;
-      const animation = bundle.animations[1] || bundle.animations[0];
-      let union = null;
-      for (let frame = 0; frame <= Math.max(0, animation.lastFrame); frame += 1) {
-        const box = core.bounds(core.evaluate(bundle, animation, frame), bundle.cuts);
-        if (!box.width && !box.height) continue;
-        if (!union) union = { ...box };
-        else {
-          union.minX = Math.min(union.minX, box.minX);
-          union.minY = Math.min(union.minY, box.minY);
-          union.maxX = Math.max(union.maxX, box.maxX);
-          union.maxY = Math.max(union.maxY, box.maxY);
-        }
-      }
-      bounds = union || { minX: -1, minY: -1, maxX: 1, maxY: 1 };
-      bounds.width = bounds.maxX - bounds.minX;
-      bounds.height = bounds.maxY - bounds.minY;
-    }
     function choose(index) {
       clip = index;
+      select.value = String(clip);
+      fullscreenSelect.value = String(clip);
       clock.select(bundle.animations[clip], performance.now());
       lastFrame = -1;
       panel.dataset.mode = String(clip);
@@ -251,6 +256,7 @@
       clock = null;
       syncControls();
       select.disabled = true;
+      fullscreenSelect.disabled = true;
       setStatus('애니메이션을 불러오는 중…');
       try {
         if (!core) throw new Error('Animation renderer unavailable');
@@ -280,12 +286,13 @@
           option.textContent = mode.label;
           return option;
         }));
+        fullscreenSelect.replaceChildren(...[...select.options].map(option => option.cloneNode(true)));
         clip = modes.some(mode => mode.index === 1) ? 1 : 0;
         select.value = String(clip);
         select.disabled = false;
+        fullscreenSelect.disabled = false;
         clock = new PlaybackClock(bundle.animations[clip]);
         if (playingIntent && !document.hidden) clock.play(performance.now());
-        fitReference();
         choose(clip);
         panel.dataset.form = String(form);
         panel.dataset.ready = 'true';
@@ -301,6 +308,7 @@
       }
     }
     select.addEventListener('change', () => choose(Number(select.value)));
+    fullscreenSelect.addEventListener('change', () => choose(Number(fullscreenSelect.value)));
     function setPlaying(playing) {
       if (!clock) return;
       playingIntent = playing;
@@ -323,7 +331,7 @@
     }
     stage.addEventListener('click', event => {
       if (event.pointerType === 'touch') return;
-      if (event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline')) return;
+      if (event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode')) return;
       if (performance.now() < suppressClickUntil) return;
       tapSurface();
     });
@@ -345,6 +353,80 @@
     }
     stepBack.addEventListener('click', event => { event.stopPropagation(); stepFrame(-1); });
     stepForward.addEventListener('click', event => { event.stopPropagation(); stepFrame(1); });
+
+    function nativeFullscreen() {
+      return (document.fullscreenElement || document.webkitFullscreenElement) === stage;
+    }
+    function updatePresentation(scale, displayedScale) {
+      const ratio = scale / presentationScale * presentationDisplayScale / displayedScale;
+      panX *= ratio;
+      panY *= ratio;
+      presentationScale = scale;
+      presentationDisplayScale = displayedScale;
+    }
+    function fitFullscreen() {
+      if (!nativeFullscreen() && !fallbackFullscreen) return;
+      stage.style.setProperty('--animation-fullscreen-zoom', '1');
+      const width = stage.getBoundingClientRect().width;
+      if (width > 0) stage.style.setProperty('--animation-fullscreen-zoom', String(window.innerWidth / width));
+      const rect = canvas.getBoundingClientRect();
+      if (fullscreenReference) {
+        const layout = fullscreenLayoutFor(fullscreenReference.width, fullscreenReference.height, rect.width, rect.height);
+        controlScale = layout.controls;
+        stage.style.setProperty('--animation-control-scale', String(controlScale / displayScale()));
+        updatePresentation(layout.scale, displayScale());
+      }
+      draw(performance.now(), true);
+      syncControls();
+    }
+    function syncFullscreen() {
+      const active = nativeFullscreen() || fallbackFullscreen;
+      panel.dataset.fullscreen = String(active);
+      stage.dataset.fullscreen = String(active);
+      fullscreen.setAttribute('aria-label', active ? '전체화면 종료' : '전체화면');
+      fullscreen.setAttribute('aria-pressed', String(active));
+      document.documentElement.classList.toggle('animation-viewer-fullscreen-active', fallbackFullscreen);
+      if (active) requestAnimationFrame(fitFullscreen);
+      else {
+        stage.style.removeProperty('--animation-fullscreen-zoom');
+        stage.style.removeProperty('--animation-control-scale');
+        controlScale = 1;
+        updatePresentation(1, displayScale());
+        fullscreenReference = null;
+      }
+      showControls(true);
+      draw(performance.now(), true);
+    }
+    fullscreen.addEventListener('click', async event => {
+      event.stopPropagation();
+      if (nativeFullscreen()) {
+        try { await (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+        catch (_) { /* The active control remains available for another exit gesture. */ }
+      } else if (fallbackFullscreen) {
+        fallbackFullscreen = false;
+        syncFullscreen();
+      } else {
+        const rect = canvas.getBoundingClientRect();
+        fullscreenReference = { width: rect.width, height: rect.height };
+        presentationDisplayScale = displayScale();
+        const request = stage.requestFullscreen || stage.webkitRequestFullscreen;
+        try {
+          if (!request) throw new Error('Fullscreen unavailable');
+          await request.call(stage);
+        } catch (_) {
+          fallbackFullscreen = true;
+        }
+        syncFullscreen();
+      }
+    });
+    document.addEventListener('fullscreenchange', syncFullscreen);
+    document.addEventListener('webkitfullscreenchange', syncFullscreen);
+    document.addEventListener('keydown', event => {
+      if (event.key !== 'Escape' || !fallbackFullscreen) return;
+      fallbackFullscreen = false;
+      syncFullscreen();
+    });
+    window.addEventListener('resize', fitFullscreen);
     function beginScrub() {
       if (!clock || scrubbing) return;
       resumeAfterScrub = clock.playing;
@@ -391,7 +473,7 @@
       }
     }
     stage.addEventListener('pointerdown', event => {
-      if (!clock || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline')) return;
+      if (!clock || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode')) return;
       if (!pointers.size) {
         gestureMoved = false;
         suppressClickUntil = 0;
@@ -408,7 +490,7 @@
       if (gesture.type === 'pinch' && pointers.size >= 2) {
         const midpoint = pinchInfo();
         zoom = Math.min(3, Math.max(.25, gesture.zoom * midpoint.distance / Math.max(gesture.distance, 1)));
-        const base = cameraFor(bounds, canvas.clientWidth, canvas.clientHeight, zoom);
+        const base = baseCamera();
         panX = midpoint.x - base.originX - gesture.worldX * base.scale;
         panY = midpoint.y - base.originY - gesture.worldY * base.scale;
       } else {
@@ -446,7 +528,7 @@
       const worldX = (anchor.x - previous.originX) / previous.scale;
       const worldY = (anchor.y - previous.originY) / previous.scale;
       zoom = Math.min(3, Math.max(.25, zoom * Math.exp(-event.deltaY * .005)));
-      const base = cameraFor(bounds, canvas.clientWidth, canvas.clientHeight, zoom);
+      const base = baseCamera();
       panX = anchor.x - base.originX - worldX * base.scale;
       panY = anchor.y - base.originY - worldY * base.scale;
       draw(performance.now(), true);
@@ -477,5 +559,5 @@
     if (tabs) new MutationObserver(load).observe(tabs, { attributes: true, subtree: true, attributeFilter: ['aria-selected'] });
     load();
   }
-  return { PlaybackClock, availableModes, cameraFor, surfaceTap, mount };
+  return { PlaybackClock, availableModes, cameraFor, fullscreenLayoutFor, DEFAULT_ZOOM, surfaceTap, mount };
 });

@@ -1,3 +1,5 @@
+.animation-viewer,
+.animation-viewer * { -webkit-tap-highlight-color: transparent; }
 .animation-viewer {
   margin-top: 16px;
   padding: 20px;
@@ -74,6 +76,23 @@
 }
 .animation-viewer-overlay[data-visible="true"] { opacity: 1; visibility: visible; transition-delay: 0s; }
 .animation-viewer-overlay[hidden] { display: none; }
+.animation-viewer-fullscreen-mode { display: none; }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode {
+  position: absolute;
+  top: calc(20px * var(--animation-control-scale, 1));
+  right: calc(20px * var(--animation-control-scale, 1));
+  display: flex;
+  gap: calc(8px * var(--animation-control-scale, 1));
+  font-size: calc(14px * var(--animation-control-scale, 1));
+  pointer-events: auto;
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode select {
+  min-width: calc(132px * var(--animation-control-scale, 1));
+  height: calc(40px * var(--animation-control-scale, 1));
+  min-height: calc(40px * var(--animation-control-scale, 1));
+  padding: calc(8px * var(--animation-control-scale, 1)) calc(16px * var(--animation-control-scale, 1));
+  font-size: inherit;
+}
 .animation-viewer-center-controls {
   position: absolute;
   top: 50%;
@@ -114,6 +133,43 @@
   left: 20px;
   pointer-events: auto;
 }
+.animation-viewer-progress-row { display: flex; align-items: center; gap: 12px; }
+.animation-viewer-progress-row input { flex: 1; min-width: 0; }
+.animation-viewer-fullscreen {
+  display: grid;
+  place-items: center;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+}
+.animation-viewer-fullscreen:hover { background: rgba(255, 255, 255, .12); }
+.animation-viewer-fullscreen svg { width: 24px; height: 24px; fill: currentColor; }
+.animation-viewer-icon-collapse,
+.animation-viewer-fullscreen[aria-pressed="true"] .animation-viewer-icon-expand { display: none; }
+.animation-viewer-fullscreen[aria-pressed="true"] .animation-viewer-icon-collapse { display: block; }
+.animation-viewer-stage[data-fullscreen="true"] {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  max-height: none;
+  border: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  zoom: var(--animation-fullscreen-zoom, 1);
+}
+.animation-viewer-stage[data-fullscreen="true"] canvas { height: 100%; }
+html.animation-viewer-fullscreen-active,
+html.animation-viewer-fullscreen-active body { overflow: hidden; }
 .animation-viewer input[data-animation-seek] {
   display: block;
   width: 100%;
@@ -172,6 +228,42 @@
   pointer-events: none;
 }
 .animation-viewer-status[hidden] { display: none; }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-center-controls { gap: calc(20px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-toggle {
+  width: calc(64px * var(--animation-control-scale, 1));
+  height: calc(64px * var(--animation-control-scale, 1));
+  padding: calc(16px * var(--animation-control-scale, 1));
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-toggle svg { width: calc(32px * var(--animation-control-scale, 1)); height: calc(32px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-step {
+  width: calc(48px * var(--animation-control-scale, 1));
+  height: calc(48px * var(--animation-control-scale, 1));
+  font-size: calc(14px * var(--animation-control-scale, 1));
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-timeline {
+  left: calc(20px * var(--animation-control-scale, 1));
+  right: calc(20px * var(--animation-control-scale, 1));
+  bottom: calc(16px * var(--animation-control-scale, 1));
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-progress-row { gap: calc(12px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen {
+  flex-basis: calc(40px * var(--animation-control-scale, 1));
+  width: calc(40px * var(--animation-control-scale, 1));
+  height: calc(40px * var(--animation-control-scale, 1));
+  padding: calc(8px * var(--animation-control-scale, 1));
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen svg { width: calc(24px * var(--animation-control-scale, 1)); height: calc(24px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-readout { font-size: calc(14px * var(--animation-control-scale, 1)); gap: calc(16px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek] { height: calc(28px * var(--animation-control-scale, 1)); min-height: calc(28px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-webkit-slider-runnable-track { height: calc(5px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-webkit-slider-thumb {
+  width: calc(13px * var(--animation-control-scale, 1));
+  height: calc(13px * var(--animation-control-scale, 1));
+  margin-top: calc(-4px * var(--animation-control-scale, 1));
+}
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-moz-range-track,
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-moz-range-progress { height: calc(5px * var(--animation-control-scale, 1)); }
+.animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-moz-range-thumb { width: calc(13px * var(--animation-control-scale, 1)); height: calc(13px * var(--animation-control-scale, 1)); }
 @media (max-width: 620px) {
   .animation-viewer { padding: 16px; }
   .animation-viewer-heading { gap: 12px; }

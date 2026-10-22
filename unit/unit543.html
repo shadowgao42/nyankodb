@@ -3640,7 +3640,7 @@
 
 </style>
   <link rel="stylesheet" href="../gnb.css">
-  <link rel="stylesheet" href="../animation-viewer.css">
+  <link rel="stylesheet" href="../animation-viewer.css?v=20261022-fullscreen">
 </head>
 <body>
   <main class="page">
@@ -4289,6 +4289,10 @@
       <div class="animation-viewer-stage" data-animation-stage tabindex="0" role="group" aria-label="애니메이션 재생 화면">
         <canvas role="img" aria-label="캐릭터 애니메이션"></canvas>
         <div class="animation-viewer-overlay" data-animation-overlay hidden inert>
+          <div class="animation-viewer-fullscreen-mode animation-viewer-controls">
+            <label for="animationViewerFullscreenMode">동작</label>
+            <select id="animationViewerFullscreenMode" data-animation-fullscreen-mode disabled aria-label="전체화면 애니메이션 동작"></select>
+          </div>
           <div class="animation-viewer-center-controls">
             <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
             <button type="button" class="animation-viewer-toggle" data-animation-toggle disabled aria-label="일시정지">
@@ -4298,10 +4302,16 @@
             <button type="button" class="animation-viewer-step" data-animation-step-forward hidden aria-label="1f 앞으로">+1f</button>
           </div>
           <div class="animation-viewer-timeline">
-            <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+            <div class="animation-viewer-progress-row">
+              <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+              <button type="button" class="animation-viewer-fullscreen" data-animation-fullscreen disabled aria-label="전체화면" aria-pressed="false">
+                <svg class="animation-viewer-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h6v2H5v4H3zm12 0h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z" /></svg>
+                <svg class="animation-viewer-icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h2v6H3V7h4zm8 0h2v4h4v2h-6zM3 15h6v6H7v-4H3zm12 0h6v2h-4v4h-2z" /></svg>
+              </button>
+            </div>
             <div class="animation-viewer-readout">
               <span data-animation-time>0.00초 / 0.00초</span>
-              <span data-animation-zoom-label aria-label="현재 배율">100%</span>
+              <span data-animation-zoom-label aria-label="현재 배율">50%</span>
             </div>
           </div>
         </div>
@@ -10561,6 +10571,6 @@
     requestAnimationFrame(lockAttackTimingPeerHeights);
   </script>
   <script src="../animation-viewer-core.js" defer></script>
-  <script src="../animation-viewer.js" defer></script>
+  <script src="../animation-viewer.js?v=20261022-fullscreen" defer></script>
 </body>
 </html>
