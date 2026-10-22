@@ -99,6 +99,7 @@
     const time = panel.querySelector('[data-animation-time]');
     const zoomLabel = panel.querySelector('[data-animation-zoom-label]');
     const fullscreen = panel.querySelector('[data-animation-fullscreen]');
+    const save = panel.querySelector('[data-animation-save]');
     const status = panel.querySelector('[data-animation-status]');
     const cache = new Map();
     let bundle = null;
@@ -139,6 +140,7 @@
       stepForward.hidden = playing || !clock;
       seek.disabled = !clock;
       fullscreen.disabled = !clock;
+      if (save) save.disabled = !clock;
       overlay.hidden = !clock;
       overlay.dataset.visible = String(controlsVisible && Boolean(clock));
       overlay.inert = !controlsVisible || !clock;
@@ -227,10 +229,10 @@
     function tick(now) {
       frameRequest = 0;
       draw(now);
-      if (clock?.playing && visible && !document.hidden) frameRequest = requestAnimationFrame(tick);
+      schedule();
     }
     function schedule() {
-      if (!frameRequest && clock?.playing && visible && !document.hidden) frameRequest = requestAnimationFrame(tick);
+      if (!frameRequest && clock?.playing && (visible || nativeFullscreen() || fallbackFullscreen) && !document.hidden) frameRequest = requestAnimationFrame(tick);
     }
     function choose(index) {
       clip = index;
@@ -354,6 +356,31 @@
     stepBack.addEventListener('click', event => { event.stopPropagation(); stepFrame(-1); });
     stepForward.addEventListener('click', event => { event.stopPropagation(); stepFrame(1); });
 
+    save?.addEventListener('click', () => {
+      if (!clock) return;
+      draw(performance.now(), true);
+      const identity = panel.dataset.animationSource.split('/').at(-2);
+      const mode = ['move', 'idle', 'attack', 'knockback'][clip] || `mode-${clip}`;
+      const filename = `${panel.dataset.kind}-${identity}-form-${lastForm}-${mode}-${panel.dataset.frame}f.png`;
+      try {
+        canvas.toBlob(blob => {
+          if (!blob) { setStatus('PNG를 저장하지 못했습니다.'); return; }
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          document.body.append(link);
+          link.click();
+          link.remove();
+          setTimeout(() => URL.revokeObjectURL(url), 1000);
+          setStatus('');
+        }, 'image/png');
+      } catch (error) {
+        setStatus('PNG를 저장하지 못했습니다.');
+        console.error('NyankoDB animation PNG', error);
+      }
+    });
+
     function nativeFullscreen() {
       return (document.fullscreenElement || document.webkitFullscreenElement) === stage;
     }
@@ -378,6 +405,7 @@
       }
       draw(performance.now(), true);
       syncControls();
+      schedule();
     }
     function syncFullscreen() {
       const active = nativeFullscreen() || fallbackFullscreen;
@@ -396,6 +424,7 @@
       }
       showControls(true);
       draw(performance.now(), true);
+      schedule();
     }
     fullscreen.addEventListener('click', async event => {
       event.stopPropagation();
@@ -543,7 +572,7 @@
     new ResizeObserver(() => draw(performance.now(), true)).observe(canvas);
     if ('IntersectionObserver' in window) new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
-      if (visible) schedule();
+      schedule();
     }).observe(panel);
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
