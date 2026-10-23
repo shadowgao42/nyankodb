@@ -856,6 +856,7 @@
 
   </style>
   <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
 </head>
 <body>
 <main class="page">
@@ -910,7 +911,56 @@
   </section>
   <section class="section traits-section" aria-labelledby="traits-title"><div class="traits-title"><h2 id="traits-title">속성</h2></div><div class="trait-list traits-row" id="traits"></div></section>
   <section class="sheet section" aria-labelledby="effects-title"><div class="section-heading"><h2 class="section-title" id="effects-title">효과/능력</h2></div><div class="effects abilities-grid" id="effects"></div></section>
-</main>
+    <section class="section animation-viewer" id="animationViewer"
+             aria-labelledby="animationViewerTitle" data-animation-viewer hidden data-animation-forms="{&quot;1&quot;:{&quot;source&quot;:&quot;../img/e/198/a&quot;,&quot;sprite&quot;:&quot;../img/e/198/c.png&quot;,&quot;row&quot;:null,&quot;onlyAttack&quot;:false}}"
+             data-kind="enemy" data-animation-source="../img/e/198/a" data-sprite-source="../img/e/198/c.png">
+      <div class="section-heading animation-viewer-heading">
+        <h2 class="section-title" id="animationViewerTitle">애니메이션 뷰어</h2>
+        <div class="animation-viewer-controls">
+          <div class="animation-viewer-playback">
+            <label for="animationViewerMode">동작</label>
+            <select id="animationViewerMode" data-animation-mode disabled aria-label="애니메이션 동작"></select>
+          </div>
+          <button type="button" class="animation-viewer-save" data-animation-save disabled>PNG 저장</button>
+        </div>
+      </div>
+      <div class="animation-viewer-stage" data-animation-stage tabindex="0" role="group" aria-label="애니메이션 재생 화면">
+        <canvas role="img" aria-label="캐릭터 애니메이션"></canvas>
+        <div class="animation-viewer-overlay" data-animation-overlay hidden inert>
+          <div class="animation-viewer-fullscreen-mode animation-viewer-controls">
+            <label for="animationViewerFullscreenMode">동작</label>
+            <select id="animationViewerFullscreenMode" data-animation-fullscreen-mode disabled aria-label="전체화면 애니메이션 동작"></select>
+            <button type="button" class="animation-viewer-save" data-animation-save data-animation-fullscreen-save disabled>PNG 저장</button>
+          </div>
+          <div class="animation-viewer-center-controls">
+            <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
+            <button type="button" class="animation-viewer-toggle" data-animation-toggle disabled aria-label="일시정지">
+              <svg class="animation-viewer-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+              <svg class="animation-viewer-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z" /></svg>
+            </button>
+            <button type="button" class="animation-viewer-step" data-animation-step-forward hidden aria-label="1f 앞으로">+1f</button>
+          </div>
+          <div class="animation-viewer-timeline">
+            <div class="animation-viewer-progress-row">
+              <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+              <button type="button" class="animation-viewer-fullscreen" data-animation-fullscreen disabled aria-label="전체화면" aria-pressed="false">
+                <svg class="animation-viewer-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h6v2H5v4H3zm12 0h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z" /></svg>
+                <svg class="animation-viewer-icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h2v6H3V7h4zm8 0h2v4h4v2h-6zM3 15h6v6H7v-4H3zm12 0h6v2h-4v4h-2z" /></svg>
+              </button>
+            </div>
+            <div class="animation-viewer-readout">
+              <span data-animation-time>0.00초 / 0.00초</span>
+              <span data-animation-zoom-label aria-label="현재 배율">50%</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="animation-viewer-fullscreen animation-viewer-reset" data-animation-reset-camera data-visible="false" disabled inert aria-label="카메라 초기화">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v2.06A8 8 0 0 1 19.94 11H22v2h-2.06A8 8 0 0 1 13 19.94V22h-2v-2.06A8 8 0 0 1 4.06 13H2v-2h2.06A8 8 0 0 1 11 4.06V2zm1 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></svg>
+        </button>
+        <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
+      </div>
+    </section>
+  </main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>
@@ -923,6 +973,7 @@ const bounded=(value,fallback,min,max)=>{const n=Number(value);return Number.isF
 const lowerBounded=(value,fallback,min)=>{const n=Number(value);return Number.isFinite(n)?Math.max(min,n):fallback};
 let restored={};try{restored=JSON.parse(localStorage.getItem(storeKey)||'{}')||{}}catch(_){}
 let state={...defaults,...restored};state.magnification=defaults.magnification;state.hpMagnification=defaults.hpMagnification;state.attackMagnification=defaults.attackMagnification;state.attackEffects=[];state.healthEffects=[];state.explosionBandPercent=0;state.hpMax=bounded(state.hpMax,defaults.hpMax,1,1e12);state.attackMax=bounded(state.attackMax,defaults.attackMax,1,1e12);state.timeUnit=['s','f'].includes(state.timeUnit)?state.timeUnit:'s';const categoryKeys=DATA.treasure.categories.map(x=>x.key);state.category=categoryKeys.includes(state.category)?state.category:categoryKeys[0];state.treasures=state.treasures&&typeof state.treasures==='object'&&!Array.isArray(state.treasures)?state.treasures:{};state.treasureOpen=!!state.treasureOpen;
+var enemyFixedPreset=false;
 const stageMagnificationParams=new URLSearchParams(window.location.search);
 function restoreEnemySharedTreasures(){
   // Stage pages use the existing enemy shared store via a nested/flat adapter.
@@ -944,7 +995,7 @@ const stageAttackMagnification=readStageMagnification('attack');
 if(stageHealthMagnification!==null)state.hpMagnification=stageHealthMagnification;
 if(stageAttackMagnification!==null)state.attackMagnification=stageAttackMagnification;
 if(stageHealthMagnification!==null&&stageAttackMagnification!==null&&stageHealthMagnification===stageAttackMagnification)state.magnification=stageHealthMagnification;
-const save=()=>{try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
+const save=()=>{if(enemyFixedPreset)return;try{const persistent={...state};delete persistent.magnification;delete persistent.hpMagnification;delete persistent.attackMagnification;delete persistent.attackEffects;delete persistent.healthEffects;delete persistent.explosionBandPercent;localStorage.setItem(storeKey,JSON.stringify(persistent))}catch(_){}};
 const fmt=n=>Math.round(Number(n)||0).toLocaleString('ko-KR');
 const rustRound=n=>n>=0?Math.floor(n+.5):Math.ceil(n-.5);
 // Native stage scaling adds 50 before integer division by 100 (positive round).
@@ -1007,7 +1058,7 @@ function effectSummary(x){if(x.key==='survive')return x.chance!==undefined?`확�
 function renderEffects(){
   const all=[...(DATA.abilities||[])],immunities=DATA.immunities||[],root=$('effects');
   if(!all.length&&!immunities.length){root.innerHTML='<div class="empty">효과/능력 없음</div>';return}
-  const effectKeys=new Set(['weaken','freeze','slow','knockback','warp','curse','dodge','drain']);
+  const effectKeys=new Set(['weaken','freeze','slow','knockback','warp','curse','dodge','toxic','drain']);
   const attackKeys=new Set(['single','area','long_distance','omni_strike','multi_hit','attack_count']);
   const ordered=[
     ...all.filter(x=>effectKeys.has(x.key)),
@@ -1100,7 +1151,25 @@ state.accounting=state.accounting&&typeof state.accounting==='object'&&!Array.is
 state.accounting.baseLevel=enemyClampInteger(state.accounting.baseLevel,enemyAccountingBaseBounds[0],enemyAccountingBaseBounds[1],Number(enemyAccountingConfig.defaultBaseLevel)||enemyAccountingBaseBounds[1]);
 state.accounting.plusLevel=enemyClampInteger(state.accounting.plusLevel,enemyAccountingPlusBounds[0],enemyAccountingPlusBounds[1],Number(enemyAccountingConfig.defaultPlusLevel)||enemyAccountingPlusBounds[1]);
 state.treasureOpen=!!state.treasureOpen;state.miscOpen=!!state.miscOpen;
-const persistEnemySharedSettings=()=>{try{const value={};for(const key of enemySharedKeys)value[key]=state[key];localStorage.setItem(enemySharedSettingsKey,JSON.stringify(value))}catch(_){}};
+const enemyFixedCode=stageMagnificationParams.get('ft')||'';
+enemyFixedPreset=/^[0-3]{9}$/.test(enemyFixedCode);
+const enemyNormalTreasures={...state.treasures};
+const enemyNormalAccounting={...state.accounting};
+if(enemyFixedPreset){
+  for(const category of DATA.treasure.categories){
+    const familyIndex=['eoc','itf','cotc'].indexOf(category.key);
+    if(familyIndex<0)continue;
+    for(const item of category.items)for(let c=0;c<3;c++)for(let s=0;s<item.slotCount;s++){
+      state.treasures[`${item.key}.${c}.${s}`]=Number(enemyFixedCode[familyIndex*3+c]);
+    }
+  }
+  const levels=/^(\d+)\.(\d+)$/.exec(stageMagnificationParams.get('accounting')||'');
+  if(levels){
+    state.accounting.baseLevel=enemyClampInteger(levels[1],enemyAccountingBaseBounds[0],enemyAccountingBaseBounds[1],state.accounting.baseLevel);
+    state.accounting.plusLevel=enemyClampInteger(levels[2],enemyAccountingPlusBounds[0],enemyAccountingPlusBounds[1],state.accounting.plusLevel);
+  }
+}
+const persistEnemySharedSettings=()=>{if(enemyFixedPreset)return;try{const value={};for(const key of enemySharedKeys)value[key]=enemyFixedPreset&&key==='treasures'?enemyNormalTreasures:enemyFixedPreset&&key==='accounting'?enemyNormalAccounting:state[key];localStorage.setItem(enemySharedSettingsKey,JSON.stringify(value))}catch(_){}};
 const persistEnemyPanelState=()=>{enemyPanels={...enemyPanels,timing:!!document.querySelector('.attack-timing-details:not(.attack-damage-details)')?.open};try{sessionStorage.setItem(enemyPanelStateKey,JSON.stringify({timing:!!enemyPanels.timing}))}catch(_){}};
 const setEnemyToggleLabel=(details,label)=>{label.textContent=details.open?'\uc811\uae30':'\ud3bc\uce58\uae30'};
 const upgradeEnemyToggle=label=>{if(!label||label.parentElement?.classList.contains('settings-toggle-control'))return;const control=document.createElement('span'),arrow=document.createElement('span');control.className='settings-toggle-control';arrow.className='settings-toggle-arrow';arrow.setAttribute('aria-hidden','true');arrow.textContent='\u25be';label.replaceWith(control);control.append(label,arrow)};
@@ -1977,8 +2046,18 @@ document.addEventListener('toggle',event=>{if(event.target.matches?.('#hpDamageD
 // would briefly evaluate Alien/Cat God enemies against an empty map.
 ensureTreasure();
 persistEnemySharedSettings();
+const enemyOriginalRenderTreasure=renderTreasure;
+renderTreasure=function(){
+  enemyOriginalRenderTreasure();
+  if(!enemyFixedPreset)return;
+  $('treasure-reset').disabled=true;
+  const note=$('treasure-note');
+  note.hidden=false;
+  note.textContent=state.category==='passive'?'고정 편성에 지정된 패시브 레벨이 적용됩니다.':'고정 편성에 지정된 보물 상태가 적용됩니다.';
+  document.querySelectorAll('#treasure-content .slot,#treasure-content input').forEach(element=>{element.disabled=true});
+};
 const refreshEnemySharedTreasures=()=>{
-  restoreEnemySharedTreasures();
+  if(!enemyFixedPreset)restoreEnemySharedTreasures();
   renderStats();renderEffects();renderTreasure();
 };
 window.addEventListener('pageshow',event=>{if(event.persisted)refreshEnemySharedTreasures()});
@@ -2038,4 +2117,6 @@ function effectSummary(x){
 }
 
 </script>
+  <script src="../animation-viewer-core.js?v=20261023-all-preview" defer></script>
+  <script src="../animation-viewer.js?v=20261023-all-preview" defer></script>
 </body></html>

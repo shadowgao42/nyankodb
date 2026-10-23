@@ -297,6 +297,31 @@
     return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
   }
 
+  const transparentGlowImages = new WeakMap();
+  function transparentGlowImage(image, ctx) {
+    let result = transparentGlowImages.get(image);
+    if (result) return result;
+    result = ctx.canvas.ownerDocument.createElement('canvas');
+    result.width = image.naturalWidth || image.width;
+    result.height = image.naturalHeight || image.height;
+    const scratch = result.getContext('2d');
+    scratch.drawImage(image, 0, 0);
+    const pixels = scratch.getImageData(0, 0, result.width, result.height);
+    const data = pixels.data;
+    // PNG cannot encode additive blending. Preserve premultiplied glow RGB
+    // with the minimum alpha that can represent it; black emits no light.
+    for (let i = 0; i < data.length; i += 4) {
+      const peak = Math.max(data[i], data[i + 1], data[i + 2]);
+      data[i + 3] = Math.round(data[i + 3] * peak / 255);
+      if (peak) for (let channel = 0; channel < 3; channel++) {
+        data[i + channel] = Math.round(data[i + channel] * 255 / peak);
+      }
+    }
+    scratch.putImageData(pixels, 0, 0);
+    transparentGlowImages.set(image, result);
+    return result;
+  }
+
   function draw(ctx, bundle, image, animation, frame, options) {
     const settings = options || {};
     const scale = settings.scale === undefined ? 1 : settings.scale;
@@ -314,7 +339,9 @@
           ctx.transform(...drawable.transform);
           ctx.globalAlpha = drawable.alpha;
           ctx.globalCompositeOperation = drawable.blend === 1 ? 'lighter' : 'source-over';
-          ctx.drawImage(image, cut[0], cut[1], cut[2], cut[3], 0, 0, cut[2], cut[3]);
+          const texture = drawable.blend === 1 && settings.transparentExport
+            ? transparentGlowImage(image, ctx) : image;
+          ctx.drawImage(texture, cut[0], cut[1], cut[2], cut[3], 0, 0, cut[2], cut[3]);
         } finally { ctx.restore(); }
       }
     } finally { ctx.restore(); }

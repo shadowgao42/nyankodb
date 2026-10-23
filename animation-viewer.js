@@ -234,7 +234,10 @@
         canvas.height = pixelHeight;
       }
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.clearRect(0, 0, width, height);
+      // Additive sprites must blend against the visible background, not an
+      // empty alpha channel (which leaves their black rectangles opaque).
+      context.fillStyle = getComputedStyle(stage).backgroundColor;
+      context.fillRect(0, 0, width, height);
       const camera = currentCamera();
       panel.dataset.renderScale = String(camera.scale);
       panel.dataset.originX = String(camera.originX);
@@ -277,6 +280,8 @@
       const form = panel.dataset.kind === 'unit' ? Math.max(1, Number(active?.dataset.form || 1)) : 1;
       if (lastForm === form) return;
       lastForm = form;
+      const mapping = panel.dataset.animationForms ? JSON.parse(panel.dataset.animationForms) : null;
+      const entry = mapping ? mapping[String(form)] : null;
       const token = ++revision;
       clock?.pause(performance.now());
       if (frameRequest) cancelAnimationFrame(frameRequest);
@@ -286,29 +291,32 @@
       select.disabled = true;
       fullscreenSelect.disabled = true;
       setStatus('애니메이션을 불러오는 중…');
+      if (mapping && !entry) { panel.hidden = true; panel.dataset.ready = 'false'; return; }
       try {
         if (!core) throw new Error('Animation renderer unavailable');
         if (!cache.has(form)) {
           const pending = (async () => {
-            const response = await fetch(panel.dataset.animationSource);
+            const response = await fetch(entry?.source || panel.dataset.animationSource);
             if (!response.ok) throw new Error(`Animation data ${response.status}`);
             const packed = await response.json();
-            const record = panel.dataset.kind === 'unit' ? packed[form - 1] : packed;
+            const record = entry ? (entry.row === null ? packed : packed[entry.row]) : (panel.dataset.kind === 'unit' ? packed[form - 1] : packed);
             if (!Array.isArray(record)) throw new Error('Animation form missing');
             const parsed = core.parseBundle(record);
             const image = new Image();
-            image.src = panel.dataset.spriteSource.replace('{form}', String(form - 1));
+            image.src = entry?.sprite || panel.dataset.spriteSource.replace('{form}', String(form - 1));
             await image.decode();
+            if (image.naturalWidth <= 1 || image.naturalHeight <= 1) throw new Error('Incomplete animation sprite');
             return { parsed, image };
           })();
           cache.set(form, pending);
         }
         const loaded = await cache.get(form);
         if (token !== revision) return;
+        panel.hidden = false;
         bundle = loaded.parsed;
         groundReference = groundReferenceFor(bundle, core.evaluate);
         sprite = loaded.image;
-        const modes = availableModes(bundle.animations.length);
+        const modes = availableModes(bundle.animations.length).filter(mode => !entry?.onlyAttack || mode.index === 2);
         select.replaceChildren(...modes.map(mode => {
           const option = document.createElement('option');
           option.value = String(mode.index);
@@ -316,7 +324,7 @@
           return option;
         }));
         fullscreenSelect.replaceChildren(...[...select.options].map(option => option.cloneNode(true)));
-        clip = modes.some(mode => mode.index === 1) ? 1 : 0;
+        clip = modes.some(mode => mode.index === 1) ? 1 : modes[0].index;
         select.value = String(clip);
         select.disabled = false;
         fullscreenSelect.disabled = false;
@@ -332,6 +340,7 @@
         cache.delete(form);
         lastForm = -1;
         panel.dataset.ready = 'false';
+        panel.hidden = true;
         setStatus('애니메이션을 불러오지 못했습니다.');
         console.error('NyankoDB animation viewer', error);
       }
@@ -390,7 +399,15 @@
       const mode = ['move', 'idle', 'attack', 'knockback'][clip] || `mode-${clip}`;
       const filename = `${panel.dataset.kind}-${identity}-form-${lastForm}-${mode}-${panel.dataset.frame}f.png`;
       try {
-        canvas.toBlob(blob => {
+        const exportCanvas = document.createElement('canvas');
+        exportCanvas.width = canvas.width;
+        exportCanvas.height = canvas.height;
+        const exportContext = exportCanvas.getContext('2d');
+        const ratio = window.devicePixelRatio || 1;
+        exportContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+        core.draw(exportContext, bundle, sprite, bundle.animations[clip], Number(panel.dataset.frame),
+          { ...currentCamera(), transparentExport: true });
+        exportCanvas.toBlob(blob => {
           if (!blob) { setStatus('PNG를 저장하지 못했습니다.'); return; }
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');

@@ -3640,6 +3640,7 @@
 
 </style>
   <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
 </head>
 <body>
   <main class="page">
@@ -4189,6 +4190,55 @@
       <div class="nyancombo-list"><p class="nyancombo-empty">이 유닛이 포함된 냥콤보가 없습니다.</p></div>
     </section>
     
+      <section class="section animation-viewer" id="animationViewer"
+             aria-labelledby="animationViewerTitle" data-animation-viewer hidden data-animation-forms="{&quot;1&quot;:{&quot;source&quot;:&quot;../img/u/881/a&quot;,&quot;sprite&quot;:&quot;../img/u/881/c0.png&quot;,&quot;row&quot;:0,&quot;onlyAttack&quot;:false},&quot;2&quot;:{&quot;source&quot;:&quot;../img/u/881/a&quot;,&quot;sprite&quot;:&quot;../img/u/881/c1.png&quot;,&quot;row&quot;:1,&quot;onlyAttack&quot;:false}}"
+             data-kind="unit" data-animation-source="../img/u/881/a" data-sprite-source="../img/u/881/c{form}.png">
+      <div class="section-heading animation-viewer-heading">
+        <h2 class="section-title" id="animationViewerTitle">애니메이션 뷰어</h2>
+        <div class="animation-viewer-controls">
+          <div class="animation-viewer-playback">
+            <label for="animationViewerMode">동작</label>
+            <select id="animationViewerMode" data-animation-mode disabled aria-label="애니메이션 동작"></select>
+          </div>
+          <button type="button" class="animation-viewer-save" data-animation-save disabled>PNG 저장</button>
+        </div>
+      </div>
+      <div class="animation-viewer-stage" data-animation-stage tabindex="0" role="group" aria-label="애니메이션 재생 화면">
+        <canvas role="img" aria-label="캐릭터 애니메이션"></canvas>
+        <div class="animation-viewer-overlay" data-animation-overlay hidden inert>
+          <div class="animation-viewer-fullscreen-mode animation-viewer-controls">
+            <label for="animationViewerFullscreenMode">동작</label>
+            <select id="animationViewerFullscreenMode" data-animation-fullscreen-mode disabled aria-label="전체화면 애니메이션 동작"></select>
+            <button type="button" class="animation-viewer-save" data-animation-save data-animation-fullscreen-save disabled>PNG 저장</button>
+          </div>
+          <div class="animation-viewer-center-controls">
+            <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
+            <button type="button" class="animation-viewer-toggle" data-animation-toggle disabled aria-label="일시정지">
+              <svg class="animation-viewer-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+              <svg class="animation-viewer-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z" /></svg>
+            </button>
+            <button type="button" class="animation-viewer-step" data-animation-step-forward hidden aria-label="1f 앞으로">+1f</button>
+          </div>
+          <div class="animation-viewer-timeline">
+            <div class="animation-viewer-progress-row">
+              <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+              <button type="button" class="animation-viewer-fullscreen" data-animation-fullscreen disabled aria-label="전체화면" aria-pressed="false">
+                <svg class="animation-viewer-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h6v2H5v4H3zm12 0h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z" /></svg>
+                <svg class="animation-viewer-icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h2v6H3V7h4zm8 0h2v4h4v2h-6zM3 15h6v6H7v-4H3zm12 0h6v2h-4v4h-2z" /></svg>
+              </button>
+            </div>
+            <div class="animation-viewer-readout">
+              <span data-animation-time>0.00초 / 0.00초</span>
+              <span data-animation-zoom-label aria-label="현재 배율">50%</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="animation-viewer-fullscreen animation-viewer-reset" data-animation-reset-camera data-visible="false" disabled inert aria-label="카메라 초기화">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v2.06A8 8 0 0 1 19.94 11H22v2h-2.06A8 8 0 0 1 13 19.94V22h-2v-2.06A8 8 0 0 1 4.06 13H2v-2h2.06A8 8 0 0 1 11 4.06V2zm1 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></svg>
+        </button>
+        <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
+      </div>
+    </section>
   </main>
 
   <script src="../catalog.js"></script>
@@ -6639,7 +6689,10 @@
         ),
         60,
       );
-      const cooldownOrbAbility = selectedConditionalOrbAbility(abilities, 19);
+      const productionPercent = Math.max(0, Math.min(100, Number(raw[118]) || 0));
+      const cooldownOrbAbility = productionPercent > 0
+        ? null
+        : selectedConditionalOrbAbility(abilities, 19);
       if (cooldownOrbAbility) {
         cooldownFrames = Math.max(
           Math.floor(
@@ -6652,7 +6705,6 @@
         );
         markProvenance(statKinds, "cooldown", "orb");
       }
-      const productionPercent = Math.max(0, Math.min(100, Number(raw[118]) || 0));
       if (productionPercent > 0 && activeAttackEffectKeys.has("production_speed")) {
         cooldownFrames = Math.max(Math.floor(cooldownFrames * (100 - productionPercent) / 100 + 1e-9), 60);
         markProvenance(statKinds, "cooldown", records.some(r => Number(r.talent.abilityId) === 72) ? "ultra" : "ability");
@@ -8592,8 +8644,12 @@
       spiritView = null,
     ) {
       container.replaceChildren();
+      const hasProductionSpeed = abilities.some(ability => ability.key === "production_speed");
+      if (hasProductionSpeed) {
+        abilities = abilities.filter(ability => Number(ability.orbContentId) !== 19);
+      }
       const abilityDisplayOrder = new Map(
-        ["weaken", "freeze", "slow", "attack_only", "strong", "resistant", "insanely_tough", "massive_damage", "insane_damage", "knockback", "warp", "curse", "dodge", "strengthen", "survive", "base_destroyer", "critical", "metal_killer", "zombie_killer", "soulstrike", "witch_killer", "eva_killer", "barrier_breaker", "shield_piercer", "savage_blow", "double_bounty", "metal", "mini_wave", "wave", "mini_surge", "surge", "explosion", "counter_surge", "wave_blocker", "conjure", "colossus_slayer", "behemoth_slayer", "sage_slayer", "weaken_immune", "freeze_immune", "slow_immune", "knockback_immune", "wave_immune", "surge_immune", "explosion_immune", "warp_immune", "curse_immune", "toxic_immune", "drain_immune", "boss_wave_immune", "timed_life", "single", "area", "long_distance", "omni_strike", "multi_hit", "limited_attacks"].map((key, index) => [key, index]),
+        ["weaken", "freeze", "slow", "attack_only", "strong", "resistant", "insanely_tough", "massive_damage", "insane_damage", "knockback", "warp", "curse", "dodge", "strengthen", "survive", "base_destroyer", "critical", "metal_killer", "zombie_killer", "soulstrike", "witch_killer", "eva_killer", "barrier_breaker", "shield_piercer", "savage_blow", "double_bounty", "metal", "mini_wave", "wave", "mini_surge", "surge", "explosion", "counter_surge", "wave_blocker", "conjure", "production_speed", "colossus_slayer", "behemoth_slayer", "sage_slayer", "weaken_immune", "freeze_immune", "slow_immune", "knockback_immune", "wave_immune", "surge_immune", "explosion_immune", "warp_immune", "curse_immune", "toxic_immune", "drain_immune", "boss_wave_immune", "timed_life", "single", "area", "long_distance", "omni_strike", "multi_hit", "limited_attacks"].map((key, index) => [key, index]),
       );
       const sortAbilityCards = (items) => [...items].sort((left, right) => (
         (abilityDisplayOrder.get(left.key) ?? Number.MAX_SAFE_INTEGER)
@@ -8603,7 +8659,12 @@
         (ability) => ability.category !== "무효" && ability.category !== "내성"
       ));
       const immunityAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "무효"));
-      const resistanceAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "내성"));
+      const resistanceDisplayOrder = new Map(
+        ["weaken_resist","freeze_resist","slow_resist","knockback_resist","wave_resist","surge_resist","warp_resist","explosion_resist","curse_resist","toxic_resist"].map((key, index) => [key, index]),
+      );
+      const resistanceAbilities = abilities.filter((ability) => ability.category === "내성")
+        .sort((left, right) => (resistanceDisplayOrder.get(left.key) ?? Number.MAX_SAFE_INTEGER)
+          - (resistanceDisplayOrder.get(right.key) ?? Number.MAX_SAFE_INTEGER));
 
       ordinaryAbilities.forEach((sourceAbility) => {
         const isLimitedAttack = sourceAbility.key === "limited_attacks";
@@ -8780,6 +8841,30 @@
       );
     }
 
+    const fixedPresetParams = new URLSearchParams(window.location.search);
+    const fixedTreasureCode = fixedPresetParams.get("ft") || "";
+    const fixedPreset = /^[0-3]{9}$/.test(fixedTreasureCode);
+    function applyFixedPreset() {
+      if (!fixedPreset) return;
+      const families = ["eoc", "itf", "cotc"];
+      unitData.treasures.categories.forEach((category) => {
+        const familyIndex = families.indexOf(category.key);
+        if (familyIndex < 0) return;
+        (category.items || []).forEach((item) => {
+          const chapters = treasureState.get(item.key) || [];
+          chapters.forEach((slots, chapterIndex) => {
+            const quality = Number(fixedTreasureCode[familyIndex * 3 + chapterIndex]);
+            slots.fill(quality);
+          });
+        });
+      });
+      const levels = /^(\d+)\.(\d+)$/.exec(fixedPresetParams.get("research") || "");
+      if (levels) {
+        passiveState.research.baseLevel = clampLevel(Number(levels[1]), 1, researchPassive.maxBaseLevel, researchPassive.defaultBaseLevel);
+        passiveState.research.plusLevel = clampLevel(Number(levels[2]), 0, researchPassive.maxPlusLevel, researchPassive.defaultPlusLevel);
+      }
+    }
+
     function collectTreasureState() {
       const treasures = {};
       treasureState.forEach((chapters, itemKey) => {
@@ -8807,6 +8892,7 @@
     }
 
     function persistSharedSettings(treasures = collectTreasureState()) {
+      if (fixedPreset) return;
       try {
         window.localStorage.setItem(
           sharedSettingsStorageKey,
@@ -8974,6 +9060,16 @@
         new URLSearchParams(window.location.search).get("form")
       );
       return unitData.forms[String(requestedForm)] ? requestedForm : null;
+    }
+
+    function requestedLevelsFromLocation() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("level") || !params.has("plus")) return null;
+      const baseLevel = Number(params.get("level"));
+      const plusLevel = Number(params.get("plus"));
+      if (!Number.isInteger(baseLevel) || baseLevel < 1 ||
+          !Number.isInteger(plusLevel) || plusLevel < 0) return null;
+      return { baseLevel, plusLevel };
     }
 
     let restoredLevelState = null;
@@ -9158,6 +9254,7 @@
         // Unit-specific state is optional.
       }
       restoreSharedSettings();
+      applyFixedPreset();
       restorePagePanelState();
       const requestedForm = requestedFormFromLocation();
       if (requestedForm !== null) restoredForm = requestedForm;
@@ -9165,6 +9262,7 @@
     }
 
     function persistViewState() {
+      if (fixedPreset) { persistPagePanelState(); return; }
       const treasures = {};
       treasureState.forEach((chapters, itemKey) => {
         treasures[itemKey] = chapters.map((slots) => slots.slice());
@@ -9246,7 +9344,7 @@
 
     function syncTreasureResetButton() {
       treasureResetButton.disabled = (
-        allTreasuresMaximum() && allPassivesMaximum()
+        fixedPreset || (allTreasuresMaximum() && allPassivesMaximum())
       );
     }
 
@@ -9272,7 +9370,8 @@
     }
 
     function renderPassiveCategoryContent() {
-      treasureNote.hidden = true;
+      treasureNote.hidden = !fixedPreset;
+      if (fixedPreset) treasureNote.textContent = "고정 편성에 지정된 패시브 레벨이 적용됩니다.";
 
       const cards = document.createElement("div");
       cards.className = "passive-cards";
@@ -9341,6 +9440,8 @@
           const value = passiveState.research[key];
           elements.range.value = String(value);
           elements.number.value = String(value);
+          elements.range.disabled = fixedPreset;
+          elements.number.disabled = fixedPreset;
         });
         currentLevel.textContent = (
           `Lv.${passiveState.research.baseLevel}`
@@ -9393,8 +9494,9 @@
         return;
       }
       treasureNote.hidden = false;
-      treasureNote.textContent =
-        "보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.";
+      treasureNote.textContent = fixedPreset
+        ? "고정 편성에 지정된 보물 상태가 적용됩니다."
+        : "보물 칸을 누르면 없음 → 조잡한 → 평범한 → 최고급 순으로 변경됩니다.";
       if (!category || !category.items.length) {
         const empty = document.createElement("div");
         empty.className = "treasure-empty-category";
@@ -9474,6 +9576,7 @@
             const button = document.createElement("button");
             button.type = "button";
             button.className = "treasure-slot";
+            button.disabled = fixedPreset;
             const qualityName = treasureQualityNames[quality];
             const slotDetails =
               item.chapters?.[chapterIndex]?.[slotIndex] || {};
@@ -10470,14 +10573,18 @@
     renderTalentSettings();
     renderCounterSettings();
     selectForm(restoredForm, true);
-    // Restore the saved level after the form limits are active.
-    if (restoredLevelState) {
+    // Restore the requested or saved level after the form limits are active.
+    const requestedLevels = requestedLevelsFromLocation();
+    if (requestedLevels || restoredLevelState) {
+      const levels = requestedLevels || restoredLevelState;
       updateStats(
-        restoredLevelState.baseLevel,
-        restoredLevelState.plusLevel,
+        levels.baseLevel,
+        levels.plusLevel,
       );
     }
     requestAnimationFrame(lockAttackTimingPeerHeights);
   </script>
+  <script src="../animation-viewer-core.js?v=20261023-all-preview" defer></script>
+  <script src="../animation-viewer.js?v=20261023-all-preview" defer></script>
 </body>
 </html>

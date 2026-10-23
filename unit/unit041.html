@@ -3640,6 +3640,7 @@
 
 </style>
   <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
 </head>
 <body>
   <main class="page">
@@ -4188,6 +4189,55 @@
             </div>
     </section>
     
+      <section class="section animation-viewer" id="animationViewer"
+             aria-labelledby="animationViewerTitle" data-animation-viewer hidden data-animation-forms="{&quot;1&quot;:{&quot;source&quot;:&quot;../img/u/41/a&quot;,&quot;sprite&quot;:&quot;../img/u/41/c0.png&quot;,&quot;row&quot;:0,&quot;onlyAttack&quot;:false},&quot;2&quot;:{&quot;source&quot;:&quot;../img/u/41/a&quot;,&quot;sprite&quot;:&quot;../img/u/41/c1.png&quot;,&quot;row&quot;:1,&quot;onlyAttack&quot;:false},&quot;3&quot;:{&quot;source&quot;:&quot;../img/u/41/a&quot;,&quot;sprite&quot;:&quot;../img/u/41/c2.png&quot;,&quot;row&quot;:2,&quot;onlyAttack&quot;:false}}"
+             data-kind="unit" data-animation-source="../img/u/41/a" data-sprite-source="../img/u/41/c{form}.png">
+      <div class="section-heading animation-viewer-heading">
+        <h2 class="section-title" id="animationViewerTitle">애니메이션 뷰어</h2>
+        <div class="animation-viewer-controls">
+          <div class="animation-viewer-playback">
+            <label for="animationViewerMode">동작</label>
+            <select id="animationViewerMode" data-animation-mode disabled aria-label="애니메이션 동작"></select>
+          </div>
+          <button type="button" class="animation-viewer-save" data-animation-save disabled>PNG 저장</button>
+        </div>
+      </div>
+      <div class="animation-viewer-stage" data-animation-stage tabindex="0" role="group" aria-label="애니메이션 재생 화면">
+        <canvas role="img" aria-label="캐릭터 애니메이션"></canvas>
+        <div class="animation-viewer-overlay" data-animation-overlay hidden inert>
+          <div class="animation-viewer-fullscreen-mode animation-viewer-controls">
+            <label for="animationViewerFullscreenMode">동작</label>
+            <select id="animationViewerFullscreenMode" data-animation-fullscreen-mode disabled aria-label="전체화면 애니메이션 동작"></select>
+            <button type="button" class="animation-viewer-save" data-animation-save data-animation-fullscreen-save disabled>PNG 저장</button>
+          </div>
+          <div class="animation-viewer-center-controls">
+            <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
+            <button type="button" class="animation-viewer-toggle" data-animation-toggle disabled aria-label="일시정지">
+              <svg class="animation-viewer-icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+              <svg class="animation-viewer-icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z" /></svg>
+            </button>
+            <button type="button" class="animation-viewer-step" data-animation-step-forward hidden aria-label="1f 앞으로">+1f</button>
+          </div>
+          <div class="animation-viewer-timeline">
+            <div class="animation-viewer-progress-row">
+              <input type="range" min="0" max="0" step="1" value="0" data-animation-seek disabled aria-label="애니메이션 재생 위치">
+              <button type="button" class="animation-viewer-fullscreen" data-animation-fullscreen disabled aria-label="전체화면" aria-pressed="false">
+                <svg class="animation-viewer-icon-expand" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h6v2H5v4H3zm12 0h6v6h-2V5h-4zM3 15h2v4h4v2H3zm16 0h2v6h-6v-2h4z" /></svg>
+                <svg class="animation-viewer-icon-collapse" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h2v6H3V7h4zm8 0h2v4h4v2h-6zM3 15h6v6H7v-4H3zm12 0h6v2h-4v4h-2z" /></svg>
+              </button>
+            </div>
+            <div class="animation-viewer-readout">
+              <span data-animation-time>0.00초 / 0.00초</span>
+              <span data-animation-zoom-label aria-label="현재 배율">50%</span>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="animation-viewer-fullscreen animation-viewer-reset" data-animation-reset-camera data-visible="false" disabled inert aria-label="카메라 초기화">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v2.06A8 8 0 0 1 19.94 11H22v2h-2.06A8 8 0 0 1 13 19.94V22h-2v-2.06A8 8 0 0 1 4.06 13H2v-2h2.06A8 8 0 0 1 11 4.06V2zm1 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></svg>
+        </button>
+        <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
+      </div>
+    </section>
   </main>
 
   <script src="../catalog.js"></script>
@@ -8608,7 +8658,12 @@
         (ability) => ability.category !== "무효" && ability.category !== "내성"
       ));
       const immunityAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "무효"));
-      const resistanceAbilities = sortAbilityCards(abilities.filter((ability) => ability.category === "내성"));
+      const resistanceDisplayOrder = new Map(
+        ["weaken_resist","freeze_resist","slow_resist","knockback_resist","wave_resist","surge_resist","warp_resist","explosion_resist","curse_resist","toxic_resist"].map((key, index) => [key, index]),
+      );
+      const resistanceAbilities = abilities.filter((ability) => ability.category === "내성")
+        .sort((left, right) => (resistanceDisplayOrder.get(left.key) ?? Number.MAX_SAFE_INTEGER)
+          - (resistanceDisplayOrder.get(right.key) ?? Number.MAX_SAFE_INTEGER));
 
       ordinaryAbilities.forEach((sourceAbility) => {
         const isLimitedAttack = sourceAbility.key === "limited_attacks";
@@ -10528,5 +10583,7 @@
     }
     requestAnimationFrame(lockAttackTimingPeerHeights);
   </script>
+  <script src="../animation-viewer-core.js?v=20261023-all-preview" defer></script>
+  <script src="../animation-viewer.js?v=20261023-all-preview" defer></script>
 </body>
 </html>
