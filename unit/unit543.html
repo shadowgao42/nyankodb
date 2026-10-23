@@ -3640,7 +3640,7 @@
 
 </style>
   <link rel="stylesheet" href="../gnb.css">
-  <link rel="stylesheet" href="../animation-viewer.css?v=20261022-landscape-png">
+  <link rel="stylesheet" href="../animation-viewer.css?v=20261023-camera-reset">
 </head>
 <body>
   <main class="page">
@@ -4277,8 +4277,8 @@
       <section class="section animation-viewer" id="animationViewer"
              aria-labelledby="animationViewerTitle" data-animation-viewer
              data-kind="unit" data-animation-source="../img/u/543/a" data-sprite-source="../img/u/543/c{form}.png">
-      <div class="animation-viewer-heading">
-        <h2 id="animationViewerTitle">애니메이션 뷰어</h2>
+      <div class="section-heading animation-viewer-heading">
+        <h2 class="section-title" id="animationViewerTitle">애니메이션 뷰어</h2>
         <div class="animation-viewer-controls">
           <div class="animation-viewer-playback">
             <label for="animationViewerMode">동작</label>
@@ -4293,6 +4293,7 @@
           <div class="animation-viewer-fullscreen-mode animation-viewer-controls">
             <label for="animationViewerFullscreenMode">동작</label>
             <select id="animationViewerFullscreenMode" data-animation-fullscreen-mode disabled aria-label="전체화면 애니메이션 동작"></select>
+            <button type="button" class="animation-viewer-save" data-animation-save data-animation-fullscreen-save disabled>PNG 저장</button>
           </div>
           <div class="animation-viewer-center-controls">
             <button type="button" class="animation-viewer-step" data-animation-step-back hidden aria-label="1f 뒤로">−1f</button>
@@ -4316,6 +4317,9 @@
             </div>
           </div>
         </div>
+        <button type="button" class="animation-viewer-fullscreen animation-viewer-reset" data-animation-reset-camera data-visible="false" disabled inert aria-label="카메라 초기화">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v2.06A8 8 0 0 1 19.94 11H22v2h-2.06A8 8 0 0 1 13 19.94V22h-2v-2.06A8 8 0 0 1 4.06 13H2v-2h2.06A8 8 0 0 1 11 4.06V2zm1 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12zm0 3a3 3 0 1 1 0 6 3 3 0 0 1 0-6z" /></svg>
+        </button>
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
@@ -10571,7 +10575,7 @@
     }
     requestAnimationFrame(lockAttackTimingPeerHeights);
   </script>
-  <script src="../animation-viewer-core.js" defer></script>
-  <script src="../animation-viewer.js?v=20261022-landscape-png" defer></script>
+  <script src="../animation-viewer-core.js?v=20261023-camera-reset" defer></script>
+  <script src="../animation-viewer.js?v=20261023-camera-reset" defer></script>
 </body>
 </html>

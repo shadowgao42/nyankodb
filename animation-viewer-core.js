@@ -83,7 +83,9 @@
     const partCount = countRow(modelRows[2]);
     let cursor = 3;
     const parts = [];
+    const partNames = [];
     for (let index = 0; index < partCount; index++) {
+      partNames.push(modelRows[cursor].split(',').slice(version >= 2 ? 13 : 12).join(','));
       const row = numberRow(modelRows[cursor++], version >= 2 ? 13 : 12);
       if (row.length === 12) row.push(0);
       parts.push(row);
@@ -95,7 +97,7 @@
       const extraCount = countRow(modelRows[cursor++]);
       for (let index = 0; index < extraCount; index++) extraRecords.push(numberRow(modelRows[cursor++], 6));
     }
-    return { parts, cuts, scale, angle, opacity, anchor: extraRecords[0] || [], extraRecords,
+    return { parts, partNames, cuts, scale, angle, opacity, anchor: extraRecords[0] || [], extraRecords,
       animations: record.slice(2).map(parseAnimation) };
   }
 

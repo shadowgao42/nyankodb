@@ -67,11 +67,27 @@
     return modes;
   }
 
-  function cameraFor(width, height, zoom = 1, displayScale = 1, groundInset = 64) {
+  function groundReferenceFor(bundle, evaluate) {
+    // Use only an explicitly named ground shadow; never fit body/effect bounds.
+    const candidates = (bundle.partNames || []).flatMap((name, index) =>
+      /^(?:\d+)?(?:影|shadow)(?:\.png)?(?:<[^>]*>)*$/i.test(name.trim()) ? [index] : []);
+    const fallback = { x: 0, y: 0, partIndex: -1 };
+    if (candidates.length !== 1) return fallback;
+    const partIndex = candidates[0];
+    const drawable = evaluate(bundle, { tracks: [] }, 0).find(part => part.partIndex === partIndex);
+    if (!drawable) return fallback;
+    const [a, b, c, d, e, f] = drawable.transform;
+    const x = bundle.cuts[drawable.cut][2] / 2;
+    const y = bundle.parts[partIndex][7];
+    return { x: a * x + c * y + e, y: b * x + d * y + f, partIndex };
+  }
+
+  function cameraFor(width, height, zoom = 1, displayScale = 1, reference = { x: 0, y: 0 }) {
+    const scale = zoom / displayScale;
     return {
-      scale: zoom / displayScale,
-      originX: width / 2,
-      originY: height - groundInset / displayScale,
+      scale,
+      originX: width / 2 - reference.x * scale,
+      originY: height * .75 - reference.y * scale,
     };
   }
 
@@ -99,7 +115,9 @@
     const time = panel.querySelector('[data-animation-time]');
     const zoomLabel = panel.querySelector('[data-animation-zoom-label]');
     const fullscreen = panel.querySelector('[data-animation-fullscreen]');
-    const save = panel.querySelector('[data-animation-save]');
+    const saves = panel.querySelectorAll('[data-animation-save]');
+    const resetCamera = panel.querySelector('[data-animation-reset-camera]');
+    const fullscreenControls = panel.querySelector('.animation-viewer-fullscreen-mode');
     const status = panel.querySelector('[data-animation-status]');
     const cache = new Map();
     let bundle = null;
@@ -119,6 +137,7 @@
     let controlScale = 1;
     let panX = 0;
     let panY = 0;
+    let groundReference = { x: 0, y: 0, partIndex: -1 };
     let controlsVisible = false;
     let hideTimer = 0;
     let scrubbing = false;
@@ -140,13 +159,17 @@
       stepForward.hidden = playing || !clock;
       seek.disabled = !clock;
       fullscreen.disabled = !clock;
-      if (save) save.disabled = !clock;
+      saves.forEach(save => { save.disabled = !clock; });
       overlay.hidden = !clock;
       overlay.dataset.visible = String(controlsVisible && Boolean(clock));
       overlay.inert = !controlsVisible || !clock;
       panel.dataset.playing = String(playing);
       panel.dataset.controlsVisible = String(controlsVisible && Boolean(clock));
       zoomLabel.textContent = `${Math.round(zoom * 100)}%`;
+      const displaced = Boolean(clock) && Math.hypot(panX, panY) * displayScale() > .5;
+      resetCamera.dataset.visible = String(displaced);
+      resetCamera.disabled = !displaced;
+      resetCamera.inert = !displaced;
     };
     const setStatus = (message) => {
       status.textContent = message;
@@ -185,7 +208,7 @@
       return canvas.getBoundingClientRect().width / canvas.clientWidth || 1;
     }
     function baseCamera(atZoom = zoom) {
-      return cameraFor(canvas.clientWidth, canvas.clientHeight, atZoom * presentationScale, displayScale(), 64 * controlScale);
+      return cameraFor(canvas.clientWidth, canvas.clientHeight, atZoom * presentationScale, displayScale(), groundReference);
     }
     function currentCamera(atZoom = zoom) {
       const camera = baseCamera(atZoom);
@@ -222,6 +245,9 @@
       panel.dataset.controlScale = String(controlScale);
       panel.dataset.panX = String(panX);
       panel.dataset.panY = String(panY);
+      panel.dataset.groundX = String(groundReference.x);
+      panel.dataset.groundY = String(groundReference.y);
+      panel.dataset.groundPart = String(groundReference.partIndex);
       context.save();
       core.draw(context, bundle, sprite, bundle.animations[clip], frame, camera);
       context.restore();
@@ -280,6 +306,7 @@
         const loaded = await cache.get(form);
         if (token !== revision) return;
         bundle = loaded.parsed;
+        groundReference = groundReferenceFor(bundle, core.evaluate);
         sprite = loaded.image;
         const modes = availableModes(bundle.animations.length);
         select.replaceChildren(...modes.map(mode => {
@@ -333,7 +360,7 @@
     }
     stage.addEventListener('click', event => {
       if (event.pointerType === 'touch') return;
-      if (event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode')) return;
+      if (event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode, [data-animation-reset-camera]')) return;
       if (performance.now() < suppressClickUntil) return;
       tapSurface();
     });
@@ -356,7 +383,7 @@
     stepBack.addEventListener('click', event => { event.stopPropagation(); stepFrame(-1); });
     stepForward.addEventListener('click', event => { event.stopPropagation(); stepFrame(1); });
 
-    save?.addEventListener('click', () => {
+    function savePng() {
       if (!clock) return;
       draw(performance.now(), true);
       const identity = panel.dataset.animationSource.split('/').at(-2);
@@ -379,7 +406,59 @@
         setStatus('PNG를 저장하지 못했습니다.');
         console.error('NyankoDB animation PNG', error);
       }
+    }
+    saves.forEach(save => save.addEventListener('click', savePng));
+    function restoreCamera() {
+      if (!clock) return;
+      const keyboardFocus = resetCamera.matches(':focus-visible');
+      panX = panY = 0;
+      draw(performance.now(), true);
+      syncControls();
+      if (keyboardFocus) stage.focus({ preventScroll: true });
+    }
+    let resetTouch = null;
+    let ignoreResetClickUntil = 0;
+    resetCamera.addEventListener('pointerdown', event => {
+      if (event.pointerType !== 'touch') return;
+      event.stopPropagation();
+      if (!event.isPrimary) {
+        if (resetTouch) resetTouch.moved = true;
+        return;
+      }
+      resetTouch = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+      resetCamera.setPointerCapture(event.pointerId);
     });
+    resetCamera.addEventListener('pointermove', event => {
+      if (resetTouch?.id !== event.pointerId) return;
+      if (Math.hypot(event.clientX - resetTouch.x, event.clientY - resetTouch.y) > 6) resetTouch.moved = true;
+    });
+    resetCamera.addEventListener('pointerup', event => {
+      if (resetTouch?.id !== event.pointerId) return;
+      const activate = !resetTouch.moved;
+      resetTouch = null;
+      event.stopPropagation();
+      // Touch may omit its compatibility click after a canvas gesture.
+      ignoreResetClickUntil = suppressClickUntil = performance.now() + 400;
+      if (activate) restoreCamera();
+    });
+    const cancelResetTouch = event => { if (resetTouch?.id === event.pointerId) resetTouch = null; };
+    resetCamera.addEventListener('pointercancel', cancelResetTouch);
+    resetCamera.addEventListener('lostpointercapture', cancelResetTouch);
+    resetCamera.addEventListener('click', event => {
+      event.stopPropagation();
+      if (event.detail !== 0 && performance.now() < ignoreResetClickUntil) return;
+      restoreCamera();
+    });
+
+    function placeCameraReset() {
+      if (stage.dataset.fullscreen !== 'true') {
+        resetCamera.style.removeProperty('--animation-reset-top');
+        return;
+      }
+      const row = fullscreenControls.getBoundingClientRect();
+      const surface = stage.getBoundingClientRect();
+      resetCamera.style.setProperty('--animation-reset-top', `${(row.bottom - surface.top + 8 * controlScale) / displayScale()}px`);
+    }
 
     function nativeFullscreen() {
       return (document.fullscreenElement || document.webkitFullscreenElement) === stage;
@@ -404,6 +483,7 @@
         updatePresentation(layout.scale, displayScale());
       }
       draw(performance.now(), true);
+      placeCameraReset();
       syncControls();
       schedule();
     }
@@ -423,6 +503,7 @@
         fullscreenReference = null;
       }
       showControls(true);
+      placeCameraReset();
       draw(performance.now(), true);
       schedule();
     }
@@ -502,7 +583,7 @@
       }
     }
     stage.addEventListener('pointerdown', event => {
-      if (!clock || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode')) return;
+      if (!clock || (event.pointerType === 'mouse' && event.button !== 0) || event.target.closest('.animation-viewer-center-controls, .animation-viewer-timeline, .animation-viewer-fullscreen-mode, [data-animation-reset-camera]')) return;
       if (!pointers.size) {
         gestureMoved = false;
         suppressClickUntil = 0;
@@ -569,7 +650,8 @@
       const button = document.getElementById(id);
       if (button) timeObserver.observe(button, { attributes: true, attributeFilter: ['aria-pressed'] });
     });
-    new ResizeObserver(() => draw(performance.now(), true)).observe(canvas);
+    new ResizeObserver(() => { draw(performance.now(), true); placeCameraReset(); syncControls(); }).observe(canvas);
+    new ResizeObserver(placeCameraReset).observe(fullscreenControls);
     if ('IntersectionObserver' in window) new IntersectionObserver(entries => {
       visible = entries[0].isIntersecting;
       schedule();
@@ -588,5 +670,5 @@
     if (tabs) new MutationObserver(load).observe(tabs, { attributes: true, subtree: true, attributeFilter: ['aria-selected'] });
     load();
   }
-  return { PlaybackClock, availableModes, cameraFor, fullscreenLayoutFor, DEFAULT_ZOOM, surfaceTap, mount };
+  return { PlaybackClock, availableModes, groundReferenceFor, cameraFor, fullscreenLayoutFor, DEFAULT_ZOOM, surfaceTap, mount };
 });

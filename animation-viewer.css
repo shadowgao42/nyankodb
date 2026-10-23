@@ -2,22 +2,12 @@
 .animation-viewer * { -webkit-tap-highlight-color: transparent; }
 .animation-viewer {
   margin-top: 16px;
-  padding: 20px;
+  padding: 0;
   overflow: hidden;
 }
 .animation-viewer-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
   flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-.animation-viewer h2 {
-  margin: 0;
-  color: var(--text, #f4f7fb);
-  font-size: 20px;
-  font-weight: 900;
 }
 .animation-viewer-controls {
   display: flex;
@@ -42,16 +32,17 @@
   font: inherit;
   font-size: 14px;
   font-weight: 900;
-  line-height: 1.2;
+  line-height: normal;
 }
 .animation-viewer-controls select { min-width: 132px; }
 .animation-viewer-save { cursor: pointer; white-space: nowrap; }
-.animation-viewer-save:disabled { opacity: .45; cursor: default; }
+.animation-viewer-save:disabled { opacity: .7; cursor: default; }
 .animation-viewer :focus-visible {
   outline: 2px solid var(--accent, #ff5b2d);
   outline-offset: 3px;
 }
 .animation-viewer-stage {
+  margin: 0 22px 20px;
   position: relative;
   min-width: 0;
   border: 1px solid var(--line, #293645);
@@ -66,7 +57,7 @@
 .animation-viewer canvas {
   display: block;
   width: 100%;
-  height: 420px;
+  height: 525px;
 }
 .animation-viewer-overlay {
   position: absolute;
@@ -87,15 +78,17 @@
   display: flex;
   gap: calc(8px * var(--animation-control-scale, 1));
   font-size: calc(14px * var(--animation-control-scale, 1));
+  max-width: calc(100% - 40px * var(--animation-control-scale, 1));
   pointer-events: auto;
 }
-.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode select {
-  min-width: calc(132px * var(--animation-control-scale, 1));
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode select,
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode .animation-viewer-save {
   height: calc(40px * var(--animation-control-scale, 1));
   min-height: calc(40px * var(--animation-control-scale, 1));
   padding: calc(8px * var(--animation-control-scale, 1)) calc(16px * var(--animation-control-scale, 1));
   font-size: inherit;
 }
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-fullscreen-mode select { min-width: calc(132px * var(--animation-control-scale, 1)); }
 .animation-viewer-center-controls {
   position: absolute;
   top: 50%;
@@ -153,10 +146,30 @@
 }
 .animation-viewer-fullscreen:hover { background: rgba(255, 255, 255, .12); }
 .animation-viewer-fullscreen svg { width: 24px; height: 24px; fill: currentColor; }
+.animation-viewer-reset {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 160ms ease, visibility 0s linear 160ms;
+}
+.animation-viewer-reset[data-visible="true"] {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition-delay: 0s;
+}
+.animation-viewer-stage[data-fullscreen="true"] .animation-viewer-reset {
+  top: var(--animation-reset-top);
+  right: calc(20px * var(--animation-control-scale, 1));
+}
 .animation-viewer-icon-collapse,
 .animation-viewer-fullscreen[aria-pressed="true"] .animation-viewer-icon-expand { display: none; }
 .animation-viewer-fullscreen[aria-pressed="true"] .animation-viewer-icon-collapse { display: block; }
 .animation-viewer-stage[data-fullscreen="true"] {
+  margin: 0;
   position: fixed;
   inset: 0;
   z-index: 2147483647;
@@ -268,10 +281,9 @@ html.animation-viewer-fullscreen-active body { overflow: hidden; }
 .animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-moz-range-progress { height: calc(5px * var(--animation-control-scale, 1)); }
 .animation-viewer-stage[data-fullscreen="true"] input[data-animation-seek]::-moz-range-thumb { width: calc(13px * var(--animation-control-scale, 1)); height: calc(13px * var(--animation-control-scale, 1)); }
 @media (max-width: 620px) {
-  .animation-viewer { padding: 16px; }
-  .animation-viewer-heading { gap: 12px; }
   .animation-viewer-controls { margin-left: auto; }
   .animation-viewer-controls select { min-width: 100px; }
-  .animation-viewer canvas { height: 340px; }
+  .animation-viewer canvas { height: 425px; }
+  .animation-viewer-reset { right: 16px; }
   .animation-viewer-timeline { right: 16px; bottom: 12px; left: 16px; }
 }
