@@ -3669,7 +3669,7 @@
 .combo-search input { flex:1; min-width:0; height:38px; padding:7px 11px; color:var(--text);
   background:#0c1118; border:1px solid #425267; border-radius:9px; }
 .combo-results { display:grid; gap:8px; max-height:420px; overflow:auto; padding:3px; }
-.combo-result-name { flex:1 1 240px; min-width:0; overflow-wrap:anywhere; }
+.combo-result-name { flex:1 1 auto; min-width:0; overflow-wrap:anywhere; }
 .combo-result button { font-family:inherit; }
 .combo-result-actions { display:flex; align-items:center; gap:8px; margin-left:auto; max-width:100%; min-width:0; }
 .combo-result-actions .combo-result-effect { min-width:0; overflow-wrap:anywhere; text-align:right; }
@@ -4851,7 +4851,6 @@
           if (!next) return;
           comboRoster = next;
           commitComboRoster();
-          comboSearchInput.focus({preventScroll:true});
         });
         const members = document.createElement('div');
         members.className = 'nyancombo-members';
