@@ -79,6 +79,7 @@
       border-bottom: 1px solid var(--line);
     }
     .filter-panel.is-collapsed > .section-heading { border-bottom: 0; }
+    .filter-actions-buttons { display: inline-flex; align-items: center; gap: inherit; flex-shrink: 0; }
     .filter-collapse {
       display: inline-flex;
       align-items: center;
@@ -133,6 +134,9 @@
     }
     @media (max-width: 500px) {
       .section-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .filter-panel > .section-heading { align-items: center; flex-direction: row; }
+      .filter-panel > .section-heading h2 { white-space: nowrap; }
+      .filter-actions { margin-left: auto; }
       .results-panel > .section-heading { align-items: center; flex-direction: row; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -165,10 +169,12 @@
       <div class="section-heading">
         <h2 id="filterTitle">검색 필터</h2>
         <div class="filter-actions">
-          <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
-          <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
-            <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
-          </button>
+          <div class="filter-actions-buttons">
+            <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
+            <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
+              <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+            </button>
+          </div>
         </div>
       </div>
       <div class="filter-body" id="filterBody" hidden>
