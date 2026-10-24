@@ -1,7 +1,7 @@
 /* Stage-index UI with ordinary search, an initial 200 hits and one full expansion. */
 (() => {
   "use strict";
-  function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage" }) {
+  function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage", getFilter = () => null, toggleAll = null }) {
     const search = window.NyankoSearch;
     const filtered = allowedStageHrefs !== null, allowed = filtered ? new Set(allowedStageHrefs) : null;
     const categoryOrder = search.stageCategoryOrder, categoryFor = search.stageCategoryForLocation;
@@ -9,6 +9,16 @@
     const compact = value => String(value ?? "").toLowerCase().replace(/[\s\p{P}\p{S}_]/gu, "");
     const expandedLocations = new Set(), expandedCategories = new Set();
     const collapsedLocations = new Set(), collapsedCategories = new Set();
+    const categoryControls = new Map(), locationControls = new Map();
+    let batching = false;
+    function syncToggleAll() {
+      if (!toggleAll || batching) return;
+      const expanded = categoryControls.size > 0 && [...categoryControls.values(), ...locationControls.values()].every(control => control.isExpanded());
+      toggleAll.disabled = categoryControls.size === 0;
+      toggleAll.setAttribute("aria-expanded", String(expanded));
+      toggleAll.setAttribute("aria-label", `모든 항목 ${expanded ? "접기" : "펼치기"}`);
+      toggleAll.querySelector(".stage-toggle-all-label").textContent = expanded ? "접기" : "펼치기";
+    }
     const stagesByLocation = new Map();
     const parentHref = stage => stage.locationHref || String(stage.href).replace(/\/[^/]+$/, "/index.html");
     const catalogEntries = Array.isArray(catalog?.entries) ? catalog.entries : [];
@@ -24,10 +34,11 @@
       .map(e => [e.href, { ...e, id: String(e.id), name: String(e.name) }])).values()]
       .filter(e => !allowed || stagesByLocation.has(e.href));
     const byHref = new Map(locations.map(e => [e.href, e]));
-    const appearanceStages = filtered ? [...locations].sort((a, b) => categoryOrder.indexOf(categoryFor(a.id)) - categoryOrder.indexOf(categoryFor(b.id)) || collator.compare(a.id, b.id))
-      .flatMap(e => stagesByLocation.get(e.href) || []) : [];
+    const orderedStages = [...locations].sort((a, b) => categoryOrder.indexOf(categoryFor(a.id)) - categoryOrder.indexOf(categoryFor(b.id)) || collator.compare(a.id, b.id))
+      .flatMap(e => stagesByLocation.get(e.href) || []);
+    const appearanceStages = filtered ? orderedStages : [];
     const pageSize = search.searchResults("", { kind: "stage" }).limit;
-    let visibleHits = [], allHits = [], total = 0, renderedQuery = null, pendingRender = 0;
+    let visibleHits = [], allHits = [], total = 0, renderedKey = null, renderedExpansionKey = null, pendingRender = 0, activeFilter = null, autoExpand = false;
     function countSummary(chapters, stages) { return `${formatter.format(chapters)}개 장 · ${formatter.format(stages)}개 스테이지`; }
     function setMember(set, key, active) { if (active) set.add(key); else set.delete(key); }
     function createToggle(className, controls) {
@@ -67,17 +78,19 @@
         toggle.setAttribute("aria-label", `${entry.name} 상세 스테이지 ${expanded ? "접기" : "펼치기"}`); label.textContent = expanded ? "접기" : "펼치기";
         if (remember) {
           setMember(expandedLocations, entry.href, expanded);
-          if (query || filtered) setMember(collapsedLocations, entry.href, !expanded);
+          if (query || filtered || activeFilter) setMember(collapsedLocations, entry.href, !expanded);
+          syncToggleAll();
         }
       }
+      if (toggleAll) locationControls.set(entry.href, { setExpanded, isExpanded: () => !list.hidden });
       toggle.setAttribute("aria-label", `${entry.name} 상세 스테이지 펼치기`);
       toggle.addEventListener("click", () => setExpanded(list.hidden)); row.append(toggle); wrapper.append(row, list);
-      const automaticallyExpanded = matchingStages.length && !collapsedLocations.has(entry.href);
-      if (automaticallyExpanded || (!query && !filtered && expandedLocations.has(entry.href))) setExpanded(true, false);
+      const automaticallyExpanded = autoExpand && matchingStages.length && !collapsedLocations.has(entry.href);
+      if (automaticallyExpanded || (!autoExpand && expandedLocations.has(entry.href))) setExpanded(true, false);
       return wrapper;
     }
     function matchLocations(query, hits = visibleHits) {
-      if (!query && !filtered) return locations.map(entry => ({ entry, matchingStages: [], rank: 0 }));
+      if (!query && !filtered && !activeFilter) return locations.map(entry => ({ entry, matchingStages: [], rank: 0 }));
       const groups = new Map();
       hits.forEach((hit, rank) => {
         const isParent = /\/index\.html$/i.test(hit.href || ""), href = isParent ? hit.href : parentHref(hit);
@@ -87,21 +100,41 @@
       });
       return [...groups.values()];
     }
-    function render({ more = false } = {}) {
+    function render({ more = false, collapseAll = false } = {}) {
       if (pendingRender) cancelAnimationFrame(pendingRender); pendingRender = 0;
       const query = compact(input?.value || "");
-      if (query === renderedQuery && !more) return;
+      activeFilter = getFilter();
+      autoExpand = Boolean(query || filtered || activeFilter?.expandMatches);
+      const expansionKey = JSON.stringify([query, activeFilter?.expansionKey || ""]);
+      const renderKey = JSON.stringify([query, activeFilter?.key || ""]);
+      if (renderKey === renderedKey && !more) return;
+      categoryControls.clear(); locationControls.clear();
       const previousScroll = scroll?.scrollTop || 0;
       let firstNewHref;
-      if (query !== renderedQuery) {
-        visibleHits = []; collapsedCategories.clear(); collapsedLocations.clear();
+      if (renderKey !== renderedKey) {
+        visibleHits = [];
+        if (expansionKey !== renderedExpansionKey) { collapsedCategories.clear(); collapsedLocations.clear(); }
         allHits = filtered ? appearanceStages : query ? search.searchResults(input.value, { kind: "stage", all: true }).matches : [];
+        if (activeFilter) {
+          const candidates = query ? allHits.flatMap(hit => /\/index\.html$/i.test(hit.href)
+            ? stagesByLocation.get(hit.href) || [] : [hit]) : orderedStages;
+          const seen = new Set();
+          allHits = candidates.filter(entry => {
+            if (seen.has(entry.href) || !activeFilter.accepts(entry)) return false;
+            seen.add(entry.href); return true;
+          });
+        }
       }
-      if (query || filtered) {
+      if (query || filtered || activeFilter) {
         firstNewHref = allHits[more ? visibleHits.length : 0]?.href; total = allHits.length;
-        visibleHits = more ? allHits : allHits.slice(0, pageSize);
-      }
+        visibleHits = more || (activeFilter && !autoExpand) ? allHits : allHits.slice(0, pageSize);
+      } else total = 0;
       const matches = matchLocations(query), groups = new Map(categoryOrder.map(c => [c, []]));
+      if (collapseAll) for (const { entry } of matches) {
+        const category = categoryFor(entry.id);
+        expandedCategories.delete(category); collapsedCategories.add(category);
+        expandedLocations.delete(entry.href); collapsedLocations.add(entry.href);
+      }
       matches.forEach(match => groups.get(categoryFor(match.entry.id))?.push(match));
       const fragment = document.createDocumentFragment();
       for (const [category, entries] of groups) {
@@ -126,31 +159,34 @@
           toggle.setAttribute("aria-label", `${category} ${expanded ? "접기" : "펼치기"}`); label.textContent = expanded ? "접기" : "펼치기";
           if (remember) {
             setMember(expandedCategories, category, expanded);
-            if (query || filtered) setMember(collapsedCategories, category, !expanded);
+            if (query || filtered || activeFilter) setMember(collapsedCategories, category, !expanded);
+            syncToggleAll();
           }
         }
+        if (toggleAll) categoryControls.set(category, { setExpanded, isExpanded: () => !grid.hidden });
         toggle.setAttribute("aria-label", `${category} 펼치기`); toggle.addEventListener("click", () => setExpanded(grid.hidden));
-        if (((query || filtered) && !collapsedCategories.has(category)) || (!query && !filtered && expandedCategories.has(category))) setExpanded(true, false);
+        if ((autoExpand && !collapsedCategories.has(category)) || (!autoExpand && expandedCategories.has(category))) setExpanded(true, false);
         section.append(heading, grid); fragment.append(section);
       }
       if (!matches.length) {
         const empty = document.createElement("p"); empty.className = "empty-results"; empty.textContent = "조건에 맞는 장 또는 스테이지가 없습니다."; fragment.append(empty);
       }
-      if ((query || filtered) && visibleHits.length < total) {
+      if ((query || filtered || activeFilter) && visibleHits.length < total) {
         const box = document.createElement("div"); box.className = "stage-list-more";
         const button = document.createElement("button"); button.type = "button"; button.className = "filter-collapse"; button.textContent = "더보기"; button.setAttribute("aria-controls", results.id);
         button.addEventListener("click", () => render({ more: true })); box.append(button); fragment.append(box);
       }
       results.replaceChildren(fragment);
+      syncToggleAll();
       if (filtered) status.textContent = countSummary(locations.length, appearanceStages.length);
-      else if (query) {
+      else if (query || activeFilter) {
         const fullMatches = matchLocations(query, allHits);
         status.textContent = countSummary(fullMatches.length, fullMatches.reduce((n, e) => n + (e.matchingStages.length || (stagesByLocation.get(e.entry.href)?.length || 0)), 0));
       }
       else status.textContent = countSummary(locations.length, [...stagesByLocation.values()].reduce((n, stages) => n + stages.length, 0));
-      results.dataset.query = query; results.dataset.shown = String(visibleHits.length); results.dataset.total = String(total); renderedQuery = query;
+      results.dataset.query = query; results.dataset.shown = String(visibleHits.length); results.dataset.total = String(total); renderedKey = renderKey; renderedExpansionKey = expansionKey;
       if (scroll) scroll.scrollTop = more ? previousScroll : 0;
-      if (more && firstNewHref) {
+      if (more && firstNewHref && !collapseAll) {
         const next = [...results.querySelectorAll("a")].find(a => a.getAttribute("href") === `../${firstNewHref}`);
         const focusTarget = next || results.querySelector(".stage-list-more button") || results.querySelector(".stage-section-toggle") || scroll;
         focusTarget?.focus({ preventScroll: true });
@@ -172,6 +208,16 @@
       if (pendingRender) cancelAnimationFrame(pendingRender);
       pendingRender = requestAnimationFrame(() => render());
     }
+    toggleAll?.addEventListener("click", () => {
+      if (pendingRender) render();
+      const expanded = toggleAll.getAttribute("aria-expanded") !== "true";
+      batching = true;
+      try {
+        if (!expanded) render({ more: true, collapseAll: true });
+        for (const control of categoryControls.values()) control.setExpanded(expanded);
+        for (const control of locationControls.values()) control.setExpanded(expanded);
+      } finally { batching = false; syncToggleAll(); }
+    });
     if (input) {
       input.addEventListener("input", scheduleRender);
       input.addEventListener("compositionend", scheduleRender);

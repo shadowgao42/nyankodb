@@ -276,12 +276,16 @@
   }
 
   function searchResults(value, { kind = null, offset = 0, all = false } = {}) {
+    if (!compact(value)) return { matches: [], total: 0 };
+    return searchPrepared(searchIndex(), resultCache, value, { kind, offset, all });
+  }
+
+  function searchPrepared(index, cache, value, { kind = null, offset = 0, all = false } = {}) {
     const query = compact(value);
     if (!query) return { matches: [], total: 0 };
-    const index = searchIndex();
     offset = Number.isSafeInteger(offset) && offset >= 0 ? offset : 0;
     const cacheKey = JSON.stringify([query, kind, offset, all]);
-    if (resultCache.has(cacheKey)) return resultCache.get(cacheKey);
+    if (cache.has(cacheKey)) return cache.get(cacheKey);
     const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
     const queryLetters = new Map();
     for (const letter of query) queryLetters.set(letter, (queryLetters.get(letter) || 0) + 1);
@@ -296,9 +300,17 @@
       if (all || buckets[rank].length < offset + resultLimit) buckets[rank].push(prepared.entry);
     }
     const found = { matches: all ? buckets.flat().slice(offset) : buckets.flat().slice(offset, offset + resultLimit), total };
-    if (resultCache.size >= 40) resultCache.delete(resultCache.keys().next().value);
-    resultCache.set(cacheKey, found);
+    if (cache.size >= 40) cache.delete(cache.keys().next().value);
+    cache.set(cacheKey, found);
     return found;
+  }
+
+  function createIndex(source) {
+    const index = source.map(prepareEntry).sort(compareResults), cache = new Map();
+    return Object.freeze({ searchResults(value, options) {
+      const found = searchPrepared(index, cache, value, options);
+      return { matches: found.matches.slice(), total: found.total, limit: resultLimit };
+    } });
   }
 
   function search(value) {
@@ -542,7 +554,7 @@
   window.NyankoSearch = Object.freeze({ search, searchResults(value, options) {
     const found = searchResults(value, options);
     return { matches: found.matches.slice(), total: found.total, limit: resultLimit };
-  }, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
+  }, createIndex, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
   else mount();
 })();

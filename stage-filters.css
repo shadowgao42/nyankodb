@@ -1,0 +1,32 @@
+/* Filter groups and buttons retain the enemy/unit index dimensions. */
+.filter-body { padding: 1px 15px 15px; }
+.filter-actions { display: inline-flex; align-items: center; gap: 13px; flex-wrap: wrap; justify-content: flex-end; }
+.reset-button { min-height: 30px; padding: 4px 10px; border: 1px solid #596777; border-radius: 6px; color: var(--text); background: #303a47; font-size: 11px; font-weight: 900; cursor: pointer; }
+.reset-button:hover:not(:disabled) { border-color: #718094; background: #3a4655; }
+.reset-button:disabled { color: #7d8998; background: #202833; cursor: default; opacity: .62; }
+.filter-group { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 11px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,.08); }
+.filter-group:last-child { padding-bottom: 0; border-bottom: 0; }
+.filter-label { padding-top: 7px; color: #e6ecf4; font-size: 14px; font-weight: 950; }
+.filter-chip-list { display: flex; flex-wrap: wrap; gap: 6px; min-width: 0; }
+.filter-chip { position: relative; display: inline-flex; align-items: center; justify-content: center; min-height: 36px; border: 1px solid #526071; border-radius: 7px; color: #e9eef5; background: linear-gradient(180deg, #394552, #242e3a); font-weight: 900; cursor: pointer; transition: border-color .13s ease, background .13s ease, box-shadow .13s ease; }
+.filter-chip:hover { border-color: #758396; background: linear-gradient(180deg, #465363, #2d3947); }
+.filter-chip[aria-pressed="true"] { border-color: #ff784f; background: linear-gradient(180deg, #fa643a, #c83f1c); box-shadow: 0 0 0 2px rgba(255,91,45,.18), inset 0 1px rgba(255,255,255,.18); }
+.filter-chip:focus-visible { outline: 2px solid rgba(255,173,61,.85); outline-offset: 2px; }
+.text-chip { min-width: 112px; padding: 6px 11px; font-size: 12px; }
+.stage-filter-picker { min-width: 0; }
+.stage-filter-field { position: relative; min-width: 0; }
+.stage-filter-field .unit-search-results { width: min(380px, 100%); }
+.stage-filter-field .unit-search-result { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: center; gap: 10px; width: 100%; min-height: 48px; padding: 5px 9px; border: 0; border-bottom: 1px solid #465363; border-radius: 0; color: #f4f7fb; background: #27313e; text-align: left; cursor: pointer; touch-action: pan-y; }
+.stage-filter-field .unit-search-result:last-child { border-bottom: 0; }
+.stage-filter-field .unit-search-result { font-size: 13px; font-weight: 900; }
+.stage-filter-field .unit-search-result:hover, .stage-filter-field .unit-search-result[aria-selected="true"] { background: #354252; }
+.stage-filter-field .unit-search-result:focus-visible { outline: 2px solid rgba(255,173,61,.85); outline-offset: -2px; }
+.stage-filter-icon { position: relative; width: 54px; height: 40px; }
+.stage-filter-icon img.stage-filter-overlay { position: absolute; right: 0; bottom: 0; width: 18px; height: 18px; }
+.stage-selected-list:not(:empty) { margin-top: 9px; }
+.stage-selected-chip { gap: 8px; max-width: 100%; padding: 6px 11px; font-size: 12px; text-align: left; }
+.stage-selected-chip > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.stage-selected-chip > span:last-child { flex-shrink: 0; font-size: 18px; line-height: 1; }
+@media (max-width: 760px) { .filter-group { grid-template-columns: 1fr; gap: 9px; } .filter-label { padding-top: 0; } }
+@media (max-width: 760px) { .filter-actions { gap: 8px 11px; } }
+@media (max-width: 500px) { .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); } }

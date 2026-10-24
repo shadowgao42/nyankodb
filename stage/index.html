@@ -114,6 +114,10 @@
       padding: 16px 18px;
       border-bottom: 1px solid var(--line);
     }
+    .results-title-actions { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .results-title-actions { flex-shrink: 0; }
+    #toggleAllStages[aria-expanded="true"] .filter-collapse-arrow { transform: rotate(180deg); }
+    #toggleAllStages:disabled { opacity: .5; cursor: default; }
     .results-scroll {
       flex: 1 1 0;
       min-height: 180px;
@@ -137,6 +141,7 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../stage-list.css">
+  <link rel="stylesheet" href="../stage-filters.css">
 </head>
 <body>
   <main class="page">
@@ -159,19 +164,50 @@
     <section class="filter-panel is-collapsed" aria-labelledby="filterTitle">
       <div class="section-heading">
         <h2 id="filterTitle">검색 필터</h2>
-        <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
-          <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
-        </button>
+        <div class="filter-actions">
+          <button class="reset-button" id="resetFilters" type="button" disabled>초기화</button>
+          <button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody">
+            <span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+          </button>
+        </div>
       </div>
       <div class="filter-body" id="filterBody" hidden>
-        <p class="filter-placeholder">곧 추가 예정입니다!</p>
+        <div class="filter-group">
+          <h3 class="filter-label" id="stageCategoryLabel">스테이지 분류</h3>
+          <div class="filter-chip-list" id="stageCategoryFilters" role="group" aria-labelledby="stageCategoryLabel"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label" id="stageEnemyLabel">출현 적</h3>
+          <div class="stage-filter-picker">
+            <div class="stage-filter-field">
+              <input class="search-input" id="stageEnemySearch" type="search" role="combobox" autocomplete="off" spellcheck="false" placeholder="적 이름 또는 ID 입력" aria-labelledby="stageEnemyLabel" aria-autocomplete="list" aria-expanded="false" aria-controls="stageEnemyOptions">
+              <div class="unit-search-results" id="stageEnemyOptions" role="listbox" aria-label="추가할 적" hidden></div>
+            </div>
+            <div class="filter-chip-list stage-selected-list" id="stageEnemySelected" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label" id="stageRewardLabel">보상</h3>
+          <div class="stage-filter-picker">
+            <div class="stage-filter-field">
+              <input class="search-input" id="stageRewardSearch" type="search" role="combobox" autocomplete="off" spellcheck="false" placeholder="보상 이름 또는 ID 입력" aria-labelledby="stageRewardLabel" aria-autocomplete="list" aria-expanded="false" aria-controls="stageRewardOptions">
+              <div class="unit-search-results" id="stageRewardOptions" role="listbox" aria-label="추가할 보상" hidden></div>
+            </div>
+            <div class="filter-chip-list stage-selected-list" id="stageRewardSelected" aria-live="polite"></div>
+          </div>
+        </div>
       </div>
     </section>
 
     <section class="results-panel" aria-labelledby="resultsTitle">
       <div class="section-heading">
-        <h2 id="resultsTitle">모든 스테이지</h2>
-        <p class="result-status" id="resultStatus" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p>
+        <h2 id="resultsTitle">스테이지 목록</h2>
+        <div class="results-title-actions">
+          <p class="result-status" id="resultStatus" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p>
+          <button class="filter-collapse" id="toggleAllStages" type="button" aria-expanded="false" aria-controls="stageResults" aria-label="모든 항목 펼치기">
+            <span class="stage-toggle-all-label">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span>
+          </button>
+        </div>
       </div>
       <div class="results-scroll" id="resultsScroll" tabindex="0" aria-label="장 및 스테이지 검색 결과">
         <div id="stageResults" class="stage-list"></div>
@@ -182,6 +218,8 @@
   <script src="../catalog.js"></script>
   <script src="../search.js" data-stage-search defer></script>
   <script src="../stage-list.js" defer></script>
+  <script src="../stage-filter-data.js" defer></script>
+  <script src="../stage-filters.js" defer></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       const filterPanel = document.querySelector(".filter-panel");
@@ -192,13 +230,21 @@
         filterCollapse.setAttribute("aria-expanded", String(!collapsed));
         document.getElementById("filterCollapseText").textContent = collapsed ? "펼치기" : "접기";
       });
-      window.NyankoStageList.mount({
+      const filters = window.NyankoStageFilters.mount({
+        root: document.getElementById("filterBody"), catalog: window.NYANKODB_SEARCH_CATALOG,
+        data: window.NYANKODB_STAGE_FILTER_DATA,
+        reset: document.getElementById("resetFilters"), nameInput: document.getElementById("nameSearch"),
+      });
+      const list = window.NyankoStageList.mount({
         catalog: window.NYANKODB_SEARCH_CATALOG,
         input: document.getElementById("nameSearch"),
         results: document.getElementById("stageResults"),
         status: document.getElementById("resultStatus"),
         scroll: document.getElementById("resultsScroll"),
+        getFilter: filters.getFilter,
+        toggleAll: document.getElementById("toggleAllStages"),
       });
+      document.getElementById("filterBody").addEventListener("stagefilterschange", list.refresh);
       const panel = document.querySelector(".results-panel");
       const initialHeight = panel.offsetHeight;
       if (initialHeight > 0) { panel.style.height = `${initialHeight}px`; panel.style.flex = "0 0 auto"; }
