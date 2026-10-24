@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":108,"stages":[{"id":"A023-0","name":"노인 Lv.1","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/0.html","stageOrder":0},{"id":"A023-1","name":"노인 Lv.2","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/1.html","stageOrder":1},{"id":"A023-2","name":"노인 Lv.3","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/2.html","stageOrder":2},{"id":"A023-3","name":"노인 Lv.4","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/3.html","stageOrder":3},{"id":"A023-4","name":"노인 Lv.5","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/4.html","stageOrder":4},{"id":"A023-5","name":"노인 Lv.6","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/5.html","stageOrder":5},{"id":"A023-6","name":"노인 Lv.7","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/6.html","stageOrder":6},{"id":"A023-7","name":"노인 Lv.8","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/7.html","stageOrder":7},{"id":"A023-8","name":"노인 Lv.9","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/8.html","stageOrder":8},{"id":"A023-9","name":"노인 Lv.10","mapName":"9월 강습!","locationId":"A023","href":"stage/A023/9.html","stageOrder":9},{"id":"S036-3","name":"노인정 브레이커","mapName":"최강 노인전설","locationId":"S036","href":"stage/S036/3.html","stageOrder":3},{"id":"S036-5","name":"와이프는 스무살","mapName":"최강 노인전설","locationId":"S036","href":"stage/S036/5.html","stageOrder":5},{"id":"S036-6","name":"필살기는 에너지파","mapName":"최강 노인전설","locationId":"S036","href":"stage/S036/6.html","stageOrder":6},{"id":"S036-7","name":"마눌님한텐 못이겨","mapName":"최강 노인전설","locationId":"S036","href":"stage/S036/7.html","stageOrder":7},{"id":"S070-0","name":"원더풀 제패! 초고난도","mapName":"월별 스테이지 올스타즈 원더풀 기념!","locationId":"S070","href":"stage/S070/0.html","stageOrder":0},{"id":"S168-4","name":"우리 와이프가 최강자","mapName":"무시무시한 어르신들","locationId":"S168","href":"stage/S168/4.html","stageOrder":4},{"id":"S236-0","name":"가을의 제전 하위 초고난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/0.html","stageOrder":0},{"id":"S236-2","name":"가을의 제전 상위 극난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/2.html","stageOrder":2},{"id":"S236-4","name":"가을의 제전 왕위 초극난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/4.html","stageOrder":4},{"id":"V000-14","name":"15층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/14.html","stageOrder":14},{"id":"V006-14","name":"15층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/14.html","stageOrder":14},{"id":"V007-4","name":"5층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/4.html","stageOrder":4},{"id":"V010-14","name":"15층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/14.html","stageOrder":14}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

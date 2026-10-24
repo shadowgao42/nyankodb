@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":541,"stages":[{"id":"NA032-5","name":"브라운관의 인플루언서","mapName":"다이버 도시","locationId":"NA032","href":"stage/NA032/5.html","stageOrder":5},{"id":"NA033-2","name":"풋팟퐁커리 VS 팟타이","mapName":"나시고・렝","locationId":"NA033","href":"stage/NA033/2.html","stageOrder":2},{"id":"NA034-2","name":"무농약으로 만든 염색체","mapName":"DNA 과수원","locationId":"NA034","href":"stage/NA034/2.html","stageOrder":2},{"id":"NA035-3","name":"나뭇가지 제단","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/3.html","stageOrder":3},{"id":"NA039-1","name":"장렬한 파도","mapName":"마해역의 빅쿠라항","locationId":"NA039","href":"stage/NA039/1.html","stageOrder":1},{"id":"ND001-1","name":"제로의 지평선","mapName":"시공의 끝","locationId":"ND001","href":"stage/ND001/1.html","stageOrder":1},{"id":"ND008-1","name":"반증뿐인 반평생","mapName":"메마른 생각의 정원","locationId":"ND008","href":"stage/ND008/1.html","stageOrder":1},{"id":"ND014-4","name":"오일러 제도","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/4.html","stageOrder":4},{"id":"ND023-0","name":"거짓의 잠꼬대","mapName":"잠자는 심연","locationId":"ND023","href":"stage/ND023/0.html","stageOrder":0},{"id":"ND029-4","name":"크롭 티 크로키","mapName":"미술 공방전","locationId":"ND029","href":"stage/ND029/4.html","stageOrder":4},{"id":"ND033-4","name":"피뢰침 고깔모자","mapName":"크레이지 패션","locationId":"ND033","href":"stage/ND033/4.html","stageOrder":4},{"id":"Q002-13","name":"초열 화구 지역 14","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/13.html","stageOrder":13},{"id":"S348-2","name":"요괴 대왕 Ⅲ 초극난도","mapName":"삼도천 주인 대강림","locationId":"S348","href":"stage/S348/2.html","stageOrder":2},{"id":"SR007-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR007","href":"stage/SR007/2.html","stageOrder":2},{"id":"SR017-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR017","href":"stage/SR017/0.html","stageOrder":0},{"id":"SR026-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR026","href":"stage/SR026/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

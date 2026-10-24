@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":213,"stages":[{"id":"A058-5","name":"배달 Lv.6","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/5.html","stageOrder":5},{"id":"A058-6","name":"배달 Lv.7","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/6.html","stageOrder":6},{"id":"A058-7","name":"배달 Lv.8","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/7.html","stageOrder":7},{"id":"A058-8","name":"배달 Lv.9","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/8.html","stageOrder":8},{"id":"A058-9","name":"배달 Lv.MAX","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/9.html","stageOrder":9},{"id":"S081-1","name":"순록이 다니는 길","mapName":"빨간코 산타의 선물!","locationId":"S081","href":"stage/S081/1.html","stageOrder":1},{"id":"S081-2","name":"매일 채찍을 맞아가며..","mapName":"빨간코 산타의 선물!","locationId":"S081","href":"stage/S081/2.html","stageOrder":2},{"id":"S081-3","name":"하극상","mapName":"빨간코 산타의 선물!","locationId":"S081","href":"stage/S081/3.html","stageOrder":3},{"id":"S081-4","name":"전장의 크리스마스","mapName":"빨간코 산타의 선물!","locationId":"S081","href":"stage/S081/4.html","stageOrder":4},{"id":"S146-0","name":"그레이트 진격! 초고난도","mapName":"월별 스테이지 올스타즈 그레이트 기념!","locationId":"S146","href":"stage/S146/0.html","stageOrder":0},{"id":"S322-3","name":"2015년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/3.html","stageOrder":3},{"id":"S325-1","name":"올나이트 베이비","mapName":"첫 번째 밤: 일하는 냥타클로스","locationId":"S325","href":"stage/S325/1.html","stageOrder":1},{"id":"S325-2","name":"선물 인플레이션","mapName":"첫 번째 밤: 일하는 냥타클로스","locationId":"S325","href":"stage/S325/2.html","stageOrder":2},{"id":"S325-3","name":"순록노조 총파업","mapName":"첫 번째 밤: 일하는 냥타클로스","locationId":"S325","href":"stage/S325/3.html","stageOrder":3},{"id":"S325-4","name":"아이들의 함박웃음","mapName":"첫 번째 밤: 일하는 냥타클로스","locationId":"S325","href":"stage/S325/4.html","stageOrder":4},{"id":"S392-3","name":"겨울의 추억","mapName":"2024년 추억 앨범","locationId":"S392","href":"stage/S392/3.html","stageOrder":3},{"id":"S418-3","name":"겨울의 추억","mapName":"2025년 추억 앨범","locationId":"S418","href":"stage/S418/3.html","stageOrder":3},{"id":"V000-10","name":"11층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/10.html","stageOrder":10},{"id":"V000-20","name":"21층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/20.html","stageOrder":20},{"id":"V006-10","name":"11층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/10.html","stageOrder":10},{"id":"V006-20","name":"21층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/20.html","stageOrder":20},{"id":"V010-10","name":"11층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/10.html","stageOrder":10},{"id":"V010-20","name":"21층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/20.html","stageOrder":20}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

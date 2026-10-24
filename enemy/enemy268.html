@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":268,"stages":[{"id":"S116-0","name":"보낸이 불명","mapName":"수수께끼의 택배","locationId":"S116","href":"stage/S116/0.html","stageOrder":0},{"id":"S139-0","name":"냥코3형제 받아가3333","mapName":"★페이스북 이벤트 보상★","locationId":"S139","href":"stage/S139/0.html","stageOrder":0},{"id":"S147-0","name":"S147-0","mapName":"謎のプレゼント2","locationId":"S147","href":"stage/S147/0.html","stageOrder":0},{"id":"S204-0","name":"보낸이 불명","mapName":"수수께끼의 택배","locationId":"S204","href":"stage/S204/0.html","stageOrder":0},{"id":"S218-0","name":"差出人不明","mapName":"謎の宅配便","locationId":"S218","href":"stage/S218/0.html","stageOrder":0},{"id":"S225-0","name":"보낸이 불명","mapName":"수수께끼의 택배","locationId":"S225","href":"stage/S225/0.html","stageOrder":0},{"id":"S327-5","name":"순위 광탈","mapName":"2022 최다 출현 적 베스트5","locationId":"S327","href":"stage/S327/5.html","stageOrder":5},{"id":"S366-0","name":"우리집 멍뭉이는","mapName":"설견","locationId":"S366","href":"stage/S366/0.html","stageOrder":0},{"id":"S366-1","name":"폭설 강아지","mapName":"설견","locationId":"S366","href":"stage/S366/1.html","stageOrder":1},{"id":"S366-2","name":"우글우글 달려오며 멍멍멍","mapName":"설견","locationId":"S366","href":"stage/S366/2.html","stageOrder":2},{"id":"S366-3","name":"깨물면서 반갑다고 멍멍멍","mapName":"설견","locationId":"S366","href":"stage/S366/3.html","stageOrder":3},{"id":"S371-0","name":"S371-0","mapName":"8888万ダウンロード記念","locationId":"S371","href":"stage/S371/0.html","stageOrder":0},{"id":"S403-0","name":"보낸이 불명","mapName":"謎の宅配便","locationId":"S403","href":"stage/S403/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

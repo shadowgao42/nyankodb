@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":283,"stages":[{"id":"R000-0","name":"레드엔젤 대회","mapName":"랭킹의 방","locationId":"R000","href":"stage/R000/0.html","stageOrder":0},{"id":"R001-0","name":"맨・인・블랙 대회","mapName":"랭킹의 방","locationId":"R001","href":"stage/R001/0.html","stageOrder":0},{"id":"R002-0","name":"불사조 대회","mapName":"랭킹의 방","locationId":"R002","href":"stage/R002/0.html","stageOrder":0},{"id":"R004-0","name":"무기력 수행","mapName":"랭킹의 방","locationId":"R004","href":"stage/R004/0.html","stageOrder":0},{"id":"R006-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방 (구)","locationId":"R006","href":"stage/R006/0.html","stageOrder":0},{"id":"R007-0","name":"물고기 천국","mapName":"랭킹의 방","locationId":"R007","href":"stage/R007/0.html","stageOrder":0},{"id":"R008-0","name":"습격! 발차기 공주 군단","mapName":"랭킹의 방","locationId":"R008","href":"stage/R008/0.html","stageOrder":0},{"id":"R009-0","name":"城とドラゴンと道場","mapName":"랭킹의 방","locationId":"R009","href":"stage/R009/0.html","stageOrder":0},{"id":"R010-0","name":"습격! 주걱턱 군단","mapName":"랭킹의 방","locationId":"R010","href":"stage/R010/0.html","stageOrder":0},{"id":"R011-0","name":"드라큘라 대회","mapName":"랭킹의 방","locationId":"R011","href":"stage/R011/0.html","stageOrder":0},{"id":"R012-0","name":"천공무도 대회","mapName":"랭킹의 방","locationId":"R012","href":"stage/R012/0.html","stageOrder":0},{"id":"R013-0","name":"우주의 사자 대회","mapName":"랭킹의 방","locationId":"R013","href":"stage/R013/0.html","stageOrder":0},{"id":"R014-0","name":"나보다 강한 녀석과 만나러 간다","mapName":"랭킹의 방","locationId":"R014","href":"stage/R014/0.html","stageOrder":0},{"id":"R016-0","name":"미쿠미쿠 가요제","mapName":"랭킹의 방","locationId":"R016","href":"stage/R016/0.html","stageOrder":0},{"id":"R017-0","name":"절체절명 대회","mapName":"초・랭킹의 방","locationId":"R017","href":"stage/R017/0.html","stageOrder":0},{"id":"R018-0","name":"나보다 강한 녀석과 만나러 간다","mapName":"랭킹의 방 (구)","locationId":"R018","href":"stage/R018/0.html","stageOrder":0},{"id":"R020-0","name":"레드엔젤 대회","mapName":"랭킹의 방【외전】","locationId":"R020","href":"stage/R020/0.html","stageOrder":0},{"id":"R021-0","name":"맨・인・블랙 대회","mapName":"랭킹의 방【외전】","locationId":"R021","href":"stage/R021/0.html","stageOrder":0},{"id":"R022-0","name":"불사조 대회","mapName":"랭킹의 방【외전】","locationId":"R022","href":"stage/R022/0.html","stageOrder":0},{"id":"R027-0","name":"메이지 검객 낭만 대회","mapName":"랭킹의 방","locationId":"R027","href":"stage/R027/0.html","stageOrder":0},{"id":"R031-0","name":"사상 최강 생물 결정전!","mapName":"랭킹의 방","locationId":"R031","href":"stage/R031/0.html","stageOrder":0},{"id":"R032-0","name":"소닉 배틀!","mapName":"랭킹의 방","locationId":"R032","href":"stage/R032/0.html","stageOrder":0},{"id":"R037-0","name":"나보다 강한 녀석과 만나러 간다","mapName":"랭킹의 방","locationId":"R037","href":"stage/R037/0.html","stageOrder":0},{"id":"R042-0","name":"특별 소집! 최강 대원 결정전","mapName":"랭킹의 방","locationId":"R042","href":"stage/R042/0.html","stageOrder":0},{"id":"R048-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방","locationId":"R048","href":"stage/R048/0.html","stageOrder":0},{"id":"T000-0","name":"냥코 수행 초단","mapName":"초심의 방","locationId":"T000","href":"stage/T000/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

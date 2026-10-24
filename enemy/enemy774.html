@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":774,"stages":[{"id":"A079-0","name":"いたずら Lv.1","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/0.html","stageOrder":0},{"id":"A079-1","name":"いたずら Lv.2","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/1.html","stageOrder":1},{"id":"A079-10","name":"いたずら Lv.11","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/10.html","stageOrder":10},{"id":"A079-11","name":"いたずら Lv.12","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/11.html","stageOrder":11},{"id":"A079-12","name":"いたずら Lv.13","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/12.html","stageOrder":12},{"id":"A079-13","name":"いたずら Lv.14","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/13.html","stageOrder":13},{"id":"A079-14","name":"いたずら Lv.15","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/14.html","stageOrder":14},{"id":"A079-15","name":"いたずら Lv.16","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/15.html","stageOrder":15},{"id":"A079-16","name":"いたずら Lv.17","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/16.html","stageOrder":16},{"id":"A079-17","name":"いたずら Lv.18","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/17.html","stageOrder":17},{"id":"A079-18","name":"いたずら Lv.19","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/18.html","stageOrder":18},{"id":"A079-19","name":"いたずら Lv.MAX","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/19.html","stageOrder":19},{"id":"A079-2","name":"いたずら Lv.3","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/2.html","stageOrder":2},{"id":"A079-3","name":"いたずら Lv.4","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/3.html","stageOrder":3},{"id":"A079-4","name":"いたずら Lv.5","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/4.html","stageOrder":4},{"id":"A079-5","name":"いたずら Lv.6","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/5.html","stageOrder":5},{"id":"A079-6","name":"いたずら Lv.7","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/6.html","stageOrder":6},{"id":"A079-7","name":"いたずら Lv.8","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/7.html","stageOrder":7},{"id":"A079-8","name":"いたずら Lv.9","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/8.html","stageOrder":8},{"id":"A079-9","name":"いたずら Lv.10","mapName":"強襲！いたずらウッディ","locationId":"A079","href":"stage/A079/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":331,"stages":[{"id":"A014-0","name":"에그 Lv.1","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/0.html","stageOrder":0},{"id":"A014-1","name":"에그 Lv.2","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/1.html","stageOrder":1},{"id":"A014-10","name":"에그 Lv.11","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/10.html","stageOrder":10},{"id":"A014-11","name":"에그 Lv.12","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/11.html","stageOrder":11},{"id":"A014-12","name":"에그 Lv.13","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/12.html","stageOrder":12},{"id":"A014-13","name":"에그 Lv.14","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/13.html","stageOrder":13},{"id":"A014-14","name":"에그 Lv.15","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/14.html","stageOrder":14},{"id":"A014-15","name":"에그 Lv.16","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/15.html","stageOrder":15},{"id":"A014-16","name":"에그 Lv.17","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/16.html","stageOrder":16},{"id":"A014-17","name":"에그 Lv.18","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/17.html","stageOrder":17},{"id":"A014-18","name":"에그 Lv.19","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/18.html","stageOrder":18},{"id":"A014-19","name":"에그 Lv.20","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/19.html","stageOrder":19},{"id":"A014-2","name":"에그 Lv.3","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/2.html","stageOrder":2},{"id":"A014-3","name":"에그 Lv.4","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/3.html","stageOrder":3},{"id":"A014-4","name":"에그 Lv.5","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/4.html","stageOrder":4},{"id":"A014-5","name":"에그 Lv.6","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/5.html","stageOrder":5},{"id":"A014-6","name":"에그 Lv.7","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/6.html","stageOrder":6},{"id":"A014-7","name":"에그 Lv.8","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/7.html","stageOrder":7},{"id":"A014-8","name":"에그 Lv.9","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/8.html","stageOrder":8},{"id":"A014-9","name":"에그 Lv.10","mapName":"이스타 강습!","locationId":"A014","href":"stage/A014/9.html","stageOrder":9},{"id":"A049-4","name":"XP 대잔치 Lv.5","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/4.html","stageOrder":4},{"id":"A049-5","name":"XP 대잔치 Lv.6","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/5.html","stageOrder":5},{"id":"S129-1","name":"이스타바니","mapName":"수수께끼의 이스타","locationId":"S129","href":"stage/S129/1.html","stageOrder":1},{"id":"S129-3","name":"원주민","mapName":"수수께끼의 이스타","locationId":"S129","href":"stage/S129/3.html","stageOrder":3},{"id":"S129-5","name":"코하우 롱고롱고","mapName":"수수께끼의 이스타","locationId":"S129","href":"stage/S129/5.html","stageOrder":5},{"id":"S321-1","name":"바닷물을 젤리로 만들기","mapName":"#04 공포의 장난계획","locationId":"S321","href":"stage/S321/1.html","stageOrder":1},{"id":"S322-5","name":"2017년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/5.html","stageOrder":5},{"id":"S426-0","name":"섬의 유래를 밝혀낸 날","mapName":"이스터 수수께끼 발굴!","locationId":"S426","href":"stage/S426/0.html","stageOrder":0},{"id":"S426-2","name":"영력이 깃든 모아이의 눈","mapName":"이스터 수수께끼 발굴!","locationId":"S426","href":"stage/S426/2.html","stageOrder":2},{"id":"V006-9","name":"10층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/9.html","stageOrder":9},{"id":"V007-7","name":"8층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/7.html","stageOrder":7}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

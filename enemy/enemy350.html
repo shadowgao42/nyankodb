@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":350,"stages":[{"id":"C048-2","name":"鬼鎮めの儀式","mapName":"신비의 메르크 스토리아 (구)","locationId":"C048","href":"stage/C048/2.html","stageOrder":2},{"id":"C086-2","name":"진혼 의식","mapName":"신비의 메르크 스토리아","locationId":"C086","href":"stage/C086/2.html","stageOrder":2},{"id":"CA004-10","name":"유술사와 동료들 Lv.11","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/10.html","stageOrder":10},{"id":"CA004-11","name":"유술사와 동료들 Lv.12","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/11.html","stageOrder":11},{"id":"CA004-12","name":"유술사와 동료들 Lv.13","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/12.html","stageOrder":12},{"id":"CA004-13","name":"유술사와 동료들 Lv.14","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/13.html","stageOrder":13},{"id":"CA004-14","name":"유술사와 동료들 Lv.15","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/14.html","stageOrder":14},{"id":"CA004-15","name":"유술사와 동료들 Lv.16","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/15.html","stageOrder":15},{"id":"CA004-16","name":"유술사와 동료들 Lv.17","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/16.html","stageOrder":16},{"id":"CA004-17","name":"유술사와 동료들 Lv.18","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/17.html","stageOrder":17},{"id":"CA004-18","name":"유술사와 동료들 Lv.19","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/18.html","stageOrder":18},{"id":"CA004-19","name":"유술사와 동료들 Lv.20","mapName":"강습의 메르크 스토리아","locationId":"CA004","href":"stage/CA004/19.html","stageOrder":19},{"id":"R004-0","name":"무기력 수행","mapName":"랭킹의 방","locationId":"R004","href":"stage/R004/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":598,"stages":[{"id":"A041-0","name":"설날은 왜 두 번이에요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/0.html","stageOrder":0},{"id":"A041-1","name":"까치의 설날은 언제예요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/1.html","stageOrder":1},{"id":"A041-2","name":"설빔은 무슨 빔이에요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/2.html","stageOrder":2},{"id":"A041-3","name":"엄마 냥코 좀 더 해도 돼요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/3.html","stageOrder":3},{"id":"A041-4","name":"삼촌은 왜 결혼 안 해요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/4.html","stageOrder":4},{"id":"A041-5","name":"왜 음식 앞에서 절해요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/5.html","stageOrder":5},{"id":"A041-6","name":"절 네 번 하면 네배인가요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/6.html","stageOrder":6},{"id":"A041-7","name":"세뱃돈은 왜 엄마가 가져가요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/7.html","stageOrder":7},{"id":"A041-8","name":"떡국 두 그릇 먹으면 두 살이에요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/8.html","stageOrder":8},{"id":"A041-9","name":"집에 언제 도착해요?","mapName":"냥코의 설날","locationId":"A041","href":"stage/A041/9.html","stageOrder":9},{"id":"A049-0","name":"XP 대잔치 Lv.1","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/0.html","stageOrder":0},{"id":"A049-1","name":"XP 대잔치 Lv.2","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/1.html","stageOrder":1},{"id":"A049-2","name":"XP 대잔치 Lv.3","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/2.html","stageOrder":2},{"id":"A049-3","name":"XP 대잔치 Lv.4","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/3.html","stageOrder":3},{"id":"A049-4","name":"XP 대잔치 Lv.5","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/4.html","stageOrder":4},{"id":"A049-5","name":"XP 대잔치 Lv.6","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/5.html","stageOrder":5},{"id":"A049-6","name":"XP 대잔치 Lv.7","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/6.html","stageOrder":6},{"id":"A049-7","name":"XP 대잔치 Lv.8","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/7.html","stageOrder":7},{"id":"A049-8","name":"XP 대잔치 Lv.9","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/8.html","stageOrder":8},{"id":"A049-9","name":"XP 대잔치 Lv.MAX","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/9.html","stageOrder":9},{"id":"EX057-0","name":"幸運！お年玉大襲来！","mapName":"EX 스테이지","locationId":"EX057","href":"stage/EX057/0.html","stageOrder":0},{"id":"EX058-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX058","href":"stage/EX058/0.html","stageOrder":0},{"id":"EX080-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/0.html","stageOrder":0},{"id":"EX080-1","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/1.html","stageOrder":1},{"id":"EX080-2","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/2.html","stageOrder":2},{"id":"EX080-3","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/3.html","stageOrder":3},{"id":"S322-10","name":"2022년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/10.html","stageOrder":10},{"id":"S367-3","name":"상품보다 비싼 배송비","mapName":"설날 세일 전쟁","locationId":"S367","href":"stage/S367/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

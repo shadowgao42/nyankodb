@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":686,"stages":[{"id":"CA016-0","name":"1층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/0.html","stageOrder":0},{"id":"CA016-1","name":"2층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/1.html","stageOrder":1},{"id":"CA016-2","name":"3층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/2.html","stageOrder":2},{"id":"CA016-3","name":"4층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/3.html","stageOrder":3},{"id":"CA016-4","name":"5층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/4.html","stageOrder":4},{"id":"CA016-5","name":"6층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/5.html","stageOrder":5},{"id":"CA016-6","name":"7층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/6.html","stageOrder":6},{"id":"CA016-7","name":"8층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/7.html","stageOrder":7},{"id":"CA016-8","name":"9층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/8.html","stageOrder":8},{"id":"CA016-9","name":"10층","mapName":"강습! Tower of Saviors","locationId":"CA016","href":"stage/CA016/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

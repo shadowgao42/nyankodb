@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":64,"stages":[{"id":"B018-0","name":"적소용돌이 고난도","mapName":"적색 카타스트로프","locationId":"B018","href":"stage/B018/0.html","stageOrder":0},{"id":"G005-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 6단","locationId":"G005","href":"stage/G005/0.html","stageOrder":0},{"id":"ND008-3","name":"결론 없는 논쟁","mapName":"메마른 생각의 정원","locationId":"ND008","href":"stage/ND008/3.html","stageOrder":3},{"id":"S014-0","name":"적소용돌이 고난도","mapName":"적색 카타스트로프","locationId":"S014","href":"stage/S014/0.html","stageOrder":0},{"id":"S069-0","name":"폭풍 카니발 극난도","mapName":"극난도 카니발!","locationId":"S069","href":"stage/S069/0.html","stageOrder":0},{"id":"S111-0","name":"심홍의 비극 초고난도","mapName":"설상가상","locationId":"S111","href":"stage/S111/0.html","stageOrder":0},{"id":"S169-0","name":"진격의 붉은 소용돌이 초고난도","mapName":"붉은 카타스트로프","locationId":"S169","href":"stage/S169/0.html","stageOrder":0},{"id":"S169-1","name":"절격의 붉은 소용돌이 극난도","mapName":"붉은 카타스트로프","locationId":"S169","href":"stage/S169/1.html","stageOrder":1},{"id":"SR024-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR024","href":"stage/SR024/0.html","stageOrder":0},{"id":"V000-20","name":"21층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/20.html","stageOrder":20},{"id":"V000-41","name":"42층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/41.html","stageOrder":41},{"id":"V006-20","name":"21층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/20.html","stageOrder":20},{"id":"V006-41","name":"42층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/41.html","stageOrder":41},{"id":"V010-20","name":"21층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/20.html","stageOrder":20},{"id":"V010-41","name":"42층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/41.html","stageOrder":41}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

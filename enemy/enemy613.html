@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":613,"stages":[{"id":"G011-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/0.html","stageOrder":0},{"id":"H066-3","name":"청수석 사막 Ⅳ","mapName":"사냥꾼의 지도 Ⅳ","locationId":"H066","href":"stage/H066/3.html","stageOrder":3},{"id":"ND000-0","name":"시작의 세계","mapName":"제로 필드","locationId":"ND000","href":"stage/ND000/0.html","stageOrder":0},{"id":"Q001-12","name":"불볕 사원 지역 13","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/12.html","stageOrder":12},{"id":"Q001-14","name":"불볕 사원 지역 15","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/14.html","stageOrder":14},{"id":"Q001-17","name":"모래 폭풍 지역 18","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/17.html","stageOrder":17},{"id":"Q002-12","name":"초열 화구 지역 13","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/12.html","stageOrder":12},{"id":"Q002-9","name":"열풍 산길 지역 10","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/9.html","stageOrder":9},{"id":"R047-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R047","href":"stage/R047/0.html","stageOrder":0},{"id":"S278-0","name":"유물 조사 Ⅱ 계획","mapName":"여왕의 발굴조사 2","locationId":"S278","href":"stage/S278/0.html","stageOrder":0},{"id":"S278-1","name":"유물 조사 Ⅱ 방법","mapName":"여왕의 발굴조사 2","locationId":"S278","href":"stage/S278/1.html","stageOrder":1},{"id":"S278-2","name":"유물 조사 Ⅱ 성과","mapName":"여왕의 발굴조사 2","locationId":"S278","href":"stage/S278/2.html","stageOrder":2},{"id":"S278-3","name":"유물 조사 Ⅱ 분석","mapName":"여왕의 발굴조사 2","locationId":"S278","href":"stage/S278/3.html","stageOrder":3},{"id":"S280-3","name":"유물 조사 Ⅳ 분석","mapName":"여왕의 발굴조사 4","locationId":"S280","href":"stage/S280/3.html","stageOrder":3},{"id":"S334-0","name":"땅을 울리는 주먹","mapName":"사막의 괴이 Ⅱ","locationId":"S334","href":"stage/S334/0.html","stageOrder":0},{"id":"SR006-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR006","href":"stage/SR006/4.html","stageOrder":4},{"id":"SR010-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR010","href":"stage/SR010/3.html","stageOrder":3},{"id":"SR013-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR013","href":"stage/SR013/3.html","stageOrder":3},{"id":"SR016-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR016","href":"stage/SR016/4.html","stageOrder":4},{"id":"SR020-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR020","href":"stage/SR020/3.html","stageOrder":3},{"id":"SR025-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR025","href":"stage/SR025/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":593,"stages":[{"id":"A037-0","name":"축복 Lv.1","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/0.html","stageOrder":0},{"id":"A037-1","name":"축복 Lv.2","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/1.html","stageOrder":1},{"id":"A037-10","name":"축복 Lv.11","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/10.html","stageOrder":10},{"id":"A037-11","name":"축복 Lv.12","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/11.html","stageOrder":11},{"id":"A037-12","name":"축복 Lv.13","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/12.html","stageOrder":12},{"id":"A037-13","name":"축복 Lv.14","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/13.html","stageOrder":13},{"id":"A037-14","name":"축복 Lv.15","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/14.html","stageOrder":14},{"id":"A037-15","name":"축복 Lv.16","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/15.html","stageOrder":15},{"id":"A037-16","name":"축복 Lv.17","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/16.html","stageOrder":16},{"id":"A037-17","name":"축복 Lv.18","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/17.html","stageOrder":17},{"id":"A037-18","name":"축복 Lv.19","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/18.html","stageOrder":18},{"id":"A037-19","name":"축복 Lv.MAX","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/19.html","stageOrder":19},{"id":"A037-2","name":"축복 Lv.3","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/2.html","stageOrder":2},{"id":"A037-3","name":"축복 Lv.4","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/3.html","stageOrder":3},{"id":"A037-4","name":"축복 Lv.5","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/4.html","stageOrder":4},{"id":"A037-5","name":"축복 Lv.6","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/5.html","stageOrder":5},{"id":"A037-6","name":"축복 Lv.7","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/6.html","stageOrder":6},{"id":"A037-7","name":"축복 Lv.8","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/7.html","stageOrder":7},{"id":"A037-8","name":"축복 Lv.9","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/8.html","stageOrder":8},{"id":"A037-9","name":"축복 Lv.10","mapName":"대천사 엑스엘 강습","locationId":"A037","href":"stage/A037/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

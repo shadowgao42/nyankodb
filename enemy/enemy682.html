@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":682,"stages":[{"id":"ND010-1","name":"인스턴트 사진관","mapName":"십리콘 밸리","locationId":"ND010","href":"stage/ND010/1.html","stageOrder":1},{"id":"ND010-5","name":"파랑새의 환영","mapName":"십리콘 밸리","locationId":"ND010","href":"stage/ND010/5.html","stageOrder":5},{"id":"ND011-1","name":"쫀득쫀득 호수","mapName":"구아자 도원향","locationId":"ND011","href":"stage/ND011/1.html","stageOrder":1},{"id":"ND012-2","name":"독이 낳은 고독","mapName":"숨겨진 모르모섬","locationId":"ND012","href":"stage/ND012/2.html","stageOrder":2},{"id":"ND013-4","name":"공용 프라이빗 비치","mapName":"초저가 테마파크","locationId":"ND013","href":"stage/ND013/4.html","stageOrder":4},{"id":"ND014-2","name":"제로 마그네틱 필드","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/2.html","stageOrder":2},{"id":"ND015-3","name":"위기회피 자동화","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/3.html","stageOrder":3},{"id":"ND017-3","name":"풀피리 수초","mapName":"완구우림","locationId":"ND017","href":"stage/ND017/3.html","stageOrder":3},{"id":"ND018-2","name":"리모델링 침몰선","mapName":"심해 뉴타운","locationId":"ND018","href":"stage/ND018/2.html","stageOrder":2},{"id":"ND021-3","name":"풍덩 쇼콜라","mapName":"스위트 네이처 파크","locationId":"ND021","href":"stage/ND021/3.html","stageOrder":3},{"id":"ND023-0","name":"거짓의 잠꼬대","mapName":"잠자는 심연","locationId":"ND023","href":"stage/ND023/0.html","stageOrder":0},{"id":"ND025-3","name":"식사 전 사전 정독","mapName":"도서정가 제도","locationId":"ND025","href":"stage/ND025/3.html","stageOrder":3},{"id":"ND027-4","name":"유니콘 호수","mapName":"매지컬 환상국","locationId":"ND027","href":"stage/ND027/4.html","stageOrder":4},{"id":"ND029-1","name":"뒤죽박죽 타이포그래피","mapName":"미술 공방전","locationId":"ND029","href":"stage/ND029/1.html","stageOrder":1},{"id":"ND031-0","name":"머나먼 붉은 황야","mapName":"새로운 지평","locationId":"ND031","href":"stage/ND031/0.html","stageOrder":0},{"id":"ND034-0","name":"공의존 화합물","mapName":"편애 화학 실험장","locationId":"ND034","href":"stage/ND034/0.html","stageOrder":0},{"id":"ND036-1","name":"トロリチャー州","mapName":"理想郷ビバラメン","locationId":"ND036","href":"stage/ND036/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

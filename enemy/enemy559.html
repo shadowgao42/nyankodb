@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":559,"stages":[{"id":"DM000-23","name":"이탈리아","mapName":"마계편","locationId":"DM000","href":"stage/DM000/23.html","stageOrder":23},{"id":"DM000-39","name":"아르헨티나","mapName":"마계편","locationId":"DM000","href":"stage/DM000/39.html","stageOrder":39},{"id":"DM000-47","name":"하와이","mapName":"마계편","locationId":"DM000","href":"stage/DM000/47.html","stageOrder":47},{"id":"EX059-2","name":"비경의 숲의 바다 초극난도","mapName":"EX 스테이지","locationId":"EX059","href":"stage/EX059/2.html","stageOrder":2},{"id":"H064-0","name":"정점의 사당 초극난도","mapName":"악한 본능의 정점","locationId":"H064","href":"stage/H064/0.html","stageOrder":0},{"id":"L000-69","name":"지하 70층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/69.html","stageOrder":69},{"id":"L000-79","name":"지하 80층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/79.html","stageOrder":79},{"id":"L000-89","name":"지하 90층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/89.html","stageOrder":89},{"id":"L000-98","name":"지하 99층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/98.html","stageOrder":98},{"id":"NA040-0","name":"마그마 샤프트","mapName":"데드 히트 랜드","locationId":"NA040","href":"stage/NA040/0.html","stageOrder":0},{"id":"NA042-1","name":"불규칙한 심장 박동","mapName":"천년수 명산","locationId":"NA042","href":"stage/NA042/1.html","stageOrder":1},{"id":"ND005-1","name":"그레이트 배리어 프리","mapName":"바다의 고양이","locationId":"ND005","href":"stage/ND005/1.html","stageOrder":1},{"id":"ND014-2","name":"제로 마그네틱 필드","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/2.html","stageOrder":2},{"id":"ND023-2","name":"꿈과 환상","mapName":"잠자는 심연","locationId":"ND023","href":"stage/ND023/2.html","stageOrder":2},{"id":"ND027-3","name":"페어리 클럽","mapName":"매지컬 환상국","locationId":"ND027","href":"stage/ND027/3.html","stageOrder":3},{"id":"ND029-4","name":"크롭 티 크로키","mapName":"미술 공방전","locationId":"ND029","href":"stage/ND029/4.html","stageOrder":4},{"id":"ND036-0","name":"黄金スープ油田","mapName":"理想郷ビバラメン","locationId":"ND036","href":"stage/ND036/0.html","stageOrder":0},{"id":"S352-0","name":"하이퍼 버서커 초극난도","mapName":"극악의 배틀 강림","locationId":"S352","href":"stage/S352/0.html","stageOrder":0},{"id":"SR000-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR000","href":"stage/SR000/3.html","stageOrder":3},{"id":"SR003-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR003","href":"stage/SR003/0.html","stageOrder":0},{"id":"SR008-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR008","href":"stage/SR008/2.html","stageOrder":2},{"id":"SR018-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR018","href":"stage/SR018/0.html","stageOrder":0},{"id":"SR022-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR022","href":"stage/SR022/0.html","stageOrder":0},{"id":"SR028-0","name":"Round 1","mapName":"異次元コロシアム","locationId":"SR028","href":"stage/SR028/0.html","stageOrder":0},{"id":"V006-36","name":"37층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/36.html","stageOrder":36},{"id":"V008-9","name":"최상층","mapName":"악마 냥코별탑","locationId":"V008","href":"stage/V008/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

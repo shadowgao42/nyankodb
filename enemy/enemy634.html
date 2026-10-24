@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":634,"stages":[{"id":"G011-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/2.html","stageOrder":2},{"id":"H066-2","name":"홍수석 밀림 Ⅳ","mapName":"사냥꾼의 지도 Ⅳ","locationId":"H066","href":"stage/H066/2.html","stageOrder":2},{"id":"ND002-5","name":"코끼리코 수림","mapName":"참참참 분지","locationId":"ND002","href":"stage/ND002/5.html","stageOrder":5},{"id":"Q000-11","name":"호우 수림 지역 12","mapName":"가푸라 밀림","locationId":"Q000","href":"stage/Q000/11.html","stageOrder":11},{"id":"Q000-12","name":"호우 수림 지역 13","mapName":"가푸라 밀림","locationId":"Q000","href":"stage/Q000/12.html","stageOrder":12},{"id":"Q000-14","name":"호우 수림 지역 15","mapName":"가푸라 밀림","locationId":"Q000","href":"stage/Q000/14.html","stageOrder":14},{"id":"Q002-12","name":"초열 화구 지역 13","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/12.html","stageOrder":12},{"id":"Q002-16","name":"맹염 동굴 지역 17","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/16.html","stageOrder":16},{"id":"R033-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R033","href":"stage/R033/0.html","stageOrder":0},{"id":"R043-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R043","href":"stage/R043/0.html","stageOrder":0},{"id":"S281-1","name":"유물 조사 Ⅴ 방법","mapName":"여왕의 발굴조사 5","locationId":"S281","href":"stage/S281/1.html","stageOrder":1},{"id":"S333-0","name":"마수의 혓바닥","mapName":"밀림의 이변 Ⅱ","locationId":"S333","href":"stage/S333/0.html","stageOrder":0},{"id":"S335-0","name":"울려퍼지는 우렛소리","mapName":"화산의 위협 Ⅱ","locationId":"S335","href":"stage/S335/0.html","stageOrder":0},{"id":"S345-0","name":"기회를 노리는 사해어","mapName":"밀림의 이변 Ⅲ","locationId":"S345","href":"stage/S345/0.html","stageOrder":0},{"id":"SR008-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR008","href":"stage/SR008/2.html","stageOrder":2},{"id":"SR013-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR013","href":"stage/SR013/4.html","stageOrder":4},{"id":"SR017-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR017","href":"stage/SR017/2.html","stageOrder":2},{"id":"SR021-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR021","href":"stage/SR021/2.html","stageOrder":2},{"id":"SR025-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR025","href":"stage/SR025/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":257,"stages":[{"id":"B016-0","name":"N-1 그랑프리 극난도","mapName":"치와와 백작 강림","locationId":"B016","href":"stage/B016/0.html","stageOrder":0},{"id":"G011-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/0.html","stageOrder":0},{"id":"ND006-4","name":"웃으면 복이 온다","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/4.html","stageOrder":4},{"id":"ND014-5","name":"하늘을 거스르는 사과","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/5.html","stageOrder":5},{"id":"ND031-5","name":"에어즈 냥","mapName":"새로운 지평","locationId":"ND031","href":"stage/ND031/5.html","stageOrder":5},{"id":"S158-0","name":"N-1 그랑프리 극난도","mapName":"치와와 백작 강림","locationId":"S158","href":"stage/S158/0.html","stageOrder":0},{"id":"S207-0","name":"N-1 그랑프리 결승 초극난도","mapName":"치와와 백작 재강림","locationId":"S207","href":"stage/S207/0.html","stageOrder":0},{"id":"S207-1","name":"킹 오브 멍뭉이 초극난도","mapName":"치와와 백작 재강림","locationId":"S207","href":"stage/S207/1.html","stageOrder":1},{"id":"S253-0","name":"N-1 그랑프리 극난도","mapName":"백작과 아가씨","locationId":"S253","href":"stage/S253/0.html","stageOrder":0},{"id":"S307-0","name":"N-1 그랑프리 극난도","mapName":"백작과 천사","locationId":"S307","href":"stage/S307/0.html","stageOrder":0},{"id":"V000-45","name":"46층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/45.html","stageOrder":45},{"id":"V006-45","name":"46층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/45.html","stageOrder":45},{"id":"V010-45","name":"46층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/45.html","stageOrder":45}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

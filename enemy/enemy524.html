@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":524,"stages":[{"id":"NA026-5","name":"행복하게 살았답니다","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/5.html","stageOrder":5},{"id":"NA027-2","name":"포르말린 마리나","mapName":"랩 아일랜드","locationId":"NA027","href":"stage/NA027/2.html","stageOrder":2},{"id":"NA027-5","name":"타오르는 파랑","mapName":"랩 아일랜드","locationId":"NA027","href":"stage/NA027/5.html","stageOrder":5},{"id":"NA033-0","name":"앙코르 S.W.A.T","mapName":"나시고・렝","locationId":"NA033","href":"stage/NA033/0.html","stageOrder":0},{"id":"NA035-0","name":"담쟁이 덩굴에 잠겨진 문","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/0.html","stageOrder":0},{"id":"NA035-1","name":"윤회를 나타내는 연륜","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/1.html","stageOrder":1},{"id":"NA035-2","name":"조각의 쌍탑","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/2.html","stageOrder":2},{"id":"NA035-3","name":"나뭇가지 제단","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/3.html","stageOrder":3},{"id":"NA035-4","name":"수액이 솟아나는 지하도","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/4.html","stageOrder":4},{"id":"NA041-5","name":"안심하긴 이르다","mapName":"아롱사태 선포","locationId":"NA041","href":"stage/NA041/5.html","stageOrder":5},{"id":"NA045-3","name":"미션임파스타","mapName":"해적왕 먹자골목","locationId":"NA045","href":"stage/NA045/3.html","stageOrder":3},{"id":"ND004-5","name":"가가 가가 가가?","mapName":"GAGA GAGA","locationId":"ND004","href":"stage/ND004/5.html","stageOrder":5},{"id":"ND011-4","name":"달고나 유적","mapName":"구아자 도원향","locationId":"ND011","href":"stage/ND011/4.html","stageOrder":4},{"id":"ND024-3","name":"냉장고 안 휴대폰","mapName":"망각 공화국","locationId":"ND024","href":"stage/ND024/3.html","stageOrder":3},{"id":"ND033-4","name":"피뢰침 고깔모자","mapName":"크레이지 패션","locationId":"ND033","href":"stage/ND033/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

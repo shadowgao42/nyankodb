@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":680,"stages":[{"id":"ND009-5","name":"그레이트 프레리 항구","mapName":"이공간 여정의 저편","locationId":"ND009","href":"stage/ND009/5.html","stageOrder":5},{"id":"ND010-0","name":"구굴구굴 개구리","mapName":"십리콘 밸리","locationId":"ND010","href":"stage/ND010/0.html","stageOrder":0},{"id":"ND010-1","name":"인스턴트 사진관","mapName":"십리콘 밸리","locationId":"ND010","href":"stage/ND010/1.html","stageOrder":1},{"id":"ND012-4","name":"실수로 극약처방","mapName":"숨겨진 모르모섬","locationId":"ND012","href":"stage/ND012/4.html","stageOrder":4},{"id":"ND013-2","name":"잡초 가든","mapName":"초저가 테마파크","locationId":"ND013","href":"stage/ND013/2.html","stageOrder":2},{"id":"ND014-1","name":"안티매터 정글","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/1.html","stageOrder":1},{"id":"ND015-2","name":"청혼전야의 고요","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/2.html","stageOrder":2},{"id":"ND016-3","name":"사교적인 사교도","mapName":"노가드 대마궁","locationId":"ND016","href":"stage/ND016/3.html","stageOrder":3},{"id":"ND018-5","name":"별모래 천문대","mapName":"심해 뉴타운","locationId":"ND018","href":"stage/ND018/5.html","stageOrder":5},{"id":"ND019-0","name":"한평생 지적 탐구","mapName":"만물을 당기는 진리의 소용돌이","locationId":"ND019","href":"stage/ND019/0.html","stageOrder":0},{"id":"ND021-2","name":"티라미수 단층","mapName":"스위트 네이처 파크","locationId":"ND021","href":"stage/ND021/2.html","stageOrder":2},{"id":"ND025-3","name":"식사 전 사전 정독","mapName":"도서정가 제도","locationId":"ND025","href":"stage/ND025/3.html","stageOrder":3},{"id":"ND027-5","name":"드래곤돌라 투어","mapName":"매지컬 환상국","locationId":"ND027","href":"stage/ND027/5.html","stageOrder":5},{"id":"ND030-2","name":"신앙과 과학 사이","mapName":"변이를 수반하는 계승의 낙원","locationId":"ND030","href":"stage/ND030/2.html","stageOrder":2},{"id":"ND032-5","name":"알밥천국","mapName":"라이브 피시 센터","locationId":"ND032","href":"stage/ND032/5.html","stageOrder":5},{"id":"ND036-5","name":"一杯の幸せ","mapName":"理想郷ビバラメン","locationId":"ND036","href":"stage/ND036/5.html","stageOrder":5}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

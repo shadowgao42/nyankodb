@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":618,"stages":[{"id":"C187-0","name":"너, 시시한 거짓말을 하네","mapName":"대결! 타마코마 제2 부대 에이스","locationId":"C187","href":"stage/C187/0.html","stageOrder":0},{"id":"C187-1","name":"상대가 안 된다고","mapName":"대결! 타마코마 제2 부대 에이스","locationId":"C187","href":"stage/C187/1.html","stageOrder":1},{"id":"C187-2","name":"도망치는 것도 싸움의 일부야","mapName":"대결! 타마코마 제2 부대 에이스","locationId":"C187","href":"stage/C187/2.html","stageOrder":2},{"id":"C187-3","name":"싸움은 망설이면 지게 돼","mapName":"대결! 타마코마 제2 부대 에이스","locationId":"C187","href":"stage/C187/3.html","stageOrder":3},{"id":"C187-4","name":"아껴둘 때가 아니야","mapName":"대결! 타마코마 제2 부대 에이스","locationId":"C187","href":"stage/C187/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

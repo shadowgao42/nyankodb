@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":753,"stages":[{"id":"A075-0","name":"고귀한 악 Lv.1","mapName":"제2화 악의 대두","locationId":"A075","href":"stage/A075/0.html","stageOrder":0},{"id":"A075-1","name":"고귀한 악 Lv.2","mapName":"제2화 악의 대두","locationId":"A075","href":"stage/A075/1.html","stageOrder":1},{"id":"A075-2","name":"고귀한 악 Lv.3","mapName":"제2화 악의 대두","locationId":"A075","href":"stage/A075/2.html","stageOrder":2},{"id":"A075-3","name":"고귀한 악 Lv.4","mapName":"제2화 악의 대두","locationId":"A075","href":"stage/A075/3.html","stageOrder":3},{"id":"A075-4","name":"고귀한 악 Lv.5","mapName":"제2화 악의 대두","locationId":"A075","href":"stage/A075/4.html","stageOrder":4},{"id":"S414-0","name":"두 괴인의 협공","mapName":"제5화 숙적 재회","locationId":"S414","href":"stage/S414/0.html","stageOrder":0},{"id":"S414-2","name":"울려 퍼지는 땅울림","mapName":"제5화 숙적 재회","locationId":"S414","href":"stage/S414/2.html","stageOrder":2},{"id":"S415-3","name":"만신창이가 된 몸","mapName":"제6화 덮쳐 오는 흑막","locationId":"S415","href":"stage/S415/3.html","stageOrder":3},{"id":"S416-4","name":"냥코 레인저여, 영원하라","mapName":"최종화 악의 종착점","locationId":"S416","href":"stage/S416/4.html","stageOrder":4},{"id":"S431-0","name":"手を組んだ二人","mapName":"第5話 宿敵再び","locationId":"S431","href":"stage/S431/0.html","stageOrder":0},{"id":"S431-2","name":"鳴り響く地響き","mapName":"第5話 宿敵再び","locationId":"S431","href":"stage/S431/2.html","stageOrder":2},{"id":"S432-4","name":"にゃんこレンジャーよ、永遠に","mapName":"最終話 悪の終着点","locationId":"S432","href":"stage/S432/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

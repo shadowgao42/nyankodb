@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":58,"stages":[{"id":"B005-0","name":"초 메탈 강림 극난도","mapName":"역습의 대갈이군","locationId":"B005","href":"stage/B005/0.html","stageOrder":0},{"id":"D000-26","name":"레벨27","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/26.html","stageOrder":26},{"id":"D000-27","name":"레벨28","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/27.html","stageOrder":27},{"id":"D000-40","name":"레벨41","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/40.html","stageOrder":40},{"id":"D000-41","name":"레벨42","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/41.html","stageOrder":41},{"id":"N027-1","name":"원탁의 기사","mapName":"취약성과 약산성","locationId":"N027","href":"stage/N027/1.html","stageOrder":1},{"id":"N041-4","name":"양아치 종교화","mapName":"수상한 미술관","locationId":"N041","href":"stage/N041/4.html","stageOrder":4},{"id":"NA009-4","name":"망명 전날 기습","mapName":"고양이 쿠데타","locationId":"NA009","href":"stage/NA009/4.html","stageOrder":4},{"id":"NA018-3","name":"어화 둥둥 헤드","mapName":"마린 관저","locationId":"NA018","href":"stage/NA018/3.html","stageOrder":3},{"id":"NA032-4","name":"야경 잔업 문제","mapName":"다이버 도시","locationId":"NA032","href":"stage/NA032/4.html","stageOrder":4},{"id":"NA043-1","name":"바가지 요금에 흐느끼는 밤","mapName":"무드 비치","locationId":"NA043","href":"stage/NA043/1.html","stageOrder":1},{"id":"ND008-0","name":"무지한 소피스트","mapName":"메마른 생각의 정원","locationId":"ND008","href":"stage/ND008/0.html","stageOrder":0},{"id":"S078-0","name":"초 메탈 강림 극난도","mapName":"역습의 대갈이군","locationId":"S078","href":"stage/S078/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

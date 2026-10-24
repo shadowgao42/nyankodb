@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":179,"stages":[{"id":"B023-0","name":"진격의 블랙홀 초고난도","mapName":"절망적인 이차원","locationId":"B023","href":"stage/B023/0.html","stageOrder":0},{"id":"EX007-0","name":"우주전쟁 초고난도","mapName":"EX 스테이지","locationId":"EX007","href":"stage/EX007/0.html","stageOrder":0},{"id":"ND006-1","name":"고요한 초원의 허상","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/1.html","stageOrder":1},{"id":"ND023-5","name":"잠들어버린 사랑","mapName":"잠자는 심연","locationId":"ND023","href":"stage/ND023/5.html","stageOrder":5},{"id":"S066-0","name":"진격의 블랙홀 초고난도","mapName":"절망적인 이차원","locationId":"S066","href":"stage/S066/0.html","stageOrder":0},{"id":"S120-0","name":"폭풍 카니발2 극난도","mapName":"극난도 카니발2!","locationId":"S120","href":"stage/S120/0.html","stageOrder":0},{"id":"S193-0","name":"진격의 블랙홀 극난도","mapName":"계속되는 절망의 이차원","locationId":"S193","href":"stage/S193/0.html","stageOrder":0},{"id":"S193-1","name":"절격의 블랙홀 극난도","mapName":"계속되는 절망의 이차원","locationId":"S193","href":"stage/S193/1.html","stageOrder":1},{"id":"SR015-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR015","href":"stage/SR015/2.html","stageOrder":2},{"id":"SR027-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR027","href":"stage/SR027/2.html","stageOrder":2},{"id":"V000-33","name":"34층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/33.html","stageOrder":33},{"id":"V000-41","name":"42층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/41.html","stageOrder":41},{"id":"V006-41","name":"42층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/41.html","stageOrder":41},{"id":"V010-33","name":"34층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/33.html","stageOrder":33},{"id":"V010-41","name":"42층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/41.html","stageOrder":41}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

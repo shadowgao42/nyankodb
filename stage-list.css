@@ -1,0 +1,110 @@
+/* Shared stage-index result UI. Scoped for calculator embedding. */
+.stage-list { --line: #293645; --text: #f4f7fb; --muted: #94a2b6; --accent-2: #ffad3d; }
+:where(.stage-list) h3, :where(.stage-list) p { margin: 0; }
+:where(.stage-list) button { font-family: inherit; }
+:where(.stage-list) button, :where(.stage-list) a { -webkit-tap-highlight-color: transparent; }
+:where(.stage-list) .filter-collapse {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 0;
+      border: 0;
+      color: #dce3ed;
+      background: transparent;
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+      cursor: pointer;
+    }:where(.stage-list) .filter-collapse:hover, :where(.stage-list) .filter-collapse:focus-visible { color: #fff; outline: none; }:where(.stage-list) .filter-collapse-arrow {
+      color: var(--accent-2);
+      font-size: 22px;
+      line-height: .8;
+      transition: transform .16s ease;
+    }:where(.stage-list) .stage-section + .stage-section { border-top: 1px solid var(--line); }:where(.stage-list) .stage-section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 17px;
+      color: #fff;
+      background: rgba(28, 37, 49, .72);
+    }:where(.stage-list) .stage-section-heading h3 { flex: 0 1 auto; min-width: 0; }:where(.stage-list) .stage-section-toggle { margin-left: auto; }:where(.stage-list) .stage-section-toggle[aria-expanded="true"] .filter-collapse-arrow { transform: rotate(180deg); }:where(.stage-list) .stage-section-heading img {
+      display: block;
+      flex: 0 0 auto;
+      width: 78px;
+      height: 60px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }:where(.stage-list) .stage-section-heading img.stage-search-icon {
+      object-fit: none;
+      object-position: center;
+    }:where(.stage-list) .stage-section-heading img.stage-pr-icon {
+      box-sizing: border-box;
+      padding: 0 9px;
+      image-rendering: auto;
+    }:where(.stage-list) .stage-section-heading h3 { font-size: 15px; font-weight: 900; }:where(.stage-list) .stage-section-heading small { flex-shrink: 0; white-space: nowrap; color: var(--muted); font-size: 11px; font-weight: 800; }:where(.stage-list) .stage-grid { display: grid; grid-template-columns: minmax(0, 1fr); }:where(.stage-list) .stage-grid[hidden] { display: none; }:where(.stage-list) .stage-location { min-width: 0; border-bottom: 1px solid var(--line); }:where(.stage-list) .stage-location-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      min-width: 0;
+      background: rgba(23,31,41,.64);
+    }:where(.stage-list) .stage-card {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      min-height: 64px;
+      padding: 10px 17px;
+      color: var(--text);
+      text-decoration: none;
+    }:where(.stage-list) .stage-card:hover, :where(.stage-list) .stage-card:focus-visible {
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }:where(.stage-list) .stage-toggle { padding: 0 17px; }:where(.stage-list) .stage-toggle[aria-expanded="true"] .filter-collapse-arrow { transform: rotate(180deg); }:where(.stage-list) .stage-detail-list { display: grid; grid-template-columns: minmax(0, 1fr); padding: 4px 0 4px 24px; background: #0c121a; }:where(.stage-list) .stage-detail-list[hidden] { display: none; }:where(.stage-list) .stage-detail-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 43px;
+      min-width: 0;
+      padding: 8px 17px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      color: var(--text);
+      text-decoration: none;
+    }:where(.stage-list) .stage-detail-link:last-child { border-bottom: 0; }:where(.stage-list) .stage-detail-link:hover, :where(.stage-list) .stage-detail-link:focus-visible {
+      color: #fff;
+      background: #263240;
+      outline: none;
+      box-shadow: inset 3px 0 var(--accent-2);
+    }:where(.stage-list) .stage-detail-name { min-width: 0; overflow: hidden; font-size: 13px; font-weight: 850; text-overflow: ellipsis; white-space: nowrap; }:where(.stage-list) .stage-detail-id { flex: 0 0 auto; color: var(--accent-2); font-size: 11px; font-weight: 850; font-variant-numeric: tabular-nums; }:where(.stage-list) .stage-copy { min-width: 0; }:where(.stage-list) .stage-name {
+      display: block;
+      overflow: hidden;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 950;
+      line-height: 1.35;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }:where(.stage-list) .stage-identity {
+      display: block;
+      margin-top: 5px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }:where(.stage-list) .stage-card-count { display: inline-block; margin-left: 8px; color: var(--muted); font-size: 11px; font-weight: 800; white-space: nowrap; }:where(.stage-list) .empty-results {
+      padding: 42px 18px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+@media (max-width: 500px) {
+:where(.stage-list) .stage-card { padding: 8px; }:where(.stage-list) .stage-toggle { padding-inline: 8px; }:where(.stage-list) .stage-detail-list { padding-left: 12px; }:where(.stage-list) .stage-detail-link { padding-inline: 8px; }:where(.stage-list) .stage-section-heading img { width: 58px; height: 48px; }:where(.stage-list) .stage-section-heading img.stage-pr-icon { padding-inline: 5px; }
+
+}
+:where(.stage-list) .stage-list-more { display: flex; justify-content: center; padding: 14px 17px; border-top: 1px solid var(--line); }
+:where(.stage-list) .stage-list-more button:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+/* Keep offscreen index rows out of layout; auto remembers their measured height. */
+:where(.stage-list) .stage-location { content-visibility: auto; contain-intrinsic-block-size: auto var(--stage-location-height, 64px); }
+:where(.stage-list) .stage-detail-link, :where(.stage-list) .stage-card { content-visibility: auto; contain-intrinsic-block-size: auto 0px; }

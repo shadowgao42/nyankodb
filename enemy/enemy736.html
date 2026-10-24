@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":736,"stages":[{"id":"A072-0","name":"문화 교류 Lv.1","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/0.html","stageOrder":0},{"id":"A072-1","name":"문화 교류 Lv.2","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/1.html","stageOrder":1},{"id":"A072-2","name":"문화 교류 Lv.3","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/2.html","stageOrder":2},{"id":"A072-3","name":"문화 교류 Lv.4","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/3.html","stageOrder":3},{"id":"A072-4","name":"문화 교류 Lv.5","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/4.html","stageOrder":4},{"id":"A072-5","name":"문화 교류 Lv.6","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/5.html","stageOrder":5},{"id":"A072-6","name":"문화 교류 Lv.7","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/6.html","stageOrder":6},{"id":"A072-7","name":"문화 교류 Lv.8","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/7.html","stageOrder":7},{"id":"A072-8","name":"문화 교류 Lv.9","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/8.html","stageOrder":8},{"id":"A072-9","name":"문화 교류 Lv.MAX","mapName":"섬을 지키는 자 강습!","locationId":"A072","href":"stage/A072/9.html","stageOrder":9},{"id":"EX078-1","name":"여름의 추억 Page 2","mapName":"EX 스테이지","locationId":"EX078","href":"stage/EX078/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":271,"stages":[{"id":"B014-0","name":"허니 트랩 극난도","mapName":"여왕의 비행","locationId":"B014","href":"stage/B014/0.html","stageOrder":0},{"id":"ND004-6","name":"가가 가가 가가가?","mapName":"GAGA GAGA","locationId":"ND004","href":"stage/ND004/6.html","stageOrder":6},{"id":"ND022-5","name":"저세상 왕복 티켓","mapName":"리버스 묘지","locationId":"ND022","href":"stage/ND022/5.html","stageOrder":5},{"id":"S119-0","name":"허니 트랩 극난도","mapName":"여왕의 비행","locationId":"S119","href":"stage/S119/0.html","stageOrder":0},{"id":"S201-0","name":"허니 트립 극난도","mapName":"여왕의 고공비행","locationId":"S201","href":"stage/S201/0.html","stageOrder":0},{"id":"S201-1","name":"로얄 젤리 HELL 초극난도","mapName":"여왕의 고공비행","locationId":"S201","href":"stage/S201/1.html","stageOrder":1},{"id":"S252-0","name":"허니 트랩 극난도","mapName":"여왕과 망자","locationId":"S252","href":"stage/S252/0.html","stageOrder":0},{"id":"S306-0","name":"허니 트랩 극난도","mapName":"여왕과 아가씨","locationId":"S306","href":"stage/S306/0.html","stageOrder":0},{"id":"SR022-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR022","href":"stage/SR022/3.html","stageOrder":3},{"id":"SR025-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR025","href":"stage/SR025/4.html","stageOrder":4},{"id":"V000-44","name":"45층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/44.html","stageOrder":44},{"id":"V006-44","name":"45층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/44.html","stageOrder":44},{"id":"V010-44","name":"45층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/44.html","stageOrder":44}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

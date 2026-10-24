@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":176,"stages":[{"id":"D000-31","name":"레벨32","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/31.html","stageOrder":31},{"id":"D000-32","name":"레벨33","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/32.html","stageOrder":32},{"id":"D000-38","name":"레벨39","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/38.html","stageOrder":38},{"id":"D000-39","name":"레벨40","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/39.html","stageOrder":39},{"id":"EX038-1","name":"마지막 수련 ~암~ 초극난도","mapName":"EX 스테이지","locationId":"EX038","href":"stage/EX038/1.html","stageOrder":1},{"id":"H072-0","name":"달 위의 외계생명체","mapName":"재회의 지도","locationId":"H072","href":"stage/H072/0.html","stageOrder":0},{"id":"L000-39","name":"지하 40층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/39.html","stageOrder":39},{"id":"L000-49","name":"지하 50층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/49.html","stageOrder":49},{"id":"L000-59","name":"지하 60층","mapName":"지하 미궁 그랜드 어비스","locationId":"L000","href":"stage/L000/59.html","stageOrder":59},{"id":"N032-4","name":"우주개발국","mapName":"공포의 연방","locationId":"N032","href":"stage/N032/4.html","stageOrder":4},{"id":"N039-0","name":"포동포동","mapName":"무풍 아일랜드","locationId":"N039","href":"stage/N039/0.html","stageOrder":0},{"id":"NA008-5","name":"보이스피싱 왜가리","mapName":"파라리라 반도","locationId":"NA008","href":"stage/NA008/5.html","stageOrder":5},{"id":"NA026-3","name":"유리 양말","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/3.html","stageOrder":3},{"id":"NA036-0","name":"도도한 폭군과의 대결","mapName":"앞길을 가로막는 자들의 성","locationId":"NA036","href":"stage/NA036/0.html","stageOrder":0},{"id":"NA042-0","name":"흐린 기억 속의 연못","mapName":"천년수 명산","locationId":"NA042","href":"stage/NA042/0.html","stageOrder":0},{"id":"NA046-1","name":"어두운 마굴의 주인","mapName":"허실을 자아내는 길","locationId":"NA046","href":"stage/NA046/1.html","stageOrder":1},{"id":"ND005-5","name":"수심 한계 돌파","mapName":"바다의 고양이","locationId":"ND005","href":"stage/ND005/5.html","stageOrder":5},{"id":"ND015-3","name":"위기회피 자동화","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/3.html","stageOrder":3},{"id":"R035-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R035","href":"stage/R035/0.html","stageOrder":0},{"id":"Space08-34","name":"멜토즈","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/34.html","stageOrder":34},{"id":"Space09-34","name":"멜토즈","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/34.html","stageOrder":34},{"id":"SR008-1","name":"Round 2","mapName":"이차원 콜로세움","locationId":"SR008","href":"stage/SR008/1.html","stageOrder":1},{"id":"SR025-1","name":"Round 2","mapName":"이차원 콜로세움","locationId":"SR025","href":"stage/SR025/1.html","stageOrder":1},{"id":"W04-47","name":"달","mapName":"미래편 제1장","locationId":"W04","href":"stage/W04/47.html","stageOrder":47},{"id":"Z008-34","name":"멜토즈","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/34.html","stageOrder":34},{"id":"Z009-34","name":"멜토즈","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/34.html","stageOrder":34}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

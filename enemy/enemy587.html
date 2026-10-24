@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":587,"stages":[{"id":"H065-0","name":"비경의 사당 초극난도","mapName":"악한 본능의 비경","locationId":"H065","href":"stage/H065/0.html","stageOrder":0},{"id":"NA039-5","name":"그물에 걸린 해마","mapName":"마해역의 빅쿠라항","locationId":"NA039","href":"stage/NA039/5.html","stageOrder":5},{"id":"NA040-2","name":"뒤끓는 피의 연못","mapName":"데드 히트 랜드","locationId":"NA040","href":"stage/NA040/2.html","stageOrder":2},{"id":"NA045-4","name":"해리포차","mapName":"해적왕 먹자골목","locationId":"NA045","href":"stage/NA045/4.html","stageOrder":4},{"id":"NA047-3","name":"영원의 정점","mapName":"인류 고양이화 계획","locationId":"NA047","href":"stage/NA047/3.html","stageOrder":3},{"id":"ND006-4","name":"웃으면 복이 온다","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/4.html","stageOrder":4},{"id":"ND006-5","name":"웃으면 복어 온다","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/5.html","stageOrder":5},{"id":"ND012-4","name":"실수로 극약처방","mapName":"숨겨진 모르모섬","locationId":"ND012","href":"stage/ND012/4.html","stageOrder":4},{"id":"ND026-4","name":"언더 더 씨레벨","mapName":"버그체 컴퍼니","locationId":"ND026","href":"stage/ND026/4.html","stageOrder":4},{"id":"ND030-3","name":"테크트리 오브 라이프","mapName":"변이를 수반하는 계승의 낙원","locationId":"ND030","href":"stage/ND030/3.html","stageOrder":3},{"id":"S276-3","name":"악마 연구 Ⅴ 고찰","mapName":"여왕의 연구보고 5","locationId":"S276","href":"stage/S276/3.html","stageOrder":3},{"id":"SR001-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR001","href":"stage/SR001/3.html","stageOrder":3},{"id":"SR003-0","name":"Round 1","mapName":"이차원 콜로세움","locationId":"SR003","href":"stage/SR003/0.html","stageOrder":0},{"id":"SR010-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR010","href":"stage/SR010/4.html","stageOrder":4},{"id":"SR015-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR015","href":"stage/SR015/2.html","stageOrder":2},{"id":"SR017-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR017","href":"stage/SR017/2.html","stageOrder":2},{"id":"V006-40","name":"41층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/40.html","stageOrder":40},{"id":"V006-46","name":"47층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/46.html","stageOrder":46},{"id":"V008-7","name":"8층","mapName":"악마 냥코별탑","locationId":"V008","href":"stage/V008/7.html","stageOrder":7},{"id":"V008-9","name":"최상층","mapName":"악마 냥코별탑","locationId":"V008","href":"stage/V008/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

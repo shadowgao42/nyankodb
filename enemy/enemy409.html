@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":409,"stages":[{"id":"C076-0","name":"인생의 쓴 맛","mapName":"게으르느라 바쁨","locationId":"C076","href":"stage/C076/0.html","stageOrder":0},{"id":"C076-1","name":"다 귀찮아...","mapName":"게으르느라 바쁨","locationId":"C076","href":"stage/C076/1.html","stageOrder":1},{"id":"C076-2","name":"어른 되기 싫어","mapName":"게으르느라 바쁨","locationId":"C076","href":"stage/C076/2.html","stageOrder":2},{"id":"C076-3","name":"아이고 의미없다","mapName":"게으르느라 바쁨","locationId":"C076","href":"stage/C076/3.html","stageOrder":3},{"id":"C076-4","name":"내년부터 열심히","mapName":"게으르느라 바쁨","locationId":"C076","href":"stage/C076/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

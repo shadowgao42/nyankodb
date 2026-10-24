@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":62,"stages":[{"id":"A028-0","name":"출근 Lv.1","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/0.html","stageOrder":0},{"id":"A028-1","name":"출근 Lv.2","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/1.html","stageOrder":1},{"id":"A028-2","name":"출근 Lv.3","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/2.html","stageOrder":2},{"id":"A028-3","name":"출근 Lv.4","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/3.html","stageOrder":3},{"id":"A028-4","name":"출근 Lv.5","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/4.html","stageOrder":4},{"id":"A028-5","name":"출근 Lv.6","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/5.html","stageOrder":5},{"id":"A028-6","name":"출근 Lv.7","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/6.html","stageOrder":6},{"id":"A028-7","name":"출근 Lv.8","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/7.html","stageOrder":7},{"id":"A028-8","name":"출근 Lv.9","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/8.html","stageOrder":8},{"id":"A028-9","name":"출근 Lv.10","mapName":"11월 강습!","locationId":"A028","href":"stage/A028/9.html","stageOrder":9},{"id":"S009-2","name":"실례하겠습니다","mapName":"칼퇴근의 꿈","locationId":"S009","href":"stage/S009/2.html","stageOrder":2},{"id":"S009-3","name":"수고하셨습니다","mapName":"칼퇴근의 꿈","locationId":"S009","href":"stage/S009/3.html","stageOrder":3},{"id":"S009-4","name":"죄송합니다","mapName":"칼퇴근의 꿈","locationId":"S009","href":"stage/S009/4.html","stageOrder":4},{"id":"S009-5","name":"그만두겠습니다!","mapName":"칼퇴근의 꿈","locationId":"S009","href":"stage/S009/5.html","stageOrder":5},{"id":"S034-0","name":"울트라 중압! 초고난도","mapName":"월별 스테이지 올스타즈 울트라 기념!","locationId":"S034","href":"stage/S034/0.html","stageOrder":0},{"id":"S171-1","name":"초고도 전문가","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/1.html","stageOrder":1},{"id":"S171-2","name":"하이퍼 코어타임","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/2.html","stageOrder":2},{"id":"S171-4","name":"철야로 근무환경 개선","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/4.html","stageOrder":4},{"id":"S236-0","name":"가을의 제전 하위 초고난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/0.html","stageOrder":0},{"id":"S236-1","name":"가을의 제전 중위 극난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/1.html","stageOrder":1},{"id":"S236-2","name":"가을의 제전 상위 극난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/2.html","stageOrder":2},{"id":"S236-4","name":"가을의 제전 왕위 초극난도","mapName":"대난투 가을 스페셜","locationId":"S236","href":"stage/S236/4.html","stageOrder":4},{"id":"V007-1","name":"2층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":710,"stages":[{"id":"G000-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 초단","locationId":"G000","href":"stage/G000/0.html","stageOrder":0},{"id":"G000-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 초단","locationId":"G000","href":"stage/G000/1.html","stageOrder":1},{"id":"G000-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 초단","locationId":"G000","href":"stage/G000/2.html","stageOrder":2},{"id":"G001-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 2단","locationId":"G001","href":"stage/G001/0.html","stageOrder":0},{"id":"G001-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 2단","locationId":"G001","href":"stage/G001/1.html","stageOrder":1},{"id":"G001-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 2단","locationId":"G001","href":"stage/G001/2.html","stageOrder":2},{"id":"G002-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 3단","locationId":"G002","href":"stage/G002/0.html","stageOrder":0},{"id":"G002-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 3단","locationId":"G002","href":"stage/G002/1.html","stageOrder":1},{"id":"G003-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 4단","locationId":"G003","href":"stage/G003/0.html","stageOrder":0},{"id":"G003-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 4단","locationId":"G003","href":"stage/G003/1.html","stageOrder":1},{"id":"G004-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 5단","locationId":"G004","href":"stage/G004/0.html","stageOrder":0},{"id":"G004-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 5단","locationId":"G004","href":"stage/G004/1.html","stageOrder":1},{"id":"G004-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 5단","locationId":"G004","href":"stage/G004/2.html","stageOrder":2},{"id":"G005-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 6단","locationId":"G005","href":"stage/G005/0.html","stageOrder":0},{"id":"G005-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 6단","locationId":"G005","href":"stage/G005/1.html","stageOrder":1},{"id":"G006-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 7단","locationId":"G006","href":"stage/G006/0.html","stageOrder":0},{"id":"G006-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 7단","locationId":"G006","href":"stage/G006/1.html","stageOrder":1},{"id":"G007-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 8단","locationId":"G007","href":"stage/G007/0.html","stageOrder":0},{"id":"G007-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 8단","locationId":"G007","href":"stage/G007/1.html","stageOrder":1},{"id":"G007-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 8단","locationId":"G007","href":"stage/G007/2.html","stageOrder":2},{"id":"G008-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 9단","locationId":"G008","href":"stage/G008/0.html","stageOrder":0},{"id":"G008-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 9단","locationId":"G008","href":"stage/G008/1.html","stageOrder":1},{"id":"G008-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 9단","locationId":"G008","href":"stage/G008/2.html","stageOrder":2},{"id":"G009-0","name":"승단 시험","mapName":"냥코도 승단 시험 10단","locationId":"G009","href":"stage/G009/0.html","stageOrder":0},{"id":"G010-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 11단","locationId":"G010","href":"stage/G010/0.html","stageOrder":0},{"id":"G010-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 11단","locationId":"G010","href":"stage/G010/1.html","stageOrder":1},{"id":"G011-0","name":"승단 시험 1","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/0.html","stageOrder":0},{"id":"G011-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/1.html","stageOrder":1},{"id":"G011-2","name":"승단 시험 3","mapName":"냥코도 승단 시험 12단","locationId":"G011","href":"stage/G011/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":416,"stages":[{"id":"A018-0","name":"완전 여름 Lv.11","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/0.html","stageOrder":0},{"id":"A018-1","name":"완전 여름 Lv.12","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/1.html","stageOrder":1},{"id":"A018-2","name":"완전 여름 Lv.13","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/2.html","stageOrder":2},{"id":"A018-3","name":"완전 여름 Lv.14","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/3.html","stageOrder":3},{"id":"A018-4","name":"완전 여름 Lv.15","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/4.html","stageOrder":4},{"id":"A018-5","name":"완전 여름 Lv.16","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/5.html","stageOrder":5},{"id":"A018-6","name":"완전 여름 Lv.17","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/6.html","stageOrder":6},{"id":"A018-7","name":"완전 여름 Lv.18","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/7.html","stageOrder":7},{"id":"A018-8","name":"완전 여름 Lv.19","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/8.html","stageOrder":8},{"id":"A018-9","name":"완전 여름 Lv.MAX","mapName":"속편・7월 강습!","locationId":"A018","href":"stage/A018/9.html","stageOrder":9},{"id":"A049-8","name":"XP 대잔치 Lv.9","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/8.html","stageOrder":8},{"id":"A049-9","name":"XP 대잔치 Lv.MAX","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/9.html","stageOrder":9},{"id":"A073-8","name":"남은 건 혼돈과 꿈의 흔적뿐","mapName":"고양이의 여름 방학 파라다이스","locationId":"A073","href":"stage/A073/8.html","stageOrder":8},{"id":"A073-9","name":"초심으로 돌아가겠습니다","mapName":"고양이의 여름 방학 파라다이스","locationId":"A073","href":"stage/A073/9.html","stageOrder":9},{"id":"A081-9","name":"눈이 의심되는 청구액","mapName":"억만장자의 경매","locationId":"A081","href":"stage/A081/9.html","stageOrder":9},{"id":"S166-0","name":"소년시대","mapName":"와! 완전 여름이다냥~!","locationId":"S166","href":"stage/S166/0.html","stageOrder":0},{"id":"S166-1","name":"Touch My Cat","mapName":"와! 완전 여름이다냥~!","locationId":"S166","href":"stage/S166/1.html","stageOrder":1},{"id":"S166-2","name":"고양이에게로 떠나는 여행","mapName":"와! 완전 여름이다냥~!","locationId":"S166","href":"stage/S166/2.html","stageOrder":2},{"id":"S166-3","name":"바다의 여인","mapName":"와! 완전 여름이다냥~!","locationId":"S166","href":"stage/S166/3.html","stageOrder":3},{"id":"S166-4","name":"여름이 참 좋아","mapName":"와! 완전 여름이다냥~!","locationId":"S166","href":"stage/S166/4.html","stageOrder":4},{"id":"S322-6","name":"2018년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/6.html","stageOrder":6},{"id":"S407-4","name":"값을 매길 수 없는 경관","mapName":"럭셔리 리조트랜드","locationId":"S407","href":"stage/S407/4.html","stageOrder":4},{"id":"V002-6","name":"7층","mapName":"검정 냥코별탑","locationId":"V002","href":"stage/V002/6.html","stageOrder":6},{"id":"V002-8","name":"9층","mapName":"검정 냥코별탑","locationId":"V002","href":"stage/V002/8.html","stageOrder":8},{"id":"V006-12","name":"13층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/12.html","stageOrder":12}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

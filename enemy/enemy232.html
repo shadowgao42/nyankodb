@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":232,"stages":[{"id":"B012-0","name":"고양이 보완 계획 극난도","mapName":"단죄천사 쿠오리넬 강림","locationId":"B012","href":"stage/B012/0.html","stageOrder":0},{"id":"EX054-0","name":"고양이 보완 계획 극난도","mapName":"EX 스테이지","locationId":"EX054","href":"stage/EX054/0.html","stageOrder":0},{"id":"ND005-5","name":"수심 한계 돌파","mapName":"바다의 고양이","locationId":"ND005","href":"stage/ND005/5.html","stageOrder":5},{"id":"ND015-5","name":"안전하게 귀항","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/5.html","stageOrder":5},{"id":"ND035-5","name":"カヌレ山コースター","mapName":"シュガーハイランド","locationId":"ND035","href":"stage/ND035/5.html","stageOrder":5},{"id":"S095-0","name":"고양이 보완 계획 극난도","mapName":"단죄천사 쿠오리넬 강림","locationId":"S095","href":"stage/S095/0.html","stageOrder":0},{"id":"S196-0","name":"새로운 고양이 보충 계획 극난도","mapName":"단죄천사 쿠오리넬의 재강림","locationId":"S196","href":"stage/S196/0.html","stageOrder":0},{"id":"S196-1","name":"세상의 중심에서 사랑을 외치는 고양이 초극난도","mapName":"단죄천사 쿠오리넬의 재강림","locationId":"S196","href":"stage/S196/1.html","stageOrder":1},{"id":"S251-0","name":"고양이 보완 계획 극난도","mapName":"천사와 반야","locationId":"S251","href":"stage/S251/0.html","stageOrder":0},{"id":"SR019-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR019","href":"stage/SR019/3.html","stageOrder":3},{"id":"SR024-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR024","href":"stage/SR024/2.html","stageOrder":2},{"id":"SR027-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR027","href":"stage/SR027/3.html","stageOrder":3},{"id":"V000-43","name":"44층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/43.html","stageOrder":43},{"id":"V006-43","name":"44층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/43.html","stageOrder":43},{"id":"V010-43","name":"44층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/43.html","stageOrder":43}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

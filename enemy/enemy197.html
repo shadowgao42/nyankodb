@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":197,"stages":[{"id":"A049-0","name":"XP 대잔치 Lv.1","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/0.html","stageOrder":0},{"id":"A049-1","name":"XP 대잔치 Lv.2","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/1.html","stageOrder":1},{"id":"A056-0","name":"퍼레이드 Lv.1","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/0.html","stageOrder":0},{"id":"A056-1","name":"퍼레이드 Lv.2","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/1.html","stageOrder":1},{"id":"A056-2","name":"퍼레이드 Lv.3","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/2.html","stageOrder":2},{"id":"A056-3","name":"퍼레이드 Lv.4","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/3.html","stageOrder":3},{"id":"A056-4","name":"퍼레이드 Lv.5","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/4.html","stageOrder":4},{"id":"A056-5","name":"퍼레이드 Lv.6","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/5.html","stageOrder":5},{"id":"A056-6","name":"퍼레이드 Lv.7","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/6.html","stageOrder":6},{"id":"A056-7","name":"퍼레이드 Lv.8","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/7.html","stageOrder":7},{"id":"A056-8","name":"퍼레이드 Lv.9","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/8.html","stageOrder":8},{"id":"A056-9","name":"퍼레이드 Lv.MAX","mapName":"#03 할로윈 백귀야행","locationId":"A056","href":"stage/A056/9.html","stageOrder":9},{"id":"S072-0","name":"10월 31일","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/0.html","stageOrder":0},{"id":"S072-1","name":"잭오랜턴","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/1.html","stageOrder":1},{"id":"S072-2","name":"코스프레 대행렬","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/2.html","stageOrder":2},{"id":"S072-3","name":"트릭 오어 트릿","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/3.html","stageOrder":3},{"id":"S072-4","name":"할로윈이 모에욤..?","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/4.html","stageOrder":4},{"id":"S072-5","name":"기원은 가을의 수확제","mapName":"할로윈이 돌아왔다냥!","locationId":"S072","href":"stage/S072/5.html","stageOrder":5},{"id":"S079-0","name":"엑셀런트 군단! 초고난도","mapName":"이벤트 올스타즈 엑셀런트 기념!","locationId":"S079","href":"stage/S079/0.html","stageOrder":0},{"id":"S320-0","name":"블러드 케이크","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/0.html","stageOrder":0},{"id":"S320-1","name":"카카오 0% 초콜릿","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/1.html","stageOrder":1},{"id":"S320-2","name":"고무 젤리","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/2.html","stageOrder":2},{"id":"S320-3","name":"발치 탕후루","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/3.html","stageOrder":3},{"id":"S320-4","name":"석탄 쿠키","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/4.html","stageOrder":4},{"id":"S320-5","name":"유통기한 지난 과자의 집","mapName":"#02 과자 쟁탈전","locationId":"S320","href":"stage/S320/5.html","stageOrder":5},{"id":"S321-1","name":"바닷물을 젤리로 만들기","mapName":"#04 공포의 장난계획","locationId":"S321","href":"stage/S321/1.html","stageOrder":1},{"id":"S321-2","name":"지구 자전 멈춰버리기","mapName":"#04 공포의 장난계획","locationId":"S321","href":"stage/S321/2.html","stageOrder":2},{"id":"S322-3","name":"2015년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/3.html","stageOrder":3},{"id":"S392-2","name":"가을의 추억","mapName":"2024년 추억 앨범","locationId":"S392","href":"stage/S392/2.html","stageOrder":2},{"id":"S418-2","name":"가을의 추억","mapName":"2025년 추억 앨범","locationId":"S418","href":"stage/S418/2.html","stageOrder":2},{"id":"V006-1","name":"2층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

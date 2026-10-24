@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":731,"stages":[{"id":"C225-0","name":"본명은 마일즈 프로워","mapName":"케미컬 플랜트","locationId":"C225","href":"stage/C225/0.html","stageOrder":0},{"id":"C225-1","name":"착한 마음씨와 2개의 꼬리","mapName":"케미컬 플랜트","locationId":"C225","href":"stage/C225/1.html","stageOrder":1},{"id":"C225-2","name":"소닉의 기댈 수 있는 동생","mapName":"케미컬 플랜트","locationId":"C225","href":"stage/C225/2.html","stageOrder":2},{"id":"C225-3","name":"메카와 두뇌로 서포트","mapName":"케미컬 플랜트","locationId":"C225","href":"stage/C225/3.html","stageOrder":3},{"id":"C225-4","name":"하늘을 나는 최고의 파트너","mapName":"케미컬 플랜트","locationId":"C225","href":"stage/C225/4.html","stageOrder":4},{"id":"R032-0","name":"소닉 배틀!","mapName":"랭킹의 방","locationId":"R032","href":"stage/R032/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":151,"stages":[{"id":"C011-1","name":"아침해가 너무 강해서","mapName":"살아남아라! 개복치!","locationId":"C011","href":"stage/C011/1.html","stageOrder":1},{"id":"C088-1","name":"아침해가 너무 강해서","mapName":"살아남아라! 개복치!","locationId":"C088","href":"stage/C088/1.html","stageOrder":1},{"id":"C088-2","name":"죽음을 맞이하다","mapName":"살아남아라! 개복치!","locationId":"C088","href":"stage/C088/2.html","stageOrder":2},{"id":"C129-0","name":"갑작스런 죽음 Lv.1","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/0.html","stageOrder":0},{"id":"C129-1","name":"갑작스런 죽음 Lv.2","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/1.html","stageOrder":1},{"id":"C129-10","name":"갑작스런 죽음 Lv.11","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/10.html","stageOrder":10},{"id":"C129-11","name":"갑작스런 죽음 Lv.12","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/11.html","stageOrder":11},{"id":"C129-2","name":"갑작스런 죽음 Lv.3","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/2.html","stageOrder":2},{"id":"C129-3","name":"갑작스런 죽음 Lv.4","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/3.html","stageOrder":3},{"id":"C129-4","name":"갑작스런 죽음 Lv.5","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/4.html","stageOrder":4},{"id":"C129-5","name":"갑작스런 죽음 Lv.6","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/5.html","stageOrder":5},{"id":"C129-6","name":"갑작스런 죽음 Lv.7","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/6.html","stageOrder":6},{"id":"C129-7","name":"갑작스런 죽음 Lv.8","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/7.html","stageOrder":7},{"id":"C129-8","name":"갑작스런 죽음 Lv.9","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/8.html","stageOrder":8},{"id":"C129-9","name":"갑작스런 죽음 Lv.10","mapName":"미스 개복치 강습!","locationId":"C129","href":"stage/C129/9.html","stageOrder":9},{"id":"CA013-0","name":"갑작스런 죽음 Lv.1","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/0.html","stageOrder":0},{"id":"CA013-1","name":"갑작스런 죽음 Lv.2","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/1.html","stageOrder":1},{"id":"CA013-10","name":"갑작스런 죽음 Lv.11","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/10.html","stageOrder":10},{"id":"CA013-11","name":"갑작스런 죽음 Lv.12","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/11.html","stageOrder":11},{"id":"CA013-12","name":"갑작스런 죽음 Lv.13","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/12.html","stageOrder":12},{"id":"CA013-13","name":"갑작스런 죽음 Lv.14","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/13.html","stageOrder":13},{"id":"CA013-14","name":"갑작스런 죽음 Lv.15","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/14.html","stageOrder":14},{"id":"CA013-15","name":"갑작스런 죽음 Lv.16","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/15.html","stageOrder":15},{"id":"CA013-16","name":"갑작스런 죽음 Lv.17","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/16.html","stageOrder":16},{"id":"CA013-17","name":"갑작스런 죽음 Lv.18","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/17.html","stageOrder":17},{"id":"CA013-18","name":"갑작스런 죽음 Lv.19","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/18.html","stageOrder":18},{"id":"CA013-19","name":"갑작스런 죽음 Lv.MAX","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/19.html","stageOrder":19},{"id":"CA013-2","name":"갑작스런 죽음 Lv.3","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/2.html","stageOrder":2},{"id":"CA013-3","name":"갑작스런 죽음 Lv.4","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/3.html","stageOrder":3},{"id":"CA013-4","name":"갑작스런 죽음 Lv.5","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/4.html","stageOrder":4},{"id":"CA013-5","name":"갑작스런 죽음 Lv.6","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/5.html","stageOrder":5},{"id":"CA013-6","name":"갑작스런 죽음 Lv.7","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/6.html","stageOrder":6},{"id":"CA013-7","name":"갑작스런 죽음 Lv.8","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/7.html","stageOrder":7},{"id":"CA013-8","name":"갑작스런 죽음 Lv.9","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/8.html","stageOrder":8},{"id":"CA013-9","name":"갑작스런 죽음 Lv.10","mapName":"미스 개복치 강습!","locationId":"CA013","href":"stage/CA013/9.html","stageOrder":9},{"id":"R007-0","name":"물고기 천국","mapName":"랭킹의 방","locationId":"R007","href":"stage/R007/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

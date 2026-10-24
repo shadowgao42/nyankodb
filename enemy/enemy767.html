@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":767,"stages":[{"id":"C265-0","name":"자장자장 우리 아기","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/0.html","stageOrder":0},{"id":"C265-1","name":"더 이상 깨어날 수 없을걸?","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/1.html","stageOrder":1},{"id":"C265-2","name":"어라? 일어난 거야?","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/2.html","stageOrder":2},{"id":"C265-3","name":"아직 더 자도 되는데","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/3.html","stageOrder":3},{"id":"C265-4","name":"잠들어라아아","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/4.html","stageOrder":4},{"id":"C268-0","name":"하현 1 엔무 초급","mapName":"특별 임무! 엔무 토벌","locationId":"C268","href":"stage/C268/0.html","stageOrder":0},{"id":"C268-1","name":"하현 1 엔무 극난도","mapName":"특별 임무! 엔무 토벌","locationId":"C268","href":"stage/C268/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

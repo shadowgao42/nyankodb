@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":508,"stages":[{"id":"C133-0","name":"フタを開けソースを出す","mapName":"U.F.O.襲来！","locationId":"C133","href":"stage/C133/0.html","stageOrder":0},{"id":"C133-1","name":"お湯を注いで3分待つ","mapName":"U.F.O.襲来！","locationId":"C133","href":"stage/C133/1.html","stageOrder":1},{"id":"C133-2","name":"ソースを混ぜて完成","mapName":"U.F.O.襲来！","locationId":"C133","href":"stage/C133/2.html","stageOrder":2},{"id":"CA001-0","name":"①読まない作り方","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/0.html","stageOrder":0},{"id":"CA001-1","name":"②お湯張り線探し","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/1.html","stageOrder":1},{"id":"CA001-10","name":"⑪フタ裏にかやく","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/10.html","stageOrder":10},{"id":"CA001-11","name":"⑫失踪!青のり袋","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/11.html","stageOrder":11},{"id":"CA001-12","name":"⑬貰い忘れた割りばし","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/12.html","stageOrder":12},{"id":"CA001-13","name":"⑭混ぜる手にこもる力","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/13.html","stageOrder":13},{"id":"CA001-14","name":"⑮沈みゆくかやく","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/14.html","stageOrder":14},{"id":"CA001-15","name":"⑯むせる一口目","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/15.html","stageOrder":15},{"id":"CA001-16","name":"⑰曇るメガネ","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/16.html","stageOrder":16},{"id":"CA001-17","name":"⑱笑顔に光る青のり","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/17.html","stageOrder":17},{"id":"CA001-18","name":"⑲手に残るにおい","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/18.html","stageOrder":18},{"id":"CA001-19","name":"⑳ごちそうさま！","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/19.html","stageOrder":19},{"id":"CA001-2","name":"③小袋出さずにお湯投入","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/2.html","stageOrder":2},{"id":"CA001-3","name":"④足りないお湯","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/3.html","stageOrder":3},{"id":"CA001-4","name":"⑤うっかりかやく忘れ","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/4.html","stageOrder":4},{"id":"CA001-5","name":"⑥温め逃したソース","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/5.html","stageOrder":5},{"id":"CA001-6","name":"⑦勝手に開くフタ","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/6.html","stageOrder":6},{"id":"CA001-7","name":"⑧何分たったっけ？","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/7.html","stageOrder":7},{"id":"CA001-8","name":"⑨流しがべこっ","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/8.html","stageOrder":8},{"id":"CA001-9","name":"⑩シンクへ放たれる麺","mapName":"U.F.O.軍団 強襲！","locationId":"CA001","href":"stage/CA001/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

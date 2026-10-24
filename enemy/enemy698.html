@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":698,"stages":[{"id":"ND014-0","name":"플레밍 T자항로","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/0.html","stageOrder":0},{"id":"ND014-3","name":"엔트로피 트로피컬","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/3.html","stageOrder":3},{"id":"ND014-5","name":"하늘을 거스르는 사과","mapName":"요동치는 금지구역","locationId":"ND014","href":"stage/ND014/5.html","stageOrder":5},{"id":"ND015-1","name":"스위트 밀실","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/1.html","stageOrder":1},{"id":"ND015-4","name":"휘적거리는 해적","mapName":"호화여객선 하이패닉","locationId":"ND015","href":"stage/ND015/4.html","stageOrder":4},{"id":"ND017-5","name":"딱지 대폭포","mapName":"완구우림","locationId":"ND017","href":"stage/ND017/5.html","stageOrder":5},{"id":"ND018-5","name":"별모래 천문대","mapName":"심해 뉴타운","locationId":"ND018","href":"stage/ND018/5.html","stageOrder":5},{"id":"ND022-3","name":"싱싱한 사령들","mapName":"리버스 묘지","locationId":"ND022","href":"stage/ND022/3.html","stageOrder":3},{"id":"ND025-5","name":"매진된 매거진","mapName":"도서정가 제도","locationId":"ND025","href":"stage/ND025/5.html","stageOrder":5},{"id":"ND031-1","name":"도약하는 그림자 무리","mapName":"새로운 지평","locationId":"ND031","href":"stage/ND031/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

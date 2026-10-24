@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":689,"stages":[{"id":"C216-1","name":"싸움꾼 \"참좌\"","mapName":"바람의 검심","locationId":"C216","href":"stage/C216/1.html","stageOrder":1},{"id":"C216-2","name":"역날검과 참마도","mapName":"바람의 검심","locationId":"C216","href":"stage/C216/2.html","stageOrder":2},{"id":"C218-0","name":"싸움, 하러 왔다","mapName":"싸움꾼・사가라 사노스케","locationId":"C218","href":"stage/C218/0.html","stageOrder":0},{"id":"C218-1","name":"거대 도검・참마도","mapName":"싸움꾼・사가라 사노스케","locationId":"C218","href":"stage/C218/1.html","stageOrder":1},{"id":"C218-2","name":"악이라는 한 글자","mapName":"싸움꾼・사가라 사노스케","locationId":"C218","href":"stage/C218/2.html","stageOrder":2},{"id":"C218-3","name":"절대 질 수 없어!","mapName":"싸움꾼・사가라 사노스케","locationId":"C218","href":"stage/C218/3.html","stageOrder":3},{"id":"C218-4","name":"결판을 내보자고...","mapName":"싸움꾼・사가라 사노스케","locationId":"C218","href":"stage/C218/4.html","stageOrder":4},{"id":"R027-0","name":"메이지 검객 낭만 대회","mapName":"랭킹의 방","locationId":"R027","href":"stage/R027/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

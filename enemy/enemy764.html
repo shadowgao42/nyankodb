@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":764,"stages":[{"id":"C263-0","name":"후지카사네 산에서 7일간 살아남는 것","mapName":"귀살대 입대 시험","locationId":"C263","href":"stage/C263/0.html","stageOrder":0},{"id":"C263-1","name":"생존을 건 싸움","mapName":"귀살대 입대 시험","locationId":"C263","href":"stage/C263/1.html","stageOrder":1},{"id":"C263-2","name":"존재할 리 없는 이형의 혈귀","mapName":"귀살대 입대 시험","locationId":"C263","href":"stage/C263/2.html","stageOrder":2},{"id":"C263-4","name":"떠오르는 아침 해","mapName":"귀살대 입대 시험","locationId":"C263","href":"stage/C263/4.html","stageOrder":4},{"id":"C264-1","name":"꼭두각시가 된 사람들","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/1.html","stageOrder":1},{"id":"C264-3","name":"오합지졸 가족","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/3.html","stageOrder":3},{"id":"C264-4","name":"난도질하는 거미줄","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/4.html","stageOrder":4},{"id":"C265-0","name":"자장자장 우리 아기","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/0.html","stageOrder":0},{"id":"C265-1","name":"더 이상 깨어날 수 없을걸?","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/1.html","stageOrder":1},{"id":"C265-2","name":"어라? 일어난 거야?","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/2.html","stageOrder":2},{"id":"C265-3","name":"아직 더 자도 되는데","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/3.html","stageOrder":3},{"id":"C265-4","name":"잠들어라아아","mapName":"무한열차에서의 전투","locationId":"C265","href":"stage/C265/4.html","stageOrder":4},{"id":"C266-0","name":"수많은 팔이 감싸고 있는 혈귀 초급","mapName":"특별 임무! 혈귀 곰 선생 토벌","locationId":"C266","href":"stage/C266/0.html","stageOrder":0},{"id":"C267-0","name":"하현 5 루이 초급","mapName":"특별 임무! 루이 토벌","locationId":"C267","href":"stage/C267/0.html","stageOrder":0},{"id":"C267-1","name":"하현 5 루이 초고난도","mapName":"특별 임무! 루이 토벌","locationId":"C267","href":"stage/C267/1.html","stageOrder":1},{"id":"C268-1","name":"하현 1 엔무 극난도","mapName":"특별 임무! 엔무 토벌","locationId":"C268","href":"stage/C268/1.html","stageOrder":1},{"id":"C269-0","name":"상현 3 아카자 초급","mapName":"특별 임무! 아카자 토벌","locationId":"C269","href":"stage/C269/0.html","stageOrder":0},{"id":"CA025-0","name":"너도 혈귀가 되지 않겠나? Lv.1","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/0.html","stageOrder":0},{"id":"CA025-1","name":"너도 혈귀가 되지 않겠나? Lv.2","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/1.html","stageOrder":1},{"id":"CA025-10","name":"너도 혈귀가 되지 않겠나? Lv.11","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/10.html","stageOrder":10},{"id":"CA025-11","name":"너도 혈귀가 되지 않겠나? Lv.12","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/11.html","stageOrder":11},{"id":"CA025-12","name":"너도 혈귀가 되지 않겠나? Lv.13","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/12.html","stageOrder":12},{"id":"CA025-13","name":"너도 혈귀가 되지 않겠나? Lv.14","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/13.html","stageOrder":13},{"id":"CA025-14","name":"너도 혈귀가 되지 않겠나? Lv.15","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/14.html","stageOrder":14},{"id":"CA025-15","name":"너도 혈귀가 되지 않겠나? Lv.16","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/15.html","stageOrder":15},{"id":"CA025-16","name":"너도 혈귀가 되지 않겠나? Lv.17","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/16.html","stageOrder":16},{"id":"CA025-17","name":"너도 혈귀가 되지 않겠나? Lv.18","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/17.html","stageOrder":17},{"id":"CA025-18","name":"너도 혈귀가 되지 않겠나? Lv.19","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/18.html","stageOrder":18},{"id":"CA025-19","name":"혈귀가 되지 않겠다면 죽인다 Lv.MAX","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/19.html","stageOrder":19},{"id":"CA025-2","name":"너도 혈귀가 되지 않겠나? Lv.3","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/2.html","stageOrder":2},{"id":"CA025-3","name":"너도 혈귀가 되지 않겠나? Lv.4","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/3.html","stageOrder":3},{"id":"CA025-4","name":"너도 혈귀가 되지 않겠나? Lv.5","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/4.html","stageOrder":4},{"id":"CA025-5","name":"너도 혈귀가 되지 않겠나? Lv.6","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/5.html","stageOrder":5},{"id":"CA025-6","name":"너도 혈귀가 되지 않겠나? Lv.7","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/6.html","stageOrder":6},{"id":"CA025-7","name":"너도 혈귀가 되지 않겠나? Lv.8","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/7.html","stageOrder":7},{"id":"CA025-8","name":"너도 혈귀가 되지 않겠나? Lv.9","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/8.html","stageOrder":8},{"id":"CA025-9","name":"너도 혈귀가 되지 않겠나? Lv.10","mapName":"강습! 아카자와의 전투","locationId":"CA025","href":"stage/CA025/9.html","stageOrder":9},{"id":"R042-0","name":"특별 소집! 최강 대원 결정전","mapName":"랭킹의 방","locationId":"R042","href":"stage/R042/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

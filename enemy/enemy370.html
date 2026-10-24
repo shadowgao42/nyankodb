@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":370,"stages":[{"id":"C055-0","name":"무한의 검제 초급","mapName":"격전! 아처의 습격!","locationId":"C055","href":"stage/C055/0.html","stageOrder":0},{"id":"C055-1","name":"무한의 검제 고난도","mapName":"격전! 아처의 습격!","locationId":"C055","href":"stage/C055/1.html","stageOrder":1},{"id":"C196-0","name":"무한의 검제 초급","mapName":"격전! 아처의 습격!","locationId":"C196","href":"stage/C196/0.html","stageOrder":0},{"id":"C196-1","name":"무한의 검제 고난도","mapName":"격전! 아처의 습격!","locationId":"C196","href":"stage/C196/1.html","stageOrder":1},{"id":"CA014-0","name":"성배전쟁 1일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/0.html","stageOrder":0},{"id":"CA014-1","name":"성배전쟁 2일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/1.html","stageOrder":1},{"id":"CA014-10","name":"성배전쟁 11일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/10.html","stageOrder":10},{"id":"CA014-11","name":"성배전쟁 12일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/11.html","stageOrder":11},{"id":"CA014-12","name":"성배전쟁 13일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/12.html","stageOrder":12},{"id":"CA014-13","name":"성배전쟁 14일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/13.html","stageOrder":13},{"id":"CA014-14","name":"성배전쟁 15일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/14.html","stageOrder":14},{"id":"CA014-15","name":"성배전쟁 16일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/15.html","stageOrder":15},{"id":"CA014-16","name":"성배전쟁 17일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/16.html","stageOrder":16},{"id":"CA014-17","name":"성배전쟁 18일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/17.html","stageOrder":17},{"id":"CA014-18","name":"성배전쟁 19일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/18.html","stageOrder":18},{"id":"CA014-19","name":"성배전쟁 마지막 날","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/19.html","stageOrder":19},{"id":"CA014-2","name":"성배전쟁 3일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/2.html","stageOrder":2},{"id":"CA014-3","name":"성배전쟁 4일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/3.html","stageOrder":3},{"id":"CA014-4","name":"성배전쟁 5일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/4.html","stageOrder":4},{"id":"CA014-5","name":"성배전쟁 6일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/5.html","stageOrder":5},{"id":"CA014-6","name":"성배전쟁 7일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/6.html","stageOrder":6},{"id":"CA014-7","name":"성배전쟁 8일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/7.html","stageOrder":7},{"id":"CA014-8","name":"성배전쟁 9일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/8.html","stageOrder":8},{"id":"CA014-9","name":"성배전쟁 10일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/9.html","stageOrder":9},{"id":"R006-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방 (구)","locationId":"R006","href":"stage/R006/0.html","stageOrder":0},{"id":"R048-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방","locationId":"R048","href":"stage/R048/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

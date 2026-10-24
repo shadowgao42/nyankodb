@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":444,"stages":[{"id":"NA012-0","name":"이와록 암초","mapName":"멸종의 바다속 마을","locationId":"NA012","href":"stage/NA012/0.html","stageOrder":0},{"id":"NA018-2","name":"트리톤의 동굴","mapName":"마린 관저","locationId":"NA018","href":"stage/NA018/2.html","stageOrder":2},{"id":"NA022-0","name":"파렴치안","mapName":"드러난 신전의 비보","locationId":"NA022","href":"stage/NA022/0.html","stageOrder":0},{"id":"NA026-3","name":"유리 양말","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/3.html","stageOrder":3},{"id":"NA029-3","name":"페르소나의 시작","mapName":"시작을 알리는 아침","locationId":"NA029","href":"stage/NA029/3.html","stageOrder":3},{"id":"NA043-0","name":"별이 쏟아지는 위스키 잔","mapName":"무드 비치","locationId":"NA043","href":"stage/NA043/0.html","stageOrder":0},{"id":"ND005-1","name":"그레이트 배리어 프리","mapName":"바다의 고양이","locationId":"ND005","href":"stage/ND005/1.html","stageOrder":1},{"id":"ND022-4","name":"음흉한 성직자","mapName":"리버스 묘지","locationId":"ND022","href":"stage/ND022/4.html","stageOrder":4},{"id":"Space09-12","name":"에스키모 성운","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/12.html","stageOrder":12},{"id":"Space09-17","name":"천랑성","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/17.html","stageOrder":17},{"id":"Space09-20","name":"알데바란","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/20.html","stageOrder":20},{"id":"Space09-26","name":"대마젤란 성운","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/26.html","stageOrder":26},{"id":"Space09-30","name":"매운매운떡뽀끼","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/30.html","stageOrder":30},{"id":"Space09-45","name":"안드로메다","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/45.html","stageOrder":45},{"id":"SR006-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR006","href":"stage/SR006/3.html","stageOrder":3},{"id":"Z009-17","name":"천랑성","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/17.html","stageOrder":17},{"id":"Z009-20","name":"알데바란","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/20.html","stageOrder":20},{"id":"Z009-26","name":"대마젤란 성운","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/26.html","stageOrder":26},{"id":"Z009-30","name":"매운매운떡뽀끼","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/30.html","stageOrder":30},{"id":"Z009-45","name":"안드로메다","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/45.html","stageOrder":45}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

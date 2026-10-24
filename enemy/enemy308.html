@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":308,"stages":[{"id":"A058-0","name":"배달 Lv.1","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/0.html","stageOrder":0},{"id":"A058-1","name":"배달 Lv.2","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/1.html","stageOrder":1},{"id":"A058-2","name":"배달 Lv.3","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/2.html","stageOrder":2},{"id":"A058-3","name":"배달 Lv.4","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/3.html","stageOrder":3},{"id":"A058-4","name":"배달 Lv.5","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/4.html","stageOrder":4},{"id":"A058-5","name":"배달 Lv.6","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/5.html","stageOrder":5},{"id":"A058-6","name":"배달 Lv.7","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/6.html","stageOrder":6},{"id":"A058-7","name":"배달 Lv.8","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/7.html","stageOrder":7},{"id":"A058-8","name":"배달 Lv.9","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/8.html","stageOrder":8},{"id":"A058-9","name":"배달 Lv.MAX","mapName":"두 번째 밤: 성야의 선물 배달","locationId":"A058","href":"stage/A058/9.html","stageOrder":9},{"id":"EX057-0","name":"幸運！お年玉大襲来！","mapName":"EX 스테이지","locationId":"EX057","href":"stage/EX057/0.html","stageOrder":0},{"id":"EX058-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX058","href":"stage/EX058/0.html","stageOrder":0},{"id":"EX080-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/0.html","stageOrder":0},{"id":"EX080-1","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/1.html","stageOrder":1},{"id":"EX080-2","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/2.html","stageOrder":2},{"id":"EX080-3","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/3.html","stageOrder":3},{"id":"S125-0","name":"냥코 왕국","mapName":"냥코 눈꽃 축제","locationId":"S125","href":"stage/S125/0.html","stageOrder":0},{"id":"S125-1","name":"White Dove","mapName":"냥코 눈꽃 축제","locationId":"S125","href":"stage/S125/1.html","stageOrder":1},{"id":"S125-2","name":"12월 32일","mapName":"냥코 눈꽃 축제","locationId":"S125","href":"stage/S125/2.html","stageOrder":2},{"id":"S125-3","name":"냥코홀로 집에","mapName":"냥코 눈꽃 축제","locationId":"S125","href":"stage/S125/3.html","stageOrder":3},{"id":"S125-4","name":"내입술 따뜻한 고양이처럼","mapName":"냥코 눈꽃 축제","locationId":"S125","href":"stage/S125/4.html","stageOrder":4},{"id":"S146-0","name":"그레이트 진격! 초고난도","mapName":"월별 스테이지 올스타즈 그레이트 기념!","locationId":"S146","href":"stage/S146/0.html","stageOrder":0},{"id":"S261-0","name":"목표는 1등상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/0.html","stageOrder":0},{"id":"S261-1","name":"끝까지 달렸다 상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/1.html","stageOrder":1},{"id":"S261-3","name":"망설였다 상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/3.html","stageOrder":3},{"id":"S261-4","name":"열심히 노력했다 상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/4.html","stageOrder":4},{"id":"S366-3","name":"깨물면서 반갑다고 멍멍멍","mapName":"설견","locationId":"S366","href":"stage/S366/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

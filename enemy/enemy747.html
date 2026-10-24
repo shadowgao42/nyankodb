@@ -856,6 +856,15 @@
 
   </style>
   <link rel="stylesheet" href="../gnb.css">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -910,6 +919,15 @@
   </section>
   <section class="section traits-section" aria-labelledby="traits-title"><div class="traits-title"><h2 id="traits-title">속성</h2></div><div class="trait-list traits-row" id="traits"></div></section>
   <section class="sheet section" aria-labelledby="effects-title"><div class="section-heading"><h2 class="section-title" id="effects-title">효과/능력</h2></div><div class="effects abilities-grid" id="effects"></div></section>
+<!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":747,"stages":[]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
 </main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>

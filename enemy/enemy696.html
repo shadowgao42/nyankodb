@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":696,"stages":[{"id":"EX076-0","name":"초경계! 대형 폭풍우 발생","mapName":"EX 스테이지","locationId":"EX076","href":"stage/EX076/0.html","stageOrder":0},{"id":"S382-1","name":"강 건너 돌구경","mapName":"정글 서바이벌","locationId":"S382","href":"stage/S382/1.html","stageOrder":1},{"id":"S382-2","name":"석풍당당","mapName":"정글 서바이벌","locationId":"S382","href":"stage/S382/2.html","stageOrder":2},{"id":"S382-3","name":"될성부른 통나무","mapName":"정글 서바이벌","locationId":"S382","href":"stage/S382/3.html","stageOrder":3},{"id":"S413-2","name":"vs 구슬","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/2.html","stageOrder":2},{"id":"S413-3","name":"vs 주먹","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/3.html","stageOrder":3},{"id":"S413-4","name":"with 애정","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/4.html","stageOrder":4},{"id":"S430-2","name":"玉の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/2.html","stageOrder":2},{"id":"S430-3","name":"拳の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/3.html","stageOrder":3},{"id":"S430-4","name":"愛の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

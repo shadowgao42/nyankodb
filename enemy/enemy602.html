@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":602,"stages":[{"id":"EX072-0","name":"봄의 추억 Page 2","mapName":"EX 스테이지","locationId":"EX072","href":"stage/EX072/0.html","stageOrder":0},{"id":"EX078-0","name":"봄의 추억 Page 2","mapName":"EX 스테이지","locationId":"EX078","href":"stage/EX078/0.html","stageOrder":0},{"id":"S300-0","name":"용기를 내어 호출","mapName":"Weekend ~고백~","locationId":"S300","href":"stage/S300/0.html","stageOrder":0},{"id":"S300-1","name":"고백의 결과는…?","mapName":"Weekend ~고백~","locationId":"S300","href":"stage/S300/1.html","stageOrder":1},{"id":"S300-2","name":"「미안해」","mapName":"Weekend ~고백~","locationId":"S300","href":"stage/S300/2.html","stageOrder":2},{"id":"S301-0","name":"용기를 내어 호출","mapName":"Weekend ~고백~","locationId":"S301","href":"stage/S301/0.html","stageOrder":0},{"id":"S301-1","name":"고백의 결과는…?","mapName":"Weekend ~고백~","locationId":"S301","href":"stage/S301/1.html","stageOrder":1},{"id":"S301-2","name":"「내 스타일이 아니야」","mapName":"Weekend ~고백~","locationId":"S301","href":"stage/S301/2.html","stageOrder":2},{"id":"S302-0","name":"용기를 내어 호출","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/0.html","stageOrder":0},{"id":"S302-1","name":"고백의 결과는…?","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/1.html","stageOrder":1},{"id":"S302-2","name":"「친구 사이로 지내자」","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/2.html","stageOrder":2},{"id":"S303-0","name":"고백 명소에서 기다리며","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/0.html","stageOrder":0},{"id":"S303-1","name":"빨라지는 두근거림","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/1.html","stageOrder":1},{"id":"S303-2","name":"제시간에 온 그녀","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/2.html","stageOrder":2},{"id":"S303-3","name":"용기를 내어 한 걸음","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/3.html","stageOrder":3},{"id":"S303-4","name":"응원해주는 벚꽃 잎","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/4.html","stageOrder":4},{"id":"S303-5","name":"멀리서 지켜보는 친구들","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/5.html","stageOrder":5},{"id":"S303-6","name":"바람 소리에 가려진 고백","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/6.html","stageOrder":6},{"id":"S303-7","name":"짝사랑 졸업증서 수여","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/7.html","stageOrder":7},{"id":"S330-0","name":"용기를 내어 호출 리벤지","mapName":"Weekend ~고백 리벤지~","locationId":"S330","href":"stage/S330/0.html","stageOrder":0},{"id":"S330-1","name":"고백의 결과는…?","mapName":"Weekend ~고백 리벤지~","locationId":"S330","href":"stage/S330/1.html","stageOrder":1},{"id":"S330-2","name":"이번에도 「미안해」","mapName":"Weekend ~고백 리벤지~","locationId":"S330","href":"stage/S330/2.html","stageOrder":2},{"id":"S331-0","name":"용기를 내어 호출 리벤지","mapName":"Weekend ~고백 리벤지~","locationId":"S331","href":"stage/S331/0.html","stageOrder":0},{"id":"S331-1","name":"고백의 결과는…?","mapName":"Weekend ~고백 리벤지~","locationId":"S331","href":"stage/S331/1.html","stageOrder":1},{"id":"S331-2","name":"「학업에 집중하자」","mapName":"Weekend ~고백 리벤지~","locationId":"S331","href":"stage/S331/2.html","stageOrder":2},{"id":"S332-0","name":"용기를 내어 호출 리벤지","mapName":"Weekend ~고백 리벤지~","locationId":"S332","href":"stage/S332/0.html","stageOrder":0},{"id":"S332-1","name":"고백의 결과는…?","mapName":"Weekend ~고백 리벤지~","locationId":"S332","href":"stage/S332/1.html","stageOrder":1},{"id":"S332-2","name":"「이성으로 느껴지지 않아」","mapName":"Weekend ~고백 리벤지~","locationId":"S332","href":"stage/S332/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

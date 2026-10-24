@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":315,"stages":[{"id":"D000-35","name":"레벨36","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/35.html","stageOrder":35},{"id":"D000-36","name":"레벨37","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/36.html","stageOrder":36},{"id":"D000-38","name":"레벨39","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/38.html","stageOrder":38},{"id":"D000-39","name":"레벨40","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/39.html","stageOrder":39},{"id":"D000-40","name":"레벨41","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/40.html","stageOrder":40},{"id":"D000-41","name":"레벨42","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/41.html","stageOrder":41},{"id":"D000-46","name":"레벨47","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/46.html","stageOrder":46},{"id":"N036-5","name":"우니버설 스튜디오로","mapName":"할리우드 제국","locationId":"N036","href":"stage/N036/5.html","stageOrder":5},{"id":"N039-5","name":"천공비보의 관","mapName":"무풍 아일랜드","locationId":"N039","href":"stage/N039/5.html","stageOrder":5},{"id":"N041-1","name":"힐링 지옥도","mapName":"수상한 미술관","locationId":"N041","href":"stage/N041/1.html","stageOrder":1},{"id":"N047-4","name":"부활의 거짓 주문","mapName":"전설의 끝","locationId":"N047","href":"stage/N047/4.html","stageOrder":4},{"id":"NA008-0","name":"흰참치 해안","mapName":"파라리라 반도","locationId":"NA008","href":"stage/NA008/0.html","stageOrder":0},{"id":"NA018-0","name":"바닷가 맹공격","mapName":"마린 관저","locationId":"NA018","href":"stage/NA018/0.html","stageOrder":0},{"id":"NA018-5","name":"멀티 테트라포드","mapName":"마린 관저","locationId":"NA018","href":"stage/NA018/5.html","stageOrder":5},{"id":"NA022-0","name":"파렴치안","mapName":"드러난 신전의 비보","locationId":"NA022","href":"stage/NA022/0.html","stageOrder":0},{"id":"NA024-0","name":"3대 500미만 냥코 금지","mapName":"헬스인생","locationId":"NA024","href":"stage/NA024/0.html","stageOrder":0},{"id":"NA026-1","name":"흑설공주","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/1.html","stageOrder":1},{"id":"NA026-3","name":"유리 양말","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/3.html","stageOrder":3},{"id":"NA033-1","name":"열대 초코 바나나 공원","mapName":"나시고・렝","locationId":"NA033","href":"stage/NA033/1.html","stageOrder":1},{"id":"NA037-3","name":"데몬 스튜디오","mapName":"비틀어진 시공간","locationId":"NA037","href":"stage/NA037/3.html","stageOrder":3},{"id":"NA045-1","name":"겨울왕국밥","mapName":"해적왕 먹자골목","locationId":"NA045","href":"stage/NA045/1.html","stageOrder":1},{"id":"ND011-2","name":"별사탕 내리는 사막","mapName":"구아자 도원향","locationId":"ND011","href":"stage/ND011/2.html","stageOrder":2},{"id":"ND019-2","name":"떨어지는 과일의 법칙","mapName":"만물을 당기는 진리의 소용돌이","locationId":"ND019","href":"stage/ND019/2.html","stageOrder":2},{"id":"ND036-5","name":"一杯の幸せ","mapName":"理想郷ビバラメン","locationId":"ND036","href":"stage/ND036/5.html","stageOrder":5},{"id":"S261-1","name":"끝까지 달렸다 상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/1.html","stageOrder":1},{"id":"S261-3","name":"망설였다 상","mapName":"열혈! 장애물 경주","locationId":"S261","href":"stage/S261/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

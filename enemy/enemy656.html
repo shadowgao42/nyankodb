@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":656,"stages":[{"id":"C210-0","name":"バーチャル・シンガーの軌跡","mapName":"週末ライブ DAY1","locationId":"C210","href":"stage/C210/0.html","stageOrder":0},{"id":"C210-1","name":"これから生まれる未来","mapName":"週末ライブ DAY1","locationId":"C210","href":"stage/C210/1.html","stageOrder":1},{"id":"C210-2","name":"広がる創作の輪","mapName":"週末ライブ DAY1","locationId":"C210","href":"stage/C210/2.html","stageOrder":2},{"id":"C211-0","name":"無限の可能性","mapName":"週末ライブ DAY2","locationId":"C211","href":"stage/C211/0.html","stageOrder":0},{"id":"C211-1","name":"想いを乗せて","mapName":"週末ライブ DAY2","locationId":"C211","href":"stage/C211/1.html","stageOrder":1},{"id":"C211-2","name":"Dear Creators","mapName":"週末ライブ DAY2","locationId":"C211","href":"stage/C211/2.html","stageOrder":2},{"id":"C212-0","name":"버추얼 싱어의 궤적","mapName":"주말 라이브 Day 1","locationId":"C212","href":"stage/C212/0.html","stageOrder":0},{"id":"C212-1","name":"지금부터 태어나는 미래","mapName":"주말 라이브 Day 1","locationId":"C212","href":"stage/C212/1.html","stageOrder":1},{"id":"C212-2","name":"펼쳐지는 창작의 고리","mapName":"주말 라이브 Day 1","locationId":"C212","href":"stage/C212/2.html","stageOrder":2},{"id":"C213-0","name":"무한의 가능성","mapName":"주말 라이브 Day 2","locationId":"C213","href":"stage/C213/0.html","stageOrder":0},{"id":"C213-1","name":"마음을 실어서","mapName":"주말 라이브 Day 2","locationId":"C213","href":"stage/C213/1.html","stageOrder":1},{"id":"C213-2","name":"Dear Creators","mapName":"주말 라이브 Day 2","locationId":"C213","href":"stage/C213/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

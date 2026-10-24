@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":303,"stages":[{"id":"A055-5","name":"썩은 본능의 기원","mapName":"보물이 잠든 섬","locationId":"A055","href":"stage/A055/5.html","stageOrder":5},{"id":"D000-34","name":"레벨35","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/34.html","stageOrder":34},{"id":"D000-35","name":"레벨36","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/35.html","stageOrder":35},{"id":"H024-0","name":"기원의 사당 극난도","mapName":"썩은 본능의 기원","locationId":"H024","href":"stage/H024/0.html","stageOrder":0},{"id":"H047-0","name":"비경의 숲의 바다 초극난도","mapName":"썩은 본능의 비경","locationId":"H047","href":"stage/H047/0.html","stageOrder":0},{"id":"N035-5","name":"본데드 아파트","mapName":"찍찍랜드","locationId":"N035","href":"stage/N035/5.html","stageOrder":5},{"id":"NA017-5","name":"본능에 순종한 자연인","mapName":"산토박이","locationId":"NA017","href":"stage/NA017/5.html","stageOrder":5},{"id":"NA028-2","name":"사자의 세컨드 라이프","mapName":"잊혀진 무덤","locationId":"NA028","href":"stage/NA028/2.html","stageOrder":2},{"id":"NA035-4","name":"수액이 솟아나는 지하도","mapName":"고대 나무의 미궁","locationId":"NA035","href":"stage/NA035/4.html","stageOrder":4},{"id":"ND011-0","name":"착한이의 묘지","mapName":"구아자 도원향","locationId":"ND011","href":"stage/ND011/0.html","stageOrder":0},{"id":"ND025-1","name":"시집가는 시집","mapName":"도서정가 제도","locationId":"ND025","href":"stage/ND025/1.html","stageOrder":1},{"id":"ND030-4","name":"적자생존 처형장","mapName":"변이를 수반하는 계승의 낙원","locationId":"ND030","href":"stage/ND030/4.html","stageOrder":4},{"id":"S309-6","name":"정신을 차려보니 동굴","mapName":"#04 「괭이 우는 마을」","locationId":"S309","href":"stage/S309/6.html","stageOrder":6},{"id":"S336-5","name":"돌연변이 Lv.6","mapName":"언데드 하자드","locationId":"S336","href":"stage/S336/5.html","stageOrder":5},{"id":"S373-2","name":"주례 선생님을 바쳤다","mapName":"주말 허니문 2주차","locationId":"S373","href":"stage/S373/2.html","stageOrder":2},{"id":"SR003-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR003","href":"stage/SR003/4.html","stageOrder":4},{"id":"V000-26","name":"27층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/26.html","stageOrder":26},{"id":"V005-6","name":"7층","mapName":"좀비 냥코별탑","locationId":"V005","href":"stage/V005/6.html","stageOrder":6},{"id":"V006-26","name":"27층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/26.html","stageOrder":26},{"id":"V010-26","name":"27층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/26.html","stageOrder":26},{"id":"Z001-49","name":"달","mapName":"세계편 제2장 좀비습격","locationId":"Z001","href":"stage/Z001/49.html","stageOrder":47},{"id":"Z002-50","name":"달","mapName":"세계편 제3장 좀비습격","locationId":"Z002","href":"stage/Z002/50.html","stageOrder":47},{"id":"Z005-47","name":"달","mapName":"미래편 제2장 좀비습격","locationId":"Z005","href":"stage/Z005/47.html","stageOrder":47},{"id":"Z006-47","name":"달","mapName":"미래편 제3장 좀비습격","locationId":"Z006","href":"stage/Z006/47.html","stageOrder":47}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

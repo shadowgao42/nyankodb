@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":641,"stages":[{"id":"G010-1","name":"승단 시험 2","mapName":"냥코도 승단 시험 11단","locationId":"G010","href":"stage/G010/1.html","stageOrder":1},{"id":"H066-1","name":"녹수석 사막 Ⅳ","mapName":"사냥꾼의 지도 Ⅳ","locationId":"H066","href":"stage/H066/1.html","stageOrder":1},{"id":"ND002-5","name":"코끼리코 수림","mapName":"참참참 분지","locationId":"ND002","href":"stage/ND002/5.html","stageOrder":5},{"id":"Q001-15","name":"불볕 사원 지역 16","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/15.html","stageOrder":15},{"id":"Q001-16","name":"모래 폭풍 지역 17","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/16.html","stageOrder":16},{"id":"Q002-14","name":"초열 화구 지역 15","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/14.html","stageOrder":14},{"id":"Q002-17","name":"맹염 동굴 지역 18","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/17.html","stageOrder":17},{"id":"S346-0","name":"분노하는 폭진격","mapName":"사막의 괴이 Ⅲ","locationId":"S346","href":"stage/S346/0.html","stageOrder":0},{"id":"SR006-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR006","href":"stage/SR006/2.html","stageOrder":2},{"id":"SR011-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR011","href":"stage/SR011/4.html","stageOrder":4},{"id":"SR014-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR014","href":"stage/SR014/4.html","stageOrder":4},{"id":"SR016-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR016","href":"stage/SR016/2.html","stageOrder":2},{"id":"SR020-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR020","href":"stage/SR020/4.html","stageOrder":4},{"id":"SR026-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR026","href":"stage/SR026/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

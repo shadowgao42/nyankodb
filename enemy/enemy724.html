@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":724,"stages":[{"id":"C223-4","name":"지상 최강의 생물의 아들","mapName":"지상 최강의 남자들","locationId":"C223","href":"stage/C223/4.html","stageOrder":4},{"id":"C223-9","name":"지하투기장의 챔피언","mapName":"지상 최강의 남자들","locationId":"C223","href":"stage/C223/9.html","stageOrder":9},{"id":"CA022-0","name":"세계 최강의 고교생 Lv.1","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/0.html","stageOrder":0},{"id":"CA022-1","name":"세계 최강의 고교생 Lv.2","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/1.html","stageOrder":1},{"id":"CA022-2","name":"세계 최강의 고교생 Lv.3","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/2.html","stageOrder":2},{"id":"CA022-3","name":"세계 최강의 고교생 Lv.4","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/3.html","stageOrder":3},{"id":"CA022-4","name":"세계 최강의 고교생 Lv.5","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/4.html","stageOrder":4},{"id":"CA022-5","name":"세계 최강의 고교생 Lv.6","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/5.html","stageOrder":5},{"id":"CA022-6","name":"세계 최강의 고교생 Lv.7","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/6.html","stageOrder":6},{"id":"CA022-7","name":"세계 최강의 고교생 Lv.8","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/7.html","stageOrder":7},{"id":"CA022-8","name":"세계 최강의 고교생 Lv.9","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/8.html","stageOrder":8},{"id":"CA022-9","name":"세계 최강의 고교생 Lv.MAX","mapName":"VS한마 바키","locationId":"CA022","href":"stage/CA022/9.html","stageOrder":9},{"id":"R031-0","name":"사상 최강 생물 결정전!","mapName":"랭킹의 방","locationId":"R031","href":"stage/R031/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

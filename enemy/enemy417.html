@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":417,"stages":[{"id":"DM000-45","name":"할리우드","mapName":"마계편","locationId":"DM000","href":"stage/DM000/45.html","stageOrder":45},{"id":"NA008-0","name":"흰참치 해안","mapName":"파라리라 반도","locationId":"NA008","href":"stage/NA008/0.html","stageOrder":0},{"id":"NA009-3","name":"밀고자 집단","mapName":"고양이 쿠데타","locationId":"NA009","href":"stage/NA009/3.html","stageOrder":3},{"id":"NA014-1","name":"인어 탕수육","mapName":"미혹적인 악마길","locationId":"NA014","href":"stage/NA014/1.html","stageOrder":1},{"id":"NA023-2","name":"백성의 손에 들린 횃불","mapName":"독재의 맛","locationId":"NA023","href":"stage/NA023/2.html","stageOrder":2},{"id":"NA027-2","name":"포르말린 마리나","mapName":"랩 아일랜드","locationId":"NA027","href":"stage/NA027/2.html","stageOrder":2},{"id":"NA029-1","name":"탄생의 딜레마","mapName":"시작을 알리는 아침","locationId":"NA029","href":"stage/NA029/1.html","stageOrder":1},{"id":"ND004-1","name":"가가?","mapName":"GAGA GAGA","locationId":"ND004","href":"stage/ND004/1.html","stageOrder":1},{"id":"ND018-1","name":"산호 아파트 단지","mapName":"심해 뉴타운","locationId":"ND018","href":"stage/ND018/1.html","stageOrder":1},{"id":"S381-1","name":"천사의 장송곡 초극난도","mapName":"성자 뚱땡이 재강림","locationId":"S381","href":"stage/S381/1.html","stageOrder":1},{"id":"Space08-15","name":"호리병박 성운","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/15.html","stageOrder":15},{"id":"Space08-19","name":"직녀성","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/19.html","stageOrder":19},{"id":"Space08-22","name":"디네프","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/22.html","stageOrder":22},{"id":"Space08-27","name":"부타라 성운","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/27.html","stageOrder":27},{"id":"Space08-32","name":"다라라라","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/32.html","stageOrder":32},{"id":"Space08-38","name":"아바・부아","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/38.html","stageOrder":38},{"id":"Space08-45","name":"안드로메다","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/45.html","stageOrder":45},{"id":"Space08-47","name":"빅뱅","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/47.html","stageOrder":47},{"id":"Space08-09","name":"트리톤","mapName":"우주편 제2장","locationId":"Space08","href":"stage/Space08/9.html","stageOrder":9},{"id":"Space09-00","name":"지구","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/0.html","stageOrder":0},{"id":"Space09-15","name":"호리병박 성운","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/15.html","stageOrder":15},{"id":"Space09-19","name":"직녀성","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/19.html","stageOrder":19},{"id":"Space09-27","name":"부타라 성운","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/27.html","stageOrder":27},{"id":"Space09-38","name":"아바・부아","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/38.html","stageOrder":38},{"id":"Space09-47","name":"빅뱅","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/47.html","stageOrder":47},{"id":"Space09-05","name":"수성","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/5.html","stageOrder":5},{"id":"Space09-09","name":"트리톤","mapName":"우주편 제3장","locationId":"Space09","href":"stage/Space09/9.html","stageOrder":9},{"id":"Space09-Invasion-00","name":"필리버스터 습격","mapName":"우주편 3장","locationId":"Space09","href":"stage/Space09/Invasion-00.html","stageOrder":0},{"id":"Z008-15","name":"호리병박 성운","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/15.html","stageOrder":15},{"id":"Z008-27","name":"부타라 성운","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/27.html","stageOrder":27},{"id":"Z008-32","name":"다라라라","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/32.html","stageOrder":32},{"id":"Z008-38","name":"아바・부아","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/38.html","stageOrder":38},{"id":"Z008-9","name":"트리톤","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/9.html","stageOrder":9},{"id":"Z009-19","name":"직녀성","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/19.html","stageOrder":19},{"id":"Z009-38","name":"아바・부아","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/38.html","stageOrder":38},{"id":"Z009-9","name":"트리톤","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

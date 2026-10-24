@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":421,"stages":[{"id":"A022-0","name":"유턴 Lv.11","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/0.html","stageOrder":0},{"id":"A022-1","name":"유턴 Lv.12","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/1.html","stageOrder":1},{"id":"A022-2","name":"유턴 Lv.13","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/2.html","stageOrder":2},{"id":"A022-3","name":"유턴 Lv.14","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/3.html","stageOrder":3},{"id":"A022-4","name":"유턴 Lv.15","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/4.html","stageOrder":4},{"id":"A022-5","name":"유턴 Lv.16","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/5.html","stageOrder":5},{"id":"A022-6","name":"유턴 Lv.17","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/6.html","stageOrder":6},{"id":"A022-7","name":"유턴 Lv.18","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/7.html","stageOrder":7},{"id":"A022-8","name":"유턴 Lv.19","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/8.html","stageOrder":8},{"id":"A022-9","name":"유턴 Lv.MAX","mapName":"속편・8월 강습!","locationId":"A022","href":"stage/A022/9.html","stageOrder":9},{"id":"A049-8","name":"XP 대잔치 Lv.9","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/8.html","stageOrder":8},{"id":"A049-9","name":"XP 대잔치 Lv.MAX","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/9.html","stageOrder":9},{"id":"S167-0","name":"아버지는 저세상으로","mapName":"저세상으로 유턴 러시","locationId":"S167","href":"stage/S167/0.html","stageOrder":0},{"id":"S167-1","name":"저승길에서 대기 중","mapName":"저세상으로 유턴 러시","locationId":"S167","href":"stage/S167/1.html","stageOrder":1},{"id":"S167-2","name":"페리 승선율 300%","mapName":"저세상으로 유턴 러시","locationId":"S167","href":"stage/S167/2.html","stageOrder":2},{"id":"S167-3","name":"가족은 아직 여행 중","mapName":"저세상으로 유턴 러시","locationId":"S167","href":"stage/S167/3.html","stageOrder":3},{"id":"S167-4","name":"내년에 또 봬요","mapName":"저세상으로 유턴 러시","locationId":"S167","href":"stage/S167/4.html","stageOrder":4},{"id":"S322-6","name":"2018년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/6.html","stageOrder":6},{"id":"V003-6","name":"7층","mapName":"천사 냥코별탑","locationId":"V003","href":"stage/V003/6.html","stageOrder":6},{"id":"V003-8","name":"9층","mapName":"천사 냥코별탑","locationId":"V003","href":"stage/V003/8.html","stageOrder":8},{"id":"V006-15","name":"16층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/15.html","stageOrder":15}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

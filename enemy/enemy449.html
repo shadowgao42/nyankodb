@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":449,"stages":[{"id":"A051-0","name":"돌아온 신록 Lv.11","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/0.html","stageOrder":0},{"id":"A051-1","name":"돌아온 신록 Lv.12","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/1.html","stageOrder":1},{"id":"A051-2","name":"돌아온 신록 Lv.13","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/2.html","stageOrder":2},{"id":"A051-3","name":"돌아온 신록 Lv.14","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/3.html","stageOrder":3},{"id":"A051-4","name":"돌아온 신록 Lv.15","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/4.html","stageOrder":4},{"id":"A051-5","name":"돌아온 신록 Lv.16","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/5.html","stageOrder":5},{"id":"A051-6","name":"돌아온 신록 Lv.17","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/6.html","stageOrder":6},{"id":"A051-7","name":"돌아온 신록 Lv.18","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/7.html","stageOrder":7},{"id":"A051-8","name":"돌아온 신록 Lv.19","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/8.html","stageOrder":8},{"id":"A051-9","name":"돌아온 신록 Lv.MAX","mapName":"속편・5월 강습!","locationId":"A051","href":"stage/A051/9.html","stageOrder":9},{"id":"ND008-0","name":"무지한 소피스트","mapName":"메마른 생각의 정원","locationId":"ND008","href":"stage/ND008/0.html","stageOrder":0},{"id":"S197-0","name":"사랑의 두근거림","mapName":"돌아온 신록의 계절","locationId":"S197","href":"stage/S197/0.html","stageOrder":0},{"id":"S197-1","name":"등록하자 데이트 앱!","mapName":"돌아온 신록의 계절","locationId":"S197","href":"stage/S197/1.html","stageOrder":1},{"id":"S197-2","name":"맞선은 쑥스럽구먼","mapName":"돌아온 신록의 계절","locationId":"S197","href":"stage/S197/2.html","stageOrder":2},{"id":"S197-3","name":"결혼정보 회사로 고고","mapName":"돌아온 신록의 계절","locationId":"S197","href":"stage/S197/3.html","stageOrder":3},{"id":"S197-4","name":"이 시대의 로맨티시스트","mapName":"돌아온 신록의 계절","locationId":"S197","href":"stage/S197/4.html","stageOrder":4},{"id":"S322-7","name":"2019년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/7.html","stageOrder":7},{"id":"S349-9","name":"재시동 Lv.MAX","mapName":"기계 반란군","locationId":"S349","href":"stage/S349/9.html","stageOrder":9},{"id":"V006-13","name":"14층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/13.html","stageOrder":13}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

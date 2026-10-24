@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":578,"stages":[{"id":"EX057-0","name":"幸運！お年玉大襲来！","mapName":"EX 스테이지","locationId":"EX057","href":"stage/EX057/0.html","stageOrder":0},{"id":"EX058-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX058","href":"stage/EX058/0.html","stageOrder":0},{"id":"EX062-0","name":"400m 계주 최종주자","mapName":"EX 스테이지","locationId":"EX062","href":"stage/EX062/0.html","stageOrder":0},{"id":"EX062-1","name":"800m 계주 최종주자","mapName":"EX 스테이지","locationId":"EX062","href":"stage/EX062/1.html","stageOrder":1},{"id":"EX062-2","name":"1600m 계주 최종주자","mapName":"EX 스테이지","locationId":"EX062","href":"stage/EX062/2.html","stageOrder":2},{"id":"EX080-0","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/0.html","stageOrder":0},{"id":"EX080-1","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/1.html","stageOrder":1},{"id":"EX080-2","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/2.html","stageOrder":2},{"id":"EX080-3","name":"행운의 세뱃돈 대습격!","mapName":"EX 스테이지","locationId":"EX080","href":"stage/EX080/3.html","stageOrder":3},{"id":"S260-2","name":"무게가 100kg인 특대 구슬","mapName":"열혈! 구슬 굴림","locationId":"S260","href":"stage/S260/2.html","stageOrder":2},{"id":"S260-4","name":"이것은 어느 팀의 구슬입니까","mapName":"열혈! 구슬 굴림","locationId":"S260","href":"stage/S260/4.html","stageOrder":4},{"id":"S260-5","name":"모래먼지에 둘러싸였다면","mapName":"열혈! 구슬 굴림","locationId":"S260","href":"stage/S260/5.html","stageOrder":5},{"id":"S260-7","name":"이젠 어떻게 해도 멈추지 않는다","mapName":"열혈! 구슬 굴림","locationId":"S260","href":"stage/S260/7.html","stageOrder":7},{"id":"S267-2","name":"엄마에게 맡겼더니 사라진 돈","mapName":"세뱃돈 습격!","locationId":"S267","href":"stage/S267/2.html","stageOrder":2},{"id":"S267-4","name":"매년 올라가는 금액","mapName":"세뱃돈 습격!","locationId":"S267","href":"stage/S267/4.html","stageOrder":4},{"id":"S267-5","name":"주는 부담, 애들은 모르고","mapName":"세뱃돈 습격!","locationId":"S267","href":"stage/S267/5.html","stageOrder":5},{"id":"S267-7","name":"내년에는 못 받습니다","mapName":"세뱃돈 습격!","locationId":"S267","href":"stage/S267/7.html","stageOrder":7},{"id":"S286-2","name":"親に預けて消えたお金","mapName":"お年玉襲来！","locationId":"S286","href":"stage/S286/2.html","stageOrder":2},{"id":"S286-4","name":"年々上がる金額","mapName":"お年玉襲来！","locationId":"S286","href":"stage/S286/4.html","stageOrder":4},{"id":"S286-5","name":"あげる負担、子知らず","mapName":"お年玉襲来！","locationId":"S286","href":"stage/S286/5.html","stageOrder":5},{"id":"S286-7","name":"来年はもらえません","mapName":"お年玉襲来！","locationId":"S286","href":"stage/S286/7.html","stageOrder":7},{"id":"S322-9","name":"2021년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/9.html","stageOrder":9},{"id":"S349-2","name":"재시동 Lv.3","mapName":"기계 반란군","locationId":"S349","href":"stage/S349/2.html","stageOrder":2},{"id":"S359-2","name":"1600m 계주 1번주자","mapName":"열혈! 이어달리기","locationId":"S359","href":"stage/S359/2.html","stageOrder":2},{"id":"S413-2","name":"vs 구슬","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/2.html","stageOrder":2},{"id":"S430-2","name":"玉の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/2.html","stageOrder":2},{"id":"V006-5","name":"6층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/5.html","stageOrder":5}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

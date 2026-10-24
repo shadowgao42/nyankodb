@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":60,"stages":[{"id":"C001-0","name":"피닉스와 피크닉","mapName":"매혹의 프린세스","locationId":"C001","href":"stage/C001/0.html","stageOrder":0},{"id":"C001-1","name":"P닉S!!!","mapName":"매혹의 프린세스","locationId":"C001","href":"stage/C001/1.html","stageOrder":1},{"id":"C001-4","name":"나의 공주님","mapName":"매혹의 프린세스","locationId":"C001","href":"stage/C001/4.html","stageOrder":4},{"id":"C001-5","name":"공주님 쟁탈전","mapName":"매혹의 프린세스","locationId":"C001","href":"stage/C001/5.html","stageOrder":5},{"id":"C043-0","name":"발차기 공주 진화로의 길 초상급","mapName":"각성한 발차기 공주의 습격!","locationId":"C043","href":"stage/C043/0.html","stageOrder":0},{"id":"C080-2","name":"엎친 데 발차기","mapName":"케트바스 왕국의 가르침","locationId":"C080","href":"stage/C080/2.html","stageOrder":2},{"id":"C080-4","name":"웃으면 발차기가 온다","mapName":"케트바스 왕국의 가르침","locationId":"C080","href":"stage/C080/4.html","stageOrder":4},{"id":"R008-0","name":"습격! 발차기 공주 군단","mapName":"랭킹의 방","locationId":"R008","href":"stage/R008/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

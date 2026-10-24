@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":320,"stages":[{"id":"C041-1","name":"폭염질주","mapName":"ALICE의 입구","locationId":"C041","href":"stage/C041/1.html","stageOrder":1},{"id":"C041-2","name":"질서에서 무질서로","mapName":"ALICE의 입구","locationId":"C041","href":"stage/C041/2.html","stageOrder":2},{"id":"C042-1","name":"피버 타임!","mapName":"월야의 올드시티","locationId":"C042","href":"stage/C042/1.html","stageOrder":1},{"id":"C042-2","name":"ALICE대전쟁","mapName":"월야의 올드시티","locationId":"C042","href":"stage/C042/2.html","stageOrder":2},{"id":"C082-1","name":"그녀를 너무 믿었다 상급","mapName":"여왕의 폭주","locationId":"C082","href":"stage/C082/1.html","stageOrder":1},{"id":"C082-4","name":"손끝에 걸린 존재 극난도","mapName":"여왕의 폭주","locationId":"C082","href":"stage/C082/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

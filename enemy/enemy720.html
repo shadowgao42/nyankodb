@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":720,"stages":[{"id":"R030-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R030","href":"stage/R030/0.html","stageOrder":0},{"id":"R033-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R033","href":"stage/R033/0.html","stageOrder":0},{"id":"R035-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R035","href":"stage/R035/0.html","stageOrder":0},{"id":"R036-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R036","href":"stage/R036/0.html","stageOrder":0},{"id":"R038-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R038","href":"stage/R038/0.html","stageOrder":0},{"id":"R040-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R040","href":"stage/R040/0.html","stageOrder":0},{"id":"R041-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R041","href":"stage/R041/0.html","stageOrder":0},{"id":"R043-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R043","href":"stage/R043/0.html","stageOrder":0},{"id":"R044-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R044","href":"stage/R044/0.html","stageOrder":0},{"id":"R045-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R045","href":"stage/R045/0.html","stageOrder":0},{"id":"R046-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R046","href":"stage/R046/0.html","stageOrder":0},{"id":"R047-0","name":"투쟁 본능 대회","mapName":"하이퍼 랭킹의 방","locationId":"R047","href":"stage/R047/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

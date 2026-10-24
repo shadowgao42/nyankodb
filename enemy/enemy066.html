@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":66,"stages":[{"id":"A039-0","name":"소환 Lv.1","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/0.html","stageOrder":0},{"id":"A039-1","name":"소환 Lv.2","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/1.html","stageOrder":1},{"id":"A039-2","name":"소환 Lv.3","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/2.html","stageOrder":2},{"id":"A039-3","name":"소환 Lv.4","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/3.html","stageOrder":3},{"id":"A039-4","name":"소환 Lv.5","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/4.html","stageOrder":4},{"id":"A039-5","name":"소환 Lv.6","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/5.html","stageOrder":5},{"id":"A039-6","name":"소환 Lv.7","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/6.html","stageOrder":6},{"id":"A039-7","name":"소환 Lv.8","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/7.html","stageOrder":7},{"id":"A039-8","name":"소환 Lv.9","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/8.html","stageOrder":8},{"id":"A039-9","name":"소환 Lv.10","mapName":"2월 강습!","locationId":"A039","href":"stage/A039/9.html","stageOrder":9},{"id":"A049-4","name":"XP 대잔치 Lv.5","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/4.html","stageOrder":4},{"id":"A049-5","name":"XP 대잔치 Lv.6","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/5.html","stageOrder":5},{"id":"S012-5","name":"헤벌쭉 타락천사","mapName":"오컬트 축제","locationId":"S012","href":"stage/S012/5.html","stageOrder":5},{"id":"S012-6","name":"건강지향 좀비","mapName":"오컬트 축제","locationId":"S012","href":"stage/S012/6.html","stageOrder":6},{"id":"S012-7","name":"인간의 본심","mapName":"오컬트 축제","locationId":"S012","href":"stage/S012/7.html","stageOrder":7},{"id":"S034-0","name":"울트라 중압! 초고난도","mapName":"월별 스테이지 올스타즈 울트라 기념!","locationId":"S034","href":"stage/S034/0.html","stageOrder":0},{"id":"S186-1","name":"가족들의 침묵","mapName":"다시 찾아온 행복","locationId":"S186","href":"stage/S186/1.html","stageOrder":1},{"id":"S186-4","name":"전화위복","mapName":"다시 찾아온 행복","locationId":"S186","href":"stage/S186/4.html","stageOrder":4},{"id":"S237-0","name":"겨울의 제전 하위 극난도","mapName":"대난투 겨울 스페셜","locationId":"S237","href":"stage/S237/0.html","stageOrder":0},{"id":"S237-2","name":"겨울의 제전 상위 초극난도","mapName":"대난투 겨울 스페셜","locationId":"S237","href":"stage/S237/2.html","stageOrder":2},{"id":"S237-3","name":"겨울의 제전 최상위 초극난도","mapName":"대난투 겨울 스페셜","locationId":"S237","href":"stage/S237/3.html","stageOrder":3},{"id":"S237-4","name":"겨울의 제전 왕위 초극난도","mapName":"대난투 겨울 스페셜","locationId":"S237","href":"stage/S237/4.html","stageOrder":4},{"id":"S321-1","name":"바닷물을 젤리로 만들기","mapName":"#04 공포의 장난계획","locationId":"S321","href":"stage/S321/1.html","stageOrder":1},{"id":"V000-9","name":"10층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/9.html","stageOrder":9},{"id":"V006-9","name":"10층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/9.html","stageOrder":9},{"id":"V007-8","name":"9층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/8.html","stageOrder":8},{"id":"V010-9","name":"10층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/9.html","stageOrder":9}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":426,"stages":[{"id":"A029-0","name":"개선 Lv.11","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/0.html","stageOrder":0},{"id":"A029-1","name":"개선 Lv.12","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/1.html","stageOrder":1},{"id":"A029-2","name":"개선 Lv.13","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/2.html","stageOrder":2},{"id":"A029-3","name":"개선 Lv.14","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/3.html","stageOrder":3},{"id":"A029-4","name":"개선 Lv.15","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/4.html","stageOrder":4},{"id":"A029-5","name":"개선 Lv.16","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/5.html","stageOrder":5},{"id":"A029-6","name":"개선 Lv.17","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/6.html","stageOrder":6},{"id":"A029-7","name":"개선 Lv.18","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/7.html","stageOrder":7},{"id":"A029-8","name":"개선 Lv.19","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/8.html","stageOrder":8},{"id":"A029-9","name":"개선 Lv.MAX","mapName":"속편・11월 강습!","locationId":"A029","href":"stage/A029/9.html","stageOrder":9},{"id":"ND011-5","name":"팝핑캔디 원더랜드","mapName":"구아자 도원향","locationId":"ND011","href":"stage/ND011/5.html","stageOrder":5},{"id":"S171-0","name":"프리미엄 프라이데이","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/0.html","stageOrder":0},{"id":"S171-1","name":"초고도 전문가","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/1.html","stageOrder":1},{"id":"S171-2","name":"하이퍼 코어타임","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/2.html","stageOrder":2},{"id":"S171-3","name":"무기한 육아 휴직","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/3.html","stageOrder":3},{"id":"S171-4","name":"철야로 근무환경 개선","mapName":"근무환경 개선","locationId":"S171","href":"stage/S171/4.html","stageOrder":4},{"id":"V001-8","name":"9층","mapName":"빨강 냥코별탑","locationId":"V001","href":"stage/V001/8.html","stageOrder":8},{"id":"V006-10","name":"11층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/10.html","stageOrder":10}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":431,"stages":[{"id":"B017-0","name":"폭탄 소녀 극난도","mapName":"밤은 짧아 꿈꿔 아가씨야","locationId":"B017","href":"stage/B017/0.html","stageOrder":0},{"id":"EX041-0","name":"폭탄 소녀 극난도","mapName":"EX 스테이지","locationId":"EX041","href":"stage/EX041/0.html","stageOrder":0},{"id":"EX053-0","name":"폭탄 소녀 극난도","mapName":"EX 스테이지","locationId":"EX053","href":"stage/EX053/0.html","stageOrder":0},{"id":"ND007-5","name":"아득히 먼 점P","mapName":"데시리터 베이의 마물","locationId":"ND007","href":"stage/ND007/5.html","stageOrder":5},{"id":"S177-0","name":"폭탄 소녀 극난도","mapName":"밤은 짧아 꿈꿔 아가씨야","locationId":"S177","href":"stage/S177/0.html","stageOrder":0},{"id":"S214-0","name":"잠만보 소녀 극난도","mapName":"밤은 짧아 계속 꿈꿔 아가씨야","locationId":"S214","href":"stage/S214/0.html","stageOrder":0},{"id":"S214-1","name":"꿈속에서 초극난도","mapName":"밤은 짧아 계속 꿈꿔 아가씨야","locationId":"S214","href":"stage/S214/1.html","stageOrder":1},{"id":"SR019-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR019","href":"stage/SR019/2.html","stageOrder":2},{"id":"SR024-1","name":"Round 2","mapName":"이차원 콜로세움","locationId":"SR024","href":"stage/SR024/1.html","stageOrder":1},{"id":"SR028-3","name":"Round 4","mapName":"異次元コロシアム","locationId":"SR028","href":"stage/SR028/3.html","stageOrder":3},{"id":"V000-44","name":"45층","mapName":"풍운 냥코탑","locationId":"V000","href":"stage/V000/44.html","stageOrder":44},{"id":"V006-44","name":"45층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/44.html","stageOrder":44},{"id":"V010-44","name":"45층","mapName":"황금 냥코탑","locationId":"V010","href":"stage/V010/44.html","stageOrder":44}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

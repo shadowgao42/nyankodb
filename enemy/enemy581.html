@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":581,"stages":[{"id":"A049-0","name":"XP 대잔치 Lv.1","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/0.html","stageOrder":0},{"id":"A049-1","name":"XP 대잔치 Lv.2","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/1.html","stageOrder":1},{"id":"C181-0","name":"古馬最高の栄誉","mapName":"天皇賞（秋）（ＧⅠ）","locationId":"C181","href":"stage/C181/0.html","stageOrder":0},{"id":"C181-1","name":"伝統と歴史ある競走","mapName":"天皇賞（秋）（ＧⅠ）","locationId":"C181","href":"stage/C181/1.html","stageOrder":1},{"id":"C181-2","name":"目指すは秋の盾","mapName":"天皇賞（秋）（ＧⅠ）","locationId":"C181","href":"stage/C181/2.html","stageOrder":2},{"id":"C182-0","name":"ファン投票で出走馬を決める","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/0.html","stageOrder":0},{"id":"C182-2","name":"賞金は国内最高3億円","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/2.html","stageOrder":2},{"id":"C182-4","name":"2分30秒の決着","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/4.html","stageOrder":4},{"id":"C182-5","name":"中長距離の精鋭たち","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/5.html","stageOrder":5},{"id":"C182-6","name":"名前の由来はレース創設者","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/6.html","stageOrder":6},{"id":"C182-7","name":"ラストランを飾れ！","mapName":"有馬記念（ＧⅠ）","locationId":"C182","href":"stage/C182/7.html","stageOrder":7},{"id":"EX061-0","name":"400m 계주 2번주자","mapName":"EX 스테이지","locationId":"EX061","href":"stage/EX061/0.html","stageOrder":0},{"id":"EX061-2","name":"1600m 계주 2번주자","mapName":"EX 스테이지","locationId":"EX061","href":"stage/EX061/2.html","stageOrder":2},{"id":"EX062-2","name":"1600m 계주 최종주자","mapName":"EX 스테이지","locationId":"EX062","href":"stage/EX062/2.html","stageOrder":2},{"id":"EX072-0","name":"봄의 추억 Page 2","mapName":"EX 스테이지","locationId":"EX072","href":"stage/EX072/0.html","stageOrder":0},{"id":"S302-0","name":"용기를 내어 호출","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/0.html","stageOrder":0},{"id":"S302-1","name":"고백의 결과는…?","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/1.html","stageOrder":1},{"id":"S302-2","name":"「친구 사이로 지내자」","mapName":"Weekend ~고백~","locationId":"S302","href":"stage/S302/2.html","stageOrder":2},{"id":"S303-0","name":"고백 명소에서 기다리며","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/0.html","stageOrder":0},{"id":"S303-2","name":"제시간에 온 그녀","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/2.html","stageOrder":2},{"id":"S303-4","name":"응원해주는 벚꽃 잎","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/4.html","stageOrder":4},{"id":"S303-5","name":"멀리서 지켜보는 친구들","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/5.html","stageOrder":5},{"id":"S303-6","name":"바람 소리에 가려진 고백","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/6.html","stageOrder":6},{"id":"S303-7","name":"짝사랑 졸업증서 수여","mapName":"Season4 ~졸업식 당일~","locationId":"S303","href":"stage/S303/7.html","stageOrder":7},{"id":"S315-0","name":"도전! 태백장사","mapName":"곤충 씨름대회 예선","locationId":"S315","href":"stage/S315/0.html","stageOrder":0},{"id":"S317-0","name":"도전! 한라장사","mapName":"곤충 씨름대회 준결승","locationId":"S317","href":"stage/S317/0.html","stageOrder":0},{"id":"S359-1","name":"800m 계주 1번주자","mapName":"열혈! 이어달리기","locationId":"S359","href":"stage/S359/1.html","stageOrder":1},{"id":"S382-1","name":"강 건너 돌구경","mapName":"정글 서바이벌","locationId":"S382","href":"stage/S382/1.html","stageOrder":1},{"id":"S382-2","name":"석풍당당","mapName":"정글 서바이벌","locationId":"S382","href":"stage/S382/2.html","stageOrder":2},{"id":"S413-0","name":"vs 통나무","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/0.html","stageOrder":0},{"id":"S413-1","name":"vs 강풍","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/1.html","stageOrder":1},{"id":"S413-3","name":"vs 주먹","mapName":"제4화 비밀 특훈","locationId":"S413","href":"stage/S413/3.html","stageOrder":3},{"id":"S430-0","name":"木の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/0.html","stageOrder":0},{"id":"S430-1","name":"風の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/1.html","stageOrder":1},{"id":"S430-3","name":"拳の修行","mapName":"第4話 秘密特訓","locationId":"S430","href":"stage/S430/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

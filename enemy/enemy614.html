@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":614,"stages":[{"id":"H066-1","name":"녹수석 사막 Ⅳ","mapName":"사냥꾼의 지도 Ⅳ","locationId":"H066","href":"stage/H066/1.html","stageOrder":1},{"id":"NA047-6","name":"역습의 거대 유인원","mapName":"인류 고양이화 계획","locationId":"NA047","href":"stage/NA047/6.html","stageOrder":6},{"id":"ND001-2","name":"저녁노을의 하드론","mapName":"시공의 끝","locationId":"ND001","href":"stage/ND001/2.html","stageOrder":2},{"id":"ND006-2","name":"꽃미남 동굴","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/2.html","stageOrder":2},{"id":"ND006-3","name":"짐승남 동굴","mapName":"양극단의 진실","locationId":"ND006","href":"stage/ND006/3.html","stageOrder":3},{"id":"Q000-15","name":"호우 수림 지역 16","mapName":"가푸라 밀림","locationId":"Q000","href":"stage/Q000/15.html","stageOrder":15},{"id":"Q000-18","name":"절경 원생림 지역 19","mapName":"가푸라 밀림","locationId":"Q000","href":"stage/Q000/18.html","stageOrder":18},{"id":"Q001-10","name":"불볕 사원 지역 11","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/10.html","stageOrder":10},{"id":"Q001-13","name":"불볕 사원 지역 14","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/13.html","stageOrder":13},{"id":"Q001-19","name":"월광 황사 지역 FINAL","mapName":"비시니 사막","locationId":"Q001","href":"stage/Q001/19.html","stageOrder":19},{"id":"Q002-10","name":"초열 화구 지역 11","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/10.html","stageOrder":10},{"id":"Q002-12","name":"초열 화구 지역 13","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/12.html","stageOrder":12},{"id":"Q002-7","name":"열풍 산길 지역 8","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/7.html","stageOrder":7},{"id":"Q002-9","name":"열풍 산길 지역 10","mapName":"르웨이 화산","locationId":"Q002","href":"stage/Q002/9.html","stageOrder":9},{"id":"S279-1","name":"유물 조사 Ⅲ 방법","mapName":"여왕의 발굴조사 3","locationId":"S279","href":"stage/S279/1.html","stageOrder":1},{"id":"S280-1","name":"유물 조사 Ⅳ 방법","mapName":"여왕의 발굴조사 4","locationId":"S280","href":"stage/S280/1.html","stageOrder":1},{"id":"S326-0","name":"무지개빛 천재지변 초극난도","mapName":"진화의 무지개 수석","locationId":"S326","href":"stage/S326/0.html","stageOrder":0},{"id":"S346-0","name":"분노하는 폭진격","mapName":"사막의 괴이 Ⅲ","locationId":"S346","href":"stage/S346/0.html","stageOrder":0},{"id":"S391-3","name":"백수의 왕 결전 신난도","mapName":"초권수 맴매테리우스 대강림","locationId":"S391","href":"stage/S391/3.html","stageOrder":3},{"id":"SR008-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR008","href":"stage/SR008/3.html","stageOrder":3},{"id":"SR009-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR009","href":"stage/SR009/2.html","stageOrder":2},{"id":"SR017-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR017","href":"stage/SR017/4.html","stageOrder":4},{"id":"SR028-4","name":"Round 5","mapName":"異次元コロシアム","locationId":"SR028","href":"stage/SR028/4.html","stageOrder":4},{"id":"Z008-13","name":"캣츠아이 성운","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/13.html","stageOrder":13},{"id":"Z008-17","name":"천랑성","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/17.html","stageOrder":17},{"id":"Z008-30","name":"매운매운떡뽀끼","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/30.html","stageOrder":30},{"id":"Z008-43","name":"크림존성","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/43.html","stageOrder":43},{"id":"Z008-47","name":"빅뱅","mapName":"우주편 제2장 좀비습격","locationId":"Z008","href":"stage/Z008/47.html","stageOrder":47},{"id":"Z009-1","name":"화성","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/1.html","stageOrder":1},{"id":"Z009-15","name":"호리병박 성운","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/15.html","stageOrder":15},{"id":"Z009-32","name":"다라라라","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/32.html","stageOrder":32},{"id":"Z009-40","name":"데스스턴","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/40.html","stageOrder":40},{"id":"Z009-46","name":"블랙홀","mapName":"우주편 제3장 좀비습격","locationId":"Z009","href":"stage/Z009/46.html","stageOrder":46}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

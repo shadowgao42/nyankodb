@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":719,"stages":[{"id":"A064-10","name":"살의 Lv.11","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/10.html","stageOrder":10},{"id":"A064-11","name":"살의 Lv.12","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/11.html","stageOrder":11},{"id":"A064-12","name":"살의 Lv.13","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/12.html","stageOrder":12},{"id":"A064-13","name":"살의 Lv.14","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/13.html","stageOrder":13},{"id":"A064-14","name":"살의 Lv.MAX","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/14.html","stageOrder":14},{"id":"A064-5","name":"살의 Lv.6","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/5.html","stageOrder":5},{"id":"A064-6","name":"살의 Lv.7","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/6.html","stageOrder":6},{"id":"A064-7","name":"살의 Lv.8","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/7.html","stageOrder":7},{"id":"A064-8","name":"살의 Lv.9","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/8.html","stageOrder":8},{"id":"A064-9","name":"살의 Lv.10","mapName":"고양이들의 대역습 (구)","locationId":"A064","href":"stage/A064/9.html","stageOrder":9},{"id":"A078-10","name":"살의 Lv.11","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/10.html","stageOrder":10},{"id":"A078-11","name":"살의 Lv.12","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/11.html","stageOrder":11},{"id":"A078-12","name":"살의 Lv.13","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/12.html","stageOrder":12},{"id":"A078-13","name":"살의 Lv.14","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/13.html","stageOrder":13},{"id":"A078-14","name":"살의 Lv.MAX","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/14.html","stageOrder":14},{"id":"A078-5","name":"살의 Lv.6","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/5.html","stageOrder":5},{"id":"A078-6","name":"살의 Lv.7","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/6.html","stageOrder":6},{"id":"A078-7","name":"살의 Lv.8","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/7.html","stageOrder":7},{"id":"A078-8","name":"살의 Lv.9","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/8.html","stageOrder":8},{"id":"A078-9","name":"살의 Lv.10","mapName":"고양이들의 대역습","locationId":"A078","href":"stage/A078/9.html","stageOrder":9},{"id":"EX078-3","name":"겨울의 추억 Page 2","mapName":"EX 스테이지","locationId":"EX078","href":"stage/EX078/3.html","stageOrder":3}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

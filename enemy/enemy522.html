@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":522,"stages":[{"id":"NA025-5","name":"별자리가 된 고양이들","mapName":"샛별의 섬","locationId":"NA025","href":"stage/NA025/5.html","stageOrder":5},{"id":"NA026-0","name":"냥코 탄 왕자님","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/0.html","stageOrder":0},{"id":"NA026-2","name":"미녀 마녀","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/2.html","stageOrder":2},{"id":"NA026-4","name":"가면무도회","mapName":"잠자는 숲 속의 무언가","locationId":"NA026","href":"stage/NA026/4.html","stageOrder":4},{"id":"NA031-0","name":"스파이럴 링","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/0.html","stageOrder":0},{"id":"NA031-1","name":"13일의 월급날","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/1.html","stageOrder":1},{"id":"NA031-2","name":"고양이 전기톱 연쇄침략사건","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/2.html","stageOrder":2},{"id":"NA031-3","name":"극성","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/3.html","stageOrder":3},{"id":"NA031-4","name":"냉정 스크림","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/4.html","stageOrder":4},{"id":"NA031-5","name":"세븐 센스","mapName":"공포 극장","locationId":"NA031","href":"stage/NA031/5.html","stageOrder":5},{"id":"NA040-4","name":"불의 나라 다이 = 너마이트","mapName":"데드 히트 랜드","locationId":"NA040","href":"stage/NA040/4.html","stageOrder":4},{"id":"NA045-0","name":"인터카스텔라","mapName":"해적왕 먹자골목","locationId":"NA045","href":"stage/NA045/0.html","stageOrder":0},{"id":"NA045-5","name":"수타우동 워즈","mapName":"해적왕 먹자골목","locationId":"NA045","href":"stage/NA045/5.html","stageOrder":5},{"id":"ND012-1","name":"약품냄새 감옥","mapName":"숨겨진 모르모섬","locationId":"ND012","href":"stage/ND012/1.html","stageOrder":1},{"id":"ND031-1","name":"도약하는 그림자 무리","mapName":"새로운 지평","locationId":"ND031","href":"stage/ND031/1.html","stageOrder":1}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

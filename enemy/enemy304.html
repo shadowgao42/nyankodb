@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":304,"stages":[{"id":"D000-33","name":"레벨34","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/33.html","stageOrder":33},{"id":"D000-34","name":"레벨35","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/34.html","stageOrder":34},{"id":"D000-36","name":"레벨37","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/36.html","stageOrder":36},{"id":"D000-37","name":"레벨38","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/37.html","stageOrder":37},{"id":"D000-46","name":"레벨47","mapName":"전설의 퀘스트","locationId":"D000","href":"stage/D000/46.html","stageOrder":46},{"id":"N034-5","name":"감염된 섬주인","mapName":"열도의 판데믹","locationId":"N034","href":"stage/N034/5.html","stageOrder":5},{"id":"N037-2","name":"해저 2000m 결사대","mapName":"2인자의 해변","locationId":"N037","href":"stage/N037/2.html","stageOrder":2},{"id":"N047-2","name":"영광의 글로리","mapName":"전설의 끝","locationId":"N047","href":"stage/N047/2.html","stageOrder":2},{"id":"NA008-2","name":"미꾸리 깨기","mapName":"파라리라 반도","locationId":"NA008","href":"stage/NA008/2.html","stageOrder":2},{"id":"NA015-2","name":"주정뱅이 거실","mapName":"천국의 뒷골목 술집","locationId":"NA015","href":"stage/NA015/2.html","stageOrder":2},{"id":"NA023-3","name":"집에서의 공포정치","mapName":"독재의 맛","locationId":"NA023","href":"stage/NA023/3.html","stageOrder":3},{"id":"NA028-0","name":"영면의 동굴","mapName":"잊혀진 무덤","locationId":"NA028","href":"stage/NA028/0.html","stageOrder":0},{"id":"NA033-0","name":"앙코르 S.W.A.T","mapName":"나시고・렝","locationId":"NA033","href":"stage/NA033/0.html","stageOrder":0},{"id":"NA039-0","name":"퐁퐁배의 묘지","mapName":"마해역의 빅쿠라항","locationId":"NA039","href":"stage/NA039/0.html","stageOrder":0},{"id":"ND007-3","name":"사인코사인 탄광","mapName":"데시리터 베이의 마물","locationId":"ND007","href":"stage/ND007/3.html","stageOrder":3},{"id":"ND026-1","name":"아삽으로 삽질","mapName":"버그체 컴퍼니","locationId":"ND026","href":"stage/ND026/1.html","stageOrder":1},{"id":"S336-8","name":"돌연변이 Lv.9","mapName":"언데드 하자드","locationId":"S336","href":"stage/S336/8.html","stageOrder":8},{"id":"SR004-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR004","href":"stage/SR004/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

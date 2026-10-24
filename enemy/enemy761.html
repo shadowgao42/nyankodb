@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":761,"stages":[{"id":"C264-0","name":"꿈틀거리는 무수한 거미","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/0.html","stageOrder":0},{"id":"C264-1","name":"꼭두각시가 된 사람들","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/1.html","stageOrder":1},{"id":"C264-2","name":"가짜 인연","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/2.html","stageOrder":2},{"id":"C264-3","name":"오합지졸 가족","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/3.html","stageOrder":3},{"id":"C264-4","name":"난도질하는 거미줄","mapName":"나타구모 산에서의 전투","locationId":"C264","href":"stage/C264/4.html","stageOrder":4},{"id":"C267-0","name":"하현 5 루이 초급","mapName":"특별 임무! 루이 토벌","locationId":"C267","href":"stage/C267/0.html","stageOrder":0},{"id":"C267-1","name":"하현 5 루이 초고난도","mapName":"특별 임무! 루이 토벌","locationId":"C267","href":"stage/C267/1.html","stageOrder":1},{"id":"R042-0","name":"특별 소집! 최강 대원 결정전","mapName":"랭킹의 방","locationId":"R042","href":"stage/R042/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

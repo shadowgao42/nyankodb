@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":276,"stages":[{"id":"C034-0","name":"박스의 마녀 상급","mapName":"마녀의 결계","locationId":"C034","href":"stage/C034/0.html","stageOrder":0},{"id":"C034-1","name":"박스의 마녀 초고난도","mapName":"마녀의 결계","locationId":"C034","href":"stage/C034/1.html","stageOrder":1},{"id":"C177-0","name":"소원을 찾았다냥","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C177","href":"stage/C177/0.html","stageOrder":0},{"id":"C177-1","name":"기적도 마법도 존재하는 법","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C177","href":"stage/C177/1.html","stageOrder":1},{"id":"C177-2","name":"나 잘했다냥?","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C177","href":"stage/C177/2.html","stageOrder":2},{"id":"C177-3","name":"후회 따위 있을 수 없다냥","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C177","href":"stage/C177/3.html","stageOrder":3},{"id":"C177-4","name":"행복해질 거야...","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C177","href":"stage/C177/4.html","stageOrder":4},{"id":"C222-0","name":"소원을 찾았다냥","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C222","href":"stage/C222/0.html","stageOrder":0},{"id":"C222-1","name":"기적도 마법도 존재하는 법","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C222","href":"stage/C222/1.html","stageOrder":1},{"id":"C222-2","name":"나 잘했다냥?","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C222","href":"stage/C222/2.html","stageOrder":2},{"id":"C222-3","name":"후회 따위 있을 수 없다냥","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C222","href":"stage/C222/3.html","stageOrder":3},{"id":"C222-4","name":"행복해질 거야...","mapName":"마녀의 결계 ~박스의 마녀~","locationId":"C222","href":"stage/C222/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

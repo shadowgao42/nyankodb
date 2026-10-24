@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":485,"stages":[{"id":"C107-1","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 EASY","locationId":"C107","href":"stage/C107/1.html","stageOrder":1},{"id":"C108-0","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 NORMAL","locationId":"C108","href":"stage/C108/0.html","stageOrder":0},{"id":"C108-5","name":"대자연의 전사","mapName":"스트리트 파이터 NORMAL","locationId":"C108","href":"stage/C108/5.html","stageOrder":5},{"id":"C109-4","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 HARD","locationId":"C109","href":"stage/C109/4.html","stageOrder":4},{"id":"C109-7","name":"대자연의 전사","mapName":"스트리트 파이터 HARD","locationId":"C109","href":"stage/C109/7.html","stageOrder":7},{"id":"C120-0","name":"VS달심 초급","mapName":"New Challenger","locationId":"C120","href":"stage/C120/0.html","stageOrder":0},{"id":"C121-0","name":"VS달심 고난도","mapName":"New Challenger","locationId":"C121","href":"stage/C121/0.html","stageOrder":0},{"id":"C135-1","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 EASY","locationId":"C135","href":"stage/C135/1.html","stageOrder":1},{"id":"C136-5","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 NORMAL","locationId":"C136","href":"stage/C136/5.html","stageOrder":5},{"id":"C137-10","name":"열혈 장사","mapName":"스트리트 파이터 HARD","locationId":"C137","href":"stage/C137/10.html","stageOrder":10},{"id":"C137-4","name":"인도를 비추는 불꽃","mapName":"스트리트 파이터 HARD","locationId":"C137","href":"stage/C137/4.html","stageOrder":4},{"id":"C137-7","name":"대자연의 전사","mapName":"스트리트 파이터 HARD","locationId":"C137","href":"stage/C137/7.html","stageOrder":7},{"id":"C158-0","name":"VS달심 초급","mapName":"New Challenger (구)","locationId":"C158","href":"stage/C158/0.html","stageOrder":0},{"id":"C159-0","name":"VS달심 고난도","mapName":"New Challenger (구)","locationId":"C159","href":"stage/C159/0.html","stageOrder":0},{"id":"C240-0","name":"VS달심 초급","mapName":"New Challenger","locationId":"C240","href":"stage/C240/0.html","stageOrder":0},{"id":"C241-0","name":"VS달심 고난도","mapName":"New Challenger","locationId":"C241","href":"stage/C241/0.html","stageOrder":0},{"id":"R014-0","name":"나보다 강한 녀석과 만나러 간다","mapName":"랭킹의 방","locationId":"R014","href":"stage/R014/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

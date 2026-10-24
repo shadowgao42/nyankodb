@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":372,"stages":[{"id":"C057-0","name":"영웅왕의 강림 초상급","mapName":"대격전! 길가메시의 습격!","locationId":"C057","href":"stage/C057/0.html","stageOrder":0},{"id":"C057-1","name":"영웅왕의 강림 극난도","mapName":"대격전! 길가메시의 습격!","locationId":"C057","href":"stage/C057/1.html","stageOrder":1},{"id":"C198-0","name":"영웅왕의 강림 초상급","mapName":"대격전! 길가메시의 습격!","locationId":"C198","href":"stage/C198/0.html","stageOrder":0},{"id":"C198-1","name":"영웅왕의 강림 극난도","mapName":"대격전! 길가메시의 습격!","locationId":"C198","href":"stage/C198/1.html","stageOrder":1},{"id":"C198-2","name":"영웅왕의 강림 초극난도","mapName":"대격전! 길가메시의 습격!","locationId":"C198","href":"stage/C198/2.html","stageOrder":2},{"id":"C270-3","name":"새로운 봄, 그 너머로","mapName":"숨겨진 성배전쟁","locationId":"C270","href":"stage/C270/3.html","stageOrder":3},{"id":"CA014-10","name":"성배전쟁 11일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/10.html","stageOrder":10},{"id":"CA014-11","name":"성배전쟁 12일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/11.html","stageOrder":11},{"id":"CA014-12","name":"성배전쟁 13일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/12.html","stageOrder":12},{"id":"CA014-13","name":"성배전쟁 14일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/13.html","stageOrder":13},{"id":"CA014-14","name":"성배전쟁 15일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/14.html","stageOrder":14},{"id":"CA014-15","name":"성배전쟁 16일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/15.html","stageOrder":15},{"id":"CA014-16","name":"성배전쟁 17일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/16.html","stageOrder":16},{"id":"CA014-17","name":"성배전쟁 18일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/17.html","stageOrder":17},{"id":"CA014-18","name":"성배전쟁 19일째","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/18.html","stageOrder":18},{"id":"CA014-19","name":"성배전쟁 마지막 날","mapName":"서번트 강습!","locationId":"CA014","href":"stage/CA014/19.html","stageOrder":19},{"id":"R006-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방 (구)","locationId":"R006","href":"stage/R006/0.html","stageOrder":0},{"id":"R048-0","name":"난투! 서번트 대습격!","mapName":"랭킹의 방","locationId":"R048","href":"stage/R048/0.html","stageOrder":0}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

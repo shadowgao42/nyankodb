@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":356,"stages":[{"id":"A019-11","name":"신기한 아가씨","mapName":"고양이의 여름 방학","locationId":"A019","href":"stage/A019/11.html","stageOrder":11},{"id":"A019-15","name":"눈을 떠보니 점심","mapName":"고양이의 여름 방학","locationId":"A019","href":"stage/A019/15.html","stageOrder":15},{"id":"A019-3","name":"나무 위의 비밀기지","mapName":"고양이의 여름 방학","locationId":"A019","href":"stage/A019/3.html","stageOrder":3},{"id":"A019-7","name":"벌레 채집망을 쥐고","mapName":"고양이의 여름 방학","locationId":"A019","href":"stage/A019/7.html","stageOrder":7},{"id":"A048-11","name":"모르는 문제만 나온다","mapName":"Season1 ~학교 생활~","locationId":"A048","href":"stage/A048/11.html","stageOrder":11},{"id":"A048-15","name":"교과서는 사물함에","mapName":"Season1 ~학교 생활~","locationId":"A048","href":"stage/A048/15.html","stageOrder":15},{"id":"A048-3","name":"교과서 같이 보기","mapName":"Season1 ~학교 생활~","locationId":"A048","href":"stage/A048/3.html","stageOrder":3},{"id":"A048-7","name":"피구는 회피 전문","mapName":"Season1 ~학교 생활~","locationId":"A048","href":"stage/A048/7.html","stageOrder":7},{"id":"A049-2","name":"XP 대잔치 Lv.3","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/2.html","stageOrder":2},{"id":"A049-3","name":"XP 대잔치 Lv.4","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/3.html","stageOrder":3},{"id":"S149-0","name":"냥코꽃 필 무렵","mapName":"섬머 레슨","locationId":"S149","href":"stage/S149/0.html","stageOrder":0},{"id":"S149-1","name":"I am a Cat","mapName":"섬머 레슨","locationId":"S149","href":"stage/S149/1.html","stageOrder":1},{"id":"S149-2","name":"c2 = a2 + b2","mapName":"섬머 레슨","locationId":"S149","href":"stage/S149/2.html","stageOrder":2},{"id":"S149-3","name":"대동법","mapName":"섬머 레슨","locationId":"S149","href":"stage/S149/3.html","stageOrder":3},{"id":"S149-4","name":"N2+3H2→2NH3","mapName":"섬머 레슨","locationId":"S149","href":"stage/S149/4.html","stageOrder":4},{"id":"S160-1","name":"경찰차 러시","mapName":"파이팅! 수능대전쟁","locationId":"S160","href":"stage/S160/1.html","stageOrder":1},{"id":"S160-4","name":"행복은 성적순이 아니잖아요","mapName":"파이팅! 수능대전쟁","locationId":"S160","href":"stage/S160/4.html","stageOrder":4},{"id":"S182-0","name":"선물 증정! 초고난도","mapName":"이벤트 올스타즈 슈퍼 프레젠트DX","locationId":"S182","href":"stage/S182/0.html","stageOrder":0},{"id":"S322-5","name":"2017년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/5.html","stageOrder":5},{"id":"S420-0","name":"신발뿐인 신발장","mapName":"씁쓸한 발렌타인","locationId":"S420","href":"stage/S420/0.html","stageOrder":0},{"id":"S420-1","name":"옆자리는 초콜릿 무더기","mapName":"씁쓸한 발렌타인","locationId":"S420","href":"stage/S420/1.html","stageOrder":1},{"id":"S420-2","name":"나, 난 초코 안 좋아해…","mapName":"씁쓸한 발렌타인","locationId":"S420","href":"stage/S420/2.html","stageOrder":2},{"id":"V006-3","name":"4층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/3.html","stageOrder":3},{"id":"V007-6","name":"7층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/6.html","stageOrder":6}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

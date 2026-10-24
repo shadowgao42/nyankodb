@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":282,"stages":[{"id":"A049-2","name":"XP 대잔치 Lv.3","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/2.html","stageOrder":2},{"id":"A049-3","name":"XP 대잔치 Lv.4","mapName":"월별 스테이지 올스타즈 스타 총집합 대잔치!","locationId":"A049","href":"stage/A049/3.html","stageOrder":3},{"id":"S121-2","name":"태워도 인기 최고","mapName":"축제 맛집 전쟁","locationId":"S121","href":"stage/S121/2.html","stageOrder":2},{"id":"S121-3","name":"물론 원산지 표기 위반","mapName":"축제 맛집 전쟁","locationId":"S121","href":"stage/S121/3.html","stageOrder":3},{"id":"S121-5","name":"다 팔았지만 적자","mapName":"축제 맛집 전쟁","locationId":"S121","href":"stage/S121/5.html","stageOrder":5},{"id":"S146-0","name":"그레이트 진격! 초고난도","mapName":"월별 스테이지 올스타즈 그레이트 기념!","locationId":"S146","href":"stage/S146/0.html","stageOrder":0},{"id":"S174-2","name":"태워도 인기 최고","mapName":"축제 맛집 전쟁","locationId":"S174","href":"stage/S174/2.html","stageOrder":2},{"id":"S174-3","name":"물론 원산지 표기 위반","mapName":"축제 맛집 전쟁","locationId":"S174","href":"stage/S174/3.html","stageOrder":3},{"id":"S174-5","name":"다 팔았지만 적자","mapName":"축제 맛집 전쟁","locationId":"S174","href":"stage/S174/5.html","stageOrder":5},{"id":"S322-4","name":"2016년 데뷔","mapName":"제2부 적 군단 행진","locationId":"S322","href":"stage/S322/4.html","stageOrder":4},{"id":"V006-3","name":"4층","mapName":"이계 냥코탑","locationId":"V006","href":"stage/V006/3.html","stageOrder":3},{"id":"V007-2","name":"3층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

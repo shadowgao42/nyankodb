@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":67,"stages":[{"id":"A043-0","name":"곰 Lv.1","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/0.html","stageOrder":0},{"id":"A043-1","name":"곰 Lv.2","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/1.html","stageOrder":1},{"id":"A043-2","name":"곰 Lv.3","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/2.html","stageOrder":2},{"id":"A043-3","name":"곰 Lv.4","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/3.html","stageOrder":3},{"id":"A043-4","name":"곰 Lv.5","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/4.html","stageOrder":4},{"id":"A043-5","name":"곰 Lv.6","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/5.html","stageOrder":5},{"id":"A043-6","name":"곰 Lv.7","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/6.html","stageOrder":6},{"id":"A043-7","name":"곰 Lv.8","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/7.html","stageOrder":7},{"id":"A043-8","name":"곰 Lv.9","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/8.html","stageOrder":8},{"id":"A043-9","name":"곰 Lv.10","mapName":"3월 강습!","locationId":"A043","href":"stage/A043/9.html","stageOrder":9},{"id":"S013-3","name":"마늘과 쑥","mapName":"곰 다섯마리","locationId":"S013","href":"stage/S013/3.html","stageOrder":3},{"id":"S013-4","name":"곰탕은 맛있어","mapName":"곰 다섯마리","locationId":"S013","href":"stage/S013/4.html","stageOrder":4},{"id":"S013-5","name":"웅담","mapName":"곰 다섯마리","locationId":"S013","href":"stage/S013/5.html","stageOrder":5},{"id":"S013-6","name":"남아프리카 북극곰","mapName":"곰 다섯마리","locationId":"S013","href":"stage/S013/6.html","stageOrder":6},{"id":"S013-7","name":"팬더곰","mapName":"곰 다섯마리","locationId":"S013","href":"stage/S013/7.html","stageOrder":7},{"id":"S035-0","name":"미라클 일본 침략! 초고난도","mapName":"월별 스테이지 올스타즈 미라클 기념!","locationId":"S035","href":"stage/S035/0.html","stageOrder":0},{"id":"S192-1","name":"직장인 우루루곰","mapName":"곰 다섯마리SP","locationId":"S192","href":"stage/S192/1.html","stageOrder":1},{"id":"S192-4","name":"여우인척 하는 곰","mapName":"곰 다섯마리SP","locationId":"S192","href":"stage/S192/4.html","stageOrder":4},{"id":"S234-0","name":"봄의 제전 하위 초상급","mapName":"대난투 봄 스페셜","locationId":"S234","href":"stage/S234/0.html","stageOrder":0},{"id":"S234-2","name":"봄의 제전 상위 초고난도","mapName":"대난투 봄 스페셜","locationId":"S234","href":"stage/S234/2.html","stageOrder":2},{"id":"S234-3","name":"봄의 제전 최상위 극난도","mapName":"대난투 봄 스페셜","locationId":"S234","href":"stage/S234/3.html","stageOrder":3},{"id":"S234-4","name":"봄의 제전 왕위 극난도","mapName":"대난투 봄 스페셜","locationId":"S234","href":"stage/S234/4.html","stageOrder":4},{"id":"V007-4","name":"5층","mapName":"하얀 냥코 별탑","locationId":"V007","href":"stage/V007/4.html","stageOrder":4}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

@@ -275,11 +275,13 @@
     return preparedEntries;
   }
 
-  function searchResults(value) {
+  function searchResults(value, { kind = null, offset = 0, all = false } = {}) {
     const query = compact(value);
     if (!query) return { matches: [], total: 0 };
     const index = searchIndex();
-    if (resultCache.has(query)) return resultCache.get(query);
+    offset = Number.isSafeInteger(offset) && offset >= 0 ? offset : 0;
+    const cacheKey = JSON.stringify([query, kind, offset, all]);
+    if (resultCache.has(cacheKey)) return resultCache.get(cacheKey);
     const numericQuery = /^\d+$/.test(query) ? Number(query) : null;
     const queryLetters = new Map();
     for (const letter of query) queryLetters.set(letter, (queryLetters.get(letter) || 0) + 1);
@@ -287,14 +289,15 @@
     const buckets = Array.from({ length: 6 }, () => []);
     let total = 0;
     for (const prepared of index) {
+      if (kind !== null && prepared.entry.kind !== kind) continue;
       const rank = entryRank(prepared, query, numericQuery, queryLetters, firstCharacter);
       if (rank >= 99) continue;
       total++;
-      if (buckets[rank].length < resultLimit) buckets[rank].push(prepared.entry);
+      if (all || buckets[rank].length < offset + resultLimit) buckets[rank].push(prepared.entry);
     }
-    const found = { matches: buckets.flat().slice(0, resultLimit), total };
+    const found = { matches: all ? buckets.flat().slice(offset) : buckets.flat().slice(offset, offset + resultLimit), total };
     if (resultCache.size >= 40) resultCache.delete(resultCache.keys().next().value);
-    resultCache.set(query, found);
+    resultCache.set(cacheKey, found);
     return found;
   }
 
@@ -536,7 +539,10 @@
     else setTimeout(searchIndex, 0);
   }
 
-  window.NyankoSearch = Object.freeze({ search, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
+  window.NyankoSearch = Object.freeze({ search, searchResults(value, options) {
+    const found = searchResults(value, options);
+    return { matches: found.matches.slice(), total: found.total, limit: resultLimit };
+  }, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
   else mount();
 })();

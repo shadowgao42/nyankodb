@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":228,"stages":[{"id":"C025-6","name":"サイクロプス進化への道 上級","mapName":"開眼の城とドラゴン","locationId":"C025","href":"stage/C025/6.html","stageOrder":6},{"id":"C026-2","name":"城ドラ大戦争 極ムズ","mapName":"難攻不落の城とドラゴン","locationId":"C026","href":"stage/C026/2.html","stageOrder":2},{"id":"C078-4","name":"侵略の騎士団 竜神級","mapName":"城ドラ VS 城ドラ","locationId":"C078","href":"stage/C078/4.html","stageOrder":4},{"id":"CA011-10","name":"攻城戦 Lv.11","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/10.html","stageOrder":10},{"id":"CA011-11","name":"攻城戦 Lv.12","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/11.html","stageOrder":11},{"id":"CA011-12","name":"攻城戦 Lv.13","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/12.html","stageOrder":12},{"id":"CA011-13","name":"攻城戦 Lv.14","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/13.html","stageOrder":13},{"id":"CA011-14","name":"攻城戦 Lv.15","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/14.html","stageOrder":14},{"id":"CA011-15","name":"攻城戦 Lv.16","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/15.html","stageOrder":15},{"id":"CA011-16","name":"攻城戦 Lv.17","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/16.html","stageOrder":16},{"id":"CA011-17","name":"攻城戦 Lv.18","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/17.html","stageOrder":17},{"id":"CA011-18","name":"攻城戦 Lv.19","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/18.html","stageOrder":18},{"id":"CA011-19","name":"攻城戦 Lv.MAX","mapName":"強襲！城とドラゴン","locationId":"CA011","href":"stage/CA011/19.html","stageOrder":19}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>

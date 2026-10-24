@@ -857,6 +857,15 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="../animation-viewer.css?v=20261023-all-preview">
+<!-- enemy-stage-sources:style:start -->
+<link rel="stylesheet" href="../stage-list.css">
+<style id="enemyStagesStyles">
+
+    #enemyStagesCount { margin: 0; color: #94a2b6; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+    #enemyStagesScroll { height: 70vh; min-height: 180px; max-height: 720px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #526174 #111720; border-top: 1px solid #293645; }
+    
+</style>
+<!-- enemy-stage-sources:style:end -->
 </head>
 <body>
 <main class="page">
@@ -960,7 +969,16 @@
         <p class="animation-viewer-status" data-animation-status role="status">애니메이션을 불러오는 중…</p>
       </div>
     </section>
-  </main>
+  <!-- enemy-stage-sources:panel:start -->
+    <section class="sheet section" id="enemyStagesPanel" aria-labelledby="enemyStagesTitle">
+      <div class="section-heading"><h2 class="section-title" id="enemyStagesTitle">등장 스테이지</h2><p id="enemyStagesCount" role="status" aria-live="polite">스테이지 목록을 불러오는 중입니다.</p></div>
+      <div id="enemyStagesScroll" tabindex="0" aria-label="등장 장 및 스테이지 결과"><div class="stage-list" id="enemyStagesList"></div></div>
+      <script type="application/json" id="enemyStageSourcesData">{"enemyId":638,"stages":[{"id":"ND001-5","name":"뉴트리노 설원","mapName":"시공의 끝","locationId":"ND001","href":"stage/ND001/5.html","stageOrder":5},{"id":"ND002-4","name":"쎄쎄쎄 봉우리","mapName":"참참참 분지","locationId":"ND002","href":"stage/ND002/4.html","stageOrder":4},{"id":"ND005-0","name":"만조의 바닷가","mapName":"바다의 고양이","locationId":"ND005","href":"stage/ND005/0.html","stageOrder":0},{"id":"ND007-2","name":"일더하기이 삼림","mapName":"데시리터 베이의 마물","locationId":"ND007","href":"stage/ND007/2.html","stageOrder":2},{"id":"ND009-4","name":"메아리칸 드림","mapName":"이공간 여정의 저편","locationId":"ND009","href":"stage/ND009/4.html","stageOrder":4},{"id":"ND016-1","name":"푹신푹신 함정","mapName":"노가드 대마궁","locationId":"ND016","href":"stage/ND016/1.html","stageOrder":1},{"id":"ND022-2","name":"사회적 책임 지옥","mapName":"리버스 묘지","locationId":"ND022","href":"stage/ND022/2.html","stageOrder":2},{"id":"ND028-5","name":"조상님 강림!","mapName":"머슬 엠파이어","locationId":"ND028","href":"stage/ND028/5.html","stageOrder":5},{"id":"ND036-2","name":"メンマ大橋","mapName":"理想郷ビバラメン","locationId":"ND036","href":"stage/ND036/2.html","stageOrder":2},{"id":"SR006-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR006","href":"stage/SR006/3.html","stageOrder":3},{"id":"SR020-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR020","href":"stage/SR020/3.html","stageOrder":3},{"id":"SR022-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR022","href":"stage/SR022/3.html","stageOrder":3},{"id":"SR023-3","name":"Round 4","mapName":"이차원 콜로세움","locationId":"SR023","href":"stage/SR023/3.html","stageOrder":3},{"id":"SR025-4","name":"Round 5","mapName":"이차원 콜로세움","locationId":"SR025","href":"stage/SR025/4.html","stageOrder":4},{"id":"SR027-2","name":"Round 3","mapName":"이차원 콜로세움","locationId":"SR027","href":"stage/SR027/2.html","stageOrder":2}]}</script>
+    </section>
+    <script src="../stage-list.js" defer></script>
+    <script src="enemy-stage-sources.js" defer></script>
+<!-- enemy-stage-sources:panel:end -->
+</main>
 <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
 <script>
