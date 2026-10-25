@@ -179,8 +179,8 @@
       </div>
       <div class="filter-body" id="filterBody" hidden>
         <div class="filter-group">
-          <h3 class="filter-label" id="stageCategoryLabel">스테이지 분류</h3>
-          <div class="filter-chip-list" id="stageCategoryFilters" role="group" aria-labelledby="stageCategoryLabel"></div>
+          <h3 class="filter-label" id="stageDifficultyLabel">난이도</h3>
+          <div class="stage-difficulty-filters" id="stageDifficultyFilters" role="group" aria-labelledby="stageDifficultyLabel"></div>
         </div>
         <div class="filter-group">
           <h3 class="filter-label" id="stageEnemyLabel">출현 적</h3>
@@ -200,6 +200,22 @@
               <div class="unit-search-results" id="stageRewardOptions" role="listbox" aria-label="추가할 보상" hidden></div>
             </div>
             <div class="filter-chip-list stage-selected-list" id="stageRewardSelected" aria-live="polite"></div>
+          </div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label" id="stageCategoryLabel">스테이지 분류</h3>
+          <div class="filter-chip-list" id="stageCategoryFilters" role="group" aria-labelledby="stageCategoryLabel"></div>
+        </div>
+        <div class="filter-group">
+          <h3 class="filter-label" id="stageSpecialCategoryLabel">스페셜 스테이지 분류</h3>
+          <div>
+            <div class="filter-chip-list" id="stageSpecialCategoryFilters" role="group" aria-labelledby="stageSpecialCategoryLabel">
+              <button class="filter-chip text-chip" type="button" data-special-category="monthly">월간 스테이지</button>
+              <button class="filter-chip text-chip" type="button" data-special-category="cyclone">사이클론</button>
+              <button class="filter-chip text-chip" type="button" data-special-category="advent">강림</button>
+              <button class="filter-chip text-chip" type="button" data-special-category="crazed">광란</button>
+              <button class="filter-chip text-chip" type="button" data-special-category="awakening">각성</button>
+            </div>
           </div>
         </div>
       </div>

@@ -30,3 +30,14 @@
 @media (max-width: 760px) { .filter-group { grid-template-columns: 1fr; gap: 9px; } .filter-label { padding-top: 0; } }
 @media (max-width: 760px) { .filter-actions { gap: 8px 11px; } }
 @media (max-width: 500px) { .text-chip { min-width: calc(50% - 4px); flex: 1 1 calc(50% - 4px); } }
+@media (max-width: 500px) {
+  #stageCategoryFilters > .text-chip, #stageSpecialCategoryFilters > .text-chip { flex-grow: 0; }
+}
+.stage-difficulty-filters { display: grid; gap: 6px; min-width: 0; }
+.stage-difficulty-row { flex-wrap: nowrap; }
+.stage-difficulty-row > .text-chip { flex: 0 0 auto; min-width: 0; white-space: nowrap; }
+.stage-difficulty-row > .stage-difficulty-all { min-width: 64px; }
+.stage-difficulty-all[aria-pressed="mixed"] { border-color: #ff784f; color: var(--accent-2); }
+@media (min-width: 501px) {
+  .stage-difficulty-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(6, auto); grid-auto-flow: column; column-gap: 12px; }
+}

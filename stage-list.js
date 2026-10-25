@@ -127,7 +127,7 @@
       }
       if (query || filtered || activeFilter) {
         firstNewHref = allHits[more ? visibleHits.length : 0]?.href; total = allHits.length;
-        visibleHits = more || (activeFilter && !autoExpand) ? allHits : allHits.slice(0, pageSize);
+        visibleHits = more || activeFilter?.showAllMatches || (activeFilter && !autoExpand) ? allHits : allHits.slice(0, pageSize);
       } else total = 0;
       const matches = matchLocations(query), groups = new Map(categoryOrder.map(c => [c, []]));
       if (collapseAll) for (const { entry } of matches) {

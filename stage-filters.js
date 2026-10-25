@@ -3,7 +3,198 @@
   "use strict";
   function mount({ root, catalog, data, reset = null, nameInput = null }) {
     const search = window.NyankoSearch;
-    const categories = new Set(), enemies = new Map(), rewards = new Map();
+    const categories = new Set(), difficulties = new Set(), enemies = new Map(), rewards = new Map();
+    const selectedSpecials = new Set();
+    // Only the Special Stage locations explicitly listed by the user.
+    const specialLocations = {
+  "monthly": [
+    "S011",
+    "S012",
+    "S013",
+    "S026",
+    "S029",
+    "S030",
+    "S031",
+    "S032",
+    "S036",
+    "S038",
+    "S009",
+    "S010",
+    "S184",
+    "S186",
+    "S192",
+    "S194",
+    "S197",
+    "S165",
+    "S166",
+    "S167",
+    "S168",
+    "S170",
+    "S171",
+    "S175",
+    "S234",
+    "S235",
+    "S236",
+    "S237"
+  ],
+  "cyclone": [
+    "S014",
+    "S096",
+    "S122",
+    "S015",
+    "S066",
+    "S016",
+    "S259",
+    "S039",
+    "S043",
+    "S157",
+    "S189",
+    "S169",
+    "S195",
+    "S198",
+    "S172",
+    "S193",
+    "S176",
+    "S185",
+    "S342",
+    "S187",
+    "S203",
+    "S247",
+    "S111",
+    "S112",
+    "S114"
+  ],
+  "advent": [
+    "S119",
+    "S128",
+    "S158",
+    "S095",
+    "S177",
+    "S117",
+    "S201",
+    "S205",
+    "S207",
+    "S196",
+    "S214",
+    "S199",
+    "S215",
+    "S217",
+    "S219",
+    "S220",
+    "S226",
+    "S229",
+    "S231",
+    "S232",
+    "S246",
+    "S272",
+    "S273",
+    "S243",
+    "S296",
+    "S338",
+    "S375",
+    "S381",
+    "S383",
+    "S393",
+    "S404",
+    "S433",
+    "S340",
+    "S348",
+    "S391",
+    "S406",
+    "S421",
+    "S251",
+    "S253",
+    "S307",
+    "S252",
+    "S305",
+    "S306",
+    "S377",
+    "S378",
+    "S379"
+  ],
+  "crazed": [
+    "S017",
+    "S018",
+    "S019",
+    "S020",
+    "S021",
+    "S022",
+    "S023",
+    "S024",
+    "S025",
+    "S161",
+    "S102",
+    "S103",
+    "S104",
+    "S105",
+    "S106",
+    "S107",
+    "S108",
+    "S109",
+    "S110",
+    "S208"
+  ],
+  "awakening": [
+    "S045",
+    "S055",
+    "S053",
+    "S057",
+    "S050",
+    "S046",
+    "S047",
+    "S048",
+    "S049",
+    "S051",
+    "S052",
+    "S054",
+    "S056",
+    "S058",
+    "S083",
+    "S084",
+    "S085",
+    "S086",
+    "S087",
+    "S088",
+    "S089",
+    "S090",
+    "S091",
+    "S092",
+    "S093",
+    "S094",
+    "S148",
+    "S144",
+    "S143",
+    "S384",
+    "S130",
+    "S131",
+    "S132",
+    "S133",
+    "S134",
+    "S135",
+    "S136",
+    "S137",
+    "S138",
+    "S339",
+    "S394",
+    "S395",
+    "S350",
+    "S351",
+    "S352",
+    "S353",
+    "S354",
+    "S355",
+    "S356",
+    "S357",
+    "S358",
+    "S376"
+  ]
+};
+    const specialStageHrefs = new Map(Object.entries(specialLocations).map(([key, ids]) => {
+      const locations = new Set(ids);
+      return [key, new Set(catalog.entries.filter(entry => entry.kind === "stage"
+        && /^stage\/S\d{3}\/(?!index\.html$)[^/]+\.html$/.test(entry.href || "")
+        && locations.has(String(entry.href).split("/")[1])).map(entry => entry.href))];
+    }));
     const categoryOrder = search.stageCategoryOrder;
     const groups = [
       ["main", "메인 챕터", "세계편", "마계편"],
@@ -14,10 +205,10 @@
       members: categoryOrder.slice(categoryOrder.indexOf(start), categoryOrder.indexOf(end) + 1) }));
     const rewardIndex = new Map(data.rewards.map((entry, index) => [entry.key, index]));
     const rows = new Map(Object.entries(data.stages).map(([href, [enemyIds, rewardIds]]) => [href,
-      { enemies: new Set(enemyIds), rewards: new Set(rewardIds) }]));
+      { enemies: new Set(enemyIds), rewards: new Set(rewardIds), difficulties: new Set(data.difficulties?.[href] || []) }]));
     const pickers = [];
     function syncReset() {
-      if (reset) reset.disabled = !categories.size && !enemies.size && !rewards.size
+      if (reset) reset.disabled = !categories.size && !difficulties.size && !enemies.size && !rewards.size && !selectedSpecials.size
         && !nameInput?.value.trim() && ![...root.querySelectorAll('input')].some(input => input.value.trim());
     }
     function changed() { syncReset(); root.dispatchEvent(new Event("stagefilterschange")); }
@@ -32,6 +223,50 @@
       });
       categoryButtons.append(button);
     }
+    const specialButtons = new Map(Object.keys(specialLocations).map(key =>
+      [key, root.querySelector(`[data-special-category="${key}"]`)]));
+    for (const [key, button] of specialButtons) {
+      button?.setAttribute("aria-pressed", "false");
+      button?.addEventListener("click", () => {
+        if (selectedSpecials.has(key)) selectedSpecials.delete(key); else selectedSpecials.add(key);
+        button.setAttribute("aria-pressed", String(selectedSpecials.has(key))); changed();
+      });
+    }
+    const difficultyRows = [];
+    const difficultyValues = [...new Set(Object.values(data.difficulties || {}).flat())].sort((a, b) => Number(a) - Number(b));
+    function syncDifficultyButtons() {
+      for (const { whole, all, buttons, values } of difficultyRows) {
+        const selected = values.filter(value => difficulties.has(value)).length;
+        all.setAttribute("aria-pressed", selected === values.length ? "true" : selected ? "mixed" : "false");
+        all.setAttribute("aria-label", `별 ${whole} 전체 ${selected === values.length ? "해제" : "선택"}`);
+        for (const [value, button] of buttons) button.setAttribute("aria-pressed", String(difficulties.has(value)));
+      }
+    }
+    for (let whole = 1; whole <= 12; whole++) {
+      const values = difficultyValues.filter(value => Math.floor(Number(value)) === whole);
+      if (!values.length) continue;
+      const row = document.createElement("div"); row.className = "filter-chip-list stage-difficulty-row";
+      row.dataset.difficultyGroup = String(whole); row.setAttribute("role", "group"); row.setAttribute("aria-label", `별 ${whole} 난이도`);
+      const all = document.createElement("button"); all.type = "button"; all.className = "filter-chip text-chip stage-difficulty-all";
+      all.textContent = `⭐${whole}`; all.setAttribute("aria-pressed", "false");
+      all.addEventListener("click", () => {
+        const selected = values.every(value => difficulties.has(value));
+        for (const value of values) { if (selected) difficulties.delete(value); else difficulties.add(value); }
+        syncDifficultyButtons(); changed();
+      });
+      row.append(all); const buttons = new Map();
+      for (const value of values) {
+        const button = document.createElement("button"); button.type = "button"; button.className = "filter-chip text-chip";
+        button.textContent = value.includes(".") ? value.slice(value.indexOf(".")) : ".0";
+        button.setAttribute("aria-label", `별 ${value}`); button.dataset.difficulty = value; button.setAttribute("aria-pressed", "false");
+        button.addEventListener("click", () => {
+          if (difficulties.has(value)) difficulties.delete(value); else difficulties.add(value);
+          syncDifficultyButtons(); changed();
+        }); row.append(button); buttons.set(value, button);
+      }
+      difficultyRows.push({ whole, row, all, buttons, values }); root.querySelector("#stageDifficultyFilters").append(row);
+    }
+    syncDifficultyButtons();
     function createPicker(prefix, entries, selected) {
       const input = root.querySelector(`#${prefix}Search`), list = root.querySelector(`#${prefix}Options`);
       const chips = root.querySelector(`#${prefix}Selected`), field = input.parentElement;
@@ -133,25 +368,33 @@
       if (event.key === "Escape" && !event.isComposing && event.keyCode !== 229) requestAnimationFrame(syncReset);
     });
     reset?.addEventListener("click", () => {
-      categories.clear(); enemies.clear(); rewards.clear();
+      categories.clear(); difficulties.clear(); enemies.clear(); rewards.clear();
+      selectedSpecials.clear();
+      for (const button of specialButtons.values()) button?.setAttribute("aria-pressed", "false");
       if (nameInput) nameInput.value = "";
       categoryButtons.querySelectorAll('button').forEach(button => button.setAttribute("aria-pressed", "false"));
+      syncDifficultyButtons();
       pickers.forEach(clear => clear()); changed();
     });
     syncReset();
     function getFilter() {
-      if (!categories.size && !enemies.size && !rewards.size) return null;
+      if (!categories.size && !difficulties.size && !enemies.size && !rewards.size && !selectedSpecials.size) return null;
       const allowedCategories = new Set(groups.filter(group => categories.has(group.key)).flatMap(group => group.members));
       const enemyIds = [...enemies.values()].map(entry => Number(entry.id));
       const rewardIds = [...rewards.keys()].map(key => rewardIndex.get(key));
-      return { key: JSON.stringify([[...categories].sort(), [...enemies.keys()].sort(), [...rewards.keys()].sort()]),
-        expandMatches: Boolean(enemies.size || rewards.size),
-        expansionKey: JSON.stringify([[...enemies.keys()].sort(), [...rewards.keys()].sort()]),
+      const selectedDifficulties = [...difficulties];
+      const specialKeys = [...selectedSpecials].sort();
+      return { key: JSON.stringify([[...categories].sort(), [...difficulties].sort(), [...enemies.keys()].sort(), [...rewards.keys()].sort(), specialKeys]),
+        expandMatches: Boolean(enemies.size || rewards.size || specialKeys.length),
+        showAllMatches: Boolean(specialKeys.length),
+        expansionKey: JSON.stringify([[...enemies.keys()].sort(), [...rewards.keys()].sort(), specialKeys]),
         accepts(entry) {
+          if (specialKeys.length && !specialKeys.some(key => specialStageHrefs.get(key).has(entry.href))) return false;
           const locationId = String(entry.locationHref || entry.href).split("/")[1];
           if (categories.size && !allowedCategories.has(search.stageCategoryForLocation(locationId))) return false;
           const row = rows.get(entry.href);
-          return Boolean(row && enemyIds.every(id => row.enemies.has(id)) && rewardIds.every(id => row.rewards.has(id)));
+          return Boolean(row && (!difficulties.size || selectedDifficulties.some(value => row.difficulties.has(value)))
+            && enemyIds.every(id => row.enemies.has(id)) && rewardIds.every(id => row.rewards.has(id)));
         } };
     }
     return { getFilter };
