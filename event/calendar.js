@@ -256,9 +256,11 @@
     const limitedCodes = new Set(events.filter(event => event.start <= now && now < event.end).map(event => event.code));
     const recurringCodes = new Set(recurringEvents.filter(event => event.start <= now && now < event.end).map(event => event.code));
     const rows = [...detail.querySelectorAll(".calendar-event-detail")];
+    const nextStarts = new Map();
     for (const row of rows) {
-      const active = visible && [...row.querySelectorAll(".calendar-time-bar")]
-        .some(bar => Number(bar.dataset.start) <= now && now < Number(bar.dataset.end));
+      const bars = [...row.querySelectorAll(".calendar-time-bar")];
+      const active = visible && bars.some(bar => Number(bar.dataset.start) <= now && now < Number(bar.dataset.end));
+      nextStarts.set(row, Math.min(...bars.map(bar => Number(bar.dataset.start)).filter(start => start > now)));
       row.dataset.active = String(active);
       row.dataset.limited = String(visible && limitedCodes.has(row.dataset.code));
       row.dataset.recurring = String(visible && recurringCodes.has(row.dataset.code));
@@ -269,6 +271,7 @@
         ? Number(b.dataset.limited === "true") - Number(a.dataset.limited === "true") : 0)
       || (a.dataset.active === "true" && a.dataset.allDay === "true" && a.dataset.limited !== "true"
         ? Number(b.dataset.recurring === "true") - Number(a.dataset.recurring === "true") : 0)
+      || (visible && a.dataset.active !== "true" ? nextStarts.get(a) - nextStarts.get(b) : 0)
       || Number(a.dataset.order) - Number(b.dataset.order));
     if (ordered.some((row, index) => row !== rows[index])) {
       const focused = detail.contains(document.activeElement) ? document.activeElement : null;

@@ -267,7 +267,7 @@
       difficultyRows.push({ whole, row, all, buttons, values }); root.querySelector("#stageDifficultyFilters").append(row);
     }
     syncDifficultyButtons();
-    function createPicker(prefix, entries, selected) {
+    function createPicker(prefix, entries, selected, orderMatches = matches => matches) {
       const input = root.querySelector(`#${prefix}Search`), list = root.querySelector(`#${prefix}Options`);
       const chips = root.querySelector(`#${prefix}Selected`), field = input.parentElement;
       const index = search.createIndex(entries);
@@ -297,7 +297,7 @@
       }
       function render() {
         if (pending) cancelAnimationFrame(pending); pending = 0;
-        visible = index.searchResults(input.value, { all: true }).matches.filter(entry => !selected.has(entry.key)).slice(0, 200);
+        visible = orderMatches(index.searchResults(input.value, { all: true }).matches.filter(entry => !selected.has(entry.key))).slice(0, 200);
         list.replaceChildren(); close();
         if (!input.value.replace(/[\s\p{P}\p{S}_]/gu, "")) return;
         if (!visible.length) {
@@ -362,7 +362,14 @@
       pickers.push(() => { input.value = ""; close(); visible = []; list.replaceChildren(); renderChips(); });
     }
     createPicker("stageEnemy", catalog.entries.filter(entry => entry.kind === "enemy").map(entry => ({ ...entry, key: String(entry.id) })), enemies);
-    createPicker("stageReward", data.rewards, rewards);
+    function orderTreasureMatches(matches) {
+      const grades = new Map([["조잡한", 0], ["평범한", 1], ["최고급", 2]]);
+      const grade = entry => entry.key.startsWith("treasure:") ? grades.get(entry.name.split(" ", 1)[0]) : undefined;
+      const treasures = matches.filter(entry => grade(entry) !== undefined).sort((a, b) => grade(a) - grade(b));
+      let position = 0;
+      return matches.map(entry => grade(entry) === undefined ? entry : treasures[position++]);
+    }
+    createPicker("stageReward", data.rewards, rewards, orderTreasureMatches);
     nameInput?.addEventListener("input", syncReset);
     nameInput?.addEventListener("keydown", event => {
       if (event.key === "Escape" && !event.isComposing && event.keyCode !== 229) requestAnimationFrame(syncReset);
