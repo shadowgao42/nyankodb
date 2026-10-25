@@ -1281,7 +1281,7 @@
     function stageEnemyScaleParts(row, stat) {
       // Story chapter multipliers use their own rounding path, not crown truncation.
       if (DATA.story || !row) return null;
-      const isCastleAttack = stat === "attack" && currentCastleEnemyId(currentStageInfo()) === Number(row.enemyId);
+      const isCastleAttack = stat === "attack" && Number(rowMagnifications(row).attack) === Number(row.attackMagnification ?? row.hpMagnification ?? 100);
       const base = Number(stat === "attack" ? row.attackMagnification ?? row.hpMagnification ?? 100 : row.hpMagnification ?? 100);
       const crown = isCastleAttack ? 100 : Number(crownOptions[state.crownIndex] || 100);
       return { base, crown };
@@ -1303,10 +1303,12 @@
     }
     function enemyPageHref(enemyId, magnification, row) {
       const params = new URLSearchParams({ health: magnification.health, attack: magnification.attack });
+      if (DATA.story) params.set("stageRounding", "story");
       const hp = stageEnemyScaleParts(row, "hp"), attack = stageEnemyScaleParts(row, "attack");
-      if (hp && attack && Number(magnification.health) === hp.base * hp.crown / 100 && Number(magnification.attack) === attack.base * attack.crown / 100) {
+      if (hp && attack) {
         params.set("stageHpBase", hp.base); params.set("stageHpCrown", hp.crown);
         params.set("stageAttackBase", attack.base); params.set("stageAttackCrown", attack.crown);
+        params.set("stageRounding", "row");
       }
       return `${SITE_PREFIX}enemy/enemy${String(enemyId).padStart(3,"0")}.html?${params}`;
     }

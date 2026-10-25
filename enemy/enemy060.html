@@ -1266,7 +1266,8 @@ function enemyScale(value,stat='attack'){
   const crownText=query.get(stat==='hp'?'stageHpCrown':'stageAttackCrown');
   const base=Number(baseText),crown=Number(crownText);
   const fromStage=baseText!==null&&crownText!==null&&Number.isFinite(base)&&base>=0&&Number.isFinite(crown)&&crown>0&&Number(selected)===base*crown/100;
-  const scaled=fromStage?Math.floor(scaleEnemy(value,base)*crown/100):scaleEnemy(value,selected);
+  const story=['story','row'].includes(query.get('stageRounding'))&&Number(selected)===Number(query.get(stat==='hp'?'health':'attack'));
+  const scaled=fromStage?Math.floor(scaleEnemy(value,base)*crown/100):story?scaleEnemy(value,selected):Math.floor(Number(value)*Number(selected)/100);
   return scaled+Math.floor(scaled*enemyTraitTreasureEffect().boostPercent/100);
 }
 const enemyScaleShield=value=>scaleEnemy(value,state.hpMagnification);
