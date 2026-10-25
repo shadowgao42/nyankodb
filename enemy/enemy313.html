@@ -1042,8 +1042,8 @@ function renderEffects(){
 }
 function qualityName(q){return ['없음','조잡한','평범한','최고급'][q]}
 function ensureTreasure(){if(!state.treasures||typeof state.treasures!=='object'||Array.isArray(state.treasures))state.treasures={};for(const category of DATA.treasure.categories)for(const item of category.items)for(let c=0;c<3;c++)for(let s=0;s<item.slotCount;s++){const k=`${item.key}.${c}.${s}`,q=Number(state.treasures[k]);if(!Number.isInteger(q)||q<0||q>3)state.treasures[k]=3;else state.treasures[k]=q}}
-function treasurePercent(item){let total=0;for(let c=0;c<3;c++){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));total+=qs.some(q=>q===0)?0:qs.reduce((a,q)=>a+q/3,0)/item.slotCount*100}return total}
-function treasureChapterPercent(item,c){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));return qs.some(q=>q===0)?0:qs.reduce((a,q)=>a+q/3,0)/item.slotCount*100}
+function treasurePercent(item){let total=0;for(let c=0;c<3;c++)total+=treasureChapterPercent(item,c);return total}
+function treasureChapterPercent(item,c){const qs=Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`]||0));return !qs.length||qs.some(q=>q===0)?0:Math.floor(qs.reduce((a,q)=>a+q,0)*100/(item.slotCount*3))}
 const treasurePct=value=>{const rounded=Math.round(value*10)/10;return `${Number.isInteger(rounded)?rounded.toFixed(0):rounded.toFixed(1)}%`};
 function allTreasuresMaximum(){return DATA.treasure.categories.every(category=>category.items.every(item=>Array.from({length:3},(_,c)=>Array.from({length:item.slotCount},(_,s)=>Number(state.treasures[`${item.key}.${c}.${s}`])===3).every(Boolean)).every(Boolean)))}
 function syncTreasureResetButton(){$('treasure-reset').disabled=allTreasuresMaximum()&&enemyAccountingMaximum()}
@@ -1167,9 +1167,7 @@ const enemyCashDrop=()=>{
 const enemyAccountingMaximum=()=>state.accounting.baseLevel===enemyAccountingBaseBounds[1]&&state.accounting.plusLevel===enemyAccountingPlusBounds[1];
 function enemyTreasureChapterEffect(item,chapter,effectPercent=100){
   if(!item)return 0;
-  const qualities=Array.from({length:item.slotCount},(_,slot)=>Number(state.treasures[`${item.key}.${chapter}.${slot}`]||0));
-  if(qualities.some(quality=>quality===0))return 0;
-  const percent=Math.floor(qualities.reduce((sum,quality)=>sum+quality,0)*100/(item.slotCount*3));
+  const percent=treasureChapterPercent(item,chapter);
   return Math.floor(percent*effectPercent/100);
 }
 function enemyTraitTreasureEffect(){
