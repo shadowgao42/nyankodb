@@ -1261,7 +1261,12 @@ function enemyTraitTreasureEffect(){
 const enemyTraitMultiplier=()=>enemyTraitTreasureEffect().multiplier;
 function enemyScale(value,stat='attack'){
   const selected=stat==='hp'?state.hpMagnification:state.attackMagnification;
-  const scaled=scaleEnemy(value,selected);
+  const query=new URLSearchParams(typeof location==='undefined'?'':location.search);
+  const baseText=query.get(stat==='hp'?'stageHpBase':'stageAttackBase');
+  const crownText=query.get(stat==='hp'?'stageHpCrown':'stageAttackCrown');
+  const base=Number(baseText),crown=Number(crownText);
+  const fromStage=baseText!==null&&crownText!==null&&Number.isFinite(base)&&base>=0&&Number.isFinite(crown)&&crown>0&&Number(selected)===base*crown/100;
+  const scaled=fromStage?Math.floor(scaleEnemy(value,base)*crown/100):scaleEnemy(value,selected);
   return scaled+Math.floor(scaled*enemyTraitTreasureEffect().boostPercent/100);
 }
 const enemyScaleShield=value=>scaleEnemy(value,state.hpMagnification);

@@ -1380,19 +1380,36 @@
     function enemyTreasureMultiplier(row) {
       return 1 + enemyTreasureBoostPercent(row) / 100;
     }
-    function scaleStageEnemy(value, percent, row) {
-      const scaled = Math.floor((Number(value || 0) * Number(percent) + 50) / 100);
+    function stageEnemyScaleParts(row, stat) {
+      // Story chapter multipliers use their own rounding path, not crown truncation.
+      if (DATA.story || !row) return null;
+      const isCastleAttack = stat === "attack" && currentCastleEnemyId(currentStageInfo()) === Number(row.enemyId);
+      const base = Number(stat === "attack" ? row.attackMagnification ?? row.hpMagnification ?? 100 : row.hpMagnification ?? 100);
+      const crown = isCastleAttack ? 100 : Number(crownOptions[state.crownIndex] || 100);
+      return { base, crown };
+    }
+    function scaleStageEnemy(value, percent, row, stat = "hp") {
+      const parts = stageEnemyScaleParts(row, stat);
+      const rowAndCrown = parts && Number(percent) === parts.base * parts.crown / 100;
+      const scaled = rowAndCrown
+        ? Math.floor(Math.floor((Number(value || 0) * parts.base + 50) / 100) * parts.crown / 100)
+        : Math.floor((Number(value || 0) * Number(percent) + 50) / 100);
       return scaled + Math.floor(scaled * enemyTreasureBoostPercent(row) / 100);
     }
     function enemyVitalBars(row, magnification) {
       // Round each stage statistic, then truncate its treasure increment.
       const hp = scaleStageEnemy(row.base?.hp, magnification.health, row);
-      const attack = (row.base?.hits || []).reduce((sum, hit) => sum + scaleStageEnemy(typeof hit === "number" ? hit : hit.damage, magnification.attack, row), 0);
+      const attack = (row.base?.hits || []).reduce((sum, hit) => sum + scaleStageEnemy(typeof hit === "number" ? hit : hit.damage, magnification.attack, row, "attack"), 0);
       const bar = (value, maximum, kind, label) => `<span class="enemy-vital ${kind}" aria-label="${label} ${fmt(value)}"><span class="enemy-vital-bar" aria-hidden="true"><span class="enemy-vital-fill" style="width:${Math.min(100, Math.max(0, value / maximum * 100))}%"></span></span><span class="enemy-vital-value">${fmt(value)}</span></span>`;
       return `<span class="enemy-vitals">${bar(hp, state.hpBarMax, "hp", "체력")}${bar(attack, state.attackBarMax, "attack", "공격력")}</span>`;
     }
-    function enemyPageHref(enemyId, magnification) {
+    function enemyPageHref(enemyId, magnification, row) {
       const params = new URLSearchParams({ health: magnification.health, attack: magnification.attack });
+      const hp = stageEnemyScaleParts(row, "hp"), attack = stageEnemyScaleParts(row, "attack");
+      if (hp && attack && Number(magnification.health) === hp.base * hp.crown / 100 && Number(magnification.attack) === attack.base * attack.crown / 100) {
+        params.set("stageHpBase", hp.base); params.set("stageHpCrown", hp.crown);
+        params.set("stageAttackBase", attack.base); params.set("stageAttackCrown", attack.crown);
+      }
       return `${SITE_PREFIX}enemy/enemy${String(enemyId).padStart(3,"0")}.html?${params}`;
     }
     function renderEnemies() {
@@ -1422,7 +1439,7 @@
         if (row.bossFlag) triggerNotes.push(`<span class="enemy-boss-note">보스</span>`);
         if (Number(row.spawn?.cat_kill_count_trigger || 0)) triggerNotes.push(`<span>${escapeHtml(`${fmt(row.spawn.cat_kill_count_trigger)}마리 처치 후`)}</span>`);
         const triggerNoteHtml = triggerNotes.join('<span aria-hidden="true"> · </span>');
-        const href = enemyPageHref(row.enemyId, magnification);
+        const href = enemyPageHref(row.enemyId, magnification, row);
         return `<a class="enemy-row" data-boss="${Boolean(row.bossFlag)}" href="${href}" aria-label="${escapeHtml(row.name)} 적 스펙 보기"><span class="enemy-identity"><span class="enemy-image"><img src="${escapeHtml(assetPath(row.icon))}" alt="" onerror="this.style.visibility='hidden'"></span><span class="enemy-compact-magnification" title="${escapeHtml(multiplierText)}">${escapeHtml(compactMultiplier)}</span><span class="enemy-copy"><span class="enemy-name"><span class="enemy-name-text">${escapeHtml(row.name || `적 ${row.enemyId}`)}</span><span class="enemy-magnification">${escapeHtml(multiplierText)}</span></span><span class="enemy-id">ENEMY ${String(row.enemyId).padStart(3,"0")}</span></span></span><span class="enemy-cell" data-label="출현 수"><strong>${escapeHtml(count)}</strong></span><span class="enemy-cell" data-label="성 체력"><strong>${fmtNumber(trigger)}%</strong>${triggerNoteHtml ? `<small>${triggerNoteHtml}</small>` : ""}</span><span class="enemy-cell" data-label="등장"><strong>${escapeHtml(appearance)}</strong></span>${enemyVitalBars(row, magnification)}${row.enemyLoadError ? `<span class="enemy-row-error">적 데이터 일부를 불러오지 못했습니다.</span>` : ""}</a>`;
       }).join("");
     }
