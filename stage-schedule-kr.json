@@ -3,8 +3,8 @@
   "region": "kr",
   "timezone": "Asia/Seoul",
   "gameVersion": 150601,
-  "fetchedAt": "2026-10-27T13:36:57+09:00",
-  "validUntil": "2026-10-27T14:06:57+09:00",
+  "fetchedAt": "2026-10-27T13:42:56+09:00",
+  "validUntil": "2026-10-27T14:12:56+09:00",
   "source": {
     "url": "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv",
     "sha256": "1472e81472d29f3f4494378b51a41699bf1fe27418e00b646da058d979839ee1",
@@ -136934,8 +136934,8 @@
   },
   "recurringCalendar": {
     "schemaVersion": 1,
-    "rangeStart": "2026-10-27T13:36:57+09:00",
-    "rangeEnd": "2026-10-28T13:36:57+09:00",
+    "rangeStart": "2026-10-27T13:42:56+09:00",
+    "rangeEnd": "2026-10-28T13:42:56+09:00",
     "maps": {
       "A026": {
         "eventMapId": 24026,
