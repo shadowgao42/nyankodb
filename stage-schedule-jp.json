@@ -3,12 +3,12 @@
   "region": "jp",
   "timezone": "Asia/Tokyo",
   "gameVersion": 150700,
-  "fetchedAt": "2026-10-29T17:01:55+09:00",
-  "validUntil": "2026-10-29T17:31:55+09:00",
+  "fetchedAt": "2026-10-29T17:13:55+09:00",
+  "validUntil": "2026-10-29T17:43:55+09:00",
   "source": {
     "url": "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv",
     "sha256": "b7eee89e142b34b2000a0b308795dc4eaf1af532af11480c04c1ba8477897755",
-    "lastModified": "Mon, 19 Oct 2026 07:22:33 GMT",
+    "lastModified": "Thu, 29 Oct 2026 08:02:37 GMT",
     "recordCount": 372
   },
   "maps": {
@@ -136846,8 +136846,8 @@
   },
   "recurringCalendar": {
     "schemaVersion": 1,
-    "rangeStart": "2026-10-29T17:01:55+09:00",
-    "rangeEnd": "2026-10-30T17:01:55+09:00",
+    "rangeStart": "2026-10-29T17:13:55+09:00",
+    "rangeEnd": "2026-10-30T17:13:55+09:00",
     "maps": {
       "A026": {
         "eventMapId": 24026,
