@@ -23,7 +23,7 @@ import urllib.request
 KST = timezone(timedelta(hours=9))
 SOURCE = "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv"
 REGIONS = {
-    "kr": {"source": SOURCE, "countryCode": "kr", "timezone": "Asia/Seoul", "gameVersion": 150601},
+    "kr": {"source": SOURCE, "countryCode": "kr", "timezone": "Asia/Seoul", "gameVersion": 150700},
     "jp": {"source": "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv",
            "countryCode": "kr", "timezone": "Asia/Tokyo", "gameVersion": 150700},
 }
@@ -33,7 +33,7 @@ AUTH_BASE = "https://nyanko-auth.ponosgames.com/v1/"
 MAP_RULES = Path(__file__).resolve().parents[1] / "stage-schedule-maps.json"
 STAGE_ROOT = Path(__file__).resolve().parents[2] / "stage"
 MAX_WINDOWS_PER_MAP = 32
-GAME_VERSION = 150601  # This site's Korean source: 15.6.1.
+GAME_VERSION = REGIONS["kr"]["gameVersion"]  # Authentication version; schedules include all versions.
 FRESHNESS_SECONDS = 1800
 REGULAR_MINIMUM_DAYS = 365
 
@@ -220,6 +220,7 @@ def _range_windows(ranges: list[list[int]], day: date) -> list[tuple[datetime, d
 
 def expand_windows(records: list[dict], map_id: int, now: datetime, game_version: int,
                    horizon_days: int = 400) -> tuple[list[list[str]], list[int]]:
+    # Keep game_version for caller compatibility; authentication never filters dates.
     if now.tzinfo is None:
         raise ValueError("now must have an explicit timezone")
     now = now.astimezone(KST)
@@ -227,7 +228,7 @@ def expand_windows(records: list[dict], map_id: int, now: datetime, game_version
     intervals = []
     rows = []
     for record in records:
-        if map_id not in record["mapIds"] or not record["minVersion"] <= game_version <= record["maxVersion"]:
+        if map_id not in record["mapIds"]:
             continue
         rows.append(record["row"])
         start, end = record["start"], record["end"]
