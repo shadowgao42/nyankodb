@@ -3,13 +3,13 @@
   "region": "kr",
   "timezone": "Asia/Seoul",
   "gameVersion": 150601,
-  "fetchedAt": "2026-10-30T11:15:34+09:00",
-  "validUntil": "2026-10-30T11:45:34+09:00",
+  "fetchedAt": "2026-10-30T11:21:32+09:00",
+  "validUntil": "2026-10-30T11:51:32+09:00",
   "source": {
     "url": "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv",
-    "sha256": "1472e81472d29f3f4494378b51a41699bf1fe27418e00b646da058d979839ee1",
-    "lastModified": "Mon, 26 Oct 2026 08:24:17 GMT",
-    "recordCount": 387
+    "sha256": "4743e44b1d49fcff07f342ccc0b174e89fc32799180729afa5c1b33dd4245bff",
+    "lastModified": "Fri, 30 Oct 2026 02:20:03 GMT",
+    "recordCount": 385
   },
   "maps": {
     "A015": {
@@ -319,7 +319,7 @@
     "A053": {
       "eventMapId": 24053,
       "sourceRows": [
-        385
+        371
       ],
       "windows": [
         [
@@ -467,7 +467,7 @@
     "A068": {
       "eventMapId": 24068,
       "sourceRows": [
-        378
+        364
       ],
       "windows": [
         [
@@ -1607,7 +1607,7 @@
     "R046": {
       "eventMapId": 11046,
       "sourceRows": [
-        368
+        362
       ],
       "windows": [
         [
@@ -4439,8 +4439,8 @@
       "sourceRows": [
         320,
         343,
-        354,
-        380
+        351,
+        366
       ],
       "windows": [
         [
@@ -5770,8 +5770,8 @@
       "sourceRows": [
         321,
         343,
-        355,
-        381
+        352,
+        367
       ],
       "windows": [
         [
@@ -9255,8 +9255,8 @@
       "sourceRows": [
         322,
         343,
-        356,
-        382
+        353,
+        368
       ],
       "windows": [
         [
@@ -10563,7 +10563,7 @@
       "eventMapId": 1150,
       "sourceRows": [
         80,
-        359
+        356
       ],
       "windows": [
         [
@@ -10700,7 +10700,7 @@
       "eventMapId": 1151,
       "sourceRows": [
         80,
-        359
+        356
       ],
       "windows": [
         [
@@ -10837,7 +10837,7 @@
       "eventMapId": 1152,
       "sourceRows": [
         80,
-        359
+        356
       ],
       "windows": [
         [
@@ -10975,8 +10975,8 @@
       "sourceRows": [
         241,
         343,
-        357,
-        383
+        354,
+        369
       ],
       "windows": [
         [
@@ -19360,8 +19360,8 @@
       "sourceRows": [
         248,
         343,
-        358,
-        384
+        355,
+        370
       ],
       "windows": [
         [
@@ -19497,7 +19497,7 @@
     "S320": {
       "eventMapId": 1320,
       "sourceRows": [
-        378
+        364
       ],
       "windows": [
         [
@@ -23017,7 +23017,7 @@
     "SR025": {
       "eventMapId": 36025,
       "sourceRows": [
-        387
+        373
       ],
       "windows": [
         [
@@ -23391,7 +23391,7 @@
       "A053": {
         "eventMapId": 24053,
         "sourceRows": [
-          385
+          371
         ],
         "windows": [
           [
@@ -23403,7 +23403,7 @@
       "A068": {
         "eventMapId": 24068,
         "sourceRows": [
-          378
+          364
         ],
         "windows": [
           [
@@ -23415,7 +23415,7 @@
       "R046": {
         "eventMapId": 11046,
         "sourceRows": [
-          368
+          362
         ],
         "windows": [
           [
@@ -23427,8 +23427,8 @@
       "S028": {
         "eventMapId": 1028,
         "sourceRows": [
-          354,
-          380
+          351,
+          366
         ],
         "windows": [
           [
@@ -23480,8 +23480,8 @@
       "S059": {
         "eventMapId": 1059,
         "sourceRows": [
-          355,
-          381
+          352,
+          367
         ],
         "windows": [
           [
@@ -23557,8 +23557,8 @@
       "S124": {
         "eventMapId": 1124,
         "sourceRows": [
-          356,
-          382
+          353,
+          368
         ],
         "windows": [
           [
@@ -23634,8 +23634,8 @@
       "S155": {
         "eventMapId": 1155,
         "sourceRows": [
-          357,
-          383
+          354,
+          369
         ],
         "windows": [
           [
@@ -23667,8 +23667,8 @@
       "S319": {
         "eventMapId": 1319,
         "sourceRows": [
-          358,
-          384
+          355,
+          370
         ],
         "windows": [
           [
@@ -23704,7 +23704,7 @@
       "S320": {
         "eventMapId": 1320,
         "sourceRows": [
-          378
+          364
         ],
         "windows": [
           [
@@ -23716,7 +23716,7 @@
       "SR025": {
         "eventMapId": 36025,
         "sourceRows": [
-          387
+          373
         ],
         "windows": [
           [
@@ -23948,18 +23948,6 @@
           ]
         ]
       },
-      "A037": {
-        "eventMapId": 24037,
-        "sourceRows": [
-          373
-        ],
-        "windows": [
-          [
-            "2026-10-19T11:00:00+09:00",
-            "2026-10-26T11:00:00+09:00"
-          ]
-        ]
-      },
       "A039": {
         "eventMapId": 24039,
         "sourceRows": [
@@ -24035,7 +24023,7 @@
       "A049": {
         "eventMapId": 24049,
         "sourceRows": [
-          353
+          350
         ],
         "windows": [
           [
@@ -24071,7 +24059,7 @@
       "A053": {
         "eventMapId": 24053,
         "sourceRows": [
-          385
+          371
         ],
         "windows": [
           [
@@ -25835,7 +25823,7 @@
       "A068": {
         "eventMapId": 24068,
         "sourceRows": [
-          378
+          364
         ],
         "windows": [
           [
@@ -25847,7 +25835,7 @@
       "A074": {
         "eventMapId": 24074,
         "sourceRows": [
-          351
+          348
         ],
         "windows": [
           [
@@ -26573,18 +26561,6 @@
           [
             "2017-08-09T00:00:00+09:00",
             "2030-01-01T00:00:00+09:00"
-          ]
-        ]
-      },
-      "PR000": {
-        "eventMapId": 39000,
-        "sourceRows": [
-          369
-        ],
-        "windows": [
-          [
-            "2026-10-12T11:00:00+09:00",
-            "2026-10-26T11:00:00+09:00"
           ]
         ]
       },
@@ -31847,7 +31823,7 @@
       "R026": {
         "eventMapId": 11026,
         "sourceRows": [
-          360
+          357
         ],
         "windows": [
           [
@@ -31859,7 +31835,7 @@
       "R046": {
         "eventMapId": 11046,
         "sourceRows": [
-          368
+          362
         ],
         "windows": [
           [
@@ -41291,8 +41267,8 @@
         "sourceRows": [
           320,
           343,
-          354,
-          380
+          351,
+          366
         ],
         "windows": [
           [
@@ -45102,8 +45078,8 @@
         "sourceRows": [
           321,
           343,
-          355,
-          381
+          352,
+          367
         ],
         "windows": [
           [
@@ -57795,8 +57771,8 @@
         "sourceRows": [
           322,
           343,
-          356,
-          382
+          353,
+          368
         ],
         "windows": [
           [
@@ -61127,7 +61103,7 @@
         "eventMapId": 1150,
         "sourceRows": [
           80,
-          359
+          356
         ],
         "windows": [
           [
@@ -63624,7 +63600,7 @@
         "eventMapId": 1151,
         "sourceRows": [
           80,
-          359
+          356
         ],
         "windows": [
           [
@@ -66121,7 +66097,7 @@
         "eventMapId": 1152,
         "sourceRows": [
           80,
-          359
+          356
         ],
         "windows": [
           [
@@ -68614,25 +68590,13 @@
           ]
         ]
       },
-      "S154": {
-        "eventMapId": 1154,
-        "sourceRows": [
-          366
-        ],
-        "windows": [
-          [
-            "2026-10-09T11:00:00+09:00",
-            "2026-10-26T11:00:00+09:00"
-          ]
-        ]
-      },
       "S155": {
         "eventMapId": 1155,
         "sourceRows": [
           241,
           343,
-          357,
-          383
+          354,
+          369
         ],
         "windows": [
           [
@@ -118928,8 +118892,8 @@
         "sourceRows": [
           248,
           343,
-          358,
-          384
+          355,
+          370
         ],
         "windows": [
           [
@@ -120001,7 +119965,7 @@
       "S320": {
         "eventMapId": 1320,
         "sourceRows": [
-          378
+          364
         ],
         "windows": [
           [
@@ -133985,18 +133949,6 @@
           ]
         ]
       },
-      "S349": {
-        "eventMapId": 1349,
-        "sourceRows": [
-          366
-        ],
-        "windows": [
-          [
-            "2026-10-09T11:00:00+09:00",
-            "2026-10-26T11:00:00+09:00"
-          ]
-        ]
-      },
       "S350": {
         "eventMapId": 1350,
         "sourceRows": [
@@ -136815,7 +136767,7 @@
       "S410": {
         "eventMapId": 1410,
         "sourceRows": [
-          352
+          349
         ],
         "windows": [
           [
@@ -137450,22 +137402,10 @@
           ]
         ]
       },
-      "SR024": {
-        "eventMapId": 36024,
-        "sourceRows": [
-          347
-        ],
-        "windows": [
-          [
-            "2026-10-01T11:00:00+09:00",
-            "2026-10-16T00:00:00+09:00"
-          ]
-        ]
-      },
       "SR025": {
         "eventMapId": 36025,
         "sourceRows": [
-          387
+          373
         ],
         "windows": [
           [
@@ -137489,7 +137429,7 @@
       "V000": {
         "eventMapId": 7000,
         "sourceRows": [
-          364
+          360
         ],
         "windows": [
           [
@@ -137501,7 +137441,7 @@
       "V006": {
         "eventMapId": 7006,
         "sourceRows": [
-          364
+          360
         ],
         "windows": [
           [
@@ -137514,8 +137454,8 @@
   },
   "recurringCalendar": {
     "schemaVersion": 1,
-    "rangeStart": "2026-10-30T11:15:34+09:00",
-    "rangeEnd": "2026-10-31T11:15:34+09:00",
+    "rangeStart": "2026-10-30T11:21:32+09:00",
+    "rangeEnd": "2026-10-31T11:21:32+09:00",
     "maps": {
       "A026": {
         "eventMapId": 24026,
