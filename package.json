@@ -4,7 +4,7 @@
   "description": "냥코DB - Battle Cats Database",
   "type": "module",
   "scripts": {
-    "build:analytics": "esbuild analytics.js --bundle --outfile=analytics-bundle.js --format=iife",
+    "build:analytics": "esbuild analytics.js --bundle --outfile=analytics-bundle.js --format=iife --define:process.env.NODE_ENV=\\\"production\\\"",
     "dev": "npx serve .",
     "build": "npm run build:analytics",
     "lint": "echo 'No linter configured'"

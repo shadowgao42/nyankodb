@@ -14,7 +14,7 @@
   }
   function detectEnvironment() {
     try {
-      const env = "development";
+      const env = "production";
       if (env === "development" || env === "test") {
         return "development";
       }
