@@ -1,0 +1,29 @@
+{
+  "name": "nyankodb",
+  "version": "1.0.0",
+  "description": "냥코DB - Battle Cats Database",
+  "type": "module",
+  "scripts": {
+    "build:analytics": "esbuild analytics.js --bundle --outfile=analytics-bundle.js --format=iife",
+    "dev": "npx serve .",
+    "build": "npm run build:analytics",
+    "lint": "echo 'No linter configured'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shadowgao42/nyankodb.git"
+  },
+  "keywords": [
+    "battle-cats",
+    "database",
+    "nyankodb"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
+  }
+}

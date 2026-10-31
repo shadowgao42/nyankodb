@@ -1574,7 +1574,7 @@
         badge.className = "range-attack-badge";
         const text = attackRangeText(entry);
         badge.title = text;
-        badge.setAttribute("aria-label", `실제 공격 사거리 ${text}`);
+        badge.setAttribute("aria-label", `실��� 공격 사거리 ${text}`);
         entry.actualRanges.forEach((range) => {
           const line = document.createElement("span");
           line.className = "range-attack-line";
@@ -1963,5 +1963,6 @@
       lockInitialResultsHeight();
     })();
   </script>
+  <script src="../analytics-bundle.js"></script>
 </body>
 </html>

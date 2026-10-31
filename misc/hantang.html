@@ -72,7 +72,7 @@ function update(){
   document.querySelectorAll('.play-btn').forEach(b=>b.disabled=!state.started||state.plays>=5|| (state.money<({복불복:10,일확천금:30,올인:100}[b.dataset.game])));
   document.querySelectorAll('.gacha-btn').forEach(b=>b.disabled=!state.started||state.money<Number(b.dataset.draws));
   renderHistory(); renderGacha();
-  if(state.plays>=5){ $('resultSection').classList.remove('hidden'); $('resInitial').textContent=fmt(state.initial)+'개'; $('resSpent').textContent=fmt(state.spent)+'개'; $('resEarned').textContent=fmt(state.earned)+'개'; $('resFinal').textContent=fmt(state.money)+'개'; } else $('resultSection').classList.add('hidden');
+  if(state.plays>=5){ $('resultSection').classList.remove('hidden'); $('resInitial').textContent=fmt(state.initial)+'개'; $('resSpent').textContent=fmt(state.spent)+'��'; $('resEarned').textContent=fmt(state.earned)+'개'; $('resFinal').textContent=fmt(state.money)+'개'; } else $('resultSection').classList.add('hidden');
 }
 function renderHistory(){const box=$('historyList');if(!state.history.length){box.innerHTML='<div class="empty">아직 오늘의 기록이 없습니다.</div>';return}box.innerHTML=state.history.map((h,i)=>`<div class="history-item"><span class="history-num">${i+1}회</span><span class="history-game">${h.game}</span><span class="history-result">+${fmt(h.gain)}개${h.cost?` <small>(-${fmt(h.cost)})</small>`:''}</span><span class="history-balance">보유 ${fmt(h.balance)}</span></div>`).join('')}
 function startGame(){let n=Math.floor(Number($('initialInput').value));if(!Number.isFinite(n)||n<0){$('initialInput').value=0;n=0}state.money=n;state.initial=n;state.plays=0;state.spent=0;state.earned=0;state.history=[];state.gachaHistory=[];state.gachaDraws=0;state.gachaCounts=newGachaCounts();state.started=true;$('moneyStat').classList.add('flash');setTimeout(()=>$('moneyStat').classList.remove('flash'),400);update()}
@@ -87,4 +87,4 @@ document.querySelectorAll('.gacha-btn').forEach(b=>b.addEventListener('click',()
 function nextDay(){state.plays=0;state.spent=0;state.earned=0;state.history=[];update();window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('.play-btn').forEach(b=>b.addEventListener('click',()=>play(b.dataset.game)));
 $('startBtn').addEventListener('click',startGame);$('nextDayBtn').addEventListener('click',nextDay);$('initialInput').addEventListener('keydown',e=>{if(e.key==='Enter')startGame()});update();
-</script></body></html>
+</script><script src="../analytics-bundle.js"></script></body></html>
