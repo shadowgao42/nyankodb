@@ -2,6 +2,22 @@
 (() => {
   "use strict";
   const root = new URL("./", document.currentScript.src);
+  function loadAnalytics() {
+    const host = location.hostname;
+    if (!["nyanko.wiki", "www.nyanko.wiki", "nyankodb.vercel.app"].includes(host) &&
+        !host.endsWith("-project-team22.vercel.app")) return;
+    const src = new URL("analytics-bundle.js", root).href;
+    if ([...document.scripts].some(script => script.src === src)) return;
+    const script = document.createElement("script");
+    script.src = src;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadAnalytics, { once: true });
+  } else {
+    loadAnalytics();
+  }
   for (const header of document.querySelectorAll("[data-nyanko-gnb]:not([data-gnb-mounted])")) {
     const prefix = header.dataset.searchPrefix || "unitSearch";
     header.className = "db-toolbar nyanko-gnb";
