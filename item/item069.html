@@ -292,6 +292,37 @@
     }
 </style>
   <link rel="stylesheet" href="../gnb.css">
+<!-- item-synthesis:style:start -->
+<style id="itemSynthesisStyles">
+:where(#itemSynthesisPanel) { color-scheme: dark; }
+:where(#itemSynthesisPanel) .stat-value { display: block; margin-top: 11px; overflow-wrap: anywhere; font-size: clamp(25px,2.5vw,34px); font-weight: 900; letter-spacing: -.045em; font-variant-numeric: tabular-nums; }
+:where(#itemSynthesisPanel) .stage-drink-cost { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+:where(#itemSynthesisPanel) .stage-drink-icon { display: block; width: 40px; height: 40px; object-fit: contain; }
+:where(#itemSynthesisPanel) .stage-drink-link { position: relative; z-index: 1; display: block; border: 1px solid transparent; border-radius: 8px; transition: border-color .14s ease, transform .14s ease; }
+:where(#itemSynthesisPanel) .stage-drink-link:hover,
+:where(#itemSynthesisPanel) .stage-drink-link:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
+    .item-synthesis-list { display: grid; gap: 12px; padding: 0 22px 18px; }
+    .item-synthesis-recipe { display: flex; align-items: center; gap: 16px; }
+    .item-synthesis-probability { color: var(--muted); font-size: 12px; font-weight: 800; margin-top: 11px; }
+    .item-synthesis-arrow { display: block; width: 37px; height: 44px; margin-top: 11px; object-fit: contain; }
+    .item-synthesis-arrow[data-direction="left"] { transform: scaleX(-1); }
+    @media (max-width: 660px) {
+      #itemSynthesisPanel .section-heading { padding: 15px 16px 12px; }
+      .item-synthesis-list { padding: 0 16px 16px; }
+      .item-synthesis-recipe { gap: 8px; }
+    }
+:where(#itemSynthesisPanel) .stage-reward-group { display: grid; gap: 9px; min-width: 0; padding: 10px; border: 1px solid #3c4a5b; border-radius: 10px; }
+:where(#itemSynthesisPanel) .stage-reward-group-note { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .item-synthesis-choice { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+    .item-synthesis-choice-icons { display: grid; grid-template-columns: repeat(3,40px); gap: 9px; }
+    .item-synthesis-choice > .stat-value { margin: 0; }
+    .item-synthesis-recipe[data-blue-orb-exchange] > .item-synthesis-arrow,
+    .item-synthesis-recipe[data-blue-orb-exchange] > .stage-drink-cost { margin-top: 0; }
+.item-icon-tooltip { position: fixed; left: 0; top: 0; z-index: 30; width: max-content; max-width: min(330px,calc(100vw - 48px)); padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-size: 13px; font-weight: 900; white-space: normal; box-sizing: border-box; overflow-wrap: anywhere; pointer-events: none; opacity: 0; transform: translateY(6px); transition: opacity .14s ease,transform .14s ease; }
+.item-icon-tooltip[data-open="true"] { opacity: 1; transform: translateY(0); }
+.item-icon-tooltip[hidden] { display: none; }
+</style>
+<!-- item-synthesis:style:end -->
 </head>
 <body>
   <main class="page">
@@ -313,9 +344,16 @@
       </div>
     </header>
 
-  </main>
+  <!-- item-synthesis:panel:start -->
+    <section class="section" id="itemSynthesisPanel" aria-labelledby="itemSynthesisTitle">
+      <div class="section-heading"><h2 id="itemSynthesisTitle">아이템 합성 · 교환</h2></div>
+      <div class="item-synthesis-list"><div class="item-synthesis-recipe" data-blue-orb-exchange><div class="item-synthesis-choice"><div class="stage-reward-group" role="group" aria-label="파란 구슬"><div class="item-synthesis-choice-icons"><a class="stage-drink-link" href="../item/item060.html" aria-label="냥코 대포 공격력"><img class="stage-drink-icon" src="../img/r/60.png" alt="냥코 대포 공격력"></a><a class="stage-drink-link" href="../item/item062.html" aria-label="냥코 대포 충전"><img class="stage-drink-icon" src="../img/r/62.png" alt="냥코 대포 충전"></a><a class="stage-drink-link" href="../item/item063.html" aria-label="일 고양이의 일 효율"><img class="stage-drink-icon" src="../img/r/63.png" alt="일 고양이의 일 효율"></a><a class="stage-drink-link" href="../item/item064.html" aria-label="일 고양이의 지갑"><img class="stage-drink-icon" src="../img/r/64.png" alt="일 고양이의 지갑"></a><a class="stage-drink-link" href="../item/item065.html" aria-label="성 체력"><img class="stage-drink-icon" src="../img/r/65.png" alt="성 체력"></a><a class="stage-drink-link" href="../item/item066.html" aria-label="연구력"><img class="stage-drink-icon" src="../img/r/66.png" alt="연구력"></a><a class="stage-drink-link" href="../item/item067.html" aria-label="회계력"><img class="stage-drink-icon" src="../img/r/67.png" alt="회계력"></a><a class="stage-drink-link" href="../item/item068.html" aria-label="공부력"><img class="stage-drink-icon" src="../img/r/68.png" alt="공부력"></a><a class="stage-drink-link" href="../item/item069.html" aria-label="통솔력"><img class="stage-drink-icon" src="../img/r/69.png" alt="통솔력"></a></div><small class="stage-reward-group-note">위 아이템 중 하나</small></div><strong class="stat-value"><span>×5</span></strong></div><img class="item-synthesis-arrow" src="../img/icon/arrow.png" data-direction="right" alt="→" width="37" height="44"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item021.html" aria-label="레어 티켓"><img class="stage-drink-icon" src="../img/r/21.png" alt="레어 티켓"></a><span>×1</span></strong></div><div class="item-synthesis-recipe"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item069.html" aria-label="통솔력"><img class="stage-drink-icon" src="../img/r/69.png" alt="통솔력"></a><span>×1</span></strong><img class="item-synthesis-arrow" src="../img/icon/arrow.png" data-direction="right" alt="→" width="37" height="44"><strong class="stat-value stage-drink-cost"><a class="stage-drink-link" href="../item/item006.html" aria-label="XP"><img class="stage-drink-icon" src="../img/r/6.png" alt="XP"></a><span>5,000</span></strong></div></div>
+    </section>
+<!-- item-synthesis:panel:end -->
+</main>
   <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
+  <script src="item-tooltips.js" defer></script>
 </body>
 </html>
 
