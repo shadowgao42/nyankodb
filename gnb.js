@@ -172,4 +172,67 @@
 
 
 
+  // Keep one viewport-sized mobile bar across pages with different CSS zoom.
+  function mountBottomNavigation() {
+    if (document.getElementById("nyankoBottomNavigation")) return;
+    const navigation = document.createElement("nav");
+    navigation.id = "nyankoBottomNavigation";
+    navigation.className = "nyanko-bottom-navigation";
+    navigation.setAttribute("aria-label", "냥코DB 하단 메뉴");
+    const relativePath = location.pathname.slice(root.pathname.length);
+    const current = !relativePath || relativePath === "index.html" ? "home"
+      : /^mypage(?:\/|$)/.test(relativePath) ? "mypage" : "explore";
+    const items = [
+      { key: "home", label: "홈", path: "index.html" },
+      { key: "explore", label: "탐색", path: "unit/index.html" },
+      { key: "mypage", label: "마이페이지", path: "mypage/login.html" },
+    ];
+    for (const item of items) {
+      const link = document.createElement("a");
+      link.className = "nyanko-bottom-navigation-link";
+      link.href = new URL(item.path, root).href;
+      if (item.key === current) link.setAttribute("aria-current", "location");
+      const icon = document.createElement("span");
+      icon.className = "nyanko-bottom-navigation-icon";
+      icon.setAttribute("aria-hidden", "true");
+      const iconUrl = new URL(`img/ui/navigation/${item.key}.svg`, root).href;
+      icon.style.setProperty("--nyanko-navigation-icon", `url("${iconUrl}")`);
+      const label = document.createElement("span");
+      label.textContent = item.label;
+      link.append(icon, label);
+      navigation.append(link);
+    }
+    document.body.append(navigation);
+    function updateNavigationScale() {
+      document.body.classList.remove("has-nyanko-bottom-navigation");
+      const originalPadding = getComputedStyle(document.body).paddingBottom;
+      let pageZoom = 1;
+      for (let element = document.body; element; element = element.parentElement) {
+        const zoom = getComputedStyle(element).zoom;
+        pageZoom *= (Number.parseFloat(zoom) || 1) / (zoom.endsWith("%") ? 100 : 1);
+      }
+      document.body.style.setProperty("--nyanko-bottom-base-padding", originalPadding);
+      document.body.style.setProperty("--nyanko-bottom-inverse-zoom", String(1 / pageZoom));
+      navigation.style.zoom = String(1 / pageZoom);
+      document.body.classList.add("has-nyanko-bottom-navigation");
+    }
+    updateNavigationScale();
+    window.addEventListener("resize", updateNavigationScale);
+    window.addEventListener("pageshow", updateNavigationScale);
+  }
+  if (document.body) {
+    mountBottomNavigation();
+    if (document.readyState === "loading") {
+      // Paint early, then retain the original final keyboard navigation order.
+      document.addEventListener("DOMContentLoaded", () => {
+        const navigation = document.getElementById("nyankoBottomNavigation");
+        if (!navigation || document.body.lastElementChild === navigation) return;
+        const focused = navigation.contains(document.activeElement) ? document.activeElement : null;
+        document.body.append(navigation);
+        if (focused) focused.focus({ preventScroll: true });
+      }, { once: true });
+    }
+  } else {
+    document.addEventListener("DOMContentLoaded", mountBottomNavigation, { once: true });
+  }
 })();
