@@ -1,0 +1,20 @@
+.unit-guide[hidden]{display:none!important}
+.unit-guide .guide-controls{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 15px}
+.unit-guide .editor-unit-pagination{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.unit-guide .action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;height:42px;padding:9px 18px;border:1px solid #425267;border-radius:10px;background:#202a37;color:var(--text);font-size:14px;font-weight:900;text-decoration:none;cursor:pointer}
+.unit-guide .action:disabled{cursor:default;opacity:.5}
+.unit-guide .action:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.unit-guide .editor-pagination-arrow{font-size:22px;line-height:1}
+.unit-guide .owned-count{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+.unit-guide .required-unit-rarity-group{display:grid;gap:6px}
+.unit-guide .required-unit-rarity-title{display:flex;align-items:center;margin:0;padding:0 15px;color:var(--muted);font-size:13px;font-weight:900}
+.unit-guide .required-unit-rarity-title img{display:block;width:90px;height:28px;object-fit:contain;image-rendering:auto}
+.unit-guide .nyancombo-members{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;padding:13px 15px 15px}
+.unit-guide .owned-entry{position:relative;width:100%;min-width:0}
+.unit-guide .nyancombo-member{position:relative;display:block;width:100%;min-width:0;padding:4px;border:1px solid #344253;border-radius:10px;color:inherit;background:#0b1017;text-decoration:none;transition:border-color .14s ease}
+.unit-guide .nyancombo-member:hover,.unit-guide .nyancombo-member:focus-visible{border-color:var(--accent)}
+.unit-guide .nyancombo-member:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.unit-guide .nyancombo-member-image{aspect-ratio:104/79;display:grid;place-items:center;overflow:hidden;width:100%;border-radius:6px;background:rgba(255,255,255,.04)}
+.unit-guide .nyancombo-member-image img{display:block;width:100%;height:100%;object-fit:contain}
+.unit-guide-tooltip{position:fixed;z-index:1000;max-width:min(300px,calc(100vw - 24px));padding:10px 12px;border:1px solid #53657a;border-radius:11px;background:#080c12;color:#fff;font-size:13px;font-weight:900;line-height:normal;box-shadow:0 12px 34px rgba(0,0,0,.48);pointer-events:none;white-space:pre-line}
+.unit-guide-tooltip[hidden]{display:none}

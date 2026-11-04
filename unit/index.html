@@ -1034,7 +1034,7 @@
     }
   </style>
   <link rel="stylesheet" href="../gnb.css">
-</head>
+<!-- UNIT_GUIDE_STYLE_START --><link rel="stylesheet" href="../unit-guide.css"><!-- UNIT_GUIDE_STYLE_END --></head>
 <body>
   <main class="page">
     <header data-nyanko-gnb data-search-prefix="unitSearch"></header>
@@ -1137,7 +1137,7 @@
 
   <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
-  <script src="catalog.js"></script>
+  <script src="catalog.js"></script><!-- UNIT_GUIDE_SCRIPTS_START --><script src="../unit-guide.js"></script><script src="unit-encyclopedia.js"></script><script src="unit-guide-view.js" defer></script><!-- UNIT_GUIDE_SCRIPTS_END -->
   <script>
     (() => {
       "use strict";
@@ -1892,6 +1892,10 @@
         syncDisplayMode();
         syncResetButton();
         if (resetScroll) elements.resultsScroll.scrollTop = 0;
+// UNIT_GUIDE_EVENT_START
+        window.NyankoUnitIndexFiltered = filtered;
+        dispatchEvent(new CustomEvent("nyanko-unit-index-filtered", {detail:{filtered,resetScroll,displayMode}}));
+// UNIT_GUIDE_EVENT_END
       }
 
       document.querySelector(".filter-body").addEventListener("click", (event) => {

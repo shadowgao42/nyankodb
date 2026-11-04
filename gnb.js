@@ -35,15 +35,18 @@
         <span class="gnb-menu-indicator" aria-hidden="true"></span>
       </nav>
       </div>
+      <div class="gnb-actions">
       <form class="unit-search gnb-search" role="search">
         <label>검색</label>
         <div class="unit-search-field gnb-search-field">
-          <input type="search" autocomplete="off" spellcheck="false" placeholder="이름 입력"
+          <svg class="gnb-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
+          <input type="search" autocomplete="off" spellcheck="false"
             aria-label="검색할 유닛 이름" aria-autocomplete="list" aria-expanded="false">
           <div class="unit-search-results gnb-search-results" role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
         </div>
-        <button type="submit" class="gnb-submit">검색</button>
-      </form>`;
+      </form>
+      <button type="button" class="gnb-auth" data-auth-pending="true" aria-hidden="true" disabled></button>
+      </div>`;
     header.querySelector(".gnb-brand").href = new URL("index.html", root).href;
     for (const link of header.querySelectorAll(".gnb-menu-link")) {
       const section = link.dataset.section;
@@ -58,7 +61,7 @@
     const results = header.querySelector('[role="listbox"]');
     form.id = `${prefix}Form`;
     input.id = `${prefix}Input`;
-    input.placeholder = header.dataset.searchPlaceholder ?? "이름 입력";
+    input.placeholder = "";
     results.id = `${prefix}Results`;
     header.querySelector("label").htmlFor = input.id;
     input.setAttribute("aria-controls", results.id);
@@ -108,4 +111,65 @@
     settleOn(current);
     header.dataset.gnbMounted = "true";
   }
+  // Server-verified state only. No tokens or user data are stored in the GNB.
+  let stateRequest;
+  async function refreshAuth() {
+    if (stateRequest) return stateRequest;
+    stateRequest = (async () => {
+      let authenticated = false;
+      try {
+        if (/^https?:$/.test(root.protocol)) {
+          const response = await fetch(new URL('api/auth/session', root), {
+            credentials: 'same-origin', cache: 'no-store', signal: AbortSignal.timeout(10000),
+          });
+          if (response.ok) {
+            authenticated = (await response.json()).authenticated === true;
+            
+          }
+        }
+      } catch (_) { /* Static hosts have no account backend. */ }
+      for (const button of document.querySelectorAll('.gnb-auth')) {
+        button.dataset.authenticated = String(authenticated);
+        button.textContent = authenticated ? '로그아웃' : '로그인';
+        button.disabled = false;
+        delete button.dataset.authPending;
+        button.removeAttribute('aria-hidden');
+      }
+      return authenticated;
+    })();
+    try { return await stateRequest; } finally { stateRequest = null; }
+  }
+  for (const button of document.querySelectorAll('.gnb-auth')) {
+    button.addEventListener('click', async () => {
+      if (button.dataset.authenticated !== 'true') {
+        location.assign(new URL('mypage/login.html', root));
+        return;
+      }
+      button.disabled = true;
+      try {
+        const boot = await fetch(new URL('api/bootstrap', root), { credentials: 'same-origin', cache: 'no-store' });
+        if (!boot.ok) throw new Error('Session unavailable');
+        const csrf = document.cookie.split('; ').find(item => item.startsWith('nyanko_csrf='))?.split('=')[1] || '';
+        const response = await fetch(new URL('api/auth/logout', root), {
+          method: 'POST', credentials: 'same-origin', cache: 'no-store',
+          headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: '{}',
+        });
+        if (!response.ok) throw new Error('Logout failed');
+        
+        if (location.pathname.startsWith(new URL('mypage/', root).pathname)) {
+          location.replace(new URL('mypage/login.html', root));
+        } else await refreshAuth();
+      } catch (_) {
+        // Keep the verified label; do not claim that a failed logout succeeded.
+        button.disabled = false;
+      }
+    });
+  }
+  window.NyankoAuthReady = refreshAuth();
+  window.addEventListener('pageshow', event => { if (event.persisted) refreshAuth(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshAuth(); });
+  window.addEventListener('nyanko-auth-changed', refreshAuth);
+
+
+
 })();

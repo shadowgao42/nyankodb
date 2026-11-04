@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>회원가입 (공사중) · 냥코DB</title>
+  <style>
+    :root {
+      --bg: #080b10;
+      --surface: #111720;
+      --surface-2: #171f29;
+      --surface-3: #212b37;
+      --line: #293645;
+      --line-strong: #46566a;
+      --text: #f4f7fb;
+      --muted: #94a2b6;
+      --accent: #ff5b2d;
+      --accent-2: #ffad3d;
+      --accent-soft: rgba(255, 91, 45, .18);
+      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      min-width: 320px;
+      min-height: 143vh;
+      margin: 0;
+      overflow-x: hidden;
+      zoom: .7;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255, 74, 32, .18), transparent 30rem),
+        repeating-linear-gradient(45deg, transparent 0 70px, rgba(255,255,255,.03) 71px 72px),
+        linear-gradient(180deg, #10151d 0%, var(--bg) 62%);
+      font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    }
+
+    button,
+    input { font: inherit; }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .page {
+      width: min(1220px, calc(100% - 36px));
+      min-height: 143vh;
+      margin: 0 auto;
+      padding: 24px 0 38px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .db-toolbar,
+    .search-panel,
+    .filter-panel,
+    .results-panel {
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .94);
+      box-shadow: var(--shadow);
+    }
+
+
+    .results-panel {
+      margin-top: 12px;
+      display: flex;
+      flex: 0 0 auto;
+      min-height: 0;
+      overflow: hidden;
+      flex-direction: column;
+    }
+    p { margin: 0; }
+    .empty-results {
+      padding: 42px 18px 18px;
+      color: var(--muted);
+      font-size: 32px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .construction-animation {
+      display: block;
+      width: min(calc(100% - 36px), 480px);
+      height: 320px;
+      margin: 0 auto 28px;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .construction-animation[data-animation-state="loading"] { visibility: hidden; }
+    .construction-animation[hidden] { display: none; }
+    @media (max-width: 760px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 12px; }
+    }
+  </style>
+  <link rel="stylesheet" href="../gnb.css">
+</head>
+<body>
+  <main class="page" aria-label="회원가입">
+    <header data-nyanko-gnb data-search-prefix="unitSearch"></header>
+    <script src="../gnb.js"></script>
+    <section class="results-panel" aria-label="회원가입 준비 중">
+      <p class="empty-results">공사중...</p>
+      <canvas class="construction-animation" id="constructionAnimation" width="480" height="320"
+        role="img" aria-label="신 파워 드릴러 공격 애니메이션" data-animation-state="loading"></canvas>
+    </section>
+  </main>
+  <script src="../animation-viewer-core.js" defer></script>
+  <script src="construction-animation.js" defer></script>
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
+</body>
+</html>
