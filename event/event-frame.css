@@ -1,0 +1,8 @@
+/* Embedded views keep their original document, styles and schedule scripts. */
+html.event-embedded,
+html.event-embedded body { background: transparent; min-height: 0; }
+html.event-embedded body { zoom: 1; }
+html.event-embedded .page { width: 100%; min-height: 0; margin: 0; padding: 0; }
+html.event-embedded [data-nyanko-gnb],
+html.event-embedded .search-panel { display: none; }
+html.event-embedded .event-settings { margin-top: 0; }

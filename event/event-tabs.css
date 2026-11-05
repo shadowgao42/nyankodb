@@ -1,0 +1,6 @@
+.event-view-nav { flex: 0 0 auto; margin-left: auto; }
+.event-view-nav .gnb-menu-link { cursor: pointer; }
+.event-view-nav .gnb-menu-link[aria-selected="true"] { color: var(--accent-text); }
+.event-view-frame { display: block; width: 100%; height: 600px; border: 0; }
+.event-view-panel { margin-top: 12px; }
+.event-view-panel[hidden] { display: none; }

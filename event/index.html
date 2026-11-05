@@ -64,6 +64,7 @@
   </style>
   <link rel="stylesheet" href="../gnb.css">
   <link rel="stylesheet" href="calendar.css">
+  <link rel="stylesheet" href="event-tabs.css">
 </head>
 <body>
   <main class="page">
@@ -75,88 +76,24 @@
           <h1 id="eventTitle">이벤트 일정 <span class="event-construction">(공사중)</span></h1>
           <p class="search-description">이벤트 일정을 조회할 수 있습니다. <time id="eventUpdatedAt" hidden></time></p>
         </div>
-      </div>
-    </section>
-    <details class="event-settings" id="eventSettings">
-      <summary>
-        <span>설정</span>
-        <span class="event-settings-actions">
-          <button class="event-settings-reset" id="eventSettingsReset" type="button" disabled>초기화</button>
-          <span class="event-settings-toggle">
-            <span id="eventSettingsToggleLabel">펼치기</span>
-            <span class="event-settings-arrow" aria-hidden="true">▾</span>
-          </span>
-        </span>
-      </summary>
-      <div class="event-settings-panel">
-        <section class="event-settings-section event-language-options" aria-labelledby="eventLanguageTitle">
-          <h2 id="eventLanguageTitle">언어</h2>
-          <select id="eventRegion" aria-labelledby="eventLanguageTitle" aria-controls="calendarDays calendarDayEvents">
-            <option value="kr">한국판</option>
-            <option value="jp">일본판</option>
-          </select>
-        </section>
-        <section class="event-settings-section event-category-options" aria-labelledby="eventCalendarSettingsTitle">
-          <h2 id="eventCalendarSettingsTitle">표시 스테이지(달력)</h2>
-          <div class="calendar-duration-filter">
-            <label for="calendarDurationDays">개최 기간</label>
-            <input id="calendarDurationDays" type="number" min="0" step="any" inputmode="decimal" aria-label="개최 기간 일수" aria-controls="calendarDays">
-            <span>일</span>
-            <select id="calendarDurationComparison" aria-label="개최 기간 비교" aria-controls="calendarDays">
-              <option value="lte">이하</option>
-              <option value="gte">이상</option>
-            </select>
-          </div>
-          <div class="calendar-regular-option event-category-grid">
-            <label class="calendar-filter-toggle">
-              <span>정규 스테이지</span>
-              <input id="calendarIncludeRegular" type="checkbox" aria-controls="calendarDays">
-              <span class="calendar-filter-check" aria-hidden="true">✓</span>
-            </label>
-          </div>
-          <div class="event-category-grid" id="calendarCategoryOptions"></div>
-        </section>
-        <section class="event-settings-section event-category-options" aria-labelledby="eventDailySettingsTitle">
-          <h2 id="eventDailySettingsTitle">표시 스테이지(일일)</h2>
-          <div class="event-category-grid" id="dailyCategoryOptions"></div>
-        </section>
-      </div>
-    </details>
-    <section class="event-calendar" aria-labelledby="calendarMonth">
-      <div class="calendar-toolbar">
-        <h2 id="calendarMonth" aria-live="polite"></h2>
-        <div class="calendar-navigation" aria-label="캘린더 이동">
-          <button type="button" id="previousMonth" aria-label="이전 달">‹</button>
-          <button type="button" id="calendarToday">오늘</button>
-          <button type="button" id="nextMonth" aria-label="다음 달">›</button>
+        <div class="nyanko-gnb event-view-nav">
+          <nav class="gnb-menu" role="tablist" aria-label="일정 종류">
+            <button class="gnb-menu-link" type="button" role="tab" id="gachaViewTab" data-event-view="gacha" aria-controls="gachaViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/gacha.png" alt="" width="48" height="48"><span>뽑기</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="stageViewTab" data-event-view="stage" aria-controls="stageViewPanel" aria-selected="true"><img src="../img/ui/gnb/stage.png" alt="" width="48" height="48"><span>스테이지</span></button>
+          </nav>
         </div>
       </div>
-      <p class="calendar-status" id="calendarStatus" role="status">스테이지 일정을 불러오는 중입니다.</p>
-      <div class="calendar-legend" id="calendarLegend" role="group" aria-label="스테이지 대분류 색상" hidden></div>
-      <div class="calendar-weekdays" aria-hidden="true">
-        <span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span>
-      </div>
-      <div class="calendar-days" id="calendarDays" role="group" aria-labelledby="calendarMonth"></div>
-      <noscript><p class="calendar-noscript">캘린더를 사용하려면 JavaScript를 켜 주세요.</p></noscript>
     </section>
-    <section class="event-day-panel" aria-labelledby="selectedDate">
-      <div class="calendar-selection">
-        <span>선택한 날짜</span>
-        <p id="selectedDate" aria-live="polite"></p>
-        <span id="selectedEventCount"></span>
-        <label class="calendar-filter-toggle">
-          <span>현재 개최 중</span>
-          <input id="dailyActiveOnly" type="checkbox">
-          <span class="calendar-filter-check" aria-hidden="true">✓</span>
-        </label>
-      </div>
-      <div class="calendar-day-events" id="calendarDayEvents" aria-labelledby="selectedDate"></div>
+    <section class="event-view-panel" id="gachaViewPanel" role="tabpanel" aria-labelledby="gachaViewTab" hidden>
+      <iframe class="event-view-frame" data-view="gacha" src="stage-test.html?embedded=1" title="뽑기 일정"></iframe>
+    </section>
+    <section class="event-view-panel" id="stageViewPanel" role="tabpanel" aria-labelledby="stageViewTab">
+      <iframe class="event-view-frame" data-view="stage" src="stage.html?embedded=1" title="스테이지 일정"></iframe>
     </section>
   </main>
   <script src="../catalog.js"></script>
   <script src="../search.js" defer></script>
-  <script id="eventScheduleSource" src="../stage-schedule.js" data-schedule-feed="https://raw.githubusercontent.com/shadowgao42/nyankodb/event-schedule-data/stage-schedule-kr.json"></script>
-  <script src="calendar.js" defer></script>
+  <script src="event-tabs.js" defer></script>
   <script src="../analytics-bundle.js"></script>
 </body>
 </html>

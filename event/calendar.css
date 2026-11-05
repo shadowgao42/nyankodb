@@ -221,7 +221,7 @@
 .calendar-category { display: inline-flex; align-items: center; gap: 6px; color: var(--event-color); font-size: 12px; font-weight: 900; }
 .calendar-category::before { content: ""; width: 10px; height: 10px; border: 1px solid var(--event-border); border-radius: 3px; background: var(--event-bg); }
 .calendar-event-bar {
-  display: block; min-width: 0; margin-inline: 3px; padding: 3px 7px;
+  display: block; min-width: 0; margin-inline: 0; padding: 3px 7px;
   overflow: hidden; border: 1px solid var(--event-border); border-radius: 5px;
   color: var(--event-color); background: var(--event-bg);
   font-size: 12px; font-weight: 900; line-height: 17px;

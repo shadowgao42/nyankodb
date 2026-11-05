@@ -1,0 +1,279 @@
+/* Test page only. Existing event typography, controls and palette are reused. */
+.gacha-test .gacha-count { margin-left: auto; color: var(--muted); font-size: 13px; font-weight: 800; }
+.gacha-test .gacha-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.gacha-test #gachaFilterTitle { margin-bottom: 8px; }
+.gacha-test .gacha-filter-primary, .gacha-test .gacha-type-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.gacha-test .gacha-type-filters { margin-top: 8px; }
+.gacha-roster-tooltip { width: 280px; }
+.gacha-tooltip-units { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
+.gacha-tooltip-units img { display: block; width: 100%; height: auto; }
+.gacha-test .gacha-badge { flex: 0 0 auto; cursor: pointer; }
+.gacha-test .gacha-events { max-height: none; }
+.gacha-test .gacha-event-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.gacha-test .calendar-stage-name { color: var(--text); }
+.gacha-test .gacha-tags { display: inline-flex; flex-wrap: wrap; gap: 5px; }
+.gacha-test .gacha-bonus { margin-top: 8px; color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.gacha-test button, .gacha-test summary, .gacha-test a { -webkit-tap-highlight-color: transparent; }
+/* Same custom tooltip surface as stage-schedule.css; portal avoids panel clipping. */
+.gacha-tooltip { box-sizing: border-box; position: fixed; z-index: 1000; width: max-content; padding: 10px 12px; border: 1px solid #53657a; border-radius: 11px; color: #fff; background: #080c12; box-shadow: 0 12px 34px rgba(0,0,0,.48); font-family: inherit; font-size: 13px; font-weight: 900; text-align: left; white-space: normal; overflow-wrap: anywhere; pointer-events: none; }
+.gacha-tooltip[hidden] { display: none; }
+.gacha-test .gacha-legend .gacha-badge[aria-pressed="true"] { border-color: var(--accent-text); color: var(--accent-text); }
+.gacha-test .gacha-guaranteed-badge { padding: 0; border: 0; background: transparent; }
+.gacha-test .gacha-guaranteed-badge img { display: block; width: 121px; height: 31px; }
+
+.gacha-test .calendar-event-bar { --event-color: var(--accent-text); --event-bg: #202a36; --event-border: #526071; font-family: inherit; text-align: left; cursor: pointer; }
+.gacha-test .calendar-event-bar[data-gacha-type="normal"] { --event-color: hsl(215 20% 14%); --event-bg: hsl(210 6% 60%); --event-border: hsl(210 8% 74%); }
+.gacha-test .calendar-event-bar[data-gacha-type="event"] { --event-color: hsl(165 80% 88%); --event-bg: hsl(177 48% 22%); --event-border: hsl(165 38% 48%); }
+
+.gacha-test .gacha-guide { --accent: #ff5b2d; --accent-2: #ffad3d; }
+.gacha-test .gacha-unit-rate { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; text-align: center; }
+
+.gacha-test .gacha-event { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.gacha-test .gacha-event-heading { display: flex; align-items: center; gap: 16px; }
+.gacha-test .gacha-event-heading:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.gacha-test .gacha-banner { display: block; flex: 0 0 auto; width: min(48%, 520px); max-width: 100%; height: auto; margin: 0; }
+.gacha-test .gacha-banner.gacha-normal-banner { width: min(24%, 260px); margin-inline-end: min(24%, 260px); }
+.gacha-test .gacha-event-info { flex: 1; min-width: 0; }
+.gacha-test .gacha-event-info .calendar-stage-name { font-size: 16px; overflow-wrap: anywhere; }
+.gacha-test .gacha-characters { margin-top: 12px; }
+.gacha-test .gacha-rarity-groups { display: grid; gap: 14px; margin-top: 14px; }
+.gacha-test .gacha-rarity-group { display: block; padding-top: 12px; border-top: 1px solid var(--line); }
+.gacha-test .gacha-rarity-heading { gap: 10px; }
+.gacha-test .gacha-rarity-chance { color: var(--accent-text); font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
+/* Reuse the compact unit/combo/item icon width instead of encyclopedia tracks. */
+.gacha-test .gacha-guide .nyancombo-members { display: flex; align-items: flex-start; flex-wrap: wrap; }
+.gacha-test .gacha-guide .owned-entry { flex: 0 0 clamp(56px, calc(7vw + 29px), 96px); width: clamp(56px, calc(7vw + 29px), 96px); }
+.gacha-test .gacha-guide .nyancombo-member { width: 100%; min-width: 56px; }
+.gacha-test .gacha-reward-quantity { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; font-weight: 700; text-align: center; }
+.gacha-test .gacha-item-image { position: relative; }
+.gacha-test .gacha-item-image > img { position: absolute; top: 50%; left: 50%; width: 100%; height: auto; transform: translate(-50%, -50%); }
+.gacha-test .gacha-special-rewards { margin-top: 8px; }
+.gacha-test .gacha-special-title { padding-inline: 15px; color: var(--accent-text); font-size: 13px; font-weight: 800; }
+.gacha-test .gacha-special-note { padding-inline: 15px; }
+@media (max-width: 760px) {
+  .gacha-test .gacha-event-heading { gap: 10px; }
+  .gacha-test .gacha-banner { width: 45%; }
+  .gacha-test .gacha-banner.gacha-normal-banner { width: 22.5%; margin-inline-end: 22.5%; }
+}
+
+.gacha-test .gacha-characters-heading { display: flex; align-items: center; gap: 14px; padding-right: 15px; cursor: pointer; list-style: none; }
+.gacha-test .gacha-characters-heading::-webkit-details-marker { display: none; }
+.gacha-test .gacha-probabilities { display: flex; flex: 1; flex-wrap: wrap; gap: 10px 0; min-width: 0; }
+.gacha-test .gacha-characters[open] > summary .gacha-probabilities { display: none; }
+.gacha-test .gacha-fold-toggle { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; color: var(--muted); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.gacha-test .gacha-fold-arrow { display: inline-block; color: var(--accent-text); transition: transform .16s ease; }
+.gacha-test details[open] > summary .gacha-fold-arrow { transform: rotate(180deg); }
+.gacha-test .gacha-characters-heading:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.gacha-test .gacha-rarity-heading { flex-wrap: wrap; }
+.gacha-test .gacha-guarantee-toggle[aria-pressed="true"] .calendar-filter-check { border-color: #ff5b2d; color: #fff; background: #ff5b2d; box-shadow: 0 0 0 2px rgba(255,91,45,.18); }
+.gacha-test .gacha-guarantee-toggle:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+.gacha-test .gacha-bonus-guide { margin-top: 12px; padding-top: 10px; }
+.gacha-test .gacha-bonus-guide .gacha-bonus { padding-inline: 15px; }
+/* Requested banner families only; reserved stage colors and distinct banner palettes. */
+.gacha-test .calendar-event-bar[data-gacha-theme="legend"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: #080b10;
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="platinum"] {
+  --event-color: hsl(205 80% 85%);
+  --event-bg: linear-gradient(110deg, rgba(255,185,220,.24), rgba(255,235,174,.2) 24%, rgba(171,242,216,.22) 46%, rgba(164,218,255,.3) 68%, rgba(208,185,255,.28)), linear-gradient(180deg, #728099, #526071 30%, #202a36);
+  --event-border: #a9b5d2;
+  text-shadow: 0 1px 2px #080b10;
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="uber-popular"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: linear-gradient(110deg, hsl(48 38% 25%), hsl(135 38% 25%));
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="epic-popular"] {
+  --event-color: hsl(205 80% 85%);
+  --event-bg: linear-gradient(110deg, hsl(174 38% 25%), hsl(230 48% 25%));
+  --event-border: hsl(205 50% 55%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="download"] {
+  --event-color: hsl(42 100% 88%);
+  --event-bg: hsl(38 62% 31%);
+  --event-border: hsl(42 65% 55%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="red-busters"] {
+  --event-color: hsl(4 80% 80%);
+  --event-bg: hsl(4 45% 26%);
+  --event-border: hsl(4 55% 48%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="air-busters"] {
+  --event-color: hsl(205 80% 85%);
+  --event-bg: hsl(205 38% 31%);
+  --event-border: hsl(205 50% 55%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="metal-busters"] {
+  --event-color: hsl(0 0% 80%);
+  --event-bg: hsl(0 0% 25%);
+  --event-border: hsl(0 0% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="wave-busters"] {
+  --event-color: hsl(299 100% 91%);
+  --event-bg: hsl(290 68% 30%);
+  --event-border: hsl(290 65% 57%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="colossus-busters"] {
+  --event-color: hsl(28 80% 80%);
+  --event-bg: hsl(28 45% 26%);
+  --event-border: hsl(28 55% 48%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="busters-fest"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: linear-gradient(110deg, hsl(28 45% 26%), hsl(230 48% 25%), hsl(274 38% 25%));
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="kingfest"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: linear-gradient(110deg, hsl(25 42% 21%), hsl(48 38% 25%));
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="queenfest"] {
+  --event-color: hsl(325 80% 80%);
+  --event-bg: linear-gradient(110deg, hsl(325 38% 25%), hsl(265 34% 34%));
+  --event-border: hsl(325 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="uberfest"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: linear-gradient(110deg, hsl(28 45% 26%), hsl(48 38% 25%));
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="epicfest"] {
+  --event-color: hsl(205 80% 85%);
+  --event-bg: linear-gradient(110deg, hsl(230 48% 25%), hsl(205 38% 31%));
+  --event-border: hsl(205 50% 55%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="superfest"] {
+  --event-color: hsl(48 100% 90%);
+  --event-bg: linear-gradient(110deg, hsl(45 72% 32%), hsl(45 52% 23%) 36%, hsl(225 28% 18%) 50%, hsl(215 60% 25%) 72%, hsl(205 70% 30%));
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="dynamites"] {
+  --event-color: hsl(148 75% 85%);
+  --event-bg: hsl(148 50% 20%);
+  --event-border: hsl(148 45% 43%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="basaras"] {
+  --event-color: hsl(20 95% 88%);
+  --event-bg: hsl(15 47% 23%);
+  --event-border: hsl(20 55% 48%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="galaxy-gals"] {
+  --event-color: hsl(300 85% 91%);
+  --event-bg: hsl(300 42% 22%);
+  --event-border: hsl(300 42% 49%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="dragon-emperors"] {
+  --event-color: hsl(190 90% 84%);
+  --event-bg: hsl(190 55% 18%);
+  --event-border: hsl(190 50% 40%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="ultra-souls"] {
+  --event-color: hsl(38 90% 82%);
+  --event-bg: hsl(38 48% 18%);
+  --event-border: hsl(38 45% 40%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="dark-heroes"] {
+  --event-color: hsl(270 65% 83%);
+  --event-bg: hsl(270 38% 14%);
+  --event-border: hsl(270 32% 35%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="almighties"] {
+  --event-color: hsl(48 80% 80%);
+  --event-bg: hsl(48 38% 25%);
+  --event-border: hsl(48 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="iron-legion"] {
+  --event-color: hsl(25 50% 72%);
+  --event-bg: hsl(25 42% 21%);
+  --event-border: hsl(25 40% 40%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="pixies"] {
+  --event-color: hsl(174 80% 80%);
+  --event-bg: hsl(174 38% 25%);
+  --event-border: hsl(174 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="girls-monsters"] {
+  --event-color: hsl(337 95% 93%);
+  --event-bg: hsl(337 62% 31%);
+  --event-border: hsl(337 55% 54%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="nekolugas"] {
+  --event-color: hsl(230 80% 80%);
+  --event-bg: hsl(230 48% 25%);
+  --event-border: hsl(230 50% 48%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="valentine"] {
+  --event-color: hsl(325 80% 80%);
+  --event-bg: hsl(325 38% 25%);
+  --event-border: hsl(325 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="white-day"] {
+  --event-color: hsl(220 65% 96%);
+  --event-bg: hsl(220 22% 37%);
+  --event-border: hsl(220 32% 62%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="easter"] {
+  --event-color: hsl(85 80% 86%);
+  --event-bg: hsl(85 47% 25%);
+  --event-border: hsl(85 50% 45%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="june-bride"] {
+  --event-color: hsl(265 80% 86%);
+  --event-bg: hsl(265 34% 34%);
+  --event-border: hsl(265 46% 60%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="summer-sunshine"] {
+  --event-color: hsl(45 100% 91%);
+  --event-bg: hsl(10 58% 33%);
+  --event-border: hsl(15 65% 57%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="summer-blue-ocean"] {
+  --event-color: hsl(184 90% 82%);
+  --event-bg: hsl(196 64% 21%);
+  --event-border: hsl(190 60% 42%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="halloween"] {
+  --event-color: hsl(32 100% 76%);
+  --event-bg: hsl(280 16% 14%);
+  --event-border: hsl(30 48% 47%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="christmas"] {
+  --event-color: hsl(135 65% 80%);
+  --event-bg: hsl(135 38% 25%);
+  --event-border: hsl(135 42% 44%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="ultra-selection"] {
+  --event-color: hsl(318 85% 87%);
+  --event-bg: hsl(318 38% 15%);
+  --event-border: hsl(318 44% 42%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="miracle-selection"] {
+  --event-color: hsl(48 80% 94%);
+  --event-bg: hsl(40 30% 33%);
+  --event-border: hsl(40 40% 61%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="excellent-selection"] {
+  --event-color: hsl(205 55% 88%);
+  --event-bg: hsl(215 18% 29%);
+  --event-border: hsl(215 22% 55%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="new-year"] {
+  --event-color: hsl(50 80% 87%);
+  --event-bg: hsl(350 55% 18%);
+  --event-border: hsl(350 60% 42%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="outlet"] {
+  --event-color: hsl(65 75% 86%);
+  --event-bg: hsl(65 40% 20%);
+  --event-border: hsl(65 45% 42%);
+}
+.gacha-test .calendar-event-bar[data-gacha-theme="collab"] {
+  --event-color: hsl(274 80% 80%);
+  --event-bg: hsl(274 38% 25%);
+  --event-border: hsl(274 42% 44%);
+}
