@@ -8,7 +8,7 @@
 .gacha-tooltip-units { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-bottom: 8px; }
 .gacha-tooltip-units img { display: block; width: 100%; height: auto; }
 .gacha-test .gacha-badge { flex: 0 0 auto; cursor: pointer; }
-.gacha-test .gacha-events { max-height: none; }
+.gacha-test .gacha-events { max-height: none; overflow: visible; }
 .gacha-test .gacha-event-top { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
 .gacha-test .calendar-stage-name { color: var(--text); }
 .gacha-test .gacha-tags { display: inline-flex; flex-wrap: wrap; gap: 5px; }
