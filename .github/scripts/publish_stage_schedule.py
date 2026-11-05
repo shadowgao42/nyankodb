@@ -16,7 +16,10 @@ def main():
     feed = json.loads(content)
     if feed.get("schemaVersion") != 1 or feed.get("region") not in ("kr", "jp"):
         raise RuntimeError("Invalid calendar export")
-    filename = f"stage-schedule-{feed['region']}.json"
+    kind = "gacha" if feed.get("kind") == "gacha" else "stage"
+    if feed.get("kind") not in (None, "gacha"):
+        raise RuntimeError("Invalid schedule kind")
+    filename = f"{kind}-schedule-{feed['region']}.json"
     repo = os.environ["GITHUB_REPOSITORY"]
     if not re.fullmatch(r"[\w.-]+/[\w.-]+", repo):
         raise RuntimeError("Invalid repository")
@@ -44,7 +47,7 @@ def main():
         head = api("git/ref/heads/" + default)["object"]["sha"]
         api("git/refs", {"ref": "refs/heads/" + BRANCH, "sha": head})
     previous = api(f"contents/{filename}?ref={BRANCH}", allow_missing=True)
-    body = {"message": f"Update official {feed['region'].upper()} stage schedule", "branch": BRANCH,
+    body = {"message": f"Update official {feed['region'].upper()} {kind} schedule", "branch": BRANCH,
             "content": base64.b64encode(content).decode()}
     if previous:
         body["sha"] = previous["sha"]

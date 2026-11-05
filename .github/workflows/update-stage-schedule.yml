@@ -17,6 +17,8 @@ on:
       - '.github/workflows/stage-schedule-timer.yml'
       - '.github/scripts/update_stage_schedule.py'
       - '.github/scripts/publish_stage_schedule.py'
+      - '.github/scripts/update_gacha_schedule.py'
+      - '.github/gacha-catalog.json'
       - '.github/stage-schedule-maps.json'
 
 permissions:
@@ -46,10 +48,18 @@ jobs:
           kr_pid=$!
           python .github/scripts/update_stage_schedule.py --region jp --output "$RUNNER_TEMP/stage-schedule-jp.json" &
           jp_pid=$!
+          python .github/scripts/update_gacha_schedule.py --region kr --output "$RUNNER_TEMP/gacha-schedule-kr.json" &
+          gacha_kr_pid=$!
+          python .github/scripts/update_gacha_schedule.py --region jp --output "$RUNNER_TEMP/gacha-schedule-jp.json" &
+          gacha_jp_pid=$!
           kr_status=0; wait "$kr_pid" || kr_status=$?
           jp_status=0; wait "$jp_pid" || jp_status=$?
+          gacha_kr_status=0; wait "$gacha_kr_pid" || gacha_kr_status=$?
+          gacha_jp_status=0; wait "$gacha_jp_pid" || gacha_jp_status=$?
           if [ "$kr_status" -eq 0 ]; then echo "kr_ok=true" >> "$GITHUB_OUTPUT"; fi
           if [ "$jp_status" -eq 0 ]; then echo "jp_ok=true" >> "$GITHUB_OUTPUT"; fi
+          if [ "$gacha_kr_status" -eq 0 ]; then echo "gacha_kr_ok=true" >> "$GITHUB_OUTPUT"; fi
+          if [ "$gacha_jp_status" -eq 0 ]; then echo "gacha_jp_ok=true" >> "$GITHUB_OUTPUT"; fi
       - name: Publish Korean calendar JSON on the data branch
         if: ${{ steps.collect.outputs.kr_ok == 'true' }}
         env:
@@ -60,6 +70,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/stage-schedule-jp.json"
-      - name: Check both collections
-        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true') }}
+      - name: Publish Korean gacha JSON on the data branch
+        if: ${{ always() && steps.collect.outputs.gacha_kr_ok == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/gacha-schedule-kr.json"
+      - name: Publish Japanese gacha JSON on the data branch
+        if: ${{ always() && steps.collect.outputs.gacha_jp_ok == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/gacha-schedule-jp.json"
+      - name: Check all four collections
+        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true' || steps.collect.outputs.gacha_kr_ok != 'true' || steps.collect.outputs.gacha_jp_ok != 'true') }}
         run: exit 1

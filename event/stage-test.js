@@ -538,7 +538,22 @@
     }
     calendarDays.replaceChildren(fragment);
   }
+  function updateFetchedTime() {
+    const time = document.getElementById('eventUpdatedAt');
+    const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
+    const value = data?.regions[region]?.fetchedAt;
+    const date = new Date(value || NaN);
+    time.hidden = !Number.isFinite(date.getTime());
+    if (time.hidden) return;
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('ko-KR', {
+      timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit',
+      hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'
+    }).formatToParts(date).map(({type, value}) => [type, value]));
+    time.dateTime = date.toISOString();
+    time.textContent = `(${parts.year}년 ${parts.month}월 ${parts.day}일 ${parts.hour}:${parts.minute}:${parts.second} 기준)`;
+  }
   function render() {
+    updateFetchedTime();
     const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
     hideTooltip();
     document.getElementById('gachaSelectedDate').textContent = dateFormat.format(selectedDate);
@@ -584,7 +599,7 @@
     else selectedTypes.delete(input.dataset.gachaType);
     saveRegion();
   });
-  regionSelect.addEventListener('change', saveRegion);
+  regionSelect.addEventListener('change', () => { saveRegion(); void refresh(); });
   document.getElementById('previousMonth').addEventListener('click', () => changeMonth(-1));
   document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
   document.getElementById('calendarToday').addEventListener('click', () => selectDate(today()));
@@ -595,11 +610,48 @@
     selectedTypes.clear(); for (const type of ['rare', 'normal', 'event']) selectedTypes.add(type);
     excludeSpecial = true; saveRegion();
   });
-  window.addEventListener('storage', event => { if (event.key === SETTINGS_KEY || event.key === null) { restoreSettings(); render(); } });
+  window.addEventListener('storage', event => { if (event.key === SETTINGS_KEY || event.key === null) { restoreSettings(); render(); void refresh(); } });
   document.addEventListener('keydown', event => { if (event.key === 'Escape') hideTooltip(); });
   document.addEventListener('pointerdown', event => { if (!event.target.closest('.gacha-badge, .nyancombo-member')) hideTooltip(); });
   window.addEventListener('resize', hideTooltip);
   window.addEventListener('scroll', hideTooltip, true);
+  const refreshing = new Set();
+  async function refresh() {
+    if (!data) return;
+    const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
+    if (refreshing.has(region)) return;
+    refreshing.add(region);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    try {
+      const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+      const url = new URL(local ? `../gacha-schedule-${region}.json`
+        : `https://raw.githubusercontent.com/shadowgao42/nyankodb/refs/heads/event-schedule-data/gacha-schedule-${region}.json`, location.href);
+      url.searchParams.set('t', String(Math.floor(Date.now() / 60000)));
+      const response = await fetch(url, {cache:'no-store', credentials:'omit', signal:controller.signal});
+      if (!response.ok) throw new Error('Gacha feed unavailable');
+      const next = await response.json();
+      if (next.schemaVersion !== 1 || next.kind !== 'gacha' || next.region !== region
+        || !Array.isArray(next.events) || !next.assets?.banners || !next.assets?.displayNames
+        || !Number.isFinite(Date.parse(next.fetchedAt))) throw new Error('Invalid gacha feed');
+      const changed = JSON.stringify([data.regions[region].events, assets.regions[region]])
+        !== JSON.stringify([next.events, next.assets]);
+      data.regions[region] = next;
+      assets.regions[region] = next.assets;
+      if ((regionSelect.value === 'jp' ? 'jp' : 'kr') === region) {
+        if (changed) {
+          const open = new Set([...list.querySelectorAll('.gacha-event')].filter(node => node.querySelector('details[open]')).map(node => node.dataset.eventKey));
+          const guaranteed = new Set([...list.querySelectorAll('.gacha-event')].filter(node => node.querySelector('.gacha-guarantee-toggle[aria-pressed="true"]')).map(node => node.dataset.eventKey));
+          render();
+          for (const node of list.querySelectorAll('.gacha-event')) {
+            if (open.has(node.dataset.eventKey)) node.querySelector('details').open = true;
+            if (guaranteed.has(node.dataset.eventKey)) node.querySelector('.gacha-guarantee-toggle')?.click();
+          }
+        } else updateFetchedTime();
+      }
+    } catch (_) { /* Keep the last successful feed and its actual fetched-at time. */ }
+    finally { clearTimeout(timeout); refreshing.delete(region); }
+  }
   async function load() {
     try {
       const responses = await Promise.all(['stage-test-data.json', 'stage-test-assets.json', 'gacha-extra-data.json'].map(path => fetch(path, {cache:'no-store'})));
@@ -624,7 +676,11 @@
       }
     } catch (_) { failed = true; }
     render();
+    void refresh();
   }
+  setInterval(() => { if (!document.hidden) void refresh(); }, 60000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });
+  window.addEventListener('pageshow', () => { void refresh(); });
   render();
   void load();
 })();

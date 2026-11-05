@@ -97,7 +97,10 @@ def bootstrap_auth() -> dict:
     return {"accountCode": account, "password": result["password"]}
 
 
-def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr") -> tuple[bytes, dict]:
+def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr",
+               resource: str = "sale.tsv") -> tuple[bytes, dict]:
+    if resource not in ("sale.tsv", "gatya.tsv"):
+        raise ScheduleError("Unsupported official resource")
     config = REGIONS[region]
     game_version = config["gameVersion"] if game_version is None else game_version
     account, password = auth.get("accountCode"), auth.get("password")
@@ -113,7 +116,7 @@ def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr") 
     token = result.get("token")
     if not isinstance(token, str) or not token:
         raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
-    return _request(config["source"] + "?jwt=" + urllib.parse.quote(token, safe=""))
+    return _request(config["source"].replace("sale.tsv", resource) + "?jwt=" + urllib.parse.quote(token, safe=""))
 
 
 def minutes(value: int) -> int:
