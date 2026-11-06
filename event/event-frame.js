@@ -15,10 +15,25 @@
       dateTime: time && !time.hidden ? time.dateTime : '',
       text: time && !time.hidden ? time.textContent : ''}, hostOrigin);
   }
+  // WebKit can size a srcdoc viewport from the host's already-zoomed width.
+  // Use the iframe's CSS width, as the regular stage/sale documents do.
+  function syncInlineWidth() {
+    if (!inlineView) return;
+    const frame = window.frameElement;
+    if (!frame || !frame.getClientRects().length) return;
+    const width = window.parent.getComputedStyle(frame).width;
+    if (!width.endsWith('px') || !(parseFloat(width) > 0)) return;
+    const root = document.documentElement;
+    // Leave browsers with an already-correct viewport untouched, including pixel rounding.
+    if (!root.style.width && Math.abs(root.getBoundingClientRect().width - parseFloat(width)) <= .5) return;
+    if (root.style.width !== width) root.style.width = width;
+  }
+  syncInlineWidth();
   let lastHeight = 0;
   let queued = false;
   function reportHeight() {
     queued = false;
+    syncInlineWidth();
     const page = document.querySelector('main.page');
     if (!page) return;
     const height = Math.ceil(page.getBoundingClientRect().height);
