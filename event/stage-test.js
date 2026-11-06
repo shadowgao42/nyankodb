@@ -624,9 +624,9 @@
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
     try {
-      const local = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+      const local = ['localhost', '127.0.0.1', '[::1]'].includes(new URL(document.baseURI).hostname);
       const url = new URL(local ? `../gacha-schedule-${region}.json`
-        : `https://raw.githubusercontent.com/shadowgao42/nyankodb/refs/heads/event-schedule-data/gacha-schedule-${region}.json`, location.href);
+        : `https://raw.githubusercontent.com/shadowgao42/nyankodb/refs/heads/event-schedule-data/gacha-schedule-${region}.json`, document.baseURI);
       url.searchParams.set('t', String(Math.floor(Date.now() / 60000)));
       const response = await fetch(url, {cache:'no-store', credentials:'omit', signal:controller.signal});
       if (!response.ok) throw new Error('Gacha feed unavailable');

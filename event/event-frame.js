@@ -1,7 +1,10 @@
 /* Only the host boundary changes; the original page owns all schedule state. */
 (() => {
   'use strict';
-  if (new URLSearchParams(location.search).get('embedded') !== '1' || window.parent === window) return;
+  if (window.parent === window) return;
+  const inlineView = location.href === 'about:srcdoc' && window.frameElement?.classList.contains('event-view-frame');
+  if (!inlineView && new URLSearchParams(location.search).get('embedded') !== '1') return;
+  const hostOrigin = new URL(document.baseURI).origin;
   document.documentElement.classList.add('event-embedded');
   const base = document.createElement('base');
   base.target = '_top';
@@ -10,7 +13,7 @@
     const time = document.getElementById('eventUpdatedAt');
     window.parent.postMessage({type: 'nyanko-event-updated',
       dateTime: time && !time.hidden ? time.dateTime : '',
-      text: time && !time.hidden ? time.textContent : ''}, location.origin);
+      text: time && !time.hidden ? time.textContent : ''}, hostOrigin);
   }
   let lastHeight = 0;
   let queued = false;
@@ -21,7 +24,7 @@
     const height = Math.ceil(page.getBoundingClientRect().height);
     if (height > 0 && height !== lastHeight) {
       lastHeight = height;
-      window.parent.postMessage({type: 'nyanko-event-height', height}, location.origin);
+      window.parent.postMessage({type: 'nyanko-event-height', height}, hostOrigin);
     }
   }
   function scheduleHeight() {
@@ -36,7 +39,7 @@
   });
   window.addEventListener('resize', scheduleHeight);
   window.addEventListener('message', event => {
-    if (event.source !== window.parent || event.origin !== location.origin) return;
+    if (event.source !== window.parent || event.origin !== hostOrigin) return;
     if (event.data?.type === 'nyanko-event-visible') { scheduleHeight(); reportUpdated(); }
     if (event.data?.type === 'nyanko-event-scroll') window.dispatchEvent(new Event('scroll'));
   });
