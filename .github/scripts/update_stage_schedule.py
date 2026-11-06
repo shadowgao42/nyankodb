@@ -99,7 +99,7 @@ def bootstrap_auth() -> dict:
 
 def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr",
                resource: str = "sale.tsv") -> tuple[bytes, dict]:
-    if resource not in ("sale.tsv", "gatya.tsv"):
+    if resource not in ("sale.tsv", "gatya.tsv", "item.tsv"):
         raise ScheduleError("Unsupported official resource")
     config = REGIONS[region]
     game_version = config["gameVersion"] if game_version is None else game_version

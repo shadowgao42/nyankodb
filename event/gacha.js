@@ -2,6 +2,8 @@
 (() => {
   'use strict';
   const list = document.getElementById('gachaEvents');
+  const discountNotice = document.getElementById('gachaDiscountNotice');
+  const discountStart = document.getElementById('gachaDiscountStart');
   const status = document.getElementById('gachaStatus');
   const calendarDays = document.getElementById('calendarDays');
   const regionSelect = document.getElementById('eventRegion');
@@ -143,9 +145,9 @@
     return box;
   }
   function foldControl(details, summary) {
-    const toggle = element('span', 'gacha-fold-toggle');
+    const toggle = element('span', 'event-settings-toggle gacha-fold-toggle');
     const label = element('span', 'gacha-fold-label', '펼치기');
-    const arrow = element('span', 'gacha-fold-arrow', '▾');
+    const arrow = element('span', 'event-settings-arrow', '▾');
     arrow.setAttribute('aria-hidden', 'true');
     toggle.append(label, arrow); summary.append(toggle);
     details.addEventListener('toggle', () => {
@@ -437,13 +439,29 @@
     }
     return result;
   }
+  function chronologicalVariants(ordered) {
+    const result = [...ordered];
+    const groups = new Map();
+    ordered.forEach((event, index) => {
+      // Keep every other banner position and the existing duration/type priorities.
+      const key = `${event.type || 'rare'}:${Number(event.isLong)}:${eventName(event)}`;
+      if (!groups.has(key)) groups.set(key, {positions:[], events:[]});
+      const group = groups.get(key);
+      group.positions.push(index); group.events.push(event);
+    });
+    for (const group of groups.values()) {
+      group.events.sort((a, b) => Date.parse(a.start) - Date.parse(b.start));
+      group.positions.forEach((position, index) => { result[position] = group.events[index]; });
+    }
+    return result;
+  }
   function calendarLanes(events) {
     const lanes = new Map();
     let laneEnds = [], laneOffset = 0, previousType;
     // Preserve limited-campaign priority using the original, uncut duration.
-    const ordered = [...events].sort((a,b) => typePriority(a)-typePriority(b) || Number(a.isLong)-Number(b.isLong)
+    const ordered = chronologicalVariants([...events].sort((a,b) => typePriority(a)-typePriority(b) || Number(a.isLong)-Number(b.isLong)
       || dayNumber(a.start)-dayNumber(b.start) || Date.parse(b.end)-Date.parse(a.end)
-      || a.slot-b.slot || a.sourceRow-b.sourceRow || a.key.localeCompare(b.key));
+      || a.slot-b.slot || a.sourceRow-b.sourceRow || a.key.localeCompare(b.key)));
     for (const event of ordered) {
       const currentType = event.type || 'rare';
       if (currentType !== previousType) {
@@ -459,6 +477,12 @@
     }
     return lanes;
   }
+  function initialDiscountEventsOn(date) {
+    const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
+    const day = date.getTime() / DAY;
+    return (data?.regions[region]?.discounts?.events || []).filter(event => dayNumber(event.start) === day);
+  }
+  function initialDiscountOn(date) { return initialDiscountEventsOn(date).length > 0; }
   function renderCalendar(events) {
     const year = displayedMonth.getUTCFullYear(), month = displayedMonth.getUTCMonth();
     document.getElementById('calendarMonth').textContent = `${year}년 ${month + 1}월`;
@@ -486,6 +510,13 @@
         if (key === dateKey(today())) button.setAttribute('aria-current', 'date');
         button.tabIndex = key === dateKey(selectedDate) ? 0 : -1;
         button.append(element('span', 'calendar-day-number', String(date.getUTCDate())));
+        if (initialDiscountOn(date)) {
+          button.classList.add('has-discount');
+          const discountBar = element('span', 'calendar-event-bar gacha-discount-bar', '초회');
+          discountBar.setAttribute('aria-hidden', 'true');
+          button.append(discountBar);
+          button.setAttribute('aria-label', `${dateFormat.format(date)} · 초회 할인`);
+        }
         button.addEventListener('click', () => selectDate(date, true));
         button.addEventListener('keydown', event => {
           const offsets = {ArrowLeft:-1, ArrowRight:1, ArrowUp:-7, ArrowDown:7, Home:-d, End:6-d};
@@ -557,6 +588,10 @@
     const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
     hideTooltip();
     document.getElementById('gachaSelectedDate').textContent = dateFormat.format(selectedDate);
+    const discountEvents = initialDiscountEventsOn(selectedDate);
+    discountNotice.hidden = discountEvents.length === 0;
+    const clock = new Intl.DateTimeFormat('ko-KR', {timeZone:'Asia/Seoul', hour:'2-digit', minute:'2-digit', hourCycle:'h23'});
+    discountStart.textContent = [...new Set(discountEvents.map(event => clock.format(new Date(event.start))))].sort().join(' · ');
     document.getElementById('eventSettingsReset').disabled = region === 'kr' && selectedBadges.size === 0 && selectedTypes.size === 3 && excludeSpecial;
     document.getElementById('gachaExcludeSpecial').checked = excludeSpecial;
     for (const input of document.querySelectorAll('input[data-gacha-type]')) input.checked = selectedTypes.has(input.dataset.gachaType);
@@ -565,7 +600,7 @@
     }
     const all = resolveEvents(data?.regions[region].events || []).filter(matchesEventFilters);
     renderCalendar(all);
-    list.replaceChildren();
+    list.replaceChildren(discountNotice);
     const calendarStatus = document.getElementById('calendarStatus');
     calendarStatus.hidden = Boolean(data);
     if (!data) {
@@ -577,8 +612,8 @@
       return;
     }
     const start = selectedDate.getTime() - KST, end = start + DAY;
-    const events = all.filter(e => Date.parse(e.start) < end && Date.parse(e.end) > start)
-      .sort((a,b) => typePriority(a)-typePriority(b) || a.slot - b.slot || Date.parse(b.start) - Date.parse(a.start) || a.id - b.id);
+    const events = chronologicalVariants(all.filter(e => Date.parse(e.start) < end && Date.parse(e.end) > start)
+      .sort((a,b) => typePriority(a)-typePriority(b) || a.slot - b.slot || Date.parse(b.start) - Date.parse(a.start) || a.id - b.id));
     const labels = new Map(data.badges.map(b => [b.code,b.label]));
     status.hidden = events.length > 0;
     status.textContent = events.length ? '' : '선택한 날짜에 표시할 뽑기 일정이 없습니다.';
@@ -634,9 +669,10 @@
       if (next.schemaVersion !== 1 || next.kind !== 'gacha' || next.region !== region
         || !Array.isArray(next.events) || !next.assets?.banners || !next.assets?.displayNames
         || !Number.isFinite(Date.parse(next.fetchedAt))) throw new Error('Invalid gacha feed');
-      const changed = JSON.stringify([data.regions[region].events, assets.regions[region]])
-        !== JSON.stringify([next.events, next.assets]);
-      data.regions[region] = next;
+      const discounts = next.discounts || data.regions[region].discounts;
+      const changed = JSON.stringify([data.regions[region].events, assets.regions[region], data.regions[region].discounts?.events])
+        !== JSON.stringify([next.events, next.assets, discounts?.events]);
+      data.regions[region] = {...next, discounts};
       assets.regions[region] = next.assets;
       if ((regionSelect.value === 'jp' ? 'jp' : 'kr') === region) {
         if (changed) {
@@ -654,13 +690,20 @@
   }
   async function load() {
     try {
-      const responses = await Promise.all(['stage-test-data.json', 'stage-test-assets.json', 'gacha-extra-data.json'].map(path => fetch(path, {cache:'no-store'})));
+      const discountRequest = fetch('gacha-discounts-data.json', {cache:'no-store'}).then(response => response.ok ? response.json() : null).catch(() => null);
+      const responses = await Promise.all(['gacha-data.json', 'gacha-assets.json', 'gacha-extra-data.json'].map(path => fetch(path, {cache:'no-store'})));
       if (responses.some(response => !response.ok)) throw new Error('Unavailable gacha export');
       const [next, nextAssets, extra] = await Promise.all(responses.map(response => response.json()));
       if (next.schemaVersion !== 1 || !next.regions.kr || !next.regions.jp || next.badges.length !== 8
         || nextAssets.schemaVersion !== 1 || !nextAssets.regions.kr || !nextAssets.regions.jp
         || extra.schemaVersion !== 1 || !extra.regions.kr || !extra.regions.jp) throw new Error('Invalid gacha export');
-      for (const region of ['kr', 'jp']) next.regions[region].events.push(...extra.regions[region].events);
+      const discountExport = await discountRequest;
+      for (const region of ['kr', 'jp']) {
+        next.regions[region].events.push(...extra.regions[region].events);
+        if (discountExport?.schemaVersion === 1 && Array.isArray(discountExport.regions?.[region]?.events)) {
+          next.regions[region].discounts = discountExport.regions[region];
+        }
+      }
       data = next; assets = nextAssets;
       const legend = document.getElementById('gachaLegend');
       for (const item of data.badges) {

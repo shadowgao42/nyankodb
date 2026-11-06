@@ -6,3 +6,5 @@
 .event-view-panel[hidden] { display: none; }
 
 .event-updated-line #eventUpdatedAt { margin-left: 0; }
+
+.event-view-nav .gnb-menu-link:disabled { cursor: default; opacity: .62; }

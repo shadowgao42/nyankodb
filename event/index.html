@@ -79,13 +79,14 @@
         </div>
         <div class="nyanko-gnb event-view-nav">
           <nav class="gnb-menu" role="tablist" aria-label="일정 종류">
-            <button class="gnb-menu-link" type="button" role="tab" id="gachaViewTab" data-event-view="gacha" aria-controls="gachaViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/gacha.png" alt="" width="48" height="48"><span>뽑기</span></button>
-            <button class="gnb-menu-link" type="button" role="tab" id="stageViewTab" data-event-view="stage" aria-controls="stageViewPanel" aria-selected="true"><img src="../img/ui/gnb/stage.png" alt="" width="48" height="48"><span>스테이지</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="gachaViewTab" data-event-view="gacha" aria-controls="gachaViewPanel" aria-selected="true"><img src="../img/ui/gnb/gacha.png" alt="" width="48" height="48"><span>뽑기</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="stageViewTab" data-event-view="stage" aria-controls="stageViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/stage.png" alt="" width="48" height="48"><span>스테이지</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="saleViewTab" aria-selected="false" aria-disabled="true" disabled tabindex="-1"><img src="../img/r/22.png" alt="" width="48" height="48"><span>세일</span></button>
           </nav>
         </div>
       </div>
     </section>
-    <section class="event-view-panel" id="gachaViewPanel" role="tabpanel" aria-labelledby="gachaViewTab" hidden>
+    <section class="event-view-panel" id="gachaViewPanel" role="tabpanel" aria-labelledby="gachaViewTab">
       <iframe class="event-view-frame" name="gachaSchedule" data-view="gacha" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;ko&quot;&gt;
 &lt;head&gt;
@@ -153,7 +154,7 @@
   &lt;link rel=&quot;stylesheet&quot; href=&quot;../gnb.css&quot;&gt;
   &lt;link rel=&quot;stylesheet&quot; href=&quot;calendar.css&quot;&gt;
   &lt;link rel=&quot;stylesheet&quot; href=&quot;../unit-guide.css&quot;&gt;
-  &lt;link rel=&quot;stylesheet&quot; href=&quot;stage-test.css&quot;&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;gacha.css&quot;&gt;
   &lt;link rel=&quot;stylesheet&quot; href=&quot;event-frame.css&quot;&gt;
   &lt;script src=&quot;event-frame.js&quot;&gt;&lt;/script&gt;
 &lt;/head&gt;
@@ -242,7 +243,12 @@
         &lt;span class=&quot;gacha-count&quot; id=&quot;gachaCount&quot; aria-live=&quot;polite&quot;&gt;&lt;/span&gt;
       &lt;/div&gt;
       &lt;p class=&quot;calendar-status&quot; id=&quot;gachaStatus&quot; role=&quot;status&quot;&gt;뽑기 일정을 불러오는 중입니다.&lt;/p&gt;
-      &lt;div class=&quot;calendar-day-events gacha-events&quot; id=&quot;gachaEvents&quot; aria-labelledby=&quot;gachaSelectedDate&quot;&gt;&lt;/div&gt;
+      &lt;div class=&quot;calendar-day-events gacha-events&quot; id=&quot;gachaEvents&quot; aria-labelledby=&quot;gachaSelectedDate&quot;&gt;
+        &lt;article class=&quot;calendar-event-detail gacha-discount-notice&quot; id=&quot;gachaDiscountNotice&quot; hidden&gt;
+          &lt;span class=&quot;calendar-stage-name&quot;&gt;초회 할인&lt;/span&gt;
+          &lt;p class=&quot;calendar-event-periods&quot; id=&quot;gachaDiscountStart&quot;&gt;&lt;/p&gt;
+        &lt;/article&gt;
+      &lt;/div&gt;
     &lt;/section&gt;
   &lt;/main&gt;
   &lt;script src=&quot;../catalog.js&quot;&gt;&lt;/script&gt;
@@ -250,12 +256,12 @@
   &lt;script src=&quot;../unit/catalog.js&quot;&gt;&lt;/script&gt;
   &lt;script src=&quot;../unit/unit-encyclopedia.js&quot;&gt;&lt;/script&gt;
   &lt;script src=&quot;../unit-guide.js&quot;&gt;&lt;/script&gt;
-  &lt;script src=&quot;stage-test.js&quot; defer&gt;&lt;/script&gt;
+  &lt;script src=&quot;gacha.js&quot; defer&gt;&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 " title="뽑기 일정"></iframe>
     </section>
-    <section class="event-view-panel" id="stageViewPanel" role="tabpanel" aria-labelledby="stageViewTab">
+    <section class="event-view-panel" id="stageViewPanel" role="tabpanel" aria-labelledby="stageViewTab" hidden>
       <iframe class="event-view-frame" data-view="stage" src="stage.html?embedded=1" title="스테이지 일정"></iframe>
     </section>
   </main>

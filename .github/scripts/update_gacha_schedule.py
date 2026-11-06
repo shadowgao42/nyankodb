@@ -13,6 +13,7 @@ import sys
 
 from update_stage_schedule import (FRESHNESS_SECONDS, KST, REGIONS, ScheduleError,
                                    _request, fetch_sale, iso, stamp)
+from gacha_discounts import make_discounts
 
 CATALOG = Path(__file__).resolve().parents[1] / "gacha-catalog.json"
 KINDS = {0: "N", 1: "R", 4: "E"}
@@ -199,18 +200,24 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--auth-file", type=Path)
     parser.add_argument("--source-file", type=Path)
+    parser.add_argument("--discount-source-file", type=Path)
     args = parser.parse_args()
     try:
         if args.auth_file and args.auth_file.resolve().is_relative_to(Path(__file__).resolve().parents[2]):
             raise ScheduleError("Private authentication must stay outside the published site")
         if args.source_file:
             content = args.source_file.read_bytes()
+            item_content = args.discount_source_file.read_bytes() if args.discount_source_file else None
         else:
             auth_text = args.auth_file.read_text("utf-8") if args.auth_file else os.environ.get("PONOS_EVENT_AUTH", "")
             if not auth_text:
                 raise ScheduleError("PONOS_EVENT_AUTH or a private --auth-file is required")
             content, _ = fetch_sale(json.loads(auth_text), region=args.region, resource="gatya.tsv")
-        feed = make_feed(content, args.region, datetime.now(KST), json.loads(CATALOG.read_text("utf-8")))
+            item_content, _ = fetch_sale(json.loads(auth_text), region=args.region, resource="item.tsv")
+        fetched_at = datetime.now(KST)
+        feed = make_feed(content, args.region, fetched_at, json.loads(CATALOG.read_text("utf-8")))
+        if item_content is not None:
+            feed["discounts"] = make_discounts(item_content, args.region, fetched_at)
         args.output.parent.mkdir(parents=True, exist_ok=True)
         pending = args.output.with_suffix(".pending.json")
         pending.write_text(json.dumps(feed, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")

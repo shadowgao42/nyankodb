@@ -18,6 +18,7 @@ on:
       - '.github/scripts/update_stage_schedule.py'
       - '.github/scripts/publish_stage_schedule.py'
       - '.github/scripts/update_gacha_schedule.py'
+      - '.github/scripts/gacha_discounts.py'
       - '.github/gacha-catalog.json'
       - '.github/stage-schedule-maps.json'
 

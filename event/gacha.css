@@ -1,4 +1,4 @@
-/* Test page only. Existing event typography, controls and palette are reused. */
+/* Gacha schedules use the shared event typography, controls and palette. */
 .gacha-test .gacha-count { margin-left: auto; color: var(--muted); font-size: 13px; font-weight: 800; }
 .gacha-test .gacha-legend { display: flex; flex-wrap: wrap; gap: 8px; }
 .gacha-test #gachaFilterTitle { margin-bottom: 8px; }
@@ -60,9 +60,8 @@
 .gacha-test .gacha-characters-heading::-webkit-details-marker { display: none; }
 .gacha-test .gacha-probabilities { display: flex; flex: 1; flex-wrap: wrap; gap: 10px 0; min-width: 0; }
 .gacha-test .gacha-characters[open] > summary .gacha-probabilities { display: none; }
-.gacha-test .gacha-fold-toggle { display: inline-flex; align-items: center; gap: 7px; margin-left: auto; color: var(--muted); font-size: 12px; font-weight: 800; white-space: nowrap; }
-.gacha-test .gacha-fold-arrow { display: inline-block; color: var(--accent-text); transition: transform .16s ease; }
-.gacha-test details[open] > summary .gacha-fold-arrow { transform: rotate(180deg); }
+.gacha-test .gacha-fold-toggle { margin-left: auto; }
+.gacha-test details[open] > summary .event-settings-arrow { transform: rotate(180deg); }
 .gacha-test .gacha-characters-heading:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
 .gacha-test .gacha-rarity-heading { flex-wrap: wrap; }
 .gacha-test .gacha-guarantee-toggle[aria-pressed="true"] .calendar-filter-check { border-color: #ff5b2d; color: #fff; background: #ff5b2d; box-shadow: 0 0 0 2px rgba(255,91,45,.18); }
@@ -277,3 +276,16 @@
   --event-bg: hsl(274 38% 25%);
   --event-border: hsl(274 42% 44%);
 }
+
+/* Initial-discount bars sit beside the reset date, never in a gacha lane. */
+.gacha-test .gacha-discount-bar { --event-color: hsl(30 55% 80%); --event-bg: hsl(30 32% 32%); --event-border: hsl(30 36% 54%); position: absolute; top: 12px; left: 43px; width: max-content; max-width: calc(100% - 45px); }
+@media (max-width: 760px) {
+  .gacha-test .calendar-day.has-discount .calendar-day-number { position: absolute; top: 7px; left: 0; }
+  .gacha-test .gacha-discount-bar { top: 9px; left: 31px; max-width: calc(100% - 31px); padding-inline: 1px; }
+}
+@media (max-width: 400px) {
+  .gacha-test .calendar-day.has-discount .calendar-day-number { top: 5px; left: 0; }
+  .gacha-test .gacha-discount-bar { top: 7px; left: 30px; max-width: calc(100% - 29px); padding-inline: 0; font-size: 10px; }
+}
+.gacha-test .gacha-discount-notice .calendar-stage-name { font-size: 16px; }
+.gacha-test .gacha-discount-notice[hidden] { display: none !important; }

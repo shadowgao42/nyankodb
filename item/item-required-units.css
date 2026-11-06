@@ -1,0 +1,54 @@
+/* Reuse the unit index's checkbox component, scoped to material requirements. */
+#requiredUnitsPanel .talent-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 30px;
+  padding: 4px 8px;
+  border: 1px solid #526071;
+  border-radius: 6px;
+  color: #dce3ed;
+  background: #202a36;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+#requiredUnitsPanel .talent-toggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+}
+#requiredUnitsPanel .talent-check {
+  display: grid;
+  place-items: center;
+  order: 2;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #697789;
+  border-radius: 4px;
+  color: transparent;
+  background: #101721;
+  line-height: 1;
+  transition: .15s ease;
+}
+#requiredUnitsPanel .talent-toggle input:checked + .talent-check {
+  border-color: var(--accent);
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255,91,45,.18);
+}
+#requiredUnitsPanel .talent-toggle:has(input:focus-visible) {
+  outline: 2px solid rgba(255,173,61,.72);
+  outline-offset: 2px;
+}
+
+/* Keep filtered entries hidden even when page-local grid rules follow [hidden]. */
+#requiredUnitsPanel [hidden] { display: none !important; }
