@@ -8,3 +8,9 @@
 .event-updated-line #eventUpdatedAt { margin-left: 0; }
 
 .event-view-nav .gnb-menu-link:disabled { cursor: default; opacity: .62; }
+
+html.event-views-loading .event-view-panel { display: none; }
+html.event-frame-normalized .event-view-panel { position: relative; }
+html.event-frame-normalized .event-view-frame {
+  position: absolute; top: 0; left: 0; transform-origin: 0 0;
+}
