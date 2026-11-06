@@ -1,105 +1,56 @@
-name: Update official stage schedules
-
+name: Diagnose Japanese pack inputs
 on:
   workflow_dispatch:
-  workflow_call:
-    inputs:
-      delay_refresh:
-        type: boolean
-        default: false
-    secrets:
-      PONOS_EVENT_AUTH:
-        required: true
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/update-stage-schedule.yml'
-      - '.github/workflows/stage-schedule-timer.yml'
-      - '.github/scripts/update_stage_schedule.py'
-      - '.github/scripts/publish_stage_schedule.py'
-      - '.github/scripts/update_gacha_schedule.py'
-      - '.github/scripts/gacha_discounts.py'
-      - '.github/scripts/update_sale_schedule.py'
-      - '.github/sale-catalog.json'
-      - '.github/gacha-catalog.json'
-      - '.github/stage-schedule-maps.json'
-
 permissions:
-  contents: write
-
+  contents: read
 concurrency:
   group: official-kr-stage-schedule
   cancel-in-progress: false
-
 jobs:
-  refresh:
+  inspect:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    environment:
-      name: ${{ inputs.delay_refresh && 'official-kr-stage-schedule-5min' || 'official-kr-stage-schedule-direct' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Fetch directly from PONOS
-        id: collect
+      - name: Inspect public schedule input
         env:
           PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}
         run: |
-          # Each command authenticates the shared reader. Avoid overlapping token renewals.
-          if python .github/scripts/update_stage_schedule.py --region kr --output "$RUNNER_TEMP/stage-schedule-kr.json"; then
-            echo "kr_ok=true" >> "$GITHUB_OUTPUT"
-          fi
-          if python .github/scripts/update_stage_schedule.py --region jp --output "$RUNNER_TEMP/stage-schedule-jp.json"; then
-            echo "jp_ok=true" >> "$GITHUB_OUTPUT"
-          fi
-          if python .github/scripts/update_gacha_schedule.py --region kr --output "$RUNNER_TEMP/gacha-schedule-kr.json" --item-source-output "$RUNNER_TEMP/item-kr.tsv"; then
-            echo "gacha_kr_ok=true" >> "$GITHUB_OUTPUT"
-          fi
-          if python .github/scripts/update_gacha_schedule.py --region jp --output "$RUNNER_TEMP/gacha-schedule-jp.json" --item-source-output "$RUNNER_TEMP/item-jp.tsv"; then
-            echo "gacha_jp_ok=true" >> "$GITHUB_OUTPUT"
-          fi
-          if [ -s "$RUNNER_TEMP/item-kr.tsv" ] && python .github/scripts/update_sale_schedule.py --region kr --source-file "$RUNNER_TEMP/item-kr.tsv" --output "$RUNNER_TEMP/sale-schedule-kr.json"; then
-            echo "sale_kr_ok=true" >> "$GITHUB_OUTPUT"
-          fi
-          if [ -s "$RUNNER_TEMP/item-jp.tsv" ]; then
-            kr_source=()
-            if [ -s "$RUNNER_TEMP/item-kr.tsv" ]; then kr_source=(--korean-source-file "$RUNNER_TEMP/item-kr.tsv"); fi
-            if python .github/scripts/update_sale_schedule.py --region jp --source-file "$RUNNER_TEMP/item-jp.tsv" "${kr_source[@]}" --output "$RUNNER_TEMP/sale-schedule-jp.json"; then
-              echo "sale_jp_ok=true" >> "$GITHUB_OUTPUT"
-            fi
-          fi
-      - name: Publish Korean calendar JSON on the data branch
-        if: ${{ steps.collect.outputs.kr_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/stage-schedule-kr.json"
-      - name: Publish Japanese calendar JSON on the data branch
-        if: ${{ always() && steps.collect.outputs.jp_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/stage-schedule-jp.json"
-      - name: Publish Korean gacha JSON on the data branch
-        if: ${{ always() && steps.collect.outputs.gacha_kr_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/gacha-schedule-kr.json"
-      - name: Publish Japanese gacha JSON on the data branch
-        if: ${{ always() && steps.collect.outputs.gacha_jp_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/gacha-schedule-jp.json"
-      - name: Publish Korean sale JSON on the data branch
-        if: ${{ always() && steps.collect.outputs.sale_kr_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/sale-schedule-kr.json"
-      - name: Publish Japanese sale JSON on the data branch
-        if: ${{ always() && steps.collect.outputs.sale_jp_ok == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/sale-schedule-jp.json"
-      - name: Check all six collections
-        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true' || steps.collect.outputs.gacha_kr_ok != 'true' || steps.collect.outputs.gacha_jp_ok != 'true' || steps.collect.outputs.sale_kr_ok != 'true' || steps.collect.outputs.sale_jp_ok != 'true') }}
-        run: exit 1
+          python - <<'PY'
+          from pathlib import Path
+          from datetime import datetime
+          import hashlib,json,os,sys,time
+          sys.path.insert(0,'.github/scripts')
+          import update_stage_schedule as stage
+          import update_sale_schedule as sale
+          auth=json.loads(os.environ['PONOS_EVENT_AUTH'])
+          for resource in ['item.tsv','sale.tsv']:
+              for attempt in range(3):
+                  try:
+                      content,headers=stage.fetch_sale(auth,region='jp',resource=resource)
+                      break
+                  except stage.ScheduleError:
+                      if attempt==2: raise
+                      time.sleep(2)
+              assert content.startswith(b'[start]') and b'?jwt=' not in content
+              Path(os.environ['RUNNER_TEMP'], 'diagnostic-'+resource).write_bytes(content)
+              print('SOURCE',resource,'version',stage.REGIONS['jp']['gameVersion'],'sha256',hashlib.sha256(content).hexdigest(),'lastModified',headers.get('Last-Modified'))
+              records=sale.parse_items(content) if resource=='item.tsv' else stage.parse_sale(content)
+              print('RECORDS',resource,len(records))
+              for r in records:
+                  matched=(800<=r['itemId']<900 or r['itemId'] in (50000,50001) or r['categoryId'] in (50000,50001)) if resource=='item.tsv' else any(i>=50000 for i in r['mapIds'])
+                  if matched:
+                      print('ROW',json.dumps({k:stage.iso(v) if k in ('start','end') else v for k,v in r.items()},ensure_ascii=False))
+              if resource=='item.tsv':
+                  feed=sale.make_feed(content,'jp',datetime.now(stage.KST),json.loads(sale.CATALOG.read_text('utf-8')),json.loads(sale.GACHA_CATALOG.read_text('utf-8')))
+                  print('PACK_FEED',json.dumps([{k:e.get(k) for k in ('itemId','categoryId','start','end','permanent')} for e in feed['events'] if e['kind']=='pack'],ensure_ascii=False))
+          
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: event-public-inputs
+          path: ${{ runner.temp }}/diagnostic-*.tsv
+          retention-days: 1
