@@ -327,13 +327,18 @@
   function eventTheme(event) {
     if (event.type && event.type !== 'rare') return '';
     const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
-    const imageId = assets?.regions[region]?.banners[event.id]?.imageId;
-    return bannerThemes[imageId] || '';
+    const imageId = assets?.regions[region]?.banners[event.id]?.imageId ?? event.id;
+    if (bannerThemes[imageId]) return bannerThemes[imageId];
+    const name = eventName(event);
+    return Object.entries(bannerThemes).find(([id]) => assets?.bannerNames?.[id] === name)?.[1] || '';
   }
   function eventName(event) {
-    if (event.type && event.type !== 'rare') return event.name;
     const region = regionSelect.value === 'jp' ? 'jp' : 'kr';
-    return assets?.regions[region]?.displayNames?.[event.id] || event.name;
+    const kind = ({normal:'N', event:'E'})[event.type] || 'R';
+    const key = `${kind}:${event.id}`;
+    return assets?.localizedNames?.[region]?.[key]
+      || assets?.regions[region]?.names?.[key]
+      || (kind === 'R' && assets?.regions[region]?.displayNames?.[event.id]) || event.name;
   }
   function renderEvent(event, labels, metadata) {
     const row = element('article', 'calendar-event-detail gacha-event');

@@ -67,15 +67,38 @@ def official_url(kind: str, gid: int, region: str) -> str:
     return f"https://ponosgames.com/information/appli/battlecats/gacha/{folder}/{locale}{kind}{gid:03}.html"
 
 
+def catalog_name(kind: str, gid: int, region: str, catalog: dict) -> str | None:
+    """Use NyankoDB's Korean family name before regional source labels."""
+    key = f"{kind}:{gid}"
+    local = catalog["regions"][region]
+    korean = catalog["regions"]["kr"]
+    if kind == "R":
+        option = local["tables"][kind]["options"].get(str(gid), {})
+        image_id = int(option.get("imgID", -1))
+        image_id = gid if image_id < 0 else image_id
+        canonical = catalog["bannerNames"].get(str(image_id))
+        if canonical:
+            return canonical
+    return (korean["displayNames"].get(key) or korean["names"].get(key)
+            or local["displayNames"].get(key))
+
+
+def unit_name(cid: int, region: str, catalog: dict) -> str:
+    korean = catalog["regions"]["kr"]["units"].get(str(cid), {})
+    local = catalog["regions"][region]["units"][str(cid)]
+    return (korean.get("displayName") or korean.get("name")
+            or local.get("displayName") or local["name"])
+
+
 def resolve_name(kind: str, gid: int, region: str, catalog: dict, cache: dict) -> tuple[str, str]:
     key = f"{kind}:{gid}"
     local = catalog["regions"][region]
+    preferred = catalog_name(kind, gid, region, catalog)
     known = local["names"].get(key)
-    display = local["displayNames"].get(key)
-    if known:
-        return known, display or known
+    if preferred:
+        return known or preferred, preferred
     if key not in cache:
-        for locale in ("kr", "jp"):
+        for locale in (("kr",) if known else ("kr", "jp")):
             try:
                 content, _ = _request(official_url(kind, gid, locale))
                 match = re.search(r"<h2[^>]*>(.*?)</h2>", content.decode("utf-8-sig"), re.S)
@@ -85,14 +108,16 @@ def resolve_name(kind: str, gid: int, region: str, catalog: dict, cache: dict) -
                     break
             except (ScheduleError, UnicodeError):
                 continue
+        if key not in cache and known:
+            cache[key] = known
         if key not in cache:
             raise ScheduleError("Official gacha name unavailable; previous feed preserved")
-    return cache[key], cache[key]
+    return known or cache[key], cache[key]
 
 
 def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) -> dict:
     local = catalog["regions"][region]
-    events, banners, display_names, names = [], {}, {}, {}
+    events, banners, display_names, names, resolved_names = [], {}, {}, {}, {}
     for rec in parse_gatya(content):
         kind = KINDS.get(rec["type"])
         if not kind:
@@ -108,6 +133,7 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                 if sum(entry["weights"]) != 10000 or min(entry["weights"]) < 0:
                     raise ValueError
                 raw_name, display_name = resolve_name(kind, gid, region, catalog, names)
+                resolved_names[f"{kind}:{gid}"] = display_name
                 event = dict(key=f'{rec["line"]}:{entry["slot"]}:{gid}' if kind == "R"
                     else f'{kind}:{rec["line"]}:{entry["slot"]}:{gid}', id=gid,
                     sourceRow=rec["line"], slot=entry["slot"], name=raw_name,
@@ -126,7 +152,7 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                         rarity = unit["rarity"]
                         if rarity not in (2, 3, 4, 5):
                             raise ValueError
-                        event["characters"].append(dict(id=cid, name=unit["name"], rarity=rarity,
+                        event["characters"].append(dict(id=cid, name=unit_name(cid, region, catalog), rarity=rarity,
                             copies=copies, percent=entry["weights"][rarity - 1] / 100 * copies / rarities[rarity]))
                     if abs(sum(c["percent"] for c in event["characters"]) - 100) > 1e-8:
                         raise ValueError
@@ -140,7 +166,7 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                     if bonus >= 0:
                         if bonus in ids:
                             raise ValueError
-                        event["bonus"] = dict(id=bonus, name=local["units"][str(bonus)]["name"])
+                        event["bonus"] = dict(id=bonus, name=unit_name(bonus, region, catalog))
                     raw_image = int(option.get("imgID", -1))
                     image_id = gid if raw_image < 0 else raw_image
                     banner = catalog["banners"].get(f"gatya_bnr{image_id}.png")
@@ -161,7 +187,9 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                         weight = entry["weights"][rarity]
                         if not weight:
                             continue
-                        reward = dict(kind="unit", id=reward_id, name=local["units"][str(reward_id)]["displayName"]) if reward_kind == "unit" else dict(local["items"][str(reward_id)])
+                        reward = dict(kind="unit", id=reward_id, name=unit_name(reward_id, region, catalog)) if reward_kind == "unit" else dict(local["items"][str(reward_id)])
+                        if reward_kind == "item":
+                            reward["name"] = catalog["regions"]["kr"]["items"].get(str(reward_id), {}).get("name") or reward["name"]
                         reward.update(rarity=rarity, copies=copies, percent=weight / 100 * copies / rarities[rarity])
                         rewards.append(reward)
                     unassigned = sum(weight for rarity, weight in enumerate(entry["weights"]) if not rarities[rarity]) / 100
@@ -173,6 +201,7 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                         if special["type"] != 2:
                             raise ValueError
                         reward = dict(local["items"][str(special["id"])])
+                        reward["name"] = catalog["regions"]["kr"]["items"].get(str(special["id"]), {}).get("name") or reward["name"]
                         reward.pop("rarity", None)
                         reward.update(quantity=special["value"], maxCount=special["weight"], special=True)
                         specials.append(reward)
@@ -191,7 +220,7 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
         validUntil=iso(fetched_at + timedelta(seconds=FRESHNESS_SECONDS)),
         source=REGIONS[region]["source"].replace("sale.tsv", "gatya.tsv"),
         gameVersion=REGIONS[region]["gameVersion"], badges=catalog["badges"], events=events,
-        assets=dict(banners=banners, displayNames=display_names))
+        assets=dict(banners=banners, displayNames=display_names, names=resolved_names))
 
 
 def main() -> int:
