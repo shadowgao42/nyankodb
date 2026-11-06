@@ -230,6 +230,7 @@ def main() -> int:
     parser.add_argument("--auth-file", type=Path)
     parser.add_argument("--source-file", type=Path)
     parser.add_argument("--discount-source-file", type=Path)
+    parser.add_argument("--item-source-output", type=Path)
     args = parser.parse_args()
     try:
         if args.auth_file and args.auth_file.resolve().is_relative_to(Path(__file__).resolve().parents[2]):
@@ -244,6 +245,11 @@ def main() -> int:
             content, _ = fetch_sale(json.loads(auth_text), region=args.region, resource="gatya.tsv")
             item_content, _ = fetch_sale(json.loads(auth_text), region=args.region, resource="item.tsv")
         fetched_at = datetime.now(KST)
+        if args.item_source_output and item_content is not None:
+            args.item_source_output.parent.mkdir(parents=True, exist_ok=True)
+            pending_item = args.item_source_output.with_suffix(".pending.tsv")
+            pending_item.write_bytes(item_content)
+            os.replace(pending_item, args.item_source_output)
         feed = make_feed(content, args.region, fetched_at, json.loads(CATALOG.read_text("utf-8")))
         if item_content is not None:
             feed["discounts"] = make_discounts(item_content, args.region, fetched_at)

@@ -22,7 +22,7 @@
     showUpdated(view);
     frames.find(frame => frame.dataset.view === view)?.contentWindow?.postMessage({type:'nyanko-event-visible'}, location.origin);
   }
-  function viewFromHash() { return location.hash === '#stage' ? 'stage' : 'gacha'; }
+  function viewFromHash() { return location.hash === '#stage' ? 'stage' : location.hash === '#sale' ? 'sale' : 'gacha'; }
   for (const tab of tabs) {
     tab.addEventListener('click', () => {
       if (location.hash === `#${tab.dataset.eventView}`) selectView(tab.dataset.eventView);

@@ -1,0 +1,41 @@
+/* Sale views reuse the calendar and compact reward components. */
+.sale-schedule { --accent: #ff5b2d; --accent-2: #ffad3d; }
+.sale-schedule [hidden] { display: none !important; }
+.sale-type-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sale-schedule .sale-count { margin-left: auto; color: var(--muted); font-size: 13px; font-weight: 800; }
+.sale-schedule .sale-events { max-height: none; overflow: visible; }
+.sale-schedule [data-sale-kind="pack"] { --event-color: hsl(30 55% 80%); --event-bg: hsl(30 32% 32%); --event-border: hsl(30 36% 54%); }
+.sale-schedule [data-sale-kind="stamp"] { --event-color: hsl(205 80% 85%); --event-bg: hsl(205 38% 31%); --event-border: hsl(205 50% 55%); }
+.sale-schedule [data-sale-kind="reward"] { --event-color: hsl(148 75% 85%); --event-bg: hsl(148 50% 20%); --event-border: hsl(148 45% 43%); }
+.sale-schedule .calendar-event-bar { font-family: inherit; text-align: left; cursor: pointer; }
+.sale-event { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.sale-event-heading { display: flex; align-items: center; gap: 16px; }
+.sale-event-heading:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.sale-banner { display: block; flex: 0 0 auto; width: min(36%, 263px); max-width: 100%; height: auto; }
+.sale-stamp-icon { display: block; flex: 0 0 auto; width: 48px; height: 48px; object-fit: contain; }
+.sale-event-info { flex: 1; min-width: 0; }
+.sale-event .calendar-stage-name { color: var(--text); font-size: 16px; font-weight: 900; overflow-wrap: anywhere; }
+.sale-contents { margin-top: 12px; }
+.sale-contents > summary { display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding-right: 15px; color: var(--muted); font-size: 13px; font-weight: 800; list-style: none; cursor: pointer; }
+.sale-contents > summary::-webkit-details-marker { display: none; }
+.sale-contents[open] > summary .event-settings-arrow { transform: rotate(180deg); }
+.sale-contents > summary:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+.sale-description { margin: 12px 15px 0; white-space: pre-line; }
+.sale-variant + .sale-variant { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.sale-variant h3 { margin: 12px 15px 0; color: var(--text); font-size: 14px; font-weight: 900; }
+.sale-schedule .sale-rewards { display: flex; align-items: flex-start; flex-wrap: wrap; }
+.sale-schedule .sale-rewards .owned-entry { flex: 0 0 clamp(56px, calc(7vw + 29px), 96px); width: clamp(56px, calc(7vw + 29px), 96px); }
+.sale-schedule .sale-rewards .nyancombo-member { width: 100%; min-width: 56px; }
+.sale-quantity, .sale-day-label { display: block; margin-top: 5px; color: var(--muted); font-size: 12px; font-weight: 700; text-align: center; font-variant-numeric: tabular-nums; }
+.sale-item-image { position: relative; }
+.sale-item-image > img { position: absolute; top: 50%; left: 50%; width: 100%; height: auto; transform: translate(-50%, -50%); }
+.sale-text-reward { min-height: 42px; display: grid; place-items: center; padding: 4px; color: var(--text); font-size: 11px; font-weight: 800; overflow-wrap: anywhere; }
+.sale-login-days { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; padding: 13px 15px 15px; }
+.sale-login-day { min-width: 0; }
+.sale-login-day .sale-day-label { margin: 0 0 5px; }
+.sale-login-day .sale-rewards { gap: 8px; padding: 0; }
+.sale-reward-empty { padding: 8px 15px; color: var(--muted); font-size: 12px; }
+.sale-schedule button, .sale-schedule summary, .sale-schedule a { -webkit-tap-highlight-color: transparent; }
+@media (max-width: 760px) {
+  .sale-event-heading { gap: 10px; }
+}

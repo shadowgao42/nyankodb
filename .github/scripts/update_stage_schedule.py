@@ -23,9 +23,9 @@ import urllib.request
 KST = timezone(timedelta(hours=9))
 SOURCE = "https://nyanko-events.ponosgames.com/battlecatskr_production/sale.tsv"
 REGIONS = {
-    "kr": {"source": SOURCE, "countryCode": "kr", "timezone": "Asia/Seoul", "gameVersion": 150700},
+    "kr": {"source": SOURCE, "countryCode": "kr", "timezone": "Asia/Seoul", "gameVersion": 160000},
     "jp": {"source": "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv",
-           "countryCode": "kr", "timezone": "Asia/Tokyo", "gameVersion": 150700},
+           "countryCode": "kr", "timezone": "Asia/Tokyo", "gameVersion": 160000},
 }
 # The existing dedicated reader authenticates as KR; its JWT also authorizes
 # the Japanese resource. Source URL and exported region select the schedule.

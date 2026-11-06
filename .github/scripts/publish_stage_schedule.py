@@ -16,8 +16,8 @@ def main():
     feed = json.loads(content)
     if feed.get("schemaVersion") != 1 or feed.get("region") not in ("kr", "jp"):
         raise RuntimeError("Invalid calendar export")
-    kind = "gacha" if feed.get("kind") == "gacha" else "stage"
-    if feed.get("kind") not in (None, "gacha"):
+    kind = feed.get("kind") or "stage"
+    if feed.get("kind") not in (None, "gacha", "sale"):
         raise RuntimeError("Invalid schedule kind")
     filename = f"{kind}-schedule-{feed['region']}.json"
     repo = os.environ["GITHUB_REPOSITORY"]
