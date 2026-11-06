@@ -3,13 +3,13 @@
   "region": "jp",
   "timezone": "Asia/Tokyo",
   "gameVersion": 150700,
-  "fetchedAt": "2026-11-06T14:24:34+09:00",
-  "validUntil": "2026-11-06T14:54:34+09:00",
+  "fetchedAt": "2026-11-06T14:30:42+09:00",
+  "validUntil": "2026-11-06T15:00:42+09:00",
   "source": {
     "url": "https://nyanko-events.ponosgames.com/battlecats_production/sale.tsv",
-    "sha256": "41af363dc906721b66ad04d031b0395ab16d17cbdecc44c80d3fa2aac1675d25",
-    "lastModified": "Fri, 30 Oct 2026 05:10:08 GMT",
-    "recordCount": 368
+    "sha256": "43763f6f88c357294314d05c31987fdeb1ac743fd3a2eb321c3938480d77fd7d",
+    "lastModified": "Fri, 06 Nov 2026 05:27:46 GMT",
+    "recordCount": 370
   },
   "maps": {
     "A015": {
@@ -63,7 +63,7 @@
     "A020": {
       "eventMapId": 24020,
       "sourceRows": [
-        369
+        367
       ],
       "windows": [
         [
@@ -463,7 +463,7 @@
     "A056": {
       "eventMapId": 24056,
       "sourceRows": [
-        365
+        363
       ],
       "windows": [
         [
@@ -475,7 +475,7 @@
     "A068": {
       "eventMapId": 24068,
       "sourceRows": [
-        362
+        360
       ],
       "windows": [
         [
@@ -10267,7 +10267,7 @@
       "eventMapId": 1130,
       "sourceRows": [
         61,
-        354
+        353
       ],
       "windows": [
         [
@@ -10332,7 +10332,7 @@
       "eventMapId": 1131,
       "sourceRows": [
         62,
-        354
+        353
       ],
       "windows": [
         [
@@ -10397,7 +10397,7 @@
       "eventMapId": 1132,
       "sourceRows": [
         63,
-        354
+        353
       ],
       "windows": [
         [
@@ -10462,7 +10462,7 @@
       "eventMapId": 1133,
       "sourceRows": [
         64,
-        354
+        353
       ],
       "windows": [
         [
@@ -10531,7 +10531,7 @@
       "eventMapId": 1134,
       "sourceRows": [
         65,
-        354
+        353
       ],
       "windows": [
         [
@@ -10596,7 +10596,7 @@
       "eventMapId": 1135,
       "sourceRows": [
         66,
-        354
+        353
       ],
       "windows": [
         [
@@ -10661,7 +10661,7 @@
       "eventMapId": 1136,
       "sourceRows": [
         67,
-        354
+        353
       ],
       "windows": [
         [
@@ -10726,7 +10726,7 @@
       "eventMapId": 1137,
       "sourceRows": [
         68,
-        354
+        353
       ],
       "windows": [
         [
@@ -10791,7 +10791,7 @@
       "eventMapId": 1138,
       "sourceRows": [
         69,
-        354
+        353
       ],
       "windows": [
         [
@@ -12329,7 +12329,7 @@
     "S174": {
       "eventMapId": 1174,
       "sourceRows": [
-        352
+        351
       ],
       "windows": [
         [
@@ -20043,7 +20043,7 @@
     "S320": {
       "eventMapId": 1320,
       "sourceRows": [
-        362
+        360
       ],
       "windows": [
         [
@@ -20055,7 +20055,7 @@
     "S321": {
       "eventMapId": 1321,
       "sourceRows": [
-        366
+        364
       ],
       "windows": [
         [
@@ -20749,7 +20749,7 @@
       "eventMapId": 1339,
       "sourceRows": [
         259,
-        364
+        362
       ],
       "windows": [
         [
@@ -22722,7 +22722,7 @@
     "S384": {
       "eventMapId": 1384,
       "sourceRows": [
-        352
+        351
       ],
       "windows": [
         [
@@ -23306,7 +23306,7 @@
     "S411": {
       "eventMapId": 1411,
       "sourceRows": [
-        361
+        359
       ],
       "windows": [
         [
@@ -23604,7 +23604,7 @@
     "SR028": {
       "eventMapId": 36028,
       "sourceRows": [
-        367
+        365
       ],
       "windows": [
         [
@@ -23975,13 +23975,16 @@
       344,
       345,
       346,
-      349
+      349,
+      368,
+      370,
+      371
     ],
     "maps": {
       "A020": {
         "eventMapId": 24020,
         "sourceRows": [
-          369
+          367
         ],
         "windows": [
           [
@@ -23993,7 +23996,7 @@
       "A056": {
         "eventMapId": 24056,
         "sourceRows": [
-          365
+          363
         ],
         "windows": [
           [
@@ -24005,7 +24008,7 @@
       "A068": {
         "eventMapId": 24068,
         "sourceRows": [
-          362
+          360
         ],
         "windows": [
           [
@@ -24017,7 +24020,7 @@
       "S130": {
         "eventMapId": 1130,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24029,7 +24032,7 @@
       "S131": {
         "eventMapId": 1131,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24041,7 +24044,7 @@
       "S132": {
         "eventMapId": 1132,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24053,7 +24056,7 @@
       "S133": {
         "eventMapId": 1133,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24065,7 +24068,7 @@
       "S134": {
         "eventMapId": 1134,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24077,7 +24080,7 @@
       "S135": {
         "eventMapId": 1135,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24089,7 +24092,7 @@
       "S136": {
         "eventMapId": 1136,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24101,7 +24104,7 @@
       "S137": {
         "eventMapId": 1137,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24113,7 +24116,7 @@
       "S138": {
         "eventMapId": 1138,
         "sourceRows": [
-          354
+          353
         ],
         "windows": [
           [
@@ -24125,7 +24128,7 @@
       "S174": {
         "eventMapId": 1174,
         "sourceRows": [
-          352
+          351
         ],
         "windows": [
           [
@@ -24137,7 +24140,7 @@
       "S320": {
         "eventMapId": 1320,
         "sourceRows": [
-          362
+          360
         ],
         "windows": [
           [
@@ -24149,7 +24152,7 @@
       "S321": {
         "eventMapId": 1321,
         "sourceRows": [
-          366
+          364
         ],
         "windows": [
           [
@@ -24161,7 +24164,7 @@
       "S339": {
         "eventMapId": 1339,
         "sourceRows": [
-          364
+          362
         ],
         "windows": [
           [
@@ -24173,7 +24176,7 @@
       "S384": {
         "eventMapId": 1384,
         "sourceRows": [
-          352
+          351
         ],
         "windows": [
           [
@@ -24185,7 +24188,7 @@
       "S411": {
         "eventMapId": 1411,
         "sourceRows": [
-          361
+          359
         ],
         "windows": [
           [
@@ -24197,7 +24200,7 @@
       "SR028": {
         "eventMapId": 36028,
         "sourceRows": [
-          367
+          365
         ],
         "windows": [
           [
@@ -24264,7 +24267,7 @@
       "A020": {
         "eventMapId": 24020,
         "sourceRows": [
-          369
+          367
         ],
         "windows": [
           [
@@ -26188,7 +26191,7 @@
       "A056": {
         "eventMapId": 24056,
         "sourceRows": [
-          365
+          363
         ],
         "windows": [
           [
@@ -26197,22 +26200,10 @@
           ]
         ]
       },
-      "A061": {
-        "eventMapId": 24061,
-        "sourceRows": [
-          355
-        ],
-        "windows": [
-          [
-            "2026-10-23T11:00:00+09:00",
-            "2026-10-30T11:00:00+09:00"
-          ]
-        ]
-      },
       "A068": {
         "eventMapId": 24068,
         "sourceRows": [
-          362
+          360
         ],
         "windows": [
           [
@@ -31915,7 +31906,7 @@
       "R035": {
         "eventMapId": 11035,
         "sourceRows": [
-          351
+          350
         ],
         "windows": [
           [
@@ -59076,7 +59067,7 @@
         "eventMapId": 1130,
         "sourceRows": [
           61,
-          354
+          353
         ],
         "windows": [
           [
@@ -59141,7 +59132,7 @@
         "eventMapId": 1131,
         "sourceRows": [
           62,
-          354
+          353
         ],
         "windows": [
           [
@@ -59206,7 +59197,7 @@
         "eventMapId": 1132,
         "sourceRows": [
           63,
-          354
+          353
         ],
         "windows": [
           [
@@ -59271,7 +59262,7 @@
         "eventMapId": 1133,
         "sourceRows": [
           64,
-          354
+          353
         ],
         "windows": [
           [
@@ -59336,7 +59327,7 @@
         "eventMapId": 1134,
         "sourceRows": [
           65,
-          354
+          353
         ],
         "windows": [
           [
@@ -59401,7 +59392,7 @@
         "eventMapId": 1135,
         "sourceRows": [
           66,
-          354
+          353
         ],
         "windows": [
           [
@@ -59466,7 +59457,7 @@
         "eventMapId": 1136,
         "sourceRows": [
           67,
-          354
+          353
         ],
         "windows": [
           [
@@ -59531,7 +59522,7 @@
         "eventMapId": 1137,
         "sourceRows": [
           68,
-          354
+          353
         ],
         "windows": [
           [
@@ -59596,7 +59587,7 @@
         "eventMapId": 1138,
         "sourceRows": [
           69,
-          354
+          353
         ],
         "windows": [
           [
@@ -70642,7 +70633,7 @@
       "S174": {
         "eventMapId": 1174,
         "sourceRows": [
-          352
+          351
         ],
         "windows": [
           [
@@ -116756,7 +116747,7 @@
       "S320": {
         "eventMapId": 1320,
         "sourceRows": [
-          362
+          360
         ],
         "windows": [
           [
@@ -116768,7 +116759,7 @@
       "S321": {
         "eventMapId": 1321,
         "sourceRows": [
-          366
+          364
         ],
         "windows": [
           [
@@ -123702,7 +123693,7 @@
         "eventMapId": 1339,
         "sourceRows": [
           259,
-          364
+          362
         ],
         "windows": [
           [
@@ -131467,7 +131458,7 @@
       "S384": {
         "eventMapId": 1384,
         "sourceRows": [
-          352
+          351
         ],
         "windows": [
           [
@@ -132671,7 +132662,7 @@
       "S411": {
         "eventMapId": 1411,
         "sourceRows": [
-          361
+          359
         ],
         "windows": [
           [
@@ -133281,7 +133272,7 @@
       "SR028": {
         "eventMapId": 36028,
         "sourceRows": [
-          367
+          365
         ],
         "windows": [
           [
@@ -133306,8 +133297,8 @@
   },
   "recurringCalendar": {
     "schemaVersion": 1,
-    "rangeStart": "2026-11-06T14:24:34+09:00",
-    "rangeEnd": "2026-11-07T14:24:34+09:00",
+    "rangeStart": "2026-11-06T14:30:42+09:00",
+    "rangeEnd": "2026-11-07T14:30:42+09:00",
     "maps": {
       "A028": {
         "eventMapId": 24028,
