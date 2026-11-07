@@ -51,6 +51,8 @@ def bundled_history(kind, region):
 def event_group(event, kind):
     if kind == "gacha":
         return (event.get("type", "rare"), event.get("name"), event.get("start"))
+    if kind == "mission":
+        return (event.get("kind"), tuple(event.get("missionIds", [])), event.get("start"))
     return (event.get("kind"), event.get("categoryId"), event.get("itemId"), event.get("start"))
 
 
@@ -188,7 +190,7 @@ def main():
     if feed.get("schemaVersion") != 1 or feed.get("region") not in ("kr", "jp"):
         raise RuntimeError("Invalid calendar export")
     kind = feed.get("kind") or "stage"
-    if feed.get("kind") not in (None, "gacha", "sale"):
+    if feed.get("kind") not in (None, "gacha", "sale", "mission"):
         raise RuntimeError("Invalid schedule kind")
     filename = f"{kind}-schedule-{feed['region']}.json"
     repo = os.environ["GITHUB_REPOSITORY"]

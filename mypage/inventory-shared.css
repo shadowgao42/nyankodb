@@ -1,0 +1,40 @@
+    .account-details .item-section + .item-section { border-top: 1px solid var(--line); }
+    #inventoryContent h3 { margin: 0; }
+    .account-details .item-section-heading {
+      display: flex; align-items: baseline; gap: 8px;
+      padding: 12px 17px; color: #fff;
+      background: rgba(28, 37, 49, .72);
+    }
+    .account-details .item-section-heading h3 { font-size: 15px; font-weight: 900; }
+    .account-details .item-section-heading small { color: var(--muted); font-size: 11px; font-weight: 800; }
+    .account-details .item-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .account-details .item-card {
+      display: grid; grid-template-columns: 78px minmax(0, 1fr);
+      align-items: center; gap: 11px; min-width: 0; min-height: 82px;
+      padding: 9px 12px; border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line); color: var(--text);
+      background: rgba(23,31,41,.64); text-decoration: none;
+    }
+    .account-details .item-card:nth-child(2n) { border-right: 0; }
+    .account-details .item-card:hover, .account-details .item-card:focus-visible {
+      background: #263240; outline: none; box-shadow: inset 3px 0 var(--accent-2);
+    }
+    .account-details .item-card img, .account-details .item-image-empty {
+      display: block; width: 78px; height: 60px;
+      object-fit: contain; object-position: center; image-rendering: pixelated;
+    }
+    .account-details .item-image-empty { border: 1px dashed #405066; border-radius: 7px; }
+    .account-details .item-copy { min-width: 0; }
+    .account-details .item-name {
+      display: block; overflow: hidden; color: #fff; font-size: 14px;
+      font-weight: 950; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .account-details .item-identity {
+      display: block; margin-top: 5px; color: var(--accent-2);
+      font-size: 12px; font-weight: 900; font-variant-numeric: tabular-nums;
+    }
+    @media (max-width: 500px) {
+      .account-details .item-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .account-details .item-card { grid-template-columns: 58px minmax(0, 1fr); gap: 7px; padding: 8px; }
+      .account-details .item-card img, .account-details .item-image-empty { width: 58px; height: 48px; }
+    }

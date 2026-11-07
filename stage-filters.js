@@ -1,7 +1,7 @@
 /* Stage-index selectors; matching and ranking come from the ordinary search. */
 (() => {
   "use strict";
-  function mount({ root, catalog, data, reset = null, nameInput = null }) {
+  function mount({ root, catalog, data, reset = null, nameInput = null, signal = undefined }) {
     const search = window.NyankoSearch;
     const categories = new Set(), difficulties = new Set(), enemies = new Map(), rewards = new Map();
     const selectedSpecials = new Set();
@@ -358,7 +358,8 @@
         });
       });
       field.addEventListener("focusout", event => { if (!field.contains(event.relatedTarget)) close(); });
-      document.addEventListener("pointerdown", event => { if (!field.contains(event.target)) close(); });
+      document.addEventListener("pointerdown", event => { if (!field.contains(event.target)) close(); }, { signal });
+      signal?.addEventListener("abort", close, { once: true });
       pickers.push(() => { input.value = ""; close(); visible = []; list.replaceChildren(); renderChips(); });
     }
     createPicker("stageEnemy", catalog.entries.filter(entry => entry.kind === "enemy").map(entry => ({ ...entry, key: String(entry.id) })), enemies);

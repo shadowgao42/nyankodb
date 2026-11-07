@@ -18,3 +18,11 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Account server credentials and local execution artifacts are never published.
+account_service/.private/
+account_service/.venv/
+**/__pycache__/
+*.pyc
+.env*
+.vercel/

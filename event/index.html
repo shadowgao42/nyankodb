@@ -81,7 +81,8 @@
           <nav class="gnb-menu" role="tablist" aria-label="일정 종류">
             <button class="gnb-menu-link" type="button" role="tab" id="gachaViewTab" data-event-view="gacha" aria-controls="gachaViewPanel" aria-selected="true"><img src="../img/ui/gnb/gacha.png" alt="" width="48" height="48"><span>뽑기</span></button>
             <button class="gnb-menu-link" type="button" role="tab" id="stageViewTab" data-event-view="stage" aria-controls="stageViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/stage.png" alt="" width="48" height="48"><span>스테이지</span></button>
-            <button class="gnb-menu-link" type="button" role="tab" id="saleViewTab" data-event-view="sale" aria-controls="saleViewPanel" aria-selected="false" tabindex="-1"><img src="../img/r/22.png" alt="" width="48" height="48"><span>세일</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="saleViewTab" data-event-view="sale" aria-controls="saleViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/sale.png" alt="" width="48" height="48"><span>세일</span></button>
+            <button class="gnb-menu-link" type="button" role="tab" id="missionViewTab" data-event-view="mission" aria-controls="missionViewPanel" aria-selected="false" tabindex="-1"><img src="../img/ui/gnb/mission.png" alt="" width="48" height="48"><span>미션</span></button>
           </nav>
         </div>
       </div>
@@ -94,6 +95,9 @@
     </section>
     <section class="event-view-panel" id="saleViewPanel" role="tabpanel" aria-labelledby="saleViewTab" hidden>
       <iframe class="event-view-frame" name="saleSchedule" data-view="sale" src="sale.html?embedded=1" title="세일 일정"></iframe>
+    </section>
+    <section class="event-view-panel" id="missionViewPanel" role="tabpanel" aria-labelledby="missionViewTab" hidden>
+      <iframe class="event-view-frame" name="missionSchedule" data-view="mission" src="mission.html?embedded=1" title="미션 일정"></iframe>
     </section>
   </main>
   <script src="../catalog.js"></script>

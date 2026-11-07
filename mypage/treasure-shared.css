@@ -1,0 +1,428 @@
+    .treasure-category-tabs {
+      display: flex;
+      gap: 6px;
+      padding: 12px 0 10px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+
+    .treasure-category-tab {
+      flex: 0 0 auto;
+      padding: 7px 12px;
+      border: 1px solid #364456;
+      border-radius: 9px;
+      color: var(--muted);
+      background: #0d1219;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .treasure-category-tab[aria-pressed="true"] {
+      color: #fff;
+      border-color: rgba(255, 173, 61, .5);
+      background: rgba(255, 173, 61, .14);
+    }
+
+    .treasure-note {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .treasure-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .treasure-card {
+      container-name: treasure-card;
+      container-type: inline-size;
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #2d3948;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+
+    .treasure-card-header {
+      display: grid;
+      grid-template-columns: 148px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .treasure-effect-image {
+      width: 148px;
+      height: 58px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .treasure-card-title {
+      min-width: 0;
+    }
+
+    .treasure-card-title h3 {
+      margin: 0;
+      overflow: hidden;
+      font-size: 15px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .treasure-card-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .treasure-total {
+      color: var(--accent-text);
+      font-size: 15px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .treasure-chapters {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .treasure-chapter {
+      min-width: 0;
+      padding: 7px;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      background: rgba(8, 12, 18, .5);
+    }
+
+    .treasure-chapter-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 5px;
+      margin-bottom: 6px;
+      color: #dce3ed;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .treasure-chapter-percent {
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .treasure-slots {
+      display: grid;
+      grid-template-columns: repeat(4, 40px);
+      gap: 5px;
+    }
+
+    .treasure-slot {
+      display: grid;
+      place-items: center;
+      position: relative;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 1px solid #3a4859;
+      border-radius: 8px;
+      color: #667487;
+      background: #0b1017;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .treasure-slot::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      z-index: 45;
+      width: max-content;
+      max-width: min(240px, calc(100vw - 44px));
+      padding: 8px 10px;
+      border: 1px solid #48586c;
+      border-radius: 9px;
+      color: #fff;
+      background: #080c12;
+      box-shadow: 0 8px 24px rgba(0,0,0,.38);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.5;
+      text-align: left;
+      white-space: pre-line;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 5px);
+      transition: opacity .14s ease, transform .14s ease;
+    }
+
+    .treasure-slot:nth-child(4n + 1)::after {
+      left: 0;
+      transform: translate(0, 5px);
+    }
+
+    .treasure-slot:nth-child(4n)::after {
+      right: 0;
+      left: auto;
+      transform: translate(0, 5px);
+    }
+
+    .treasure-slot:hover,
+    .treasure-slot:focus-visible {
+      border-color: #71839a;
+      box-shadow: 0 0 0 2px rgba(255, 173, 61, .18);
+    }
+
+    .treasure-slot:hover::after,
+    .treasure-slot:focus-visible::after {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .treasure-slot:nth-child(4n + 1):hover::after,
+    .treasure-slot:nth-child(4n + 1):focus-visible::after,
+    .treasure-slot:nth-child(4n):hover::after,
+    .treasure-slot:nth-child(4n):focus-visible::after {
+      transform: translate(0, 0);
+    }
+
+    .treasure-slot img {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+
+    .treasure-empty {
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .treasure-empty-category {
+      padding: 24px 14px;
+      border: 1px dashed #344254;
+      border-radius: 12px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    @container treasure-card (max-width: 570px) {
+      .treasure-chapters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @container treasure-card (max-width: 410px) {
+      .treasure-chapters {
+        grid-template-columns: 1fr;
+      }
+
+      .treasure-chapter {
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr);
+        align-items: center;
+        gap: 8px;
+      }
+
+      .treasure-chapter-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        margin-bottom: 0;
+      }
+    }
+
+
+
+@media(max-width:660px){.treasure-cards{grid-template-columns:1fr}.treasure-card-header{grid-template-columns:122px minmax(0,1fr) auto}.treasure-effect-image{width:122px;height:48px}.treasure-slots{grid-template-columns:repeat(4,38px);gap:4px}.treasure-slot{width:38px;height:38px}.treasure-slot img{width:34px;height:34px}}
+.treasure-slot{cursor:default}.treasure-slot:focus-visible{outline:none}body[data-editing="true"] .treasure-slot{cursor:pointer}
+    .treasure-settings,
+    .misc-settings {
+      margin-bottom: 10px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(14, 19, 26, .92);
+      box-shadow: var(--shadow);
+    }
+
+    .treasure-settings summary,
+    .misc-settings summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 52px;
+      padding: 9px 18px;
+      color: #dce3ed;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .treasure-settings summary::-webkit-details-marker,
+    .misc-settings summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .treasure-summary-actions,
+    .misc-summary-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .treasure-action-button {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 999px;
+      color: #dce3ed;
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .treasure-action-button {
+      cursor: pointer;
+    }
+
+    .treasure-action-button:hover:not(:disabled),
+    .treasure-action-button:focus-visible {
+      border-color: rgba(255,255,255,.42);
+      background: rgba(255,255,255,.12);
+      outline: none;
+    }
+
+    .treasure-action-button:disabled {
+      color: #707d8e;
+      cursor: default;
+      opacity: .62;
+    }
+
+
+    .settings-toggle-control {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #dce3ed;
+      font-size: 14px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .settings-toggle-arrow {
+      color: var(--accent-text);
+      font-size: 22px;
+      line-height: .8;
+      transition: transform .16s ease;
+    }
+
+    .treasure-settings[open] .settings-toggle-arrow,
+    .misc-settings[open] .settings-toggle-arrow,
+    .talent-settings[open] .settings-toggle-arrow {
+      transform: rotate(180deg);
+    }
+
+    .treasure-panel,
+    .misc-panel {
+      padding: 0 18px 16px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+
+
+    .passive-cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .passive-card {
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #2d3948;
+      border-radius: 14px;
+      background: var(--surface-2);
+    }
+
+    .passive-card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .passive-card-header h3 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .passive-current-level {
+      color: var(--accent-text);
+      font-size: 14px;
+      font-weight: 950;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .passive-effect {
+      margin: -4px 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+    }
+
+    .passive-level-controls {
+      display: grid;
+      gap: 8px;
+    }
+
+    .passive-level-row {
+      display: grid;
+      grid-template-columns: 78px minmax(80px, 1fr) 58px;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .passive-level-row label {
+      color: #dce3ed;
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .passive-level-row input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .passive-level-row input[type="number"] {
+      width: 100%;
+      min-width: 0;
+      padding: 6px 7px;
+      border: 1px solid #3a4859;
+      border-radius: 8px;
+      color: #fff;
+      background: #0b1017;
+      font-size: 12px;
+      font-weight: 850;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+
+@media(max-width:660px){.treasure-settings summary{flex-wrap:wrap;padding-inline:15px}.treasure-panel{padding-inline:15px}.passive-cards{grid-template-columns:1fr}}

@@ -1,6 +1,19 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "outputDirectory": ".",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 180,
+      "excludeFiles": "{img/**,stage/**,enemy/**,item/**,music/**,misc/**,update/**,event/**,.github/**,docs/**,unit/*.html,unit/*.css}"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/index.py" },
+    { "source": "/mypage/signup.html", "destination": "/mypage/working.html" }
+  ],
+  "redirects": [
+    { "source": "/:path*", "has": [{ "type": "host", "value": "www.nyanko.wiki" }], "destination": "https://nyanko.wiki/:path*", "permanent": true }
+  ],
   "git": {
     "deploymentEnabled": {
       "event-schedule-data": false

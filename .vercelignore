@@ -1,0 +1,7 @@
+**/__pycache__/**
+**/*.pyc
+account_service/.private/**
+account_service/.venv/**
+.env*
+outputs/**
+temp/**

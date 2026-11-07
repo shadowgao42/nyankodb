@@ -1,10 +1,14 @@
-/* Pack, login-stamp and reward calendar; source windows are month-independent. */
+/* Shared sale/mission calendar and reward UI; source windows are month-independent. */
 (() => {
   'use strict';
   const DAY = 86400000, KST = 9 * 3600000, POLL = 5 * 60 * 1000;
-  const SETTINGS = 'nyanko-db:sale-settings:v1';
-  const kinds = {pack:'팩', stamp:'로그인 스탬프', reward:'기타 보상'};
-  const priority = {pack:0, stamp:1, reward:2};
+  const missionView = document.body.dataset.scheduleKind === 'mission';
+  const scheduleKind = missionView ? 'mission' : 'sale';
+  const scheduleLabel = missionView ? '미션' : '세일';
+  const SETTINGS = `nyanko-db:${scheduleKind}-settings:v1`;
+  const kinds = missionView ? {limited:'기간 한정', weekly:'주간'}
+    : {pack:'팩', stamp:'로그인 스탬프', reward:'기타 보상'};
+  const priority = missionView ? {limited:0, weekly:1} : {pack:0, stamp:1, reward:2};
   const commonRewardPairs = {
     kr:[[2,202],[2382,203],[2383,220],[2502,220]],
     jp:[[5,202],[2433,203],[2434,220],[2479,220]]
@@ -15,6 +19,7 @@
   const status = document.getElementById('saleStatus');
   const settings = document.getElementById('eventSettings');
   const reset = document.getElementById('eventSettingsReset');
+  const missionProgress = document.getElementById('missionWorldChapter3');
   const formatDate = new Intl.DateTimeFormat('ko-KR', {timeZone:'UTC', year:'numeric', month:'long', day:'numeric', weekday:'long'});
   const formatInstant = new Intl.DateTimeFormat('ko-KR', {timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23'});
   const koreaDate = new Intl.DateTimeFormat('en-CA', {timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'});
@@ -23,11 +28,14 @@
   const stageNames = new Map((window.NYANKODB_SEARCH_CATALOG?.entries || []).filter(e => e.kind === 'stage').map(e => [String(e.id), e.name]));
   let data = null, failed = false, inFlight = false;
   let selectedKinds = new Set(Object.keys(kinds));
+  let worldChapter3Cleared = missionView;
+  const expandedMissionGroups = new Set();
   const intervalCache = new WeakMap();
   const tooltip = document.createElement('div');
   tooltip.className = 'unit-guide-tooltip'; tooltip.hidden = true;
-  tooltip.id = 'saleRewardTooltip'; tooltip.setAttribute('role', 'tooltip');
+  tooltip.id = `${scheduleKind}RewardTooltip`; tooltip.setAttribute('role', 'tooltip');
   document.body.append(tooltip);
+  let stageHelp = null, stageHelpOwner = null, stageHelpAnchor = null;
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -49,12 +57,66 @@
       const value = JSON.parse(localStorage.getItem(SETTINGS) || '{}');
       regionSelect.value = value.region === 'jp' ? 'jp' : 'kr';
       selectedKinds = new Set(Array.isArray(value.kinds) ? value.kinds.filter(k => Object.hasOwn(kinds, k)) : Object.keys(kinds));
-    } catch (_) { regionSelect.value = 'kr'; selectedKinds = new Set(Object.keys(kinds)); }
+      worldChapter3Cleared = missionView && value.worldChapter3Cleared !== false;
+    } catch (_) { regionSelect.value = 'kr'; selectedKinds = new Set(Object.keys(kinds)); worldChapter3Cleared = missionView; }
   }
   function save() {
-    try { localStorage.setItem(SETTINGS, JSON.stringify({region:regionSelect.value, kinds:[...selectedKinds]})); } catch (_) { /* Keep usable without storage. */ }
+    try { localStorage.setItem(SETTINGS, JSON.stringify({region:regionSelect.value, kinds:[...selectedKinds], ...(missionView ? {worldChapter3Cleared} : {})})); } catch (_) { /* Keep usable without storage. */ }
   }
   function hideTooltip() { tooltip.hidden = true; }
+  function hideMissionStageHelp(restoreFocus = false) {
+    const owner = stageHelpOwner;
+    if (stageHelp?.matches(':popover-open')) stageHelp.hidePopover();
+    owner?.setAttribute('aria-expanded','false'); stageHelpOwner = null; stageHelpAnchor = null;
+    if (restoreFocus && owner?.isConnected) owner.focus({preventScroll:true});
+  }
+  function missionHelpAnchor(button) {
+    const box = button.getBoundingClientRect();
+    return [box.top,box.left,window.frameElement?.getBoundingClientRect().top || 0];
+  }
+  function hideMovedMissionStageHelp() {
+    if (stageHelpOwner && stageHelpAnchor && missionHelpAnchor(stageHelpOwner).some((value,index) => Math.abs(value-stageHelpAnchor[index]) > .5)) hideMissionStageHelp();
+  }
+  function showMissionStageHelp(button, targets) {
+    if (stageHelpOwner === button && stageHelp?.matches(':popover-open')) { hideMissionStageHelp(true); return; }
+    hideMissionStageHelp(); hideTooltip();
+    if (!stageHelp) {
+      stageHelp = element('div','unit-guide-tooltip mission-stage-help');
+      stageHelp.id = 'missionStageHelp'; stageHelp.setAttribute('popover','auto');
+      stageHelp.setAttribute('role','dialog'); stageHelp.setAttribute('aria-labelledby','missionStageHelpTitle');
+      stageHelp.addEventListener('toggle', () => { if (!stageHelp.matches(':popover-open')) hideMissionStageHelp(); });
+      stageHelp.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); hideMissionStageHelp(true); } });
+      document.body.append(stageHelp);
+    }
+    const heading = element('div','mission-stage-help-heading');
+    const title = element('h3','', '대상 스테이지'); title.id = 'missionStageHelpTitle';
+    const close = element('button','calendar-filter-toggle','×'); close.type = 'button'; close.setAttribute('aria-label','닫기');
+    close.addEventListener('click', () => hideMissionStageHelp(true)); heading.append(title,close);
+    const links = element('div','mission-stage-help-links');
+    for (const target of targets) {
+      const link = element('a','map-name',target.name); link.href = '../' + target.href; link.target = '_top';
+      link.addEventListener('click', () => hideMissionStageHelp()); links.append(link);
+    }
+    stageHelp.replaceChildren(heading,links); stageHelpOwner = button;
+    button.setAttribute('aria-expanded','true'); stageHelp.style.left = '0px'; stageHelp.style.top = '0px';
+    stageHelp.showPopover();
+    // Match the existing native-popover positioning, including inherited page zoom.
+    const initial = stageHelp.getBoundingClientRect(), scale = initial.width / stageHelp.offsetWidth || 1;
+    let visibleTop = 8, visibleBottom = innerHeight-8;
+    if (window.frameElement) {
+      const frame = window.frameElement.getBoundingClientRect(), frameScale = frame.height/innerHeight || 1;
+      visibleTop = Math.max(visibleTop,-frame.top/frameScale+8);
+      visibleBottom = Math.min(visibleBottom,(window.parent.innerHeight-frame.top)/frameScale-8);
+    }
+    stageHelp.style.maxWidth = `${Math.min(360,(innerWidth-16)/scale)}px`;
+    stageHelp.style.maxHeight = `${Math.min(420,Math.max(40,visibleBottom-visibleTop)/scale)}px`;
+    const anchor = button.getBoundingClientRect(), box = stageHelp.getBoundingClientRect();
+    const left = Math.max(8,Math.min(innerWidth-box.width-8,anchor.right-box.width));
+    const top = anchor.top-box.height-8 >= visibleTop ? anchor.top-box.height-8 : Math.max(visibleTop,Math.min(anchor.bottom+8,visibleBottom-box.height));
+    stageHelp.style.left = `${left/scale}px`; stageHelp.style.top = `${top/scale}px`;
+    close.focus({preventScroll:true});
+    stageHelpAnchor = missionHelpAnchor(button);
+  }
   function showTooltip(node) {
     tooltip.textContent = node.dataset.tooltip;
     const zoom = parseFloat(getComputedStyle(document.body).zoom) || 1;
@@ -73,11 +135,17 @@
     return intervals(event).some(([a,b]) => a < start + DAY && b > start);
   }
   function commonRewardIndex(event) {
+    if (missionView) return -1;
     if (event.kind !== 'reward') return -1;
     return commonRewardPairs[regionSelect.value].findIndex(([category,item]) => event.categoryId === category && event.itemId === item);
   }
   function isDailyTicket(event) { return commonRewardIndex(event) === 0; }
   function eventName(event) {
+    if (missionView) {
+      if (event.members.length > 1 && event.groupTitle) return event.groupTitle;
+      const first = event.members[0];
+      return first?.metadataMissing ? String(first.id) : first?.name || event.name;
+    }
     const common = commonRewardIndex(event);
     if (common >= 0) {
       const [category,item] = commonRewardPairs.kr[common];
@@ -87,7 +155,62 @@
     if (event.kind === 'reward' && event.href) return stageNames.get(`R${String(event.itemId - 11000).padStart(3, '0')}`) || event.name;
     return event.name;
   }
-  function period(event) {
+  function missionGroups(events) {
+    // User-selected series, identified by native mission IDs rather than translated names.
+    const seriesTitles = new Map([
+      ['럭키 티켓 G', [
+        9157,9158,9159, 9170,9171,9172, 9174,9175,9176, 9179,9180,9181,
+        9184,9185,9186, 9089,9090,9091, 9098,9099,9100, 9111,9112,9113,
+        9115,9116,9117, 9134,9135,9136, 9138,9139,9140, 9151,9152,9153
+      ]],
+      ['냥코탑', [9000,9028,9222,9305,9379,9467]]
+    ].flatMap(([title,ids]) => ids.map(id => [id,title])));
+    const explicitTitle = member => seriesTitles.get(member.id) || member.name.match(/【([^】]+)】/)?.[1].trim() || '';
+    const groups = new Map();
+    for (const event of events) {
+      // These native unlock conditions switch at the world chapter 3 Moon clear.
+      const members = event.members.filter(member => event.kind !== 'weekly' || ![11,15].includes(member.unlockConditionId)
+        || member.unlockConditionId === (worldChapter3Cleared ? 11 : 15));
+      // Preserve the source week's variant even before chapter 3, when its objectives coincide.
+      const weeklyTitle = event.members.some(member => member.id === 8008) ? '주간 미션(개다래)'
+        : event.members.some(member => member.id === 8009) ? '주간 미션(레전드)' : '미션 묶음';
+      const unnamed = members.filter(member => !explicitTitle(member));
+      const quotedTitles = unnamed.map(member => member.name.match(/^「([^」]+)」/)?.[1]);
+      const sharedQuotedTitle = event.kind !== 'weekly' && unnamed.length > 1 && quotedTitles[0]
+        && quotedTitles.every(title => title === quotedTitles[0]) ? quotedTitles[0] : '';
+      for (const member of members) {
+        const title = explicitTitle(member) || sharedQuotedTitle;
+        const groupTitle = title || (event.kind === 'weekly' ? weeklyTitle : '미션 묶음');
+        // Named groups can span source records; each objective retains its own actual windows.
+        const groupKey = (title || event.kind === 'weekly') ? `mission:group:${event.kind}:${encodeURIComponent(groupTitle)}` : event.key;
+        if (!groups.has(groupKey)) groups.set(groupKey, {...event, key:groupKey, groupTitle, members:[], entries:[], windows:[]});
+        const group = groups.get(groupKey);
+        group.entries.push({member, event});
+        if (!group.members.some(existing => existing.id === member.id)) group.members.push(member);
+        group.sourceRow = Math.min(group.sourceRow,event.sourceRow);
+      }
+    }
+    for (const group of groups.values()) {
+      const windows = [...new Set(group.entries.map(entry => entry.event))].flatMap(event => intervals(event))
+        .sort((a,b) => a[0]-b[0] || a[1]-b[1]);
+      const merged = [];
+      for (const [start,end] of windows) {
+        const last = merged.at(-1);
+        if (last && start <= last[1]) last[1] = Math.max(last[1],end);
+        else merged.push([start,end]);
+      }
+      group.windows = merged.map(([start,end]) => [new Date(start).toISOString(),new Date(end).toISOString()]);
+      group.start = group.windows[0][0]; group.end = group.windows.at(-1)[1];
+    }
+    return [...groups.values()];
+  }
+  function period(event, occurrence = null) {
+    if (missionView) {
+      if (occurrence) return `${formatInstant.format(new Date(occurrence[0]))} ~ ${formatInstant.format(new Date(occurrence[1]))}`;
+      const day = selected.getTime() - KST;
+      const active = intervals(event).find(([start,end]) => start < day + DAY && end > day);
+      if (active) return `${formatInstant.format(new Date(active[0]))} ~ ${formatInstant.format(new Date(active[1]))}`;
+    }
     return `${formatInstant.format(new Date(event.start))} ~ ${formatInstant.format(new Date(event.end))}${event.everyday ? ' · 매일' : ''}`;
   }
   function rewardIcon(reward) {
@@ -120,6 +243,7 @@
     return grid;
   }
   function renderEvent(event, wasOpen) {
+    if (missionView) return renderMission(event);
     const row = element('article', 'calendar-event-detail sale-event');
     row.dataset.eventKey = event.key; row.dataset.saleKind = event.kind;
     const header = element('div', 'sale-event-heading');
@@ -172,6 +296,57 @@
     row.append(details);
     return row;
   }
+  function renderMission(event) {
+    const row = element('article', 'calendar-event-detail sale-event mission-event');
+    row.dataset.eventKey = event.key; row.dataset.saleKind = event.kind;
+    const grouped = event.members.length > 1;
+    const contents = element(grouped ? 'details' : 'div', 'unit-guide sale-contents');
+    if (grouped) {
+      const header = element('div', 'sale-event-heading');
+      const info = element('div', 'sale-event-info');
+      info.append(element('span','calendar-stage-name',eventName(event)),element('p','calendar-event-periods',period(event)));
+      header.append(info); row.append(header);
+      contents.open = expandedMissionGroups.has(event.key);
+      const summary = element('summary'), toggle = element('span','event-settings-toggle');
+      const label = element('span','',contents.open ? '접기' : '펼치기');
+      const arrow = element('span','event-settings-arrow','▾'); arrow.setAttribute('aria-hidden','true');
+      toggle.append(label,arrow); summary.append(toggle); contents.append(summary);
+      // Use the sale card's native details, summary, whole-card click and keyboard behavior.
+      header.tabIndex = 0; header.setAttribute('role','button');
+      header.setAttribute('aria-label',`${eventName(event)} 미션 목록`);
+      const sync = () => {
+        label.textContent = contents.open ? '접기' : '펼치기';
+        header.setAttribute('aria-expanded',String(contents.open));
+        if (contents.open) expandedMissionGroups.add(event.key); else expandedMissionGroups.delete(event.key);
+        hideTooltip();
+      };
+      contents.addEventListener('toggle',sync); sync();
+      row.addEventListener('click',e => { if (!e.target.closest('a,button,summary,input,select')) { contents.open = !contents.open; sync(); } });
+      header.addEventListener('keydown',e => { if (e.target === header && ['Enter',' '].includes(e.key)) { e.preventDefault(); contents.open = !contents.open; sync(); } });
+    }
+    const shown = new Set();
+    for (const {member,event:source} of event.entries) {
+      if (!activeOn(source,selected) || shown.has(member.id)) continue;
+      shown.add(member.id);
+      const section = element('section', 'sale-variant mission-objective-row'); section.dataset.missionId = String(member.id);
+      const info = element('div', 'mission-objective-info');
+      info.append(element('h3', 'calendar-stage-name mission-objective', member.name));
+      info.append(element('p', 'calendar-event-periods sale-description', period(source)));
+      section.append(info);
+      const targets = window.NYANKODB_MISSION_TARGETS?.regions?.[regionSelect.value]?.[member.id];
+      if (targets?.length) {
+        const help = element('button','calendar-filter-toggle mission-stage-help-button','[?]');
+        help.type = 'button'; help.setAttribute('aria-label',`${member.name.split(/\r?\n/,1)[0]} 대상 스테이지`);
+        help.setAttribute('aria-haspopup','dialog'); help.setAttribute('aria-controls','missionStageHelp'); help.setAttribute('aria-expanded','false');
+        help.addEventListener('click', () => showMissionStageHelp(help,targets)); section.append(help);
+      }
+      if (member.rewards.length) section.append(rewardGrid(member.rewards));
+      else section.append(element('p', 'calendar-event-periods sale-description', '보수 정보 확인 중'));
+      contents.append(section);
+    }
+    row.append(contents);
+    return row;
+  }
   function selectDate(date, focus = false) {
     selected = date; month = civil(date.getUTCFullYear(), date.getUTCMonth(), 1); render();
     if (focus) days.querySelector('[aria-pressed="true"]')?.focus({preventScroll:true});
@@ -185,7 +360,7 @@
     document.getElementById('calendarMonth').textContent = `${month.getUTCFullYear()}년 ${month.getUTCMonth() + 1}월`;
     const gridStart = month.getTime() / DAY - month.getUTCDay();
     const instances = events.flatMap(event => intervals(event).map(([start,end], index) => ({event,start,end,index})));
-    instances.sort((a,b) => Number(isDailyTicket(a.event)) - Number(isDailyTicket(b.event)) || a.start - b.start || b.end - a.end || a.event.sourceRow - b.event.sourceRow || a.index - b.index);
+    instances.sort((a,b) => (missionView ? priority[a.event.kind] - priority[b.event.kind] : Number(isDailyTicket(a.event)) - Number(isDailyTicket(b.event))) || a.start - b.start || b.end - a.end || a.event.sourceRow - b.event.sourceRow || a.index - b.index);
     let ends = [], laneOffset = 0, ticketGroup = false;
     for (const instance of instances) {
       // Keep the daily ticket below every other lane across the complete timeline.
@@ -228,14 +403,15 @@
         for (let d = first; d <= last; d++) (item.lane >= 5 ? hidden[d] : shown[d]).add(item.event.key);
         if (item.lane >= 5) continue;
         rows = Math.max(rows,item.lane + 1);
-        const bar = element('button', 'calendar-event-bar', eventName(item.event));
+        const name = eventName(item.event);
+        const bar = element('button', 'calendar-event-bar', missionView ? name.split(/\r?\n/,1)[0] : name);
         bar.type = 'button'; bar.dataset.saleKind = item.event.kind; bar.dataset.eventKey = item.event.key;
         bar.style.gridColumn = `${first + 1} / ${last + 2}`; bar.style.gridRow = String(item.lane + 1);
         const span = last - first + 1, firstEdge = (start + first) * DAY - KST, lastEdge = (start + last + 1) * DAY - KST;
         bar.style.marginInlineStart = `${100 * (Math.max(item.start,firstEdge)-firstEdge)/(span*DAY)}%`;
         bar.style.marginInlineEnd = `${100 * (lastEdge-Math.min(item.end,lastEdge))/(span*DAY)}%`;
         bar.classList.toggle('continues-before', a < start); bar.classList.toggle('continues-after', b > start + 6);
-        bar.setAttribute('aria-label', `${eventName(item.event)} · ${period(item.event)}`);
+        bar.setAttribute('aria-label', `${eventName(item.event)} · ${period(item.event, [item.start,item.end])}`);
         bar.addEventListener('click', () => {
           selectDate(new Date(Math.min(start+last,Math.max(start+first,selected.getTime()/DAY))*DAY));
           const row = [...list.children].find(n => n.dataset.eventKey === item.event.key);
@@ -267,20 +443,22 @@
     time.textContent = `(${parts.year}년 ${parts.month}월 ${parts.day}일 ${parts.hour}:${parts.minute}:${parts.second} 기준)`;
   }
   function render(preserveOpen = false) {
-    hideTooltip(); updateTime();
+    hideTooltip(); hideMissionStageHelp(); updateTime();
     const open = new Set(preserveOpen ? [...list.querySelectorAll('.sale-event')].filter(n => n.querySelector('details')?.open).map(n => n.dataset.eventKey) : []);
-    reset.disabled = regionSelect.value === 'kr' && selectedKinds.size === 3;
+    reset.disabled = regionSelect.value === 'kr' && selectedKinds.size === Object.keys(kinds).length && (!missionView || worldChapter3Cleared);
+    if (missionProgress) missionProgress.checked = worldChapter3Cleared;
     for (const input of document.querySelectorAll('input[data-sale-kind]')) input.checked = selectedKinds.has(input.dataset.saleKind);
     document.getElementById('saleSelectedDate').textContent = formatDate.format(selected);
-    const events = (data?.regions[regionSelect.value]?.events || []).filter(e => selectedKinds.has(e.kind) && (!e.permanent || commonRewardIndex(e) >= 0));
+    const filtered = (data?.regions[regionSelect.value]?.events || []).filter(e => selectedKinds.has(e.kind) && (missionView || !e.permanent || commonRewardIndex(e) >= 0));
+    const events = missionView ? missionGroups(filtered) : filtered;
     renderCalendar(events);
     const active = events.filter(e => activeOn(e,selected)).sort((a,b) => Number(isDailyTicket(a)) - Number(isDailyTicket(b)) || priority[a.kind]-priority[b.kind] || Date.parse(a.start)-Date.parse(b.start) || a.sourceRow-b.sourceRow);
     list.replaceChildren(...active.map(e => renderEvent(e,open.has(e.key))));
     document.getElementById('saleCount').textContent = data ? `${active.length}개 일정` : '';
     const loading = document.getElementById('calendarStatus');
-    loading.hidden = Boolean(data); loading.textContent = failed ? '세일 일정을 불러오지 못했습니다.' : '세일 일정을 불러오는 중입니다.';
+    loading.hidden = Boolean(data); loading.textContent = failed ? `${scheduleLabel} 일정을 불러오지 못했습니다.` : `${scheduleLabel} 일정을 불러오는 중입니다.`;
     status.hidden = Boolean(data && active.length);
-    status.textContent = !data ? loading.textContent : '선택한 날짜에 표시할 세일 일정이 없습니다.';
+    status.textContent = !data ? loading.textContent : `선택한 날짜에 표시할 ${scheduleLabel} 일정이 없습니다.`;
     const legend = document.getElementById('calendarLegend');
     legend.hidden = !data;
     if (!legend.childElementCount) for (const [kind,name] of Object.entries(kinds)) {
@@ -291,10 +469,11 @@
     if (root?.schemaVersion !== 1) return false;
     return ['kr','jp'].every(region => {
       const feed = root.regions?.[region];
-      return feed?.schemaVersion === 1 && feed.kind === 'sale' && feed.region === region && Number.isFinite(Date.parse(feed.fetchedAt))
+      return feed?.schemaVersion === 1 && feed.kind === scheduleKind && feed.region === region && Number.isFinite(Date.parse(feed.fetchedAt))
         && Array.isArray(feed.events) && feed.events.every(e => typeof e.key === 'string' && typeof e.name === 'string' && Object.hasOwn(kinds,e.kind)
           && Array.isArray(e.windows) && e.windows.every(w => Array.isArray(w) && w.length === 2 && Number.isFinite(Date.parse(w[0])) && Date.parse(w[1]) > Date.parse(w[0]))
-          && (e.kind !== 'pack' || Array.isArray(e.variants)) && (e.kind !== 'stamp' || Array.isArray(e.days)));
+          && (e.kind !== 'pack' || Array.isArray(e.variants)) && (e.kind !== 'stamp' || Array.isArray(e.days))
+          && (!missionView || (Array.isArray(e.members) && e.members.every(m => typeof m.name === 'string' && Array.isArray(m.rewards)))));
     });
   }
   async function refresh() {
@@ -305,13 +484,26 @@
     const controller = new AbortController(), timeout = setTimeout(() => controller.abort(),15000);
     try {
       const seed = initial || local;
-      const url = new URL(seed ? 'sale-data.json' : `https://raw.githubusercontent.com/shadowgao42/nyankodb/refs/heads/event-schedule-data/sale-schedule-${region}.json`,document.baseURI);
+      const url = new URL(seed ? `${scheduleKind}-data.json` : `https://raw.githubusercontent.com/shadowgao42/nyankodb/refs/heads/event-schedule-data/${scheduleKind}-schedule-${region}.json`,document.baseURI);
       url.searchParams.set('t',String(Math.floor(Date.now()/POLL)));
       const response = await fetch(url,{cache:'no-store',credentials:'omit',signal:controller.signal});
       if (!response.ok) throw new Error('Unavailable sale schedules');
       const payload = await response.json();
       if (!seed && payload.region !== region) throw new Error('Wrong sale region');
       const next = seed ? payload : {...data,regions:{...data.regions,[region]:payload}};
+      if (missionView && next.regions) for (const region of ['kr','jp']) {
+        const feed = next.regions[region];
+        if (Array.isArray(feed?.events)) next.regions[region] = {...feed, events:feed.events
+          .filter(event => !['monthly','permanent'].includes(event.kind))
+          .map(event => {
+            if (!Array.isArray(event.members)) return event;
+            // Native comeback IDs: also hide these when reading an older published feed.
+            const members = event.members.filter(member => !(member.id >= 9599 && member.id <= 9606));
+            if (members.length === event.members.length) return event;
+            return {...event, members, missionIds:event.missionIds.filter(id => !(id >= 9599 && id <= 9606)), name:members[0]?.name || ''};
+          })
+          .filter(event => !Array.isArray(event.members) || event.members.length)};
+      }
       if (!valid(next)) throw new Error('Invalid sale schedules');
       const changed = !data || ['kr','jp'].some(r => JSON.stringify(data.regions[r].events) !== JSON.stringify(next.regions[r].events));
       data = next; failed = false;
@@ -324,22 +516,25 @@
   }
   restore();
   regionSelect.addEventListener('change', () => { save(); render(); void refresh(); });
+  missionProgress?.addEventListener('change', () => { worldChapter3Cleared = missionProgress.checked; save(); render(true); });
   for (const input of document.querySelectorAll('input[data-sale-kind]')) input.addEventListener('change', () => {
     if (input.checked) selectedKinds.add(input.dataset.saleKind); else selectedKinds.delete(input.dataset.saleKind);
     save(); render();
   });
   settings.addEventListener('toggle', () => { document.getElementById('eventSettingsToggleLabel').textContent = settings.open ? '접기' : '펼치기'; });
-  reset.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); regionSelect.value = 'kr'; selectedKinds = new Set(Object.keys(kinds)); save(); render(); });
+  reset.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); regionSelect.value = 'kr'; selectedKinds = new Set(Object.keys(kinds)); worldChapter3Cleared = missionView; expandedMissionGroups.clear(); save(); render(); });
   document.getElementById('previousMonth').addEventListener('click', () => changeMonth(-1));
   document.getElementById('nextMonth').addEventListener('click', () => changeMonth(1));
   document.getElementById('calendarToday').addEventListener('click', () => selectDate(today()));
   window.addEventListener('storage', e => { if (e.key === SETTINGS || e.key === null) { restore(); render(); } });
   window.addEventListener('pageshow', () => { void refresh(); });
   window.addEventListener('resize', hideTooltip);
+  window.addEventListener('resize', () => hideMissionStageHelp());
+  window.addEventListener('scroll', hideMovedMissionStageHelp, {passive:true});
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTooltip(); });
   window.addEventListener('message', e => {
     if (e.source !== window.parent || e.origin !== new URL(document.baseURI).origin) return;
-    if (e.data?.type === 'nyanko-event-scroll') hideTooltip();
+    if (e.data?.type === 'nyanko-event-scroll') { hideTooltip(); hideMovedMissionStageHelp(); }
     if (e.data?.type === 'nyanko-event-visible') void refresh();
   });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) void refresh(); });

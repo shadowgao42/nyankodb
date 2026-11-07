@@ -1,7 +1,7 @@
 /* Stage-index UI with ordinary search, an initial 200 hits and one full expansion. */
 (() => {
   "use strict";
-  function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage", getFilter = () => null, toggleAll = null }) {
+  function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage", getFilter = () => null, toggleAll = null, decorateStageLink = null, selectionOnly = false, locationLinks = true }) {
     const search = window.NyankoSearch;
     const filtered = allowedStageHrefs !== null, allowed = filtered ? new Set(allowedStageHrefs) : null;
     const categoryOrder = search.stageCategoryOrder, categoryFor = search.stageCategoryForLocation;
@@ -49,7 +49,7 @@
       button.append(label, arrow); return { button, label };
     }
     function createCard(entry, stageCount) {
-      const link = document.createElement("a"); link.className = "stage-card"; link.href = `../${entry.href}`;
+      const link = document.createElement(selectionOnly || !locationLinks ? "span" : "a"); link.className = "stage-card"; if (!selectionOnly && locationLinks) link.href = `../${entry.href}`;
       link.setAttribute("aria-label", `${entry.name}, STAGE ${entry.id}, ${formatter.format(stageCount)}개 스테이지`);
       const copy = document.createElement("span"); copy.className = "stage-copy";
       const name = document.createElement("span"); name.className = "stage-name"; name.textContent = entry.name;
@@ -65,13 +65,15 @@
       const { button: toggle, label } = createToggle("stage-toggle", list.id);
       function setExpanded(expanded, remember = true) {
         if (expanded && !list.childElementCount) for (const stage of stages) {
-          const link = document.createElement("a"); link.className = "stage-detail-link"; link.href = `../${stage.href}`;
+          const link = document.createElement(selectionOnly ? "button" : "a"); link.className = "stage-detail-link"; if (selectionOnly) link.type = "button"; else link.href = `../${stage.href}`;
           const name = document.createElement("span"); name.className = "stage-detail-name";
           const suffix = ` (${entry.name})`, category = categoryFor(entry.id), categorizedSuffix = ` (${entry.name} · ${category})`;
           name.textContent = stage.name.endsWith(categorizedSuffix) ? `${stage.name.slice(0, -categorizedSuffix.length)} (${category})`
             : stage.name.endsWith(suffix) ? stage.name.slice(0, -suffix.length) : stage.name;
           const id = document.createElement("span"); id.className = "stage-detail-id"; id.textContent = `STAGE ${stage.id}`;
-          link.append(name, id); list.append(link);
+          link.append(name, id);
+          if (decorateStageLink) decorateStageLink(link, stage);
+          list.append(link);
         }
         list.hidden = !expanded; toggle.setAttribute("aria-expanded", String(expanded));
         wrapper.style.setProperty("--stage-location-height", `${64 + (expanded ? stages.length * 43 + 8 : 0)}px`);

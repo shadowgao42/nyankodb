@@ -16,11 +16,13 @@
   $('googleLogin').addEventListener('click',()=>location.assign(new URL('api/auth/google',root)));
   $('authForm').addEventListener('submit',async event=>{
     event.preventDefault();if(busy)return;
-    const button=event.currentTarget.querySelector('button[type="submit"]');
+    const form=event.currentTarget,button=form.querySelector('button[type="submit"]');
     busy=true;button.disabled=true;status('로그인 중입니다.');
-    try{await api('api/auth/login',Object.fromEntries(new FormData(event.currentTarget)));$('password').value='';location.assign(new URL('mypage/',root));}
+    try{await bootstrapReady;await api('api/auth/login',Object.fromEntries(new FormData(form)));$('password').value='';location.assign(new URL('mypage/',root));}
     catch(error){status(error.name==='TimeoutError'||error instanceof TypeError?unavailable:error.message);}
     finally{busy=false;button.disabled=false;}
   });
-  api('api/bootstrap').then(boot=>{$('googleLogin').disabled=!boot.googleEnabled;$('googleNote').hidden=!!boot.googleEnabled;}).catch(()=>status(unavailable));
+  const bootstrapReady=api('api/bootstrap').then(boot=>{$('googleLogin').disabled=!boot.googleEnabled;$('googleNote').hidden=!!boot.googleEnabled;}).catch(()=>{status(unavailable);throw new Error(unavailable);});
+  // The submit handler observes failures too; avoid an idle-page unhandled rejection.
+  void bootstrapReady.catch(()=>{});
 })();

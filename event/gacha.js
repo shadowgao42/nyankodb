@@ -612,7 +612,7 @@
       status.hidden = false;
       status.textContent = failed ? '뽑기 일정을 불러오지 못했습니다. 페이지를 새로고침해 주세요.' : '뽑기 일정을 불러오는 중입니다.';
       calendarStatus.textContent = status.textContent;
-      calendarStatus.dataset.state = failed ? 'error' : 'loading';
+      delete calendarStatus.dataset.state;
       document.getElementById('gachaCount').textContent = '';
       return;
     }

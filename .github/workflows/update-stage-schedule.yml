@@ -20,6 +20,9 @@ on:
       - '.github/scripts/update_gacha_schedule.py'
       - '.github/scripts/gacha_discounts.py'
       - '.github/scripts/update_sale_schedule.py'
+      - '.github/scripts/update_mission_schedule.py'
+      - '.github/scripts/build_mission_catalog.py'
+      - '.github/mission-catalog.json'
       - '.github/sale-catalog.json'
       - '.github/gacha-catalog.json'
       - '.github/stage-schedule-maps.json'
@@ -48,12 +51,20 @@ jobs:
           PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}
         run: |
           # Each command authenticates the shared reader. Avoid overlapping token renewals.
-          if python .github/scripts/update_stage_schedule.py --region kr --output "$RUNNER_TEMP/stage-schedule-kr.json"; then
+          if python .github/scripts/update_stage_schedule.py --region kr --output "$RUNNER_TEMP/stage-schedule-kr.json" --source-output "$RUNNER_TEMP/stage-source-kr.tsv"; then
             echo "kr_ok=true" >> "$GITHUB_OUTPUT"
           fi
-          if python .github/scripts/update_stage_schedule.py --region jp --output "$RUNNER_TEMP/stage-schedule-jp.json"; then
+          if python .github/scripts/update_stage_schedule.py --region jp --output "$RUNNER_TEMP/stage-schedule-jp.json" --source-output "$RUNNER_TEMP/stage-source-jp.tsv"; then
             echo "jp_ok=true" >> "$GITHUB_OUTPUT"
           fi
+          for region in kr jp; do
+            if [ -s "$RUNNER_TEMP/stage-source-$region.tsv" ]; then
+              fetched_at=$(jq -r .fetchedAt "$RUNNER_TEMP/stage-schedule-$region.json")
+              if python .github/scripts/update_mission_schedule.py --region "$region" --source-file "$RUNNER_TEMP/stage-source-$region.tsv" --fetched-at "$fetched_at" --output "$RUNNER_TEMP/mission-schedule-$region.json"; then
+                echo "mission_${region}_ok=true" >> "$GITHUB_OUTPUT"
+              fi
+            fi
+          done
           if python .github/scripts/update_gacha_schedule.py --region kr --output "$RUNNER_TEMP/gacha-schedule-kr.json" --item-source-output "$RUNNER_TEMP/item-kr.tsv"; then
             echo "gacha_kr_ok=true" >> "$GITHUB_OUTPUT"
           fi
@@ -100,6 +111,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/sale-schedule-jp.json"
-      - name: Check all six collections
-        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true' || steps.collect.outputs.gacha_kr_ok != 'true' || steps.collect.outputs.gacha_jp_ok != 'true' || steps.collect.outputs.sale_kr_ok != 'true' || steps.collect.outputs.sale_jp_ok != 'true') }}
+      - name: Publish Korean mission JSON on the data branch
+        if: ${{ always() && steps.collect.outputs.mission_kr_ok == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/mission-schedule-kr.json"
+      - name: Publish Japanese mission JSON on the data branch
+        if: ${{ always() && steps.collect.outputs.mission_jp_ok == 'true' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/publish_stage_schedule.py "$RUNNER_TEMP/mission-schedule-jp.json"
+      - name: Check all eight collections
+        if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true' || steps.collect.outputs.gacha_kr_ok != 'true' || steps.collect.outputs.gacha_jp_ok != 'true' || steps.collect.outputs.sale_kr_ok != 'true' || steps.collect.outputs.sale_jp_ok != 'true' || steps.collect.outputs.mission_kr_ok != 'true' || steps.collect.outputs.mission_jp_ok != 'true') }}
         run: exit 1

@@ -1,3 +1,189 @@
+/* Account defaults are a one-way, allowlisted copy. Calculators never update it. */
+(() => {
+  'use strict';
+  const key='nyanko-db:account-defaults:v1',root=new URL('./',document.currentScript.src);
+  const unitKey='nyanko-db:shared-settings:v1',enemyKey='nyanko-db:enemy-shared-settings:v1',stageKey='nyanko-db:stage-shared-settings:v1';
+  const copy=value=>structuredClone(value),validNumber=(n,min=0)=>Number.isSafeInteger(n)&&n>=min;
+  const read=k=>{try{const v=JSON.parse(localStorage.getItem(k)||'{}');return v&&typeof v==='object'&&!Array.isArray(v)?v:{};}catch(_){return {};}};
+  const relative=()=>location.pathname.startsWith(root.pathname)?location.pathname.slice(root.pathname.length):'';
+  const currentUnit=()=>/^unit\/unit(\d+)\.html$/.exec(relative())?.[1];
+  function snapshot(){const v=read(key);return v.version===1&&typeof v.generation==='string'&&v.units&&v.treasures&&Array.isArray(v.storyTreasures)?v:null;}
+  function write(k,value){const text=typeof value==='string'?value:JSON.stringify(value);if(localStorage.getItem(k)!==text)localStorage.setItem(k,text);}
+  function prime(v=snapshot()){
+    if(!v)return;
+    const flat={};
+    for(const[name,chapters]of Object.entries(v.treasures)){
+      if(!/^[a-z_]+$/.test(name)||!Array.isArray(chapters))continue;
+      chapters.forEach((slots,c)=>Array.isArray(slots)&&slots.forEach((q,s)=>{if(validNumber(q)&&q<=3)flat[`${name}.${c}.${s}`]=q;}));
+    }
+    const u=read(unitKey),e=read(enemyKey),s=read(stageKey);
+    u.treasures={...u.treasures,...copy(v.treasures)};e.treasures={...e.treasures,...flat};s.treasures={...s.treasures,...copy(v.treasures)};
+    if(v.passives?.research)u.passives={...u.passives,research:copy(v.passives.research)};
+    if(v.passives?.accounting)e.accounting=copy(v.passives.accounting);
+    if(v.passives?.study)s.passives={...s.passives,study:copy(v.passives.study)};
+    write(unitKey,u);write(enemyKey,e);write(stageKey,s);
+    const id=currentUnit(),levels=id&&v.units[String(Number(id))];
+    if(levels){const k=`nyanko-db:unit:${Number(id)}:display-state:v1`;write(k,{...read(k),levels:copy(levels)});}
+  }
+  const notify=k=>window.dispatchEvent(new StorageEvent('storage',{key:k}));
+  function input(id,value){const n=document.getElementById(id);if(!n||n.disabled)return;n.value=String(value);n.dispatchEvent(new Event('input',{bubbles:true}));}
+  function stageData(){try{return typeof DATA!=='undefined'&&DATA.stage?DATA:null;}catch(_){return null;}}
+  const supported=href=>/^stage\/(?:eoc|W0[456]|Space0[789]|(?:N|S|C|NA|ND|V|B|A|CA|Q|H|D|G|DM|EX)\d{3})\/\d+\.html$/.test(href);
+  function seedStage(v,data){
+    if(!data||data.location)return;
+    const href=relative(),id=String(data.stage.id),select=document.getElementById('crownSelect');
+    const selection=Number(select?.value)||0,chapter=data.story?.chapters?.[selection]?.chapter??data.story?.chapter;
+    const saveChapter=data.story?chapter-1+([0,4,7][data.story.family]??0):null;
+    const rows=(v.clearedStages||[]).filter(r=>r.href===href);
+    const row=rows.find(r=>saveChapter!==null?r.chapter===saveChapter:r.crown===selection+1);
+    // Missing positive records imply zero only in parser-supported numeric families.
+    if(v.hasClearedStages&&(supported(href)||validNumber(row?.count))){
+      write(`nyanko-db:stage:${id}:previous-clear-count:v1`,String(validNumber(row?.count)?row.count:0));
+    }
+    if(v.hasClearedStages&&data.zombieSource){
+      // This calculator control is a 0/1 completion switch, not a measured count.
+      const completed=rows.some(r=>r.cleared===true);
+      write(`nyanko-db:stage:${id}:previous-clear-count:v1`,completed?'1':'0');
+      const source=data.zombieSource,sourceChapter=source.chapter-1+([0,4,7][source.family]??0);
+      const sourceRow=(v.clearedStages||[]).find(r=>r.id===source.id&&r.chapter===sourceChapter);
+      write(`nyanko-db:stage:${source.id}:previous-clear-count:v1`,String(validNumber(sourceRow?.count)?sourceRow.count:0));
+    }
+    if(data.story){
+      const k=`nyanko-db:stage:${data.zombieSource?.id||id}:story-rewards:v1`,old=read(k),chapters={...old.chapters};
+      for(const ch of data.story.chapters){
+        const index=ch.chapter-1+([0,4,7][data.story.family]??0),quality=v.storyTreasures[index]?.[data.story.resourceIndex];
+        const zombieHref=`stage/Z${String(index).padStart(3,'0')}/${data.story.fileIndex}.html`;
+        if(validNumber(quality)&&quality<=3)chapters[ch.chapter]={...chapters[ch.chapter],quality,...(v.hasClearedStages?{zombieCleared:(v.clearedStages||[]).some(r=>r.href===zombieHref&&r.cleared===true)}:{})};
+      }
+      write(k,{...old,chapters});
+    }
+  }
+  function refresh(v=snapshot()){
+    if(!v)return;
+    prime(v);
+    if(currentUnit()!==undefined){
+      // Use the original calculator restore/render functions and input handlers.
+      if(typeof restoreSharedSettings==='function')restoreSharedSettings();
+      if(typeof applyFixedPreset==='function')applyFixedPreset();
+      if(typeof renderTreasureSettings==='function')renderTreasureSettings();
+      const levels=v.units[String(Number(currentUnit()))];
+      if(levels&&!(typeof fixedPreset!=='undefined'&&fixedPreset)){input('baseLevelNumber',levels.baseLevel);input('plusLevelNumber',levels.plusLevel);}
+      else if(typeof updateStats==='function')updateStats(document.getElementById('baseLevelNumber')?.value,document.getElementById('plusLevelNumber')?.value);
+    }else if(stageData()){
+      seedStage(v,stageData());notify(stageKey);
+    }else if(/^enemy\/enemy\d+\.html$/.test(relative())){
+      notify(enemyKey);
+      // Accounting is a passive with its own existing render/input path.
+      if(v.passives?.accounting&&typeof state!=='undefined'&&!(typeof enemyFixedPreset!=='undefined'&&enemyFixedPreset)){
+        state.accounting=copy(v.passives.accounting);
+        if(typeof renderTreasure==='function')renderTreasure();
+        if(typeof renderStats==='function')renderStats();
+      }
+    }
+  }
+  function create(profile,metadata){
+    const treasures={},units={},passives={};
+    for(const family of metadata.stories)for(const item of family.items){
+      if(!item.calculatorKey)continue;
+      const chapters=item.chapters.map((slots,c)=>slots.map(slot=>profile.treasures[family.saveIndices[c]]?.[slot.resourceIndex]));
+      if(chapters.every(slots=>slots.every(q=>validNumber(q)&&q<=3)))treasures[item.calculatorKey]=chapters;
+    }
+    for(const u of profile.units)if(validNumber(u.id)&&validNumber(u.level,1)&&validNumber(u.plus))units[String(u.id)]={baseLevel:u.level,plusLevel:u.plus};
+    for(const[name,id]of[['research',6],['accounting',7],['study',8]]){
+      const p=profile.passives?.find(p=>p.id===id);if(p&&validNumber(p.level,1)&&validNumber(p.plus))passives[name]={baseLevel:p.level,plusLevel:p.plus};
+    }
+    const ids=new Map((window.NYANKODB_SEARCH_CATALOG?.entries||[]).filter(e=>e.kind==='stage').map(e=>[e.href,e.id]));
+    return {version:1,generation:crypto.randomUUID(),units,treasures,passives,storyTreasures:copy(profile.treasures),hasClearedStages:Array.isArray(profile.clearedStages),clearedStages:(profile.clearedStages||[]).map(({href,count,crown,chapter,cleared})=>({href,id:String(ids.get(href)??''),count,crown,...(chapter===undefined?{}:{chapter}),...(cleared===true?{cleared:true}:{})}))};
+  }
+  function resetStoredSettings(){
+    const keys=Object.keys(localStorage),before=new Map();
+    function save(k,value){before.set(k,localStorage.getItem(k));if(value===null)localStorage.removeItem(k);else write(k,value);}
+    function dropPassive(value,name){if(value.passives&&typeof value.passives==='object')delete value.passives[name];}
+    try{
+      for(const k of keys){
+        const unit=k===unitKey||/^nyanko-db:unit:\d+:display-state:v1$/.test(k);
+        const enemy=k===enemyKey||/^nyankodb\.enemy\.\d+$/.test(k);
+        if(unit||enemy||k===stageKey){
+          const value=read(k);delete value.treasures;
+          if(unit){dropPassive(value,'research');if(k!==unitKey)delete value.levels;}
+          if(enemy)delete value.accounting;
+          if(k===stageKey)dropPassive(value,'study');
+          save(k,value);
+        }else if(/^nyanko-db:stage:.+:previous-clear-count:v1$/.test(k))save(k,null);
+        else if(/^nyanko-db:stage:.+:story-rewards:v1$/.test(k)){
+          const value=read(k);
+          for(const chapter of Object.values(value.chapters||{}))if(chapter&&typeof chapter==='object'){delete chapter.quality;delete chapter.zombieCleared;}
+          save(k,value);
+        }
+      }
+      const marker={version:1,disabled:true,generation:crypto.randomUUID()};save(key,marker);return marker;
+    }catch(error){
+      for(const[k]of before)try{localStorage.removeItem(k);}catch(_){}
+      for(const[k,value]of before)if(value!==null)try{localStorage.setItem(k,value);}catch(_){}
+      throw error;
+    }
+  }
+  function resetView(){
+    if(currentUnit()!==undefined){
+      if(typeof fixedPreset!=='undefined'&&fixedPreset)return;
+      document.getElementById('treasureResetButton')?.click();
+      if(typeof currentData!=='undefined'){
+        const url=new URL(location.href);url.searchParams.delete('level');url.searchParams.delete('plus');
+        history.replaceState(history.state,'',url);
+        input('baseLevelNumber',currentData.initialBaseLevel);input('plusLevelNumber',currentData.initialPlusLevel);
+      }
+    }else if(stageData()){
+      // Replacing a focused number input can emit change with its old value.
+      // Set the visible value before the original renderer replaces that node.
+      const count=document.getElementById('previousClearCount');if(count)count.value='0';
+      const data=stageData();write(`nyanko-db:stage:${data.stage.id}:previous-clear-count:v1`,'0');
+      if(data.zombieSource)write(`nyanko-db:stage:${data.zombieSource.id}:previous-clear-count:v1`,'0');
+      notify(stageKey);document.getElementById('treasureResetButton')?.click();
+    }else if(/^enemy\/enemy\d+\.html$/.test(relative())){
+      if(typeof enemyFixedPreset!=='undefined'&&enemyFixedPreset)return;
+      document.getElementById('treasure-reset')?.click();
+    }
+  }
+  let seenGeneration=read(key).generation;
+  function changed(){
+    const value=read(key);
+    if(value.disabled===true&&value.generation!==seenGeneration)resetView();
+    else if(snapshot())refresh();
+    seenGeneration=value.generation;
+    window.dispatchEvent(new Event('nyanko-account-defaults-changed'));
+  }
+
+  window.NyankoAccountDefaults={
+    apply(profile,metadata){
+      const v=create(profile,metadata),keys=[key,unitKey,enemyKey,stageKey];
+      const id=currentUnit();if(id!==undefined)keys.push(`nyanko-db:unit:${Number(id)}:display-state:v1`);
+      const before=keys.map(k=>[k,localStorage.getItem(k)]);
+      try{prime(v);localStorage.setItem(key,JSON.stringify(v));refresh(v);seenGeneration=v.generation;window.dispatchEvent(new Event('nyanko-account-defaults-changed'));}
+      catch(error){
+        // A failed storage write must not leave a newly enabled snapshot behind.
+        for(const[k]of before)try{localStorage.removeItem(k);}catch(_){}
+        for(const[k,value]of before)if(value!==null)try{localStorage.setItem(k,value);}catch(_){}
+        throw error;
+      }
+    },
+    active:()=>snapshot()!==null,
+    unlink(){resetStoredSettings();changed();},
+    clear(){try{localStorage.removeItem(key);window.dispatchEvent(new Event('nyanko-account-defaults-changed'));}catch(_){}},
+  };
+  // Prime synchronous stores before the following inline calculator bootstrap.
+  try{if(!relative().startsWith('mypage/'))prime();}catch(_){}
+  document.addEventListener('DOMContentLoaded',()=>{
+    // URL levels are explicit navigation choices; the original URL parser wins.
+    try{
+      const v=snapshot();if(!v)return;
+      const data=stageData();if(data){seedStage(v,data);notify(stageKey);}
+      document.getElementById('crownSelect')?.addEventListener('change',()=>{try{const fresh=snapshot();if(fresh){seedStage(fresh,stageData());notify(stageKey);}}catch(_){}});
+    }catch(_){}
+  },{once:true});
+  window.addEventListener('storage',event=>{if(event.key===key){try{changed();}catch(_){}}});
+  window.addEventListener('pageshow',event=>{if(event.persisted){try{changed();}catch(_){}}});
+})();
+
 /* Shared GNB markup. Load immediately after the data-nyanko-gnb placeholder. */
 (() => {
   "use strict";
@@ -124,6 +310,7 @@
           });
           if (response.ok) {
             authenticated = (await response.json()).authenticated === true;
+            if (!authenticated) window.NyankoAccountDefaults.clear();
             
           }
         }
@@ -155,6 +342,7 @@
           headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrf }, body: '{}',
         });
         if (!response.ok) throw new Error('Logout failed');
+        window.NyankoAccountDefaults.clear();
         
         if (location.pathname.startsWith(new URL('mypage/', root).pathname)) {
           location.replace(new URL('mypage/login.html', root));
@@ -185,7 +373,7 @@
     const items = [
       { key: "home", label: "홈", path: "index.html" },
       { key: "explore", label: "탐색", path: "unit/index.html" },
-      { key: "mypage", label: "마이페이지", path: "mypage/login.html" },
+      { key: "mypage", label: "마이페이지", path: "mypage/" },
     ];
     for (const item of items) {
       const link = document.createElement("a");

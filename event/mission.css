@@ -1,0 +1,26 @@
+/* Missions reuse sale disclosures for groups; single objectives stay visible. */
+.mission-event:not(:has(details)) { cursor: default; }
+.mission-objective { white-space: pre-line; }
+.mission-objective-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.mission-objective-info { min-width: 0; }
+.mission-objective-row > .sale-rewards { width: clamp(56px, calc(7vw + 29px), 96px); margin: 12px 15px 0 0; padding: 0; justify-content: flex-end; }
+.mission-objective-row > .sale-description { width: clamp(56px, calc(7vw + 29px), 96px); margin: 12px 15px 0 0; text-align: right; }
+.mission-objective-row:has(.mission-stage-help-button) { grid-template-columns: minmax(0, 1fr) auto auto; }
+.mission-stage-help-button { margin: 12px 15px 0 0; padding-inline: 6px; }
+.mission-stage-help { inset: auto; margin: 0; width: 360px; max-width: calc(100vw - 24px); max-height: 420px; overflow: auto; pointer-events: auto; }
+.mission-stage-help-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.mission-stage-help-heading h3 { margin: 0; font-size: 14px; font-weight: 900; }
+.mission-stage-help-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+/* Same anchor component as the location URL beside a stage page title. */
+.mission-stage-help .map-name {
+  flex: 0 0 auto; max-width: min(760px,100%); margin: 0; padding: 7px 12px;
+  border: 1px solid rgba(255,173,61,.34); border-radius: 999px;
+  color: var(--accent-text); background: rgba(255,173,61,.1);
+  font-size: 12px; font-weight: 900; letter-spacing: -.01em; line-height: normal; white-space: nowrap;
+}
+.mission-stage-help a.map-name { text-decoration: none; white-space: normal; }
+.mission-stage-help a.map-name { transition: border-color .14s ease, transform .14s ease; }
+.mission-stage-help a.map-name:hover, .mission-stage-help a.map-name:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
+.mission-schedule [data-sale-kind="limited"] { --event-color: hsl(148 75% 85%); --event-bg: hsl(148 50% 20%); --event-border: hsl(148 45% 43%); }
+.mission-schedule [data-sale-kind="weekly"] { --event-color: hsl(205 80% 85%); --event-bg: hsl(205 38% 31%); --event-border: hsl(205 50% 55%); }
+.mission-event .calendar-stage-name { white-space: pre-line; }
