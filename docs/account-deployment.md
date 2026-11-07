@@ -13,3 +13,5 @@
 배포 전 독립 UI 검사에서 bootstrap 대기 뒤 `event.currentTarget`이 사라져 정상 로그인 POST가 누락되는 문제를 발견했다. 이벤트가 유효한 동기 구간에서 form 참조를 보존하고 같은 FormData/POST 경로를 사용하도록 수정했다. 이는 미배포 시험 구현에서 발견·수정한 사항이며 운영 장애로 단정하지 않는다.
 
 마이페이지가 사용하는 기존 `NyankoAccountDefaults` 본체와 인증 해제 시 clear, 하단 마이페이지의 실제 경로를 공용 GNB에 함께 반영했다. 단순 빈 함수로 대체하지 않았다. 로컬 공용 파일 전체를 덮어쓰면 기존 운영 analytics 로더가 삭제되는 차이를 독립 검사에서 발견하여, 원본 계정 모듈만 선별 결합하고 운영 analytics 로더는 그대로 보존했다. 기본 계정 적용 snapshot이 없으면 기존 계산기 설정/UI를 바꾸지 않으며 계정 적용·해제는 기존 코드의 명시적 사용자 조작 경로를 따른다.
+
+최초 운영 확인에서 `/api/:path*`의 destination을 Python 소스 경로 `/api/index.py`로 지정하면 outputDirectory의 정적 파일이 반환됨을 확인했다. 런타임 함수 경로 `/api/index`로 변경하여 원래 `/api/bootstrap`, `/api/auth/*`, `/api/account` 요청이 기존 Flask로 전달되게 했다. `/api`·`/api/index` 직접 요청의 JSON 404 응답으로 함수 자체의 정상 실행을 먼저 확인했다. 정적 페이지와 인증 로직은 변경하지 않는다.
