@@ -335,7 +335,7 @@
       section.append(info);
       const targets = window.NYANKODB_MISSION_TARGETS?.regions?.[regionSelect.value]?.[member.id];
       if (targets?.length) {
-        const help = element('button','calendar-filter-toggle mission-stage-help-button','[?]');
+        const help = element('button','calendar-filter-toggle mission-stage-help-button','?');
         help.type = 'button'; help.setAttribute('aria-label',`${member.name.split(/\r?\n/,1)[0]} 대상 스테이지`);
         help.setAttribute('aria-haspopup','dialog'); help.setAttribute('aria-controls','missionStageHelp'); help.setAttribute('aria-expanded','false');
         help.addEventListener('click', () => showMissionStageHelp(help,targets)); section.append(help);
