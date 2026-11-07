@@ -21,6 +21,7 @@
 .mission-stage-help a.map-name { text-decoration: none; white-space: normal; }
 .mission-stage-help a.map-name { transition: border-color .14s ease, transform .14s ease; }
 .mission-stage-help a.map-name:hover, .mission-stage-help a.map-name:focus-visible { border-color: var(--accent); outline: none; transform: translateY(-2px); }
-.mission-schedule [data-sale-kind="limited"] { --event-color: hsl(148 75% 85%); --event-bg: hsl(148 50% 20%); --event-border: hsl(148 45% 43%); }
-.mission-schedule [data-sale-kind="weekly"] { --event-color: hsl(205 80% 85%); --event-bg: hsl(205 38% 31%); --event-border: hsl(205 50% 55%); }
+.mission-schedule [data-sale-kind="limited"] { --event-color: hsl(205 80% 85%); --event-bg: hsl(205 38% 31%); --event-border: hsl(205 50% 55%); }
+.mission-schedule [data-sale-kind="weekly"] { --event-color: hsl(148 75% 85%); --event-bg: hsl(148 50% 20%); --event-border: hsl(148 45% 43%); }
 .mission-event .calendar-stage-name { white-space: pre-line; }
+.mission-event > .sale-event-heading .calendar-stage-name { color: var(--event-color); }

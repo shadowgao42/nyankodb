@@ -208,16 +208,20 @@
     const prefix = header.dataset.searchPrefix || "unitSearch";
     header.className = "db-toolbar nyanko-gnb";
     header.dataset.gnbSettling = "true";
-    header.setAttribute("aria-label", "냥코DB 상단 메뉴");
+    header.setAttribute("aria-label", "냥코DB 메뉴");
     header.innerHTML = `
       <div class="gnb-leading">
       <a class="db-brand gnb-brand" id="homeLink" aria-label="냥코DB 홈">냥코<span>DB</span></a>
-      <nav class="gnb-menu" aria-label="도감 메뉴">
+      <nav class="gnb-menu" aria-label="냥코DB 메뉴">
+        <a class="gnb-menu-link gnb-desktop-link" data-section="home"><span class="nyanko-bottom-navigation-icon" aria-hidden="true"></span><span>홈</span></a>
+        <span class="gnb-sidebar-divider" aria-hidden="true"></span>
         <a class="gnb-menu-link" data-section="unit"><img alt="" width="30" height="30"><span>유닛</span></a>
         <a class="gnb-menu-link" data-section="enemy"><img alt="" width="30" height="30"><span>적</span></a>
         <a class="gnb-menu-link" data-section="item"><img alt="" width="30" height="30"><span>아이템</span></a>
         <a class="gnb-menu-link" data-section="stage"><img alt="" width="30" height="30"><span>스테이지</span></a>
         <a class="gnb-menu-link" data-section="event"><img alt="" width="30" height="30"><span>일정</span></a>
+        <span class="gnb-sidebar-divider" aria-hidden="true"></span>
+        <a class="gnb-menu-link gnb-desktop-link" data-section="mypage"><span class="nyanko-bottom-navigation-icon" aria-hidden="true"></span><span>마이페이지</span></a>
         <span class="gnb-menu-indicator" aria-hidden="true"></span>
       </nav>
       </div>
@@ -236,9 +240,16 @@
     header.querySelector(".gnb-brand").href = new URL("index.html", root).href;
     for (const link of header.querySelectorAll(".gnb-menu-link")) {
       const section = link.dataset.section;
-      link.href = new URL(`${section}/index.html`, root).href;
-      link.querySelector("img").src = new URL(`img/ui/gnb/${section}.png`, root).href;
-      if (location.pathname.startsWith(new URL(`${section}/`, root).pathname)) {
+      const path = section === "home" ? "index.html" : section === "mypage" ? "mypage/" : `${section}/index.html`;
+      link.href = new URL(path, root).href;
+      const image = link.querySelector("img");
+      if (image) image.src = new URL(`img/ui/gnb/${section}.png`, root).href;
+      else link.querySelector(".nyanko-bottom-navigation-icon").style.setProperty(
+        "--nyanko-navigation-icon", `url("${new URL(`img/ui/navigation/${section}.svg`, root).href}")`);
+      const isCurrent = section === "home"
+        ? location.pathname === root.pathname || location.pathname === new URL("index.html", root).pathname
+        : location.pathname.startsWith(new URL(`${section}/`, root).pathname);
+      if (isCurrent) {
         link.setAttribute("aria-current", "location");
       }
     }
@@ -260,10 +271,13 @@
     function emphasize(link) {
       selected = link;
       for (const item of links) item.classList.toggle("is-emphasized", item === link);
-      indicator.style.opacity = link ? "1" : "0";
-      if (link) {
-        indicator.style.width = `${link.offsetWidth}px`;
-        indicator.style.transform = `translateX(${link.offsetLeft}px)`;
+      const visible = link && link.getClientRects().length > 0;
+      indicator.style.opacity = visible ? "1" : "0";
+      if (visible) {
+        const desktop = !matchMedia("(max-width: 820px)").matches;
+        indicator.style.width = desktop ? "2px" : `${link.offsetWidth}px`;
+        indicator.style.height = desktop ? `${link.offsetHeight}px` : "2px";
+        indicator.style.transform = desktop ? `translateY(${link.offsetTop}px)` : `translateX(${link.offsetLeft}px)`;
       }
     }
     function settleOn(link) {
@@ -391,9 +405,22 @@
       navigation.append(link);
     }
     document.body.append(navigation);
+    const sidebarHeader = document.querySelector("header[data-nyanko-gnb][data-gnb-mounted]");
+    const sidebarActions = sidebarHeader?.querySelector(".gnb-actions");
+    const sidebarForm = sidebarActions?.querySelector(".gnb-search");
+    let searchSidebar;
+    if (sidebarForm && !document.documentElement.classList.contains("event-embedded")) {
+      searchSidebar = document.createElement("aside");
+      searchSidebar.className = "db-toolbar nyanko-gnb gnb-search-sidebar";
+      searchSidebar.setAttribute("aria-label", "냥코DB 검색");
+      sidebarHeader.after(searchSidebar);
+    }
     function updateNavigationScale() {
-      document.body.classList.remove("has-nyanko-bottom-navigation");
+      const focused = sidebarForm?.contains(document.activeElement) ? document.activeElement : null;
+      document.body.classList.remove("has-nyanko-bottom-navigation", "has-nyanko-sidebar");
       const originalPadding = getComputedStyle(document.body).paddingBottom;
+      const originalLeftPadding = getComputedStyle(document.body).paddingLeft;
+      const originalRightPadding = getComputedStyle(document.body).paddingRight;
       let pageZoom = 1;
       for (let element = document.body; element; element = element.parentElement) {
         const zoom = getComputedStyle(element).zoom;
@@ -403,6 +430,21 @@
       document.body.style.setProperty("--nyanko-bottom-inverse-zoom", String(1 / pageZoom));
       navigation.style.zoom = String(1 / pageZoom);
       document.body.classList.add("has-nyanko-bottom-navigation");
+      const header = document.querySelector("header[data-nyanko-gnb][data-gnb-mounted]");
+      if (header && !document.documentElement.classList.contains("event-embedded")) {
+        document.body.style.setProperty("--nyanko-sidebar-base-padding", originalLeftPadding);
+        document.body.style.setProperty("--nyanko-sidebar-base-right-padding", originalRightPadding);
+        document.body.style.setProperty("--nyanko-sidebar-inverse-zoom", String(1 / pageZoom));
+        if (searchSidebar) {
+          const mobile = matchMedia("(max-width: 820px)").matches;
+          const destination = mobile ? sidebarActions : searchSidebar;
+          if (sidebarForm.parentElement !== destination) {
+            if (mobile) destination.prepend(sidebarForm); else destination.append(sidebarForm);
+          }
+        }
+        document.body.classList.add("has-nyanko-sidebar");
+      }
+      if (focused && document.activeElement !== focused) focused.focus({ preventScroll: true });
     }
     updateNavigationScale();
     window.addEventListener("resize", updateNavigationScale);

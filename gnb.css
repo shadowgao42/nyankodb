@@ -395,3 +395,66 @@
   }
 }
 
+
+/* Desktop uses the same breakpoint and inverse page zoom as the mobile bar. */
+header[data-nyanko-gnb].nyanko-gnb .gnb-desktop-link,
+header[data-nyanko-gnb].nyanko-gnb .gnb-sidebar-divider,
+header[data-nyanko-gnb][data-gnb-desktop-only],
+.gnb-search-sidebar { display: none; }
+@media not all and (max-width: 820px) {
+  body.has-nyanko-sidebar {
+    /* Unit index: 1220px content + 36px page gutters + two 228px rails, at 70%. */
+    --nyanko-sidebar-edge: max(8.4px, calc((100vw - 1198.4px) / 2));
+    --nyanko-sidebar-expand: min(50.4px, max(0px, calc(var(--nyanko-sidebar-edge) - 8.4px)));
+    padding-left: calc(var(--nyanko-sidebar-base-padding, 0px) + (var(--nyanko-sidebar-edge) + 159.6px) * var(--nyanko-sidebar-inverse-zoom, 1));
+    padding-right: calc(var(--nyanko-sidebar-base-right-padding, 0px) + (var(--nyanko-sidebar-edge) + 159.6px) * var(--nyanko-sidebar-inverse-zoom, 1));
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb].nyanko-gnb,
+  body.has-nyanko-sidebar .gnb-search-sidebar {
+    position: fixed; z-index: 200; top: 36px; bottom: auto;
+    display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
+    box-sizing: border-box; width: calc(204px + var(--nyanko-sidebar-expand) * 1.4285714286);
+    height: calc(142.8571428571dvh - 72px); gap: 18px; margin: 0; padding: 18px 14px;
+    zoom: calc(var(--nyanko-sidebar-inverse-zoom, 1) * .7);
+    font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb].nyanko-gnb {
+    left: calc((var(--nyanko-sidebar-edge) - var(--nyanko-sidebar-expand)) * 1.4285714286);
+  }
+  body.has-nyanko-sidebar .gnb-search-sidebar { right: calc((var(--nyanko-sidebar-edge) - var(--nyanko-sidebar-expand)) * 1.4285714286); }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-leading { display: contents; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-brand { flex: 0 0 auto; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu {
+    display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column;
+    align-items: stretch; gap: 6px; padding: 3px; overflow-y: auto; scrollbar-width: thin;
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-link {
+    display: flex; flex: 0 0 auto; flex-direction: row; align-items: center; justify-content: flex-start;
+    gap: 12px; height: 48px; padding: 8px 10px; border-radius: 9px;
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-link img,
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .nyanko-bottom-navigation-icon {
+    flex: 0 0 32px; width: 32px; height: 32px;
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-link.is-emphasized { background: rgba(255, 173, 61, .1); }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-link:focus-visible { outline-offset: -3px; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-sidebar-divider {
+    display: block; flex: 0 0 1px; height: 1px; margin: 8px 0; background: var(--line);
+  }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-indicator { top: 0; bottom: auto; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-actions {
+    display: flex; flex: 0 0 auto; width: 100%; flex-direction: column; align-items: stretch;
+  }
+  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search { display: flex; flex: 1; flex-direction: column; align-items: stretch; min-height: 0; width: 100%; margin: 0; }
+  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-field { display: flex; flex: 1; flex-direction: column; min-height: 0; width: 100%; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-auth { min-height: 38px; }
+  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search input { flex: none; width: 100%; }
+  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-icon { top: 19px; }
+  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-results {
+    position: static; flex: 1; min-height: 0; width: 100%; max-height: none;
+    margin-top: 12px; padding: 0; border: 0; border-radius: 0;
+    background: transparent; box-shadow: none;
+  }
+  body.has-nyanko-sidebar:has(header[data-gnb-desktop-only]) > main.page { padding-top: 25.2px; }
+  body.has-nyanko-sidebar:has(header[data-gnb-desktop-only]) > main.page > .brand { display: none; }
+}

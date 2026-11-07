@@ -363,14 +363,8 @@
     return `stage/${group}/${Number(match[3])}.html`;
   }
 
-  function mount() {
-    const home = Boolean(document.getElementById("unit-search-input"));
-    const item = Boolean(document.getElementById("itemSearchInput"));
-    const prefix = item ? "itemSearch" : "unitSearch";
-    const input = document.getElementById(home ? "unit-search-input" : `${prefix}Input`);
-    const form = document.getElementById(home ? "unit-search-form" : `${prefix}Form`);
-    const results = document.getElementById(home ? "search-results" : `${prefix}Results`);
-    const status = document.getElementById("search-status");
+  function mountForm(input, form, results, home = false) {
+    const status = home ? document.getElementById("search-status") : null;
     if (!input || !form || !results || form.dataset.sharedSearchMounted) return;
     form.dataset.sharedSearchMounted = "true";
     input.setAttribute("aria-controls", results.id);
@@ -543,12 +537,23 @@
       }
     });
     document.addEventListener("pointerdown", event => {
+      if (form.closest(".gnb-search-sidebar")) return;
       if (!form.contains(event.target) && !results.contains(event.target)) close();
     });
     window.addEventListener("pageshow", render);
     render();
     if (window.requestIdleCallback) window.requestIdleCallback(searchIndex, { timeout: 1000 });
     else setTimeout(searchIndex, 0);
+  }
+
+  function mount() {
+    mountForm(document.getElementById("unit-search-input"), document.getElementById("unit-search-form"), document.getElementById("search-results"), true);
+    for (const form of document.querySelectorAll(".gnb-search")) {
+      mountForm(form.querySelector("input"), form, form.querySelector('[role="listbox"]'));
+    }
+    for (const prefix of ["itemSearch", "unitSearch"]) {
+      mountForm(document.getElementById(`${prefix}Input`), document.getElementById(`${prefix}Form`), document.getElementById(`${prefix}Results`));
+    }
   }
 
   window.NyankoSearch = Object.freeze({ search, searchResults(value, options) {
