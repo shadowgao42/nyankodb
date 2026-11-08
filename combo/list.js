@@ -86,6 +86,8 @@
         const row = document.createElement('article');
         row.className = 'nyancombo-card combo-result';
         row.dataset.comboId = combo.id;
+        row.id = `combo-${combo.id}`;
+        row.tabIndex = -1;
         row.dataset.effectId = combo.effectId;
         const heading = document.createElement('header');
         heading.className = 'nyancombo-card-heading';
@@ -187,5 +189,12 @@
       }
     }, true);
 
-    renderComboCategories();
+    function revealTarget(){
+      const match=location.hash.match(/^#combo-(\d+)$/);
+      if(!match||!comboCatalog.combos.some(combo=>combo.id===Number(match[1])))return;
+      if(comboCategory!==0||comboSubcategory!==null||comboSearchInput.value){comboCategory=0;comboSubcategory=null;comboSearchInput.value='';renderComboCategories();}
+      const target=document.getElementById(`combo-${Number(match[1])}`);
+      if(target)requestAnimationFrame(()=>{target.focus({preventScroll:true});target.scrollIntoView({block:'center'});});
+    }
+    renderComboCategories();revealTarget();window.addEventListener('hashchange',revealTarget);window.addEventListener('nyanko-search-target',revealTarget);
 })();

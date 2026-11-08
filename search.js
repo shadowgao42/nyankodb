@@ -7,9 +7,13 @@
   const compact = value => String(value ?? "").toLowerCase()
     .replace(/[\s\p{P}\p{S}_]/gu, "");
 
+  function catalogSources(catalog) {
+    return Array.isArray(catalog) ? [catalog]
+      : [catalog?.entries, catalog?.items, catalog?.medals, catalog?.combos].filter(Array.isArray);
+  }
+
   function entries() {
-    const catalog = window.NYANKODB_SEARCH_CATALOG || {};
-    return (Array.isArray(catalog) ? catalog : [...(catalog.entries || []), ...(catalog.items || [])])
+    return catalogSources(window.NYANKODB_SEARCH_CATALOG).flat()
       .filter(entry => entry && (entry.name || entry.label));
   }
 
@@ -155,7 +159,7 @@
     return rank;
   }
 
-  const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3 });
+  const kindOrder = Object.freeze({ unit: 0, enemy: 1, item: 2, stage: 3, combo: 4, medal: 5 });
   const ticketOrder = new Map([20, 21, 157, 29, 145, 212, 155, 156].map((id, index) => [id, index]));
   const legacyItemIds = new Set([23, 196, 204, 231]);
   const evolutionOrder = new Map([
@@ -255,20 +259,19 @@
   }
 
   const resultLimit = 200;
-  let indexedCatalog, indexedEntries, indexedItems, indexedCount = -1, preparedEntries = [];
+  let indexedCatalog, indexedSources = [], indexedCount = -1, preparedEntries = [];
   const resultCache = new Map();
 
   function searchIndex() {
     const catalog = window.NYANKODB_SEARCH_CATALOG;
-    const catalogEntries = Array.isArray(catalog) ? catalog : catalog?.entries;
-    const catalogItems = Array.isArray(catalog) ? null : catalog?.items;
-    const count = (catalogEntries?.length || 0) + (catalogItems?.length || 0);
-    if (catalog !== indexedCatalog || catalogEntries !== indexedEntries || catalogItems !== indexedItems || count !== indexedCount) {
+    const sources = catalogSources(catalog);
+    const count = sources.reduce((total, source) => total + source.length, 0);
+    if (catalog !== indexedCatalog || sources.length !== indexedSources.length
+        || sources.some((source, index) => source !== indexedSources[index]) || count !== indexedCount) {
       // Name normalization and tie-break ordering are independent of the query.
       preparedEntries = entries().map(prepareEntry).sort(compareResults);
       indexedCatalog = catalog;
-      indexedEntries = catalogEntries;
-      indexedItems = catalogItems;
+      indexedSources = sources;
       indexedCount = count;
       resultCache.clear();
     }
@@ -322,6 +325,8 @@
     const id = String(entry.id).padStart(3, "0");
     if (entry.kind === "enemy") return `ENEMY ${id}`;
     if (entry.kind === "item") return `ITEM ${id}`;
+    if (entry.kind === "medal") return `MEDAL ${id}`;
+    if (entry.kind === "combo") return `COMBO ${id}`;
     return `UNIT ${id}-${entry.form || 1}`;
   }
 
@@ -409,7 +414,15 @@
 
     function navigate(entry) {
       rememberForm(entry);
-      window.location.href = destination(entry);
+      const href = destination(entry), target = new URL(href);
+      if ((entry.kind === "medal" || entry.kind === "combo")
+          && target.origin === location.origin && target.pathname === location.pathname && target.search === location.search) {
+        close();
+        if (target.hash === location.hash) window.dispatchEvent(new Event("nyanko-search-target"));
+        else window.location.href = href;
+        return;
+      }
+      window.location.href = href;
     }
 
     function render() {
@@ -429,7 +442,7 @@
       close();
       if (!query) {
         if (status) status.textContent = entries().length
-          ? "유닛, 적, 아이템 또는 스테이지 이름/ID를 입력해 검색하세요."
+          ? "이름 또는 ID를 입력해 검색하세요."
           : "검색 목록을 불러오지 못했습니다.";
         return;
       }

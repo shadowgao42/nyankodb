@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id), view = document.body.dataset.view;
-  let metadata, account, savedAccount, revision, editing=false, saving=false, linking=false, activeStory=0;
+  let metadata, medalCatalog, account, savedAccount, revision, editing=false, saving=false, linking=false, activeStory=0;
   const clone = value => structuredClone(value);
   function finishLoading(){const loader=$('accountLoading');if(loader)loader.hidden=true;}
   function status(id,text,error=false){const n=$(id);n.textContent=text;n.dataset.error=String(error);}
@@ -16,6 +16,8 @@
   function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
   function image(src,w,h){const n=el('img');n.src=src;n.alt='';n.width=w;n.height=h;n.loading='lazy';return n;}
   const catalog=window.NYANKODB_UNIT_CATALOG;
+  const medalGuide=$('ownedMedals')?window.NyankoMedalGuide.create({root:$('ownedMedals'),idPrefix:'owned-medal',tooltipId:'accountMedalTooltip'}):null;
+  const ownedMedalIds=value=>Array.isArray(value?.medals)?new Set(value.medals.filter(id=>Number.isSafeInteger(id)&&id>=0)):null;
   const summonedUnitIds=new Set((catalog?.entries||[]).filter(entry=>entry.name==='정령').map(entry=>entry.id));
   const encyclopedia=window.NYANKODB_UNIT_ENCYCLOPEDIA?.entries||{};
   let unitOrder='encyclopedia';
@@ -64,7 +66,7 @@
         const remove=el('button','action');remove.id='editorRemoveUnit';remove.type='button';remove.setAttribute('aria-label','캐릭터 제거');remove.dataset.tooltip='캐릭터 제거';
         const icon=document.createElementNS('http://www.w3.org/2000/svg','svg');icon.setAttribute('viewBox','0 0 24 24');icon.setAttribute('width','20');icon.setAttribute('height','20');icon.setAttribute('aria-hidden','true');icon.setAttribute('fill','none');icon.setAttribute('stroke','currentColor');icon.setAttribute('stroke-width','2');icon.setAttribute('stroke-linecap','round');icon.setAttribute('stroke-linejoin','round');
         const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7');icon.append(path);remove.append(icon);head.append(remove);
-        remove.addEventListener('click',()=>{account.units=account.units.filter(value=>value.id!==unit.id);renderUnits();editorFocus='#addOwnedUnit';$('profileEditor').close();});
+        remove.addEventListener('click',()=>{account.units=account.units.filter(value=>value.id!==unit.id);renderUnits();editorFocus=$('showUnownedUnits').checked?`.owned-entry[data-unit-id="${unit.id}"] .nyancombo-member`:'#addOwnedUnit';$('profileEditor').close();});
       }
       const controls=el('div','owned-level-controls');root.append(controls);
       base=editorNumber(controls,'editorUnitLevel','기본 레벨',unit.level,1,Math.max(limits.maxBase,original?.level||1));
@@ -74,7 +76,7 @@
       if(adding&&account.units.some(value=>value.id===unit.id))throw new Error('이미 보유한 캐릭터입니다.');
       unit.level=Number(base.value);unit.plus=Number(plus.value);unit.unlockedForm=unlocked;unit.highestForm=unlocked;unit.displayForm=form;
       if(adding)account.units.push(unit);renderUnits();editorFocus=`.owned-entry[data-unit-id="${unit.id}"] .nyancombo-member`;
-    },adding?'#addOwnedUnit':`.owned-entry[data-unit-id="${unit.id}"] .nyancombo-member`);
+    },adding&&!$('showUnownedUnits').checked?'#addOwnedUnit':`.owned-entry[data-unit-id="${unit.id}"] .nyancombo-member`);
   }
   function addUnitEditor(){
     showEditor('캐릭터 추가',root=>{
@@ -101,7 +103,7 @@
         if(resetPage)page=0;renderPage();
       }
       window.NyankoUnitPickerFilters.mount(filters,search,filtered=>{const hits=new Set(filtered.map(entry=>Number(entry.id)));matches=available.filter(entry=>hits.has(entry.id));rebuildPages();});
-    },null,'#addOwnedUnit');
+    },null,$('showUnownedUnits').checked?'#showUnownedUnits':'#addOwnedUnit');
   }
   function inventoryEditor(item){
     let input;const amount=account.inventory?.[String(item.id)];
@@ -203,19 +205,34 @@
   function renderUnits(){
     const root=$('ownedUnits');root.replaceChildren();const lookup=new Map(),groups=new Map();
     for(const entry of catalog.entries){if(!lookup.has(entry.id))lookup.set(entry.id,[]);lookup.get(entry.id).push(entry);}
-    for(const unit of account.units){
+    const owned=new Map(account.units.map(unit=>[unit.id,unit]));let displayed=account.units.map(unit=>({unit,missing:false}));
+    if($('showUnownedUnits').checked){
+      const all=unitOptions().filter(definition=>!summonedUnitIds.has(definition.id));
+      displayed=window.NyankoUnitGuide.pages(all,catalog.rarities,encyclopedia,'encyclopedia').flatMap(page=>page.entries.map(definition=>({unit:owned.get(definition.id)||{id:definition.id},missing:!owned.has(definition.id)})));
+    }
+    for(const {unit,missing} of displayed){
       if(summonedUnitIds.has(unit.id))continue;
       const all=(lookup.get(unit.id)||[]).sort((a,b)=>a.form-b.form);if(!all.length)continue;
-      const selected=all.find(entry=>entry.form===unitForm(unit,all)),rarity=all[0].rarity;
+      const selected=missing?all[0]:all.find(entry=>entry.form===unitForm(unit,all)),rarity=all[0].rarity;
       if(!groups.has(rarity))groups.set(rarity,el('div','nyancombo-members'));
-      const entry=el('div','owned-entry'),link=el('a','nyancombo-member'),frame=el('div','nyancombo-member-image');entry.dataset.unitId=unit.id;entry.dataset.form=selected.form;
-      frame.append(image('../'+selected.icon.replace(/^\.\.\//,''),104,79));link.append(frame);link.href=`../unit/unit${String(unit.id).padStart(3,'0')}.html?form=${selected.form}&level=${unit.level}&plus=${unit.plus}`;link.dataset.tooltip=selected.name;link.setAttribute('aria-label',`${selected.name} · ${selected.form}단`);
-      entry.append(link,el('p','owned-level',`Lv.${unit.level}${unit.plus?'+'+unit.plus:''}`));if(editing)editableLink(link,()=>unitEditor(unit));groups.get(rarity).append(entry);
+      const entry=el('div','owned-entry'),link=el(editing?'button':'a','nyancombo-member'),frame=el(editing?'span':'div','nyancombo-member-image');entry.dataset.unitId=unit.id;entry.dataset.owned=String(!missing);entry.dataset.form=selected.form;
+      frame.append(image('../'+selected.icon.replace(/^\.\.\//,''),104,79));link.append(frame);if(!editing)link.href=`../unit/unit${String(unit.id).padStart(3,'0')}.html?form=${selected.form}`+(missing?'':`&level=${unit.level}&plus=${unit.plus}`);link.dataset.tooltip=selected.name;link.setAttribute('aria-label',`${selected.name} · ${selected.form}단${missing?' · 미보유':''}`);
+      entry.append(link,el('p','owned-level',missing?'미보유':`Lv.${unit.level}${unit.plus?'+'+unit.plus:''}`));if(editing){link.type='button';link.addEventListener('click',()=>missing?unitEditor(clone(savedAccount.units.find(value=>value.id===unit.id)||{id:unit.id,level:1,plus:0,highestForm:1,raw:{currentForm:0,unlockedForms:0,fourthForm:0},talents:[]}),true):unitEditor(unit));}groups.get(rarity).append(entry);
     }
     root.classList.add('required-unit-groups');
     for(const rarity of [...groups.keys()].sort((a,b)=>catalog.rarities.indexOf(a)-catalog.rarities.indexOf(b)))root.append(raritySection(rarity,groups.get(rarity)));
-    if(editing){const row=el('div','nyancombo-members'),entry=el('div','owned-entry'),button=el('button','nyancombo-member'),frame=el('span','nyancombo-member-image');button.id='addOwnedUnit';button.type='button';button.setAttribute('aria-label','캐릭터 추가');frame.append(el('span','unit-add-plus','+'));button.append(frame);button.addEventListener('click',addUnitEditor);entry.append(button);row.append(entry);root.append(row);}
+    if(editing&&!$('showUnownedUnits').checked){const row=el('div','nyancombo-members'),entry=el('div','owned-entry'),button=el('button','nyancombo-member'),frame=el('span','nyancombo-member-image');button.id='addOwnedUnit';button.type='button';button.setAttribute('aria-label','캐릭터 추가');frame.append(el('span','unit-add-plus','+'));button.append(frame);button.addEventListener('click',addUnitEditor);entry.append(button);row.append(entry);root.append(row);}
     if(!groups.size&&!editing)root.append(el('p','empty','보유 캐릭터가 없습니다.'));$('ownedCount').textContent=`${account.units.filter(unit=>!summonedUnitIds.has(unit.id)).length}종`;
+  }
+  function renderMedals(){
+    const root=$('ownedMedals'),ids=ownedMedalIds(account);medalGuide.render([]);
+    $('ownedMedalCount').textContent=ids===null?'—':`${ids.size}개`;
+    $('showUnownedMedals').disabled=ids===null||!medalCatalog;
+    if(ids===null){root.append(el('p','empty','메달 정보를 불러오려면 계정을 다시 연동해 주세요.'));return;}
+    if(!medalCatalog){root.append(el('p','empty','메달 목록을 불러오지 못했습니다.'));return;}
+    const entries=medalCatalog.entries.filter(entry=>ids.has(entry.id)||$('showUnownedMedals').checked);
+    medalGuide.render(entries,{ownedIds:ids});
+    if(!entries.length)root.append(el('p','empty',ids.size?'메달 목록을 불러오지 못했습니다.':'보유 메달이 없습니다.'));
   }
   // The current unit calculator's collection percentage and formatting.
   function chapterTreasurePercent(slots){if(!slots.length||slots.some(quality=>quality===0))return 0;return Math.floor(slots.reduce((sum,quality)=>sum+Number(quality),0)*100/(slots.length*3));}
@@ -259,7 +276,7 @@
     for(const definition of metadata.passives){
       const p=account.passives.find(value=>value.id===definition.id);if(!p)continue;
       const card=el('article','passive-card'),banner=image('',512,128),head=el('div','passive-card-header'),current=el('span','passive-current-level');card.dataset.passiveId=p.id;banner.className='passive-banner';banner.alt=definition.name;
-      const update=()=>{banner.src=p.level>=10?definition.imageGold:definition.image;current.textContent=`Lv.${p.level}${p.plus?'+'+p.plus:''}`;syncPassiveMaxButton();};update();head.append(banner,el('h3','',definition.name),current);card.append(head,el('p','passive-effect',definition.description));
+      const update=()=>{banner.src=p.level+p.plus>=10?definition.imageGold:definition.image;current.textContent=`Lv.${p.level}${p.plus?'+'+p.plus:''}`;syncPassiveMaxButton();};update();head.append(banner,el('h3','',definition.name),current);card.append(head,el('p','passive-effect',definition.description));
       if(editing){const controls=el('div','passive-level-controls');
         for(const[field,label,min,max]of[['level','기본 레벨',1,definition.maxBase],['plus','+ 레벨',0,definition.maxPlus]]){
           const row=el('div','passive-level-row'),caption=el('label','',label),id=`passive-${p.id}-${field}`,range=el('input');caption.htmlFor=id;
@@ -308,6 +325,7 @@
   function renderProfile(value){
     const rank=value?.calculatedUserRank;
     $('userRank').textContent=Number.isSafeInteger(rank)&&rank>=0?rank.toLocaleString('ko-KR'):'—';
+    const medals=ownedMedalIds(value);$('profileMedalCount').textContent=medals===null?'—':`${medals.size}개`;
     const club=Object.hasOwn(value||{},'profileIcon')?value.profileIcon:value?.clubProfile;
     const selected=Number.isInteger(club?.unitId)&&club.unitId>=0&&Number.isInteger(club.formIndex)
       ?catalog.entries.find(entry=>entry.id===club.unitId&&entry.form===club.formIndex+1):null;
@@ -317,7 +335,7 @@
     icon.alt=selected?.name||'프로필 이미지';
   }
   function renderAccount(value,newRevision=revision){
-    account=value;revision=newRevision;renderProfile(value);if(!value)return;renderUnits();renderPassives();renderInventory();renderClearedStages();const tabs=$('treasureTabs');tabs.hidden=false;tabs.replaceChildren();
+    account=value;revision=newRevision;renderProfile(value);if(!value)return;renderUnits();renderPassives();renderInventory();renderMedals();renderClearedStages();const tabs=$('treasureTabs');tabs.hidden=false;tabs.replaceChildren();
     for(const[i,f]of metadata.stories.entries()){const b=el('button','treasure-category-tab',`${f.label} 보물`);b.type='button';b.dataset.index=i;b.addEventListener('click',()=>renderTreasures(i));tabs.append(b);}renderTreasures();
   }
   function tooltips(){const tip=$('accountTooltip');if(!tip)return;let tooltipScrollFrame=0;
@@ -334,6 +352,9 @@
       },true);document.addEventListener('keydown',e=>{if(e.key==='Escape')tip.hidden=true;});
   }
   function initPanels(){
+    for(const [id,render] of [['showUnownedUnits',renderUnits],['showUnownedMedals',renderMedals]]){
+      const input=$(id),label=input.closest('label');label.addEventListener('click',event=>event.stopPropagation());label.addEventListener('keydown',event=>{if(event.key===' '||event.key==='Enter')event.stopPropagation();});input.addEventListener('change',()=>{if(account)render();});
+    }
     const key='nyanko-db:mypage-panels:v1';let states={};try{states=JSON.parse(sessionStorage.getItem(key))||{};}catch(_){}
     for(const details of document.querySelectorAll('.account-details')){
       if(typeof states[details.id]==='boolean')details.open=states[details.id];
@@ -345,6 +366,8 @@
     const linked=window.NyankoAccountDefaults.active();$('syncAccount').textContent=linked?'DB 연동 해제':'DB 연동';$('syncAccount').setAttribute('aria-pressed',String(linked));
     $('syncAccount').disabled=!account||editing||saving||linking;
     $('profileAvatar').disabled=!account||!editing||saving||linking;
+    $('showUnownedUnits').disabled=!account;
+    $('showUnownedMedals').disabled=ownedMedalIds(account)===null||!medalCatalog;
     document.body.dataset.editing=String(editing);$('editAccount').textContent=editing?'취소':'수정';$('editAccount').disabled=!account||saving||linking;$('saveAccount').disabled=!editing||saving;
     for(const input of $('linkForm').elements)input.disabled=editing||saving||linking;
     $('saveYes').disabled=$('saveNo').disabled=saving;syncAllGoldButton();syncPassiveMaxButton();
@@ -352,7 +375,7 @@
   function beginEditing(){
     if(!editing&&account.passives?.length!==10){status('editStatus','패시브를 불러오려면 계정을 다시 연동해 주세요.',true);return;}
     editing=!editing;account=clone(savedAccount);renderAccount(account);status('editStatus','');updateActions();
-    if(editing)for(const details of document.querySelectorAll('#ownedPanel,#passivePanel,#treasurePanel,#inventoryPanel,#clearedStagesPanel'))details.open=true;
+    if(editing)for(const details of document.querySelectorAll('#ownedPanel,#passivePanel,#treasurePanel,#inventoryPanel,#medalsPanel,#clearedStagesPanel'))details.open=true;
   }
   function initEditing(){
     $('profileAvatar').addEventListener('click',()=>{if(account&&editing&&!saving&&!linking)profileIconEditor();});
@@ -402,7 +425,7 @@
         authBusy=true;b.disabled=true;if(view==='signup')$('sendCode').disabled=true;status('status',view==='signup'?'회원가입 중입니다.':'로그인 중입니다.');
         try{await api(view==='signup'?'/api/auth/verify-email':'/api/auth/login',view==='signup'?{username:$('username').value,code:$('emailCode').value}:Object.fromEntries(new FormData(form)));$('password').value='';location.assign('/mypage/');}
         catch(err){status('status',err.message,true);}finally{authBusy=false;b.disabled=false;if(view==='signup')$('sendCode').disabled=false;}});return;}
-    initPanels();initEditing();initEditor();$('addClearedStage').addEventListener('click',addStageEditor);tooltips();metadata=await fetch('account-metadata.json',{cache:'no-cache'}).then(r=>r.json());let data;
+    initPanels();initEditing();initEditor();$('addClearedStage').addEventListener('click',addStageEditor);tooltips();[metadata,medalCatalog]=await Promise.all([fetch('account-metadata.json',{cache:'no-cache'}).then(r=>r.json()),fetch('../medal/catalog.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error();return r.json();}).then(value=>{if(!Array.isArray(value.entries))throw new Error();return value;}).catch(()=>null)]);let data;
     try{data=await api('/api/account');}catch(e){finishLoading();if(e.status===401){location.replace('login.html');return;}throw e;}
     finishLoading();$('accountView').hidden=false;status('status','');$('userName').textContent=`안녕하세요, ${data.user.username||data.user.nickname||'사용자'} 님.`;
     savedAccount=clone(data.account);renderAccount(clone(data.account),data.revision);updateActions();

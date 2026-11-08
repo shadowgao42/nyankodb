@@ -333,3 +333,6 @@
   .filter-panel > .section-heading { align-items:flex-start; flex-direction:column; gap:5px; }
   .text-chip { min-width:calc(50% - 4px); flex:1 1 calc(50% - 4px); }
 }
+
+/* Match the medal target outline, including pointer-initiated navigation. */
+#comboSearchResults .combo-result:focus { outline:2px solid var(--accent-2); outline-offset:2px; }

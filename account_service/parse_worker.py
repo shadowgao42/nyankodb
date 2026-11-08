@@ -57,9 +57,9 @@ for c in p.cats.cats:
     units.append({'id': c.id, 'level': level, 'plus': c.upgrade.plus, 'highestForm': highest,
                   'raw': {'currentForm': c.current_form, 'unlockedForms': c.unlocked_forms, 'fourthForm': c.fourth_form},
                   'talents': [t.serialize() for t in c.talents or []]})
-from profile_extras import inventory_values, cleared_stages
+from profile_extras import inventory_values, cleared_stages, owned_medals
 result = {'version': '15.7.0', 'region': 'kr', 'sha256': hashlib.sha256(data).hexdigest(),
-          'inventory': inventory_values(p), 'clearedStages': cleared_stages(p),
+          'inventory': inventory_values(p), 'clearedStages': cleared_stages(p), 'medals': owned_medals(p),
           'stats': {k: getattr(p, k) for k in ['catfood', 'xp', 'current_energy', 'leadership']},
           'clubProfile': {'unitId': p.officer_pass.cat_id, 'formIndex': p.officer_pass.cat_form},
           'calculatedUserRank': p.calculate_user_rank(), 'units': units,

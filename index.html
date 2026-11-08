@@ -280,6 +280,7 @@
 </head>
 <body>
   <header data-nyanko-gnb data-gnb-desktop-only data-search-prefix="unitSearch"></header>
+  <script src="gnb.js"></script>
   <main class="page">
     <a class="brand" href="./" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
 
@@ -297,10 +298,10 @@
       </div>
       <form id="unit-search-form" role="search">
         <input id="unit-search-input" type="search" autocomplete="off"
-               placeholder="이름 입력" aria-label="유닛 또는 적 이름">
+               placeholder="이름 입력" aria-label="검색할 이름 또는 ID">
         <button type="submit">검색</button>
       </form>
-      <p class="search-status" id="search-status" aria-live="polite">유닛 목록을 불러오는 중입니다.</p>
+      <p class="search-status" id="search-status" aria-live="polite">검색 목록을 불러오는 중입니다.</p>
       <div class="search-results" id="search-results" role="listbox" aria-label="검색 결과"></div>
     </section>
 
@@ -384,7 +385,6 @@
 
     })();
   </script>
-  <script src="gnb.js" defer></script>
   <script src="analytics-bundle.js"></script>
 </body>
 </html>

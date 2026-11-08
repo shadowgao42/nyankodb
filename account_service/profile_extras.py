@@ -68,3 +68,9 @@ def cleared_stages(save):
                 file_index=48+chapter if index==47 and chapter in (1,2) else index
                 records.append({'href':f'stage/Z{chapter:03d}/{file_index}.html','count':None,'crown':1,'cleared':True})
     return records
+
+
+def owned_medals(save):
+    # Actual ownership uses the same ID list as the vendor has_medal method.
+    return sorted({identity for identity in save.medals.medal_data_1
+                   if type(identity) is int and identity >= 0})

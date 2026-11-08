@@ -233,7 +233,7 @@
         <div class="unit-search-field gnb-search-field">
           <svg class="gnb-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
           <input type="search" autocomplete="off" spellcheck="false"
-            aria-label="검색할 유닛 이름" aria-autocomplete="list" aria-expanded="false">
+            aria-label="검색할 이름 또는 ID" aria-autocomplete="list" aria-expanded="false">
           <div class="unit-search-results gnb-search-results" role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
         </div>
       </form>
