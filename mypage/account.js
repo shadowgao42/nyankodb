@@ -148,12 +148,45 @@
       body.addEventListener('stagefilterschange',list.refresh);
     },null,'#addClearedStage');
   }
+  function profileIconEditor(){
+    let choice=Object.hasOwn(account,'profileIcon')?clone(account.profileIcon):undefined;
+    showEditor('프로필 아이콘',root=>{
+      const head=el('div','editor-unit-heading'),defaultBox=el('div','owned-entry'),defaultButton=el('button','nyancombo-member profile-icon-option'),defaultFrame=el('span','nyancombo-member-image');
+      defaultButton.id='profileIconDefault';defaultButton.type='button';defaultButton.setAttribute('aria-label','기본 프로필 아이콘');defaultFrame.append(image('../img/icon/uni_nyankoClub_0.png',104,79));defaultButton.append(defaultFrame);defaultBox.append(defaultButton,el('p','owned-level','기본'));
+      const preview=el('div','editor-unit-preview'),previewIcon=image('../img/icon/uni_nyankoClub_0.png',104,79),settings=el('div','editor-unit-form-settings'),row=el('div','editor-unit-form-row'),caption=el('span','editor-unit-form-label','적용 형태'),forms=el('div','tabs editor-unit-forms');
+      forms.id='profileIconForms';forms.setAttribute('role','group');forms.setAttribute('aria-label','프로필 아이콘 형태');row.append(caption,forms);settings.append(row);preview.append(previewIcon,settings);head.append(defaultBox,preview);
+      const search=el('input');search.type='search';search.setAttribute('aria-label','프로필 캐릭터 검색');search.placeholder='캐릭터 이름 또는 ID';
+      const filters=el('div'),list=el('div','required-unit-groups editor-unit-list');root.append(head,search,filters,list);
+      const owned=new Map(account.units.map(unit=>[unit.id,unit])),available=unitOptions().filter(entry=>owned.has(entry.id)&&!summonedUnitIds.has(entry.id));
+      let matches=[],page=0,pageGroups=[];const sort=$('editorUnitSort');sort.hidden=false;
+      for(const[value,label]of[['encyclopedia','도감순'],['release','출시순']]){const button=el('button','',label);button.type='button';button.dataset.order=value;button.setAttribute('aria-pressed',String(unitOrder===value));button.addEventListener('click',()=>{unitOrder=value;for(const item of sort.children)item.setAttribute('aria-pressed',String(item===button));rebuildPages(false);});sort.append(button);}
+      const navigation=el('div','editor-unit-pagination'),previous=el('button','action'),counter=el('span','owned-count'),next=el('button','action');previous.append(el('span','editor-pagination-arrow','‹'));next.append(el('span','editor-pagination-arrow','›'));previous.type=next.type='button';previous.setAttribute('aria-label','이전 페이지');next.setAttribute('aria-label','다음 페이지');counter.setAttribute('role','status');counter.setAttribute('aria-live','polite');navigation.append(previous,counter,next);root.insertBefore(navigation,list);
+      const resolved=()=>choice===undefined?account.clubProfile:choice;
+      function refreshSelection(){
+        const selected=resolved(),unit=owned.get(selected?.unitId),entry=catalog.entries.find(item=>item.id===selected?.unitId&&item.form===selected.formIndex+1);
+        defaultButton.setAttribute('aria-pressed',String(!entry));forms.replaceChildren();preview.hidden=!entry;
+        if(entry){previewIcon.src='../'+entry.icon.replace(/^\.\.\//,'');previewIcon.alt=entry.name;
+          for(const item of catalog.entries.filter(item=>item.id===entry.id).sort((a,b)=>a.form-b.form)){const button=el('button','',`${item.form}단`);button.type='button';button.disabled=!unit||item.form>unitUnlockedForm(unit);button.setAttribute('aria-pressed',String(item.form===entry.form));button.addEventListener('click',()=>{choice={unitId:item.id,formIndex:item.form-1};refreshSelection();});forms.append(button);}
+        }
+        for(const button of list.querySelectorAll('[data-unit-id]'))button.setAttribute('aria-pressed',String(Number(button.dataset.unitId)===selected?.unitId));
+      }
+      function renderPage(){
+        list.replaceChildren();const pages=pageGroups.length;page=Math.min(page,Math.max(0,pages-1));previous.disabled=page===0;next.disabled=page+1>=pages;counter.textContent=`${matches.length.toLocaleString('ko-KR')}종 · ${matches.length?page+1:0} / ${pages}`;
+        const current=pageGroups[page],grid=el('div','nyancombo-members');if(current)list.append(raritySection(current.rarity,grid));
+        for(const entry of current?.entries||[]){const unit=owned.get(entry.id),selected=catalog.entries.find(item=>item.id===entry.id&&item.form===unitForm(unit))||entry,box=el('div','owned-entry'),button=el('button','nyancombo-member profile-icon-option'),frame=el('span','nyancombo-member-image');button.type='button';button.dataset.unitId=entry.id;button.dataset.tooltip=selected.name;button.setAttribute('aria-label',selected.name);frame.append(image('../'+selected.icon.replace(/^\.\.\//,''),104,79));button.append(frame);button.addEventListener('click',()=>{choice={unitId:entry.id,formIndex:unitForm(unit)-1};refreshSelection();});box.append(button);grid.append(box);}
+        if(!matches.length)list.append(el('p','empty','보유 캐릭터가 없습니다.'));refreshSelection();
+      }
+      function rebuildPages(resetPage=true){pageGroups=window.NyankoUnitGuide.pages(matches,catalog.rarities,encyclopedia,unitOrder);if(resetPage)page=0;renderPage();}
+      defaultButton.addEventListener('click',()=>{choice=null;refreshSelection();});previous.addEventListener('click',()=>{if(page>0){page--;renderPage();}});next.addEventListener('click',()=>{if(page+1<pageGroups.length){page++;renderPage();}});
+      window.NyankoUnitPickerFilters.mount(filters,search,filtered=>{const hits=new Set(filtered.map(entry=>Number(entry.id)));matches=available.filter(entry=>hits.has(entry.id));rebuildPages();});refreshSelection();
+    },()=>{if(choice===undefined)delete account.profileIcon;else account.profileIcon=clone(choice);renderProfile(account);},'#profileAvatar');
+  }
   function editPatches(){
     const inventoryEdits={};for(const[key,value]of Object.entries(account.inventory||{}))if(value!==(savedAccount.inventory||{})[key])inventoryEdits[key]=value;
     const pick=row=>({href:row.href,count:row.count,crown:row.crown,...(row.chapter===undefined?{}:{chapter:row.chapter}),...(row.cleared===undefined?{}:{cleared:row.cleared})});
     const originals=new Map((savedAccount.clearedStages||[]).map(row=>[stageIdentity(row),JSON.stringify(pick(row))]));
     const stageEdits=(account.clearedStages||[]).filter(row=>JSON.stringify(pick(row))!==originals.get(stageIdentity(row))).map(pick);
-    return {inventoryEdits,stageEdits,removedUnitIds:savedAccount.units.filter(unit=>!account.units.some(current=>current.id===unit.id)).map(unit=>unit.id)};
+    return {inventoryEdits,stageEdits,removedUnitIds:savedAccount.units.filter(unit=>!account.units.some(current=>current.id===unit.id)).map(unit=>unit.id),...(JSON.stringify(account.profileIcon)!==JSON.stringify(savedAccount.profileIcon)?{profileIcon:account.profileIcon??null}:{})};
   }
   function initEditor(){
     const dialog=$('profileEditor');$('editorCancel').addEventListener('click',()=>dialog.close());
@@ -272,8 +305,19 @@
     }});
     for(const id of controls){const button=[...root.querySelectorAll('button[aria-controls]')].find(b=>b.getAttribute('aria-controls')===id);if(button?.getAttribute('aria-expanded')==='false')button.click();}
   }
+  function renderProfile(value){
+    const rank=value?.calculatedUserRank;
+    $('userRank').textContent=Number.isSafeInteger(rank)&&rank>=0?rank.toLocaleString('ko-KR'):'—';
+    const club=Object.hasOwn(value||{},'profileIcon')?value.profileIcon:value?.clubProfile;
+    const selected=Number.isInteger(club?.unitId)&&club.unitId>=0&&Number.isInteger(club.formIndex)
+      ?catalog.entries.find(entry=>entry.id===club.unitId&&entry.form===club.formIndex+1):null;
+    const icon=$('clubProfileIcon'),fallback='../img/icon/uni_nyankoClub_0.png';
+    icon.onerror=()=>{icon.onerror=null;icon.src=fallback;icon.alt='프로필 이미지';};
+    icon.src=selected?'../'+selected.icon.replace(/^\.\.\//,''):fallback;
+    icon.alt=selected?.name||'프로필 이미지';
+  }
   function renderAccount(value,newRevision=revision){
-    account=value;revision=newRevision;if(!value)return;renderUnits();renderPassives();renderInventory();renderClearedStages();const tabs=$('treasureTabs');tabs.hidden=false;tabs.replaceChildren();
+    account=value;revision=newRevision;renderProfile(value);if(!value)return;renderUnits();renderPassives();renderInventory();renderClearedStages();const tabs=$('treasureTabs');tabs.hidden=false;tabs.replaceChildren();
     for(const[i,f]of metadata.stories.entries()){const b=el('button','treasure-category-tab',`${f.label} 보물`);b.type='button';b.dataset.index=i;b.addEventListener('click',()=>renderTreasures(i));tabs.append(b);}renderTreasures();
   }
   function tooltips(){const tip=$('accountTooltip');if(!tip)return;let tooltipScrollFrame=0;
@@ -298,8 +342,9 @@
     }
   }
   function updateActions(){
-    const linked=window.NyankoAccountDefaults.active();$('syncAccount').textContent=linked?'연동 해제':'연동';$('syncAccount').setAttribute('aria-pressed',String(linked));
+    const linked=window.NyankoAccountDefaults.active();$('syncAccount').textContent=linked?'DB 연동 해제':'DB 연동';$('syncAccount').setAttribute('aria-pressed',String(linked));
     $('syncAccount').disabled=!account||editing||saving||linking;
+    $('profileAvatar').disabled=!account||!editing||saving||linking;
     document.body.dataset.editing=String(editing);$('editAccount').textContent=editing?'취소':'수정';$('editAccount').disabled=!account||saving||linking;$('saveAccount').disabled=!editing||saving;
     for(const input of $('linkForm').elements)input.disabled=editing||saving||linking;
     $('saveYes').disabled=$('saveNo').disabled=saving;syncAllGoldButton();syncPassiveMaxButton();
@@ -310,6 +355,7 @@
     if(editing)for(const details of document.querySelectorAll('#ownedPanel,#passivePanel,#treasurePanel,#inventoryPanel,#clearedStagesPanel'))details.open=true;
   }
   function initEditing(){
+    $('profileAvatar').addEventListener('click',()=>{if(account&&editing&&!saving&&!linking)profileIconEditor();});
     $('allMaxPassives').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(!editing||saving||linking||!account)return;for(const definition of metadata.passives){const p=account.passives.find(value=>value.id===definition.id);if(p){p.level=definition.maxBase;p.plus=definition.maxPlus;}}renderPassives();});
     $('allGoldTreasures').addEventListener('click',event=>{event.preventDefault();event.stopPropagation();if(!editing||saving||linking||!account)return;forEachTreasureSlot((values,index)=>{values[index]=3;});renderTreasures();});
     $('syncAccount').addEventListener('click',()=>{
@@ -358,7 +404,7 @@
         catch(err){status('status',err.message,true);}finally{authBusy=false;b.disabled=false;if(view==='signup')$('sendCode').disabled=false;}});return;}
     initPanels();initEditing();initEditor();$('addClearedStage').addEventListener('click',addStageEditor);tooltips();metadata=await fetch('account-metadata.json',{cache:'no-cache'}).then(r=>r.json());let data;
     try{data=await api('/api/account');}catch(e){finishLoading();if(e.status===401){location.replace('login.html');return;}throw e;}
-    finishLoading();$('accountView').hidden=false;status('status','');$('userName').textContent=data.user.username||data.user.nickname||'마이페이지';
+    finishLoading();$('accountView').hidden=false;status('status','');$('userName').textContent=`안녕하세요, ${data.user.username||data.user.nickname||'사용자'} 님.`;
     savedAccount=clone(data.account);renderAccount(clone(data.account),data.revision);updateActions();
     const form=$('linkForm'),clearTransfer=()=>form.reset();addEventListener('pagehide',clearTransfer);clearTransfer();
     form.addEventListener('submit',async e=>{

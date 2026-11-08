@@ -61,6 +61,7 @@ from profile_extras import inventory_values, cleared_stages
 result = {'version': '15.7.0', 'region': 'kr', 'sha256': hashlib.sha256(data).hexdigest(),
           'inventory': inventory_values(p), 'clearedStages': cleared_stages(p),
           'stats': {k: getattr(p, k) for k in ['catfood', 'xp', 'current_energy', 'leadership']},
+          'clubProfile': {'unitId': p.officer_pass.cat_id, 'formIndex': p.officer_pass.cat_form},
           'calculatedUserRank': p.calculate_user_rank(), 'units': units,
           'passives': [{'id': i, 'level': skill.upgrade.base + 1, 'plus': skill.upgrade.plus}
                        for i, skill in enumerate(p.special_skills.get_valid_skills())],

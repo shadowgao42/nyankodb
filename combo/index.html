@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>냥콤보 목록 · 냥코DB</title><link rel="stylesheet" href="../list-page.css"><link rel="stylesheet" href="../gnb.css"><link rel="stylesheet" href="list.css"></head>
+<body class="combo-index"><main class="page"><header data-nyanko-gnb data-search-prefix="unitSearch"></header><script src="../gnb.js"></script>
+<section class="search-panel" aria-labelledby="searchTitle"><h1 id="searchTitle">냥콤보 검색</h1><p class="search-description">냥콤보·유닛·효과로 검색할 수 있습니다.</p><form class="search-controls" id="comboSearchForm" role="search"><input class="search-input" id="comboSearchInput" type="search" autocomplete="off" spellcheck="false" placeholder="냥콤보·유닛·효과 검색" aria-label="냥콤보·유닛·효과 검색"></form></section>
+<section class="filter-panel is-collapsed combo-settings" aria-labelledby="filterTitle">
+  <div class="section-heading"><h2 id="filterTitle">검색 필터</h2><div class="filter-actions"><button class="reset-button" id="resetFilters" type="button" disabled>초기화</button><button class="filter-collapse" id="filterCollapse" type="button" aria-expanded="false" aria-controls="filterBody"><span id="filterCollapseText">펼치기</span><span class="filter-collapse-arrow" aria-hidden="true">▾</span></button></div></div>
+  <div class="filter-body" id="filterBody" hidden>
+    <div class="filter-group"><h3 class="filter-label">종류</h3><div class="filter-chip-list" id="comboCategoryTabs" role="group" aria-label="냥콤보 종류"></div></div>
+    <div class="filter-group" id="comboSubcategoryGroup" hidden><h3 class="filter-label">세부 종류</h3><div class="filter-chip-list" id="comboSubcategoryTabs" role="group" aria-label="냥콤보 세부 종류"></div></div>
+  </div>
+</section>
+<section class="results-panel combo-settings" aria-labelledby="resultsTitle"><div class="section-heading"><h2 id="resultsTitle">냥콤보 목록</h2><p class="result-status" id="comboSearchStatus" role="status" aria-live="polite"></p></div><div class="combo-results" id="comboSearchResults" aria-label="냥콤보 검색 결과"></div></section>
+</main><script src="../catalog.js"></script><script src="../search.js" defer></script><script src="../unit/nyancombo-data.js"></script><script src="list.js" defer></script><script src="../analytics-bundle.js"></script></body></html>

@@ -372,7 +372,7 @@ def account():
 def validate_edits(profile, data, metadata):
     """Allowlisted manual collection edits; raw source/auth fields stay immutable."""
     fields = {'revision', 'units', 'treasures', 'passives'}
-    if not isinstance(data, dict) or set(data) not in (fields, fields | {'inventoryEdits', 'stageEdits'}, fields | {'inventoryEdits', 'stageEdits', 'removedUnitIds'}):
+    if not isinstance(data, dict) or set(data) - {'profileIcon'} not in (fields, fields | {'inventoryEdits', 'stageEdits'}, fields | {'inventoryEdits', 'stageEdits', 'removedUnitIds'}):
         raise PublicError('저장할 데이터를 확인해 주세요.')
     if data['revision'] != revision(profile):
         raise PublicError('다른 곳에서 계정 정보가 변경됐습니다. 새로고침 후 다시 수정해 주세요.', 409)
@@ -448,6 +448,18 @@ def validate_edits(profile, data, metadata):
     if 'inventoryEdits' in data:
         apply_extras(result, data, metadata, SITE, PublicError)
     result['calculatedUserRank'] = sum(u['level']+u['plus'] for u in result['units']) + sum(p['level']+p['plus'] for p in result['passives'])
+    if 'profileIcon' in data:
+        icon = data['profileIcon']
+        if icon is not None:
+            if (not isinstance(icon, dict) or set(icon) != {'unitId', 'formIndex'}
+                    or type(icon['unitId']) is not int or type(icon['formIndex']) is not int):
+                raise PublicError('프로필 아이콘을 확인해 주세요.')
+            selected = next((unit for unit in result['units'] if unit['id'] == icon['unitId']), None)
+            form = icon['formIndex'] + 1
+            if (selected is None or form not in forms.get(icon['unitId'], set())
+                    or form > selected['highestForm']):
+                raise PublicError('보유 캐릭터의 해금한 형태를 선택해 주세요.')
+        result['profileIcon'] = copy.deepcopy(icon)
     result['editedAt'] = datetime.now(timezone.utc).isoformat()
     return result
 

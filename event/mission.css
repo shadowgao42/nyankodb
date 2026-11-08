@@ -6,7 +6,7 @@
 .mission-objective-row > .sale-rewards { width: clamp(56px, calc(7vw + 29px), 96px); margin: 12px 15px 0 0; padding: 0; justify-content: flex-end; }
 .mission-objective-row > .sale-description { width: clamp(56px, calc(7vw + 29px), 96px); margin: 12px 15px 0 0; text-align: right; }
 .mission-objective-row:has(.mission-stage-help-button) { grid-template-columns: minmax(0, 1fr) auto auto; }
-.mission-stage-help-button { margin: 12px 15px 0 0; padding-inline: 6px; }
+.mission-stage-help-button { margin: 12px 15px 0 0; width: 30px; min-width: 30px; height: 30px; padding: 0; }
 .mission-stage-help { inset: auto; margin: 0; width: 360px; max-width: calc(100vw - 24px); max-height: 420px; overflow: auto; pointer-events: auto; }
 .mission-stage-help-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
 .mission-stage-help-heading h3 { margin: 0; font-size: 14px; font-weight: 900; }

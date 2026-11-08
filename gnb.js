@@ -220,6 +220,8 @@
         <a class="gnb-menu-link" data-section="item"><img alt="" width="30" height="30"><span>아이템</span></a>
         <a class="gnb-menu-link" data-section="stage"><img alt="" width="30" height="30"><span>스테이지</span></a>
         <a class="gnb-menu-link" data-section="event"><img alt="" width="30" height="30"><span>일정</span></a>
+        <a class="gnb-menu-link" data-section="combo"><img alt="" width="30" height="30"><span>냥콤보</span></a>
+        <a class="gnb-menu-link" data-section="medal"><img alt="" width="30" height="30"><span>메달</span></a>
         <span class="gnb-sidebar-divider" aria-hidden="true"></span>
         <a class="gnb-menu-link gnb-desktop-link" data-section="mypage"><span class="nyanko-bottom-navigation-icon" aria-hidden="true"></span><span>마이페이지</span></a>
         <span class="gnb-menu-indicator" aria-hidden="true"></span>
@@ -268,6 +270,7 @@
     const current = links.find(link => link.hasAttribute("aria-current"));
     let selected = current;
     let navigationPending = false;
+    let settlingFrame = 0;
     function emphasize(link) {
       selected = link;
       for (const item of links) item.classList.toggle("is-emphasized", item === link);
@@ -281,11 +284,24 @@
       }
     }
     function settleOn(link) {
+      cancelAnimationFrame(settlingFrame);
       header.dataset.gnbSettling = "true";
       emphasize(link);
-      // Commit the current-section position before transitions are enabled.
+      if (link?.getClientRects().length && matchMedia("(max-width: 820px)").matches) {
+        if (link.offsetLeft < menu.scrollLeft) menu.scrollLeft = link.offsetLeft;
+        else if (link.offsetLeft + link.offsetWidth > menu.scrollLeft + menu.clientWidth)
+          menu.scrollLeft = link.offsetLeft + link.offsetWidth - menu.clientWidth;
+      }
+      // Resolve the final sidebar layout before allowing interaction transitions.
       void indicator.offsetWidth;
-      requestAnimationFrame(() => { delete header.dataset.gnbSettling; });
+      settlingFrame = requestAnimationFrame(() => {
+        emphasize(selected);
+        void indicator.offsetWidth;
+        settlingFrame = requestAnimationFrame(() => {
+          delete header.dataset.gnbSettling;
+          settlingFrame = 0;
+        });
+      });
     }
     for (const link of links) {
       link.addEventListener("pointerenter", () => { if (!navigationPending) emphasize(link); });
@@ -306,7 +322,7 @@
     };
     menu.addEventListener("pointerleave", restore);
     menu.addEventListener("focusout", () => queueMicrotask(restore));
-    new ResizeObserver(() => emphasize(selected)).observe(menu);
+    new ResizeObserver(() => settleOn(selected)).observe(menu);
     window.addEventListener("pageshow", () => { navigationPending = false; settleOn(current); });
     settleOn(current);
     header.dataset.gnbMounted = "true";

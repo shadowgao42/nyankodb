@@ -1,0 +1,2635 @@
+{
+  "schemaVersion": 1,
+  "sources": {
+    "kr": {
+      "medallist.json": "49032b869472418e04dc9df31441f72b9a302879ceaf300690a64b5d705a61ad",
+      "medalname.tsv": "89431d6224589cbd85824f968123bbba820d102ba7f81e01c0ab1add42199067"
+    },
+    "jp": {
+      "medallist.json": "1dcd97e6bbc7025781a4438f701c0f921ed955dead83c3591bd41422028970a2",
+      "medalname.tsv": "aa2e99087e89a8776aed3430990626cf3070ad6b9d94928bf99dde125fe25fce"
+    }
+  },
+  "entries": [
+    {
+      "id": 0,
+      "name": "세계편 1장",
+      "description": "세계편 1장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_000.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 0,
+        "map": [
+          3000
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 1,
+      "name": "세계편 2장",
+      "description": "세계편 2장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_001.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 1,
+        "map": [
+          3001
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 2,
+      "name": "세계편 3장",
+      "description": "세계편 3장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_002.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 2
+        },
+        "grade": 2,
+        "line": 2,
+        "map": [
+          3002
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 3,
+      "name": "세계 수호Ⅰ",
+      "description": "세계편 1장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_003.png",
+      "grade": 0,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 0,
+        "line": 3,
+        "map": [
+          20000
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "name": "세계 수호Ⅱ",
+      "description": "세계편 2장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_004.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 2
+        },
+        "grade": 1,
+        "line": 4,
+        "map": [
+          20001
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "name": "세계 수호Ⅲ",
+      "description": "세계편 3장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_005.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 2,
+        "line": 5,
+        "map": [
+          20002
+        ]
+      }
+    },
+    {
+      "id": 90,
+      "name": "마계",
+      "description": "마계편 클리어",
+      "icon": "../img/medal/medal_090.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1268
+          ]
+        },
+        "grade": 2,
+        "line": 6,
+        "map": [
+          4042
+        ],
+        "stage": 0
+      }
+    },
+    {
+      "id": 6,
+      "name": "미래편 1장",
+      "description": "미래편 1장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_006.png",
+      "grade": 0,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 0,
+        "line": 10,
+        "map": [
+          3003
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 7,
+      "name": "미래편 2장",
+      "description": "미래편 2장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_007.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 1,
+        "line": 11,
+        "map": [
+          3004
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 8,
+      "name": "미래편 3장",
+      "description": "미래편 3장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_008.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 5
+        },
+        "grade": 2,
+        "line": 12,
+        "map": [
+          3005
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 9,
+      "name": "미래 수호Ⅰ",
+      "description": "미래편 1장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_009.png",
+      "grade": 0,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 0,
+        "line": 13,
+        "map": [
+          21000
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "name": "미래 수호Ⅱ",
+      "description": "미래편 2장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_010.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 5
+        },
+        "grade": 1,
+        "line": 14,
+        "map": [
+          21001
+        ]
+      }
+    },
+    {
+      "id": 76,
+      "name": "미래 수호Ⅲ",
+      "description": "미래편 3장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_076.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 6
+        },
+        "grade": 2,
+        "line": 15,
+        "map": [
+          21002
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "name": "우주편 1장",
+      "description": "우주편 1장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_011.png",
+      "grade": 0,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 0,
+        "line": 20,
+        "map": [
+          3006
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 12,
+      "name": "우주편 2장",
+      "description": "우주편 2장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_012.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 7
+        },
+        "grade": 1,
+        "line": 21,
+        "map": [
+          3007
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 13,
+      "name": "우주편 3장",
+      "description": "우주편 3장의 최고급 보물 모두 획득",
+      "icon": "../img/medal/medal_013.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 8
+        },
+        "grade": 2,
+        "line": 22,
+        "map": [
+          3008
+        ],
+        "treasure": 2
+      }
+    },
+    {
+      "id": 94,
+      "name": "우주 수호Ⅰ",
+      "description": "우주편 1장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_094.png",
+      "grade": 0,
+      "native": {
+        "condition": {
+          "limit": 7
+        },
+        "grade": 0,
+        "line": 23,
+        "map": [
+          22000
+        ]
+      }
+    },
+    {
+      "id": 109,
+      "name": "우주 수호Ⅱ",
+      "description": "우주편 2장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_109.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 8
+        },
+        "grade": 1,
+        "line": 24,
+        "map": [
+          22001
+        ]
+      }
+    },
+    {
+      "id": 123,
+      "name": "우주 수호Ⅲ",
+      "description": "우주편 3장의 좀비 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_123.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 9
+        },
+        "grade": 2,
+        "line": 25,
+        "map": [
+          22002
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "name": "침략자 격파",
+      "description": "필리버스터 스테이지 클리어",
+      "icon": "../img/medal/medal_014.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 9
+        },
+        "grade": 3,
+        "line": 30,
+        "map": [
+          23000
+        ]
+      }
+    },
+    {
+      "id": 124,
+      "name": "침략자 격파Z",
+      "description": "필리버스터 좀비 스테이지 클리어",
+      "icon": "../img/medal/medal_124.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            20000,
+            20001,
+            20002,
+            21000,
+            21001,
+            21002,
+            22000,
+            22001,
+            22002,
+            23000,
+            34000
+          ]
+        },
+        "grade": 3,
+        "line": 31,
+        "map": [
+          38000
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "name": "전설의 냥코Ⅰ",
+      "description": "레전드 스토리\n스테이지 레벨 1을 모두 클리어",
+      "icon": "../img/medal/medal_015.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 101,
+        "map": [
+          48
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 16,
+      "name": "전설의 냥코Ⅱ",
+      "description": "레전드 스토리\n스테이지 레벨 2를 모두 클리어",
+      "icon": "../img/medal/medal_016.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 102,
+        "map": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "star": 1
+      }
+    },
+    {
+      "id": 17,
+      "name": "전설의 냥코Ⅲ",
+      "description": "레전드 스토리\n스테이지 레벨 3을 모두 클리어",
+      "icon": "../img/medal/medal_017.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 103,
+        "map": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "star": 2
+      }
+    },
+    {
+      "id": 85,
+      "name": "전설의 냥코 Ⅳ",
+      "description": "레전드 스토리\n스테이지 레벨 4를 전부 클리어",
+      "icon": "../img/medal/medal_085.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 3,
+        "line": 104,
+        "map": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "star": 3
+      }
+    },
+    {
+      "id": 86,
+      "name": "고대 생명체 격파",
+      "description": "이디 스테이지 클리어",
+      "icon": "../img/medal/medal_086.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            48
+          ],
+          "star": 3
+        },
+        "grade": 3,
+        "line": 105,
+        "map": [
+          4026
+        ]
+      }
+    },
+    {
+      "id": 103,
+      "name": "신 전설의 냥코Ⅰ",
+      "description": "신 레전드 스토리\n스테이지 레벨 1을 모두 클리어",
+      "icon": "../img/medal/medal_103.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            48
+          ]
+        },
+        "grade": 2,
+        "line": 106,
+        "map": [
+          13048
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 106,
+      "name": "신 전설의 냥코Ⅱ",
+      "description": "신 레전드 스토리\n스테이지 레벨 2를 모두 클리어",
+      "icon": "../img/medal/medal_106.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ]
+        },
+        "grade": 2,
+        "line": 107,
+        "map": [
+          13000,
+          13001,
+          13002,
+          13003,
+          13004,
+          13005,
+          13006,
+          13007,
+          13008,
+          13009,
+          13010,
+          13011,
+          13012,
+          13013,
+          13014,
+          13015,
+          13016,
+          13017,
+          13018,
+          13019,
+          13020,
+          13021,
+          13022,
+          13023,
+          13024,
+          13025,
+          13026,
+          13027,
+          13028,
+          13029,
+          13030,
+          13031,
+          13032,
+          13033,
+          13034,
+          13035,
+          13036,
+          13037,
+          13038,
+          13039,
+          13040,
+          13041,
+          13042,
+          13043,
+          13044,
+          13045,
+          13046,
+          13047,
+          13048
+        ],
+        "star": 1
+      }
+    },
+    {
+      "id": 110,
+      "name": "신 전설의 냥코Ⅲ",
+      "description": "신 레전드 스토리\n스테이지 레벨 3을 모두 클리어",
+      "icon": "../img/medal/medal_110.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ]
+        },
+        "grade": 2,
+        "line": 108,
+        "map": [
+          13000,
+          13001,
+          13002,
+          13003,
+          13004,
+          13005,
+          13006,
+          13007,
+          13008,
+          13009,
+          13010,
+          13011,
+          13012,
+          13013,
+          13014,
+          13015,
+          13016,
+          13017,
+          13018,
+          13019,
+          13020,
+          13021,
+          13022,
+          13023,
+          13024,
+          13025,
+          13026,
+          13027,
+          13028,
+          13029,
+          13030,
+          13031,
+          13032,
+          13033,
+          13034,
+          13035,
+          13036,
+          13037,
+          13038,
+          13039,
+          13040,
+          13041,
+          13042,
+          13043,
+          13044,
+          13045,
+          13046,
+          13047,
+          13048
+        ],
+        "star": 2
+      }
+    },
+    {
+      "id": 117,
+      "name": "신 전설의 냥코Ⅳ",
+      "description": "신 레전드 스토리\n스테이지 레벨 4를 모두 클리어",
+      "icon": "../img/medal/medal_117.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ]
+        },
+        "grade": 3,
+        "line": 109,
+        "map": [
+          13000,
+          13001,
+          13002,
+          13003,
+          13004,
+          13005,
+          13006,
+          13007,
+          13008,
+          13009,
+          13010,
+          13011,
+          13012,
+          13013,
+          13014,
+          13015,
+          13016,
+          13017,
+          13018,
+          13019,
+          13020,
+          13021,
+          13022,
+          13023,
+          13024,
+          13025,
+          13026,
+          13027,
+          13028,
+          13029,
+          13030,
+          13031,
+          13032,
+          13033,
+          13034,
+          13035,
+          13036,
+          13037,
+          13038,
+          13039,
+          13040,
+          13041,
+          13042,
+          13043,
+          13044,
+          13045,
+          13046,
+          13047,
+          13048
+        ],
+        "star": 3
+      }
+    },
+    {
+      "id": 118,
+      "name": "생명의 신비 격파",
+      "description": "노바 스테이지 클리어",
+      "icon": "../img/medal/medal_118.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ],
+          "star": 3
+        },
+        "grade": 3,
+        "line": 110,
+        "map": [
+          4069
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "name": "레드 사이클론",
+      "description": "적색 카타스트로프 스테이지 클리어",
+      "icon": "../img/medal/medal_018.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 201,
+        "map": [
+          1014,
+          -14018
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "name": "블랙 사이클론",
+      "description": "다크니스 헤븐 스테이지 클리어",
+      "icon": "../img/medal/medal_019.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 202,
+        "map": [
+          1015,
+          -14019
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "name": "화이트 사이클론",
+      "description": "국사무쌍 스테이지 클리어",
+      "icon": "../img/medal/medal_020.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 203,
+        "map": [
+          1016,
+          -14020
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "name": "엔젤 사이클론",
+      "description": "천벌 스테이지 클리어",
+      "icon": "../img/medal/medal_021.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 204,
+        "map": [
+          1039,
+          -14021
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "name": "메탈 사이클론",
+      "description": "아이언 냥코의 방 스테이지 클리어",
+      "icon": "../img/medal/medal_022.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 205,
+        "map": [
+          1043,
+          -14022
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "name": "스페이스 사이클론",
+      "description": "절망적인 이차원 스테이지 클리어",
+      "icon": "../img/medal/medal_023.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 206,
+        "map": [
+          1066,
+          -14023
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "name": "허리케인 사이클론",
+      "description": "긴급 폭풍 경보 스테이지 클리어",
+      "icon": "../img/medal/medal_024.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 207,
+        "map": [
+          1096,
+          -14035
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "name": "언데드 사이클론",
+      "description": "롤링 데드 스테이지 클리어",
+      "icon": "../img/medal/medal_025.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 1,
+        "line": 208,
+        "map": [
+          1122,
+          -14036
+        ]
+      }
+    },
+    {
+      "id": 89,
+      "name": "악마 사이클론",
+      "description": "메가 사탄 스테이지 클리어",
+      "icon": "../img/medal/medal_089.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 1,
+        "line": 209,
+        "map": [
+          1259,
+          -14038
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "name": "슈퍼 스페이스 사이클론",
+      "description": "절망신차원 스테이지 클리어",
+      "icon": "../img/medal/medal_026.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 1,
+        "line": 210,
+        "map": [
+          1157,
+          -14049
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "name": "고대 사이클론",
+      "description": "제0호 태풍 스테이지 클리어",
+      "icon": "../img/medal/medal_027.png",
+      "grade": 1,
+      "native": {
+        "condition": {
+          "map": [
+            48
+          ]
+        },
+        "grade": 1,
+        "line": 211,
+        "map": [
+          1189,
+          -14037
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "name": "천사 강림",
+      "description": "단죄천사 쿠오리넬 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_028.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 250,
+        "map": [
+          1095,
+          -14012
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "name": "지옥문",
+      "description": "지옥문 스테이지 클리어",
+      "icon": "../img/medal/medal_029.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 251,
+        "map": [
+          1117,
+          -14013
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "name": "여왕의 비행",
+      "description": "여왕의 비행 스테이지 클리어",
+      "icon": "../img/medal/medal_030.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 252,
+        "map": [
+          1119,
+          -14014
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "name": "망자 강림",
+      "description": "죽은 뚱땡이 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_031.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 253,
+        "map": [
+          1128,
+          -14015
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "name": "백작 강림",
+      "description": "치와와 백작 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_032.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 2,
+        "line": 254,
+        "map": [
+          1158,
+          -14016
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "name": "숙면",
+      "description": "밤은 짧아 꿈꿔 아가씨야 스테이지 클리어",
+      "icon": "../img/medal/medal_033.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 2,
+        "line": 255,
+        "map": [
+          1177,
+          -14017
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "name": "리버 피그 플래닛",
+      "description": "블루 임팩트 스테이지 클리어",
+      "icon": "../img/medal/medal_034.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 7
+        },
+        "grade": 2,
+        "line": 256,
+        "map": [
+          1215,
+          -14033
+        ]
+      }
+    },
+    {
+      "id": 72,
+      "name": "늪바닥",
+      "description": "어두컴컴 늪바닥 클리어",
+      "icon": "../img/medal/medal_072.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 3,
+        "line": 257,
+        "map": [
+          1226,
+          -14039
+        ]
+      }
+    },
+    {
+      "id": 87,
+      "name": "파멸의 서곡",
+      "description": "파멸의 서곡 스테이지 클리어",
+      "icon": "../img/medal/medal_087.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            13000
+          ]
+        },
+        "grade": 3,
+        "line": 258,
+        "map": [
+          1246
+        ]
+      }
+    },
+    {
+      "id": 91,
+      "name": "유혹의 교향곡",
+      "description": "유혹의 교향곡 클리어",
+      "icon": "../img/medal/medal_091.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1268
+          ]
+        },
+        "grade": 3,
+        "line": 259,
+        "map": [
+          1272
+        ]
+      }
+    },
+    {
+      "id": 69,
+      "name": "나락문",
+      "description": "나락문 스테이지 클리어",
+      "icon": "../img/medal/medal_069.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1117,
+            -14013
+          ]
+        },
+        "grade": 3,
+        "line": 260,
+        "map": [
+          1217
+        ]
+      }
+    },
+    {
+      "id": 71,
+      "name": "성자 강림",
+      "description": "성자 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_071.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1128,
+            -14015
+          ]
+        },
+        "grade": 3,
+        "line": 261,
+        "map": [
+          1219
+        ]
+      }
+    },
+    {
+      "id": 70,
+      "name": "왕비의 비행",
+      "description": "왕비의 비행 스테이지 클리어",
+      "icon": "../img/medal/medal_070.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1119,
+            -14014
+          ]
+        },
+        "grade": 3,
+        "line": 262,
+        "map": [
+          1220
+        ]
+      }
+    },
+    {
+      "id": 75,
+      "name": "기라성 페로",
+      "description": "기라성 페로 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_075.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1158,
+            -14016
+          ]
+        },
+        "grade": 3,
+        "line": 263,
+        "map": [
+          1229
+        ]
+      }
+    },
+    {
+      "id": 77,
+      "name": "사령 강림",
+      "description": "사령요정 쿠오리넴 강림 스테이지 클리어",
+      "icon": "../img/medal/medal_077.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1095,
+            -14012
+          ]
+        },
+        "grade": 3,
+        "line": 264,
+        "map": [
+          1231
+        ]
+      }
+    },
+    {
+      "id": 78,
+      "name": "첫 심부름",
+      "description": "첫 심부름 스테이지 클리어",
+      "icon": "../img/medal/medal_078.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1177,
+            -14017
+          ]
+        },
+        "grade": 3,
+        "line": 265,
+        "map": [
+          1232
+        ]
+      }
+    },
+    {
+      "id": 92,
+      "name": "라쇼몽",
+      "description": "라쇼몽 클리어",
+      "icon": "../img/medal/medal_092.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1268
+          ]
+        },
+        "grade": 3,
+        "line": 266,
+        "map": [
+          1273
+        ]
+      }
+    },
+    {
+      "id": 105,
+      "name": "대마왕 야옹마",
+      "description": "대마왕 야옹마 대강림 클리어",
+      "icon": "../img/medal/medal_105.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 3,
+        "line": 267,
+        "map": [
+          1340
+        ]
+      }
+    },
+    {
+      "id": 108,
+      "name": "삼도천 주인",
+      "description": "삼도천 주인 대강림 클리어",
+      "icon": "../img/medal/medal_108.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1226,
+            -14039
+          ]
+        },
+        "grade": 3,
+        "line": 268,
+        "map": [
+          1348
+        ]
+      }
+    },
+    {
+      "id": 119,
+      "name": "초권수 맴매테리우스",
+      "description": "초권수 맴매테리우스 대강림 클리어",
+      "icon": "../img/medal/medal_119.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1278
+          ]
+        },
+        "grade": 3,
+        "line": 269,
+        "map": [
+          1391
+        ]
+      }
+    },
+    {
+      "id": 122,
+      "name": "대천사 개복치",
+      "description": "대천사 개복치 대강림 클리어",
+      "icon": "../img/medal/medal_122.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 270,
+        "map": [
+          1406
+        ]
+      }
+    },
+    {
+      "id": 125,
+      "name": "삼위일조",
+      "description": "삼위일조 대강림 클리어",
+      "icon": "../img/medal/medal_125.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 3,
+        "line": 271,
+        "map": [
+          1421
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "name": "광란 토벌",
+      "description": "광란 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_035.png",
+      "grade": 2,
+      "native": {
+        "grade": 2,
+        "line": 301,
+        "map": [
+          1017,
+          -14024,
+          1018,
+          -14025,
+          1019,
+          -14026,
+          1020,
+          -14027,
+          1021,
+          -14028,
+          1022,
+          -14029,
+          1023,
+          -14030,
+          1024,
+          -14031,
+          1025,
+          -14032
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "name": "대광란 토벌",
+      "description": "대광란 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_036.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1017,
+            -14024,
+            1018,
+            -14025,
+            1019,
+            -14026,
+            1020,
+            -14027,
+            1021,
+            -14028,
+            1022,
+            -14029,
+            1023,
+            -14030,
+            1024,
+            -14031,
+            1025,
+            -14032
+          ]
+        },
+        "grade": 2,
+        "line": 302,
+        "map": [
+          1102,
+          -14040,
+          1103,
+          -14041,
+          1104,
+          -14042,
+          1105,
+          -14043,
+          1106,
+          -14044,
+          1107,
+          -14045,
+          1108,
+          -14046,
+          1109,
+          -14047,
+          1110,
+          -14048
+        ]
+      }
+    },
+    {
+      "id": 74,
+      "name": "광란 가족",
+      "description": "대난투 광란 패밀리 클리어",
+      "icon": "../img/medal/medal_074.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1017,
+            -14024,
+            1018,
+            -14025,
+            1019,
+            -14026,
+            1020,
+            -14027,
+            1021,
+            -14028,
+            1022,
+            -14029,
+            1023,
+            -14030,
+            1024,
+            -14031,
+            1025,
+            -14032
+          ]
+        },
+        "grade": 3,
+        "line": 303,
+        "map": [
+          1208
+        ]
+      }
+    },
+    {
+      "id": 37,
+      "name": "꼬맹이 고양이 토벌",
+      "description": "각성한 꼬맹이 고양이 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_037.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 4
+        },
+        "grade": 2,
+        "line": 304,
+        "map": [
+          1130,
+          1131,
+          1132,
+          1133,
+          1134,
+          1135,
+          1136,
+          1137,
+          1138
+        ]
+      }
+    },
+    {
+      "id": 112,
+      "name": "극악 고양이 토벌",
+      "description": "극악 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_112.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 305,
+        "map": [
+          1350,
+          1351,
+          1352,
+          1353,
+          1354,
+          1355,
+          1356,
+          1357,
+          1358
+        ]
+      }
+    },
+    {
+      "id": 116,
+      "name": "극악 가족",
+      "description": "대난투 극악 패밀리 클리어",
+      "icon": "../img/medal/medal_116.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1350,
+            1351,
+            1352,
+            1353,
+            1354,
+            1355,
+            1356,
+            1357,
+            1358
+          ]
+        },
+        "grade": 3,
+        "line": 306,
+        "map": [
+          1376
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "name": "1월",
+      "description": "오늘도 달린다!",
+      "icon": "../img/medal/medal_038.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 350,
+        "map": [
+          1011
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 39,
+      "name": "2월",
+      "description": "오컬트 축제",
+      "icon": "../img/medal/medal_039.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 351,
+        "map": [
+          1012
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 40,
+      "name": "3월",
+      "description": "곰 다섯마리",
+      "icon": "../img/medal/medal_040.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 352,
+        "map": [
+          1013
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 41,
+      "name": "4월",
+      "description": "선생님 봄이에요!",
+      "icon": "../img/medal/medal_041.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 353,
+        "map": [
+          1026
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 42,
+      "name": "5월",
+      "description": "신록의 계절",
+      "icon": "../img/medal/medal_042.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 354,
+        "map": [
+          1029
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 43,
+      "name": "6월",
+      "description": "금단의 신부",
+      "icon": "../img/medal/medal_043.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 355,
+        "map": [
+          1030
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 44,
+      "name": "7월",
+      "description": "와! 여름이다냥~!",
+      "icon": "../img/medal/medal_044.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 356,
+        "map": [
+          1031
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 45,
+      "name": "8월",
+      "description": "납량특집",
+      "icon": "../img/medal/medal_045.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 357,
+        "map": [
+          1032
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 46,
+      "name": "9월",
+      "description": "최강 노인전설",
+      "icon": "../img/medal/medal_046.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 358,
+        "map": [
+          1036
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 47,
+      "name": "10월",
+      "description": "가을은 역시 운동회지!",
+      "icon": "../img/medal/medal_047.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 359,
+        "map": [
+          1038
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 48,
+      "name": "11월",
+      "description": "칼퇴근의 꿈",
+      "icon": "../img/medal/medal_048.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 360,
+        "map": [
+          1009
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 49,
+      "name": "12월",
+      "description": "징글벨 징글벨",
+      "icon": "../img/medal/medal_049.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 361,
+        "map": [
+          1010
+        ],
+        "star": 0
+      }
+    },
+    {
+      "id": 80,
+      "name": "봄 대집합",
+      "description": "대난투 봄 스페셜 스테이지 클리어",
+      "icon": "../img/medal/medal_080.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1013,
+            1026,
+            1029
+          ]
+        },
+        "grade": 2,
+        "line": 380,
+        "map": [
+          1234
+        ]
+      }
+    },
+    {
+      "id": 81,
+      "name": "여름 대집합",
+      "description": "대난투 여름 스페셜 스테이지 클리어",
+      "icon": "../img/medal/medal_081.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1030,
+            1031,
+            1032
+          ]
+        },
+        "grade": 2,
+        "line": 381,
+        "map": [
+          1235
+        ]
+      }
+    },
+    {
+      "id": 82,
+      "name": "가을 대집합",
+      "description": "대난투 가을 스페셜 스테이지 클리어",
+      "icon": "../img/medal/medal_082.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1036,
+            1038,
+            1009
+          ]
+        },
+        "grade": 2,
+        "line": 382,
+        "map": [
+          1236
+        ]
+      }
+    },
+    {
+      "id": 83,
+      "name": "겨울 대집합",
+      "description": "대난투 겨울 스페셜 스테이지 클리어",
+      "icon": "../img/medal/medal_083.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            1010,
+            1011,
+            1012
+          ]
+        },
+        "grade": 2,
+        "line": 383,
+        "map": [
+          1237
+        ]
+      }
+    },
+    {
+      "id": 84,
+      "name": "춘하추동",
+      "description": "계절 대집합 이벤트 스테이지 모두 클리어",
+      "icon": "../img/medal/medal_084.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            1009,
+            1010,
+            1011,
+            1012,
+            1013,
+            1026,
+            1029,
+            1030,
+            1031,
+            1032,
+            1036,
+            1038
+          ]
+        },
+        "grade": 3,
+        "line": 384,
+        "medal": [
+          80,
+          81,
+          82,
+          83
+        ]
+      }
+    },
+    {
+      "id": 50,
+      "name": "탑 30층",
+      "description": "풍운 냥코탑 30층 클리어",
+      "icon": "../img/medal/medal_050.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            7000
+          ],
+          "stage": 28
+        },
+        "grade": 2,
+        "line": 401,
+        "map": [
+          7000
+        ],
+        "stage": 29
+      }
+    },
+    {
+      "id": 51,
+      "name": "탑 40층",
+      "description": "풍운 냥코탑 40층 클리어",
+      "icon": "../img/medal/medal_051.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            7000
+          ],
+          "stage": 38
+        },
+        "grade": 3,
+        "line": 402,
+        "map": [
+          7000
+        ],
+        "stage": 39
+      }
+    },
+    {
+      "id": 79,
+      "name": "탑 50층",
+      "description": "풍운 냥코탑 50층 클리어",
+      "icon": "../img/medal/medal_079.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            7000
+          ],
+          "stage": 48
+        },
+        "grade": 3,
+        "line": 403,
+        "map": [
+          7000
+        ],
+        "stage": 49
+      }
+    },
+    {
+      "id": 93,
+      "name": "이계탑 30층",
+      "description": "이계 냥코탑 30층 클리어",
+      "icon": "../img/medal/medal_093.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            7000
+          ],
+          "stage": 39
+        },
+        "grade": 2,
+        "line": 404,
+        "map": [
+          7006
+        ],
+        "stage": 29
+      }
+    },
+    {
+      "id": 102,
+      "name": "이계탑 40층",
+      "description": "이계 냥코탑 40층 클리어",
+      "icon": "../img/medal/medal_102.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            7006
+          ],
+          "stage": 29
+        },
+        "grade": 3,
+        "line": 405,
+        "map": [
+          7006
+        ],
+        "stage": 39
+      }
+    },
+    {
+      "id": 113,
+      "name": "이계탑 50층",
+      "description": "이계 냥코탑 50층 클리어",
+      "icon": "../img/medal/medal_113.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            7006
+          ],
+          "stage": 39
+        },
+        "grade": 3,
+        "line": 406,
+        "map": [
+          7006
+        ],
+        "stage": 49
+      }
+    },
+    {
+      "id": 52,
+      "name": "LEVEL FINAL",
+      "description": "레전드 퀘스트 LEVEL FINAL 클리어",
+      "icon": "../img/medal/medal_052.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "map": [
+            16000
+          ],
+          "stage": 46
+        },
+        "grade": 3,
+        "line": 450,
+        "map": [
+          16000
+        ]
+      }
+    },
+    {
+      "id": 120,
+      "name": "최심부 100층",
+      "description": "지하 미궁 100층 클리어",
+      "icon": "../img/medal/medal_120.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 6
+        },
+        "grade": 3,
+        "line": 451,
+        "map": [
+          33000
+        ]
+      }
+    },
+    {
+      "id": 96,
+      "name": "초생명체 거대 바・다레오파드",
+      "description": "거대 바・다레오파드 강습 클리어",
+      "icon": "../img/medal/medal_096.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 500,
+        "map": [
+          24020
+        ]
+      }
+    },
+    {
+      "id": 97,
+      "name": "초생명체 자이언트 블랙 빠옹",
+      "description": "자이언트 블랙 빠옹 강습 클리어",
+      "icon": "../img/medal/medal_097.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 501,
+        "map": [
+          24027
+        ]
+      }
+    },
+    {
+      "id": 98,
+      "name": "초생명체 슈퍼 나나나난나방",
+      "description": "슈퍼 나나나난나방 강습 클리어",
+      "icon": "../img/medal/medal_098.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 502,
+        "map": [
+          24034
+        ]
+      }
+    },
+    {
+      "id": 99,
+      "name": "초생명체 빅 하앜마양",
+      "description": "빅 하앜마양 강습 클리어",
+      "icon": "../img/medal/medal_099.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 503,
+        "map": [
+          24035
+        ]
+      }
+    },
+    {
+      "id": 100,
+      "name": "초생명체 빅펜 Z",
+      "description": "빅펜 Z 강습 클리어",
+      "icon": "../img/medal/medal_100.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 504,
+        "map": [
+          24038
+        ]
+      }
+    },
+    {
+      "id": 101,
+      "name": "초생명체 대천사 엑스엘",
+      "description": "대천사 엑스엘 강습 클리어",
+      "icon": "../img/medal/medal_101.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 505,
+        "map": [
+          24037
+        ]
+      }
+    },
+    {
+      "id": 107,
+      "name": "초생명체 오멘즈",
+      "description": "오멘즈 강습 클리어",
+      "icon": "../img/medal/medal_107.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 506,
+        "map": [
+          24061
+        ]
+      }
+    },
+    {
+      "id": 115,
+      "name": "초생명체 그레이트 토용뭉이",
+      "description": "그레이트 토용뭉이 강습 클리어",
+      "icon": "../img/medal/medal_115.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 507,
+        "map": [
+          24065
+        ]
+      }
+    },
+    {
+      "id": 111,
+      "name": "초수 토벌",
+      "description": "가푸라 밀림, 비시니 사막\n르웨이 화산 모두 클리어",
+      "icon": "../img/medal/medal_111.png",
+      "grade": 3,
+      "native": {
+        "condition": {
+          "limit": 3
+        },
+        "grade": 3,
+        "line": 550,
+        "map": [
+          31002
+        ],
+        "stage": 19
+      }
+    },
+    {
+      "id": 53,
+      "name": "부호Ⅰ",
+      "description": "캐릭터의 총 생산 코스트 100만원 돌파",
+      "icon": "../img/medal/medal_053.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 600,
+        "action": 0,
+        "count": 1000000
+      }
+    },
+    {
+      "id": 54,
+      "name": "부호Ⅱ",
+      "description": "캐릭터의 총 생산 코스트 500만원 돌파",
+      "icon": "../img/medal/medal_054.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 601,
+        "action": 0,
+        "count": 5000000
+      }
+    },
+    {
+      "id": 55,
+      "name": "대부호Ⅰ",
+      "description": "캐릭터의 총 생산 코스트 1000만원 돌파",
+      "icon": "../img/medal/medal_055.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 602,
+        "action": 0,
+        "count": 10000000
+      }
+    },
+    {
+      "id": 56,
+      "name": "대부호Ⅱ",
+      "description": "캐릭터의 총 생산 코스트 5000만원 돌파",
+      "icon": "../img/medal/medal_056.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 603,
+        "action": 0,
+        "count": 50000000
+      }
+    },
+    {
+      "id": 57,
+      "name": "대대부호Ⅰ",
+      "description": "캐릭터의 총 생산 코스트 1억원 돌파",
+      "icon": "../img/medal/medal_057.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 604,
+        "action": 0,
+        "count": 100000000
+      }
+    },
+    {
+      "id": 58,
+      "name": "대대부호Ⅱ",
+      "description": "캐릭터의 총 생산 코스트 2억원 돌파",
+      "icon": "../img/medal/medal_058.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 605,
+        "action": 0,
+        "count": 200000000
+      }
+    },
+    {
+      "id": 59,
+      "name": "모험가Ⅰ",
+      "description": "가마토토 탐험 시간 1000시간 돌파",
+      "icon": "../img/medal/medal_059.png",
+      "grade": 0,
+      "native": {
+        "grade": 0,
+        "line": 701,
+        "action": 1,
+        "count": 1000
+      }
+    },
+    {
+      "id": 60,
+      "name": "발명가Ⅰ",
+      "description": "냥코포의 주포 5개 개발",
+      "icon": "../img/medal/medal_060.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 751,
+        "action": 2,
+        "count": 5
+      }
+    },
+    {
+      "id": 61,
+      "name": "랭크업Ⅰ",
+      "description": "유저 랭크 1000 달성",
+      "icon": "../img/medal/medal_061.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 801,
+        "action": 3,
+        "count": 1000
+      }
+    },
+    {
+      "id": 62,
+      "name": "카리스마Ⅰ",
+      "description": "카리스마 대원 1명 발견",
+      "icon": "../img/medal/medal_062.png",
+      "grade": 1,
+      "native": {
+        "grade": 1,
+        "line": 851,
+        "action": 4,
+        "count": 1
+      }
+    },
+    {
+      "id": 63,
+      "name": "우루룬",
+      "description": "울프와 우루룬 획득",
+      "icon": "../img/medal/medal_063.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "limit": 1
+        },
+        "grade": 2,
+        "line": 901,
+        "chara": 1113
+      }
+    },
+    {
+      "id": 64,
+      "name": "야옹마",
+      "description": "야옹마 획득",
+      "icon": "../img/medal/medal_064.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            17
+          ]
+        },
+        "grade": 2,
+        "line": 902,
+        "chara": 1118
+      }
+    },
+    {
+      "id": 65,
+      "name": "냥미",
+      "description": "고양이 냥미 획득",
+      "icon": "../img/medal/medal_065.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            22
+          ]
+        },
+        "grade": 2,
+        "line": 903,
+        "chara": 1131
+      }
+    },
+    {
+      "id": 66,
+      "name": "무사시",
+      "description": "무사시 획득",
+      "icon": "../img/medal/medal_066.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            27
+          ]
+        },
+        "grade": 2,
+        "line": 904,
+        "chara": 1139
+      }
+    },
+    {
+      "id": 67,
+      "name": "고양이 라이더",
+      "description": "고양이 라이더 맴매 획득",
+      "icon": "../img/medal/medal_067.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            36
+          ]
+        },
+        "grade": 2,
+        "line": 905,
+        "chara": 1157
+      }
+    },
+    {
+      "id": 68,
+      "name": "도그마루",
+      "description": "토우전사 도그마루 획득",
+      "icon": "../img/medal/medal_068.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            48
+          ]
+        },
+        "grade": 2,
+        "line": 906,
+        "chara": 1042
+      }
+    },
+    {
+      "id": 73,
+      "name": "우르스",
+      "description": "펜리르와 우르스 획득",
+      "icon": "../img/medal/medal_073.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13011
+          ]
+        },
+        "grade": 2,
+        "line": 907,
+        "chara": 1049
+      }
+    },
+    {
+      "id": 88,
+      "name": "드론",
+      "description": "고대 가면신 드론 획득",
+      "icon": "../img/medal/medal_088.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13020
+          ]
+        },
+        "grade": 2,
+        "line": 908,
+        "chara": 1054
+      }
+    },
+    {
+      "id": 95,
+      "name": "나라",
+      "description": "고대수 나라 획득",
+      "icon": "../img/medal/medal_095.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13035
+          ]
+        },
+        "grade": 2,
+        "line": 909,
+        "chara": 1058
+      }
+    },
+    {
+      "id": 104,
+      "name": "고양이 루자",
+      "description": "에이프 고양이 루자 획득",
+      "icon": "../img/medal/medal_104.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ]
+        },
+        "grade": 2,
+        "line": 910,
+        "chara": 1062
+      }
+    },
+    {
+      "id": 114,
+      "name": "소라크테스",
+      "description": "논리의 현자 소라크테스 획득",
+      "icon": "../img/medal/medal_114.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            13048
+          ]
+        },
+        "grade": 2,
+        "line": 911,
+        "chara": 1068
+      }
+    },
+    {
+      "id": 121,
+      "name": "뉴톤",
+      "description": "이치의 현자 뉴톤 획득",
+      "icon": "../img/medal/medal_121.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            34008
+          ]
+        },
+        "grade": 2,
+        "line": 912,
+        "chara": 1071
+      }
+    },
+    {
+      "id": 126,
+      "name": "다뷘",
+      "description": "도태의 현자 다뷘 획득",
+      "icon": "../img/medal/medal_126.png",
+      "grade": 2,
+      "native": {
+        "condition": {
+          "map": [
+            34019
+          ]
+        },
+        "grade": 2,
+        "line": 913,
+        "chara": 1076
+      }
+    }
+  ]
+}
