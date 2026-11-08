@@ -192,6 +192,16 @@
   const base = new URL(".", source.src);
   const initializeCalendar = () => {
     if (document.getElementById("stageScheduleScript")) return;
+    const storyLocation = typeof DATA !== "undefined" && DATA.location && /^(?:eoc|W0[4-6]|Space0[7-9])$/.test(String(DATA.stage?.locationId || ""));
+    if (typeof DATA !== "undefined" && ((DATA.story && !DATA.zombieSource) || storyLocation)) {
+      if (!document.getElementById("treasureFestivalScript")) {
+        const script = document.createElement("script");
+        script.id = "treasureFestivalScript";
+        script.src = new URL("treasure-festival.js", base).href;
+        document.body.append(script);
+      }
+      return;
+    }
     const pathCode = location.pathname.match(/\/stage\/([A-Z]+\d{3})\//)?.[1];
     const info = typeof DATA === "undefined" ? null : DATA.stage;
     const code = pathCode || info?.locationId || String(info?.id || "").split("-", 1)[0];

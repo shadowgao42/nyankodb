@@ -15,15 +15,20 @@
     return match && Object.hasOwn(MAP_BASES, match[1]) ? MAP_BASES[match[1]] + Number(match[2]) : null;
   }
 
-  function parseFeed(feed, mapCode, region = "kr") {
+  function parseFeed(feed, mapCode, region = "kr", festival = false) {
     const config = Object.hasOwn(REGIONS, region) ? REGIONS[region] : null;
     if (!config || feed?.schemaVersion !== 1 || feed.region !== region || feed.timezone !== config.timezone || feed.source?.url !== config.source) {
       throw new Error("Invalid official calendar export");
     }
     const fetchedAt = Date.parse(feed.fetchedAt);
     const validUntil = Date.parse(feed.validUntil);
-    const expectedId = eventMapId(mapCode);
-    const map = feed.maps?.[mapCode] ?? { eventMapId:expectedId, windows:[], sourceRows:[] };
+    const expectedId = festival ? ({eoc:100, itf:101, cotc:104}[mapCode] ?? null) : eventMapId(mapCode);
+    const selectedMaps = festival ? feed.treasureFestivals?.maps : feed.maps;
+    if (festival && feed.treasureFestivals != null && (feed.treasureFestivals.schemaVersion !== 1
+        || !selectedMaps || typeof selectedMaps !== "object" || Array.isArray(selectedMaps))) {
+      throw new Error("Invalid treasure festival calendar");
+    }
+    const map = selectedMaps?.[mapCode] ?? { eventMapId:expectedId, windows:[], sourceRows:[] };
     if (!Number.isFinite(fetchedAt) || !Number.isFinite(validUntil) || validUntil <= fetchedAt || validUntil - fetchedAt > MAX_AGE ||
         expectedId === null || !feed.maps || typeof feed.maps !== "object" || Array.isArray(feed.maps) ||
         !Array.isArray(map.windows) || !Array.isArray(map.sourceRows) || map.eventMapId !== expectedId) {
@@ -160,7 +165,7 @@
     } };
   }
 
-  const api = { parseFeed, stateAt, duration, label, formatPeriod, eventMapId, fetchFeed, attach };
+  const api = { parseFeed, stateAt, duration, label, formatPeriod, eventMapId, fetchFeed, attach, parseFestivalFeed: (feed, family, region = "kr") => parseFeed(feed, family, region, true) };
   if (typeof module === "object" && module.exports) module.exports = api;
   else {
     root.NyankoStageSchedule = api;

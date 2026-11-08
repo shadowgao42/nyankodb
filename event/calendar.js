@@ -22,8 +22,11 @@
   const DEFAULT_CALENDAR_FAMILIES = ["S", "C", "CA", "Q", "SR", "V", "D", "A", "PR", "L", "R"];
   const SETTINGS_KEY = "nyanko-db:event-settings:v2";
   const LEGACY_SETTINGS_KEY = "nyanko-db:event-settings:v1";
-  const stageCategories = window.NyankoSearch.stageCategoryOrder;
-  const stageCategoryName = window.NyankoSearch.stageCategoryForLocation;
+  const FESTIVAL_CATEGORY = "트레져 페스티벌";
+  const stageCategories = window.NyankoSearch.stageCategoryOrder.flatMap(name =>
+    name === "우주편" ? [name, FESTIVAL_CATEGORY] : [name]);
+  const stageCategoryName = code => /^TF(?:100|101|104)$/.test(code)
+    ? FESTIVAL_CATEGORY : window.NyankoSearch.stageCategoryForLocation(code);
   const defaultCalendarNames = new Set(DEFAULT_CALENDAR_FAMILIES.map(code => stageCategoryName(`${code}000`)));
   // Text, background and border colors, including previously excluded optional families.
   const FAMILY_COLORS = {
@@ -51,7 +54,7 @@
   function defaultDisplaySettings() {
     return { region: "kr", includeRegular: false, durationDays: null, durationComparison: "lte", ...Object.fromEntries(["calendar", "daily"].map(scope => [scope,
       Object.fromEntries(stageCategories.map(name => [name,
-        defaultCalendarNames.has(name)]))])) };
+        name === FESTIVAL_CATEGORY ? scope === "daily" : defaultCalendarNames.has(name)]))])) };
   }
   function readDisplaySettings() {
     const next = defaultDisplaySettings();
@@ -64,6 +67,9 @@
       if (saved?.durationComparison === "gte") next.durationComparison = "gte";
       for (const scope of ["calendar", "daily"]) for (const name of stageCategories) {
         if (typeof saved?.[scope]?.[name] === "boolean") next[scope][name] = saved[scope][name];
+        else if (name === FESTIVAL_CATEGORY && typeof saved?.includeTreasureFestival === "boolean") {
+          next[scope][name] = saved.includeTreasureFestival;
+        }
       }
       if (current === null && saved) {
         for (const family of ["M", "B", "EX", "T", "G"]) next.calendar[stageCategoryName(`${family}000`)] = false;
@@ -134,7 +140,7 @@
   const catalog = new Map((window.NYANKODB_SEARCH_CATALOG?.entries || [])
     .filter(entry => entry.kind === "stage" && /^[A-Z]+\d{3}$/.test(String(entry.id)))
     .map(entry => [entry.id, entry]));
-  let events = [], dayEvents = [], recurringEvents = [], regularEvents = [], calendar = null, loading = true, failed = false, inFlight = false;
+  let events = [], dayEvents = [], recurringEvents = [], regularEvents = [], festivalEvents = [], calendar = null, loading = true, failed = false, inFlight = false;
   function selectedRegion() { return displaySettings.region; }
   let activeRegion = selectedRegion(), requestController = null;
   function applyDisplaySettings() {
@@ -144,7 +150,7 @@
       requestController?.abort();
       requestController = null;
       inFlight = false;
-      events = []; dayEvents = []; recurringEvents = []; regularEvents = []; calendar = null;
+      events = []; dayEvents = []; recurringEvents = []; regularEvents = []; festivalEvents = []; calendar = null;
       loading = true; failed = false;
       render();
       void refresh();
@@ -183,7 +189,7 @@
   function applyCategory(element, code) {
     const category = categoryFor(code);
     element.dataset.category = category;
-    const colors = FAMILY_COLORS[category] ?? FAMILY_COLORS.A;
+    const colors = FAMILY_COLORS[category] ?? (category === "TF" ? FAMILY_COLORS.EX : FAMILY_COLORS.A);
     ["--event-color", "--event-bg", "--event-border"].forEach((property, index) => {
       element.style.setProperty(property, colors[index]);
     });
@@ -293,7 +299,7 @@
   }
   function selectedDayEvents(start, now = Date.now()) {
     if (!calendar || calendar.region !== selectedRegion()) return [];
-    const selectedEvents = dayEvents.filter(event => event.start < start + DAY && event.end > start
+    const selectedEvents = [...dayEvents, ...(displaySettings.daily[FESTIVAL_CATEGORY] ? festivalEvents : [])].filter(event => event.start < start + DAY && event.end > start
       && displaySettings.daily[stageCategoryName(event.code)]);
     if (!dailyActiveOnly.checked) return selectedEvents;
     if (!calendar || now < start || now >= start + DAY) return [];
@@ -393,11 +399,12 @@
   }
   function monthlyEvents() {
     if (!calendar || calendar.region !== selectedRegion()) return [];
-    if (!displaySettings.includeRegular) return events;
+    const sourceEvents = displaySettings.calendar[FESTIVAL_CATEGORY] ? [...events, ...festivalEvents] : events;
+    if (!displaySettings.includeRegular) return sourceEvents;
     // Add only regular windows from this region; daily maps also contain past
     // campaigns and windows merged with campaigns, so are not a monthly source.
     const grouped = new Map();
-    for (const event of [...events, ...regularEvents]) {
+    for (const event of [...sourceEvents, ...regularEvents]) {
       if (!grouped.has(event.code)) grouped.set(event.code, []);
       grouped.get(event.code).push(event);
     }
@@ -484,7 +491,7 @@
     legend.replaceChildren(...categories.map(category => {
       const item = document.createElement("span");
       item.className = "calendar-category";
-      item.textContent = window.NyankoSearch.stageCategoryForLocation(`${category}000`);
+      item.textContent = category === "TF" ? "트레져 페스티벌" : window.NyankoSearch.stageCategoryForLocation(`${category}000`);
       applyCategory(item, `${category}000`);
       return item;
     }));
@@ -631,6 +638,15 @@
     }
     return result.sort((a, b) => a.start - b.start || a.code.localeCompare(b.code));
   }
+  function readFestivalEvents(feed, region) {
+    const result = [];
+    for (const [family, id, name, href] of [["eoc", 100, "세계편", "stage/eoc/index.html"], ["itf", 101, "미래편", "stage/W04/index.html"], ["cotc", 104, "우주편", "stage/Space07/index.html"]]) {
+      const map = api.parseFestivalFeed(feed, family, region);
+      const entry = { name: `트레져 페스티벌 (${name})`, href };
+      for (const window of map.windows) result.push({ code: `TF${id}`, entry, festival: true, ...window });
+    }
+    return result;
+  }
   async function refresh() {
     if (inFlight || document.hidden) return;
     inFlight = true;
@@ -645,11 +661,13 @@
       const nextDay = readEvents({ ...feed, maps: feed.dayMaps }, region);
       const nextRecurring = readEvents({ ...feed, maps: feed.recurringMaps }, region);
       const nextRegular = readEvents({ ...feed, maps: feed.regularMaps }, region);
+      const nextFestivals = readFestivalEvents(feed, region);
       if (requestController !== controller || region !== selectedRegion()) return;
       events = next;
       dayEvents = nextDay;
       recurringEvents = nextRecurring;
       regularEvents = nextRegular;
+      festivalEvents = nextFestivals;
       calendar = { ...metadata, region };
       failed = false;
     } catch (_) {

@@ -108,3 +108,6 @@
 /* Keep offscreen index rows out of layout; auto remembers their measured height. */
 :where(.stage-list) .stage-location { content-visibility: auto; contain-intrinsic-block-size: auto var(--stage-location-height, 64px); }
 :where(.stage-list) .stage-detail-link, :where(.stage-list) .stage-card { content-visibility: auto; contain-intrinsic-block-size: auto 0px; }
+
+:where(.stage-list) .stage-section-heading img.stage-festival-guide { width: 48px; height: 37px; image-rendering: auto; }
+:where(.stage-list) .stage-section-heading img.stage-festival-guide[hidden] { display: none; }

@@ -1,6 +1,7 @@
 /* Stage-index UI with ordinary search, an initial 200 hits and one full expansion. */
 (() => {
   "use strict";
+  const source = document.currentScript;
   function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage", getFilter = () => null, toggleAll = null, decorateStageLink = null, selectionOnly = false, locationLinks = true }) {
     const search = window.NyankoSearch;
     const filtered = allowedStageHrefs !== null, allowed = filtered ? new Set(allowedStageHrefs) : null;
@@ -153,6 +154,9 @@
         const count = document.createElement("small");
         count.textContent = countSummary(entries.length, entries.reduce((n, e) => n + (e.matchingStages.length || (stagesByLocation.get(e.entry.href)?.length || 0)), 0));
         heading.append(title, count);
+        if (["세계편", "미래편", "우주편"].includes(category)) {
+          heading.dataset.festivalFamily = ({"세계편":"eoc", "미래편":"itf", "우주편":"cotc"})[category];
+        }
         const grid = document.createElement("div"); grid.className = "stage-grid"; grid.id = `${idPrefix}Category-${categoryOrder.indexOf(category)}`; grid.hidden = true;
         const { button: toggle, label } = createToggle("stage-section-toggle", grid.id); heading.append(toggle);
         function setExpanded(expanded, remember = true) {
@@ -179,6 +183,7 @@
         button.addEventListener("click", () => render({ more: true })); box.append(button); fragment.append(box);
       }
       results.replaceChildren(fragment);
+      window.NyankoTreasureFestival?.decorateList(results);
       syncToggleAll();
       if (filtered) status.textContent = countSummary(locations.length, appearanceStages.length);
       else if (query || activeFilter) {
@@ -229,6 +234,15 @@
       });
     }
     render();
+    if (source?.src && /^\/stage\/(?:index\.html)?$/.test(location.pathname)) {
+      if (window.NyankoTreasureFestival) window.NyankoTreasureFestival.decorateList(results);
+      else if (!document.getElementById("treasureFestivalScript")) {
+        const script = document.createElement("script");
+        script.id = "treasureFestivalScript";
+        script.src = new URL("treasure-festival.js", source.src).href;
+        document.body.append(script);
+      }
+    }
     return { refresh: scheduleRender };
   }
   window.NyankoStageList = Object.freeze({ mount });

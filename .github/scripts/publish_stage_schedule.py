@@ -106,7 +106,7 @@ def merge_stage(current, histories, cutoff):
         index = bisect_left(starts, end) - 1
         return index >= 0 and ranges[index][1] > start
 
-    for section in (None, "eventCalendar", "dayCalendar", "regularCalendar", "recurringCalendar"):
+    for section in (None, "eventCalendar", "dayCalendar", "regularCalendar", "recurringCalendar", "treasureFestivals"):
         target = current if section is None else current.get(section)
         if not isinstance(target, dict) or not isinstance(target.get("maps"), dict):
             continue

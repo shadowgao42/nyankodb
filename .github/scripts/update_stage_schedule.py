@@ -374,7 +374,13 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
         windows, rows = expand_windows(recurring_records, map_id, now, game_version, 1)
         if windows:
             recurring_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
+    # Special official sale IDs are not stage maps; keep their original IDs separately.
+    festivals = {}
+    for family, event_id in {"eoc": 100, "itf": 101, "cotc": 104}.items():
+        windows, rows = expand_windows(records, event_id, day_start, game_version, day_horizon)
+        festivals[family] = {"eventMapId": event_id, "sourceRows": rows, "windows": windows}
     return {
+        "treasureFestivals": {"schemaVersion": 1, "maps": festivals},
         "schemaVersion": 1, "region": region, "timezone": config["timezone"], "gameVersion": game_version,
         "fetchedAt": iso(now), "validUntil": iso(now + timedelta(seconds=FRESHNESS_SECONDS)),
         "source": {"url": config["source"], "sha256": hashlib.sha256(content).hexdigest(),
