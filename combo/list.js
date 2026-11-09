@@ -97,7 +97,6 @@
         const effect = document.createElement('p');
         effect.className = 'combo-result-effect';
         effect.textContent = comboEffectText(combo);
-        if (combo.requiredTalent) effect.textContent += ' · 초본능 해방';
         const members = document.createElement('div');
         members.className = 'nyancombo-members';
         members.setAttribute('aria-label', `${combo.name} 구성 유닛`);
@@ -121,6 +120,7 @@
         row.append(heading, members);
         comboSearchResults.append(row);
       });
+      window.NyankoComboCatalog.decorateComboCards(comboSearchResults, comboCatalog);
       if (!matches.length) comboSearchStatus.textContent = '검색 결과 없음';
     }
 

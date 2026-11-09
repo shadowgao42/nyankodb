@@ -1,0 +1,6 @@
+/* Keep layout intact; overlay uses the centered 54-square reference frame. */
+.nyancombo-member-image:has(> .combo-talent-badge),.combo-slot .nyancombo-member-image:has(> .combo-talent-badge){position:relative;container-type:inline-size;overflow:visible}
+.nyancombo-member-image > img.combo-talent-badge{position:absolute;right:0;bottom:calc((100% - 100cqw)/2);z-index:1;width:42.5925925926%;height:auto;aspect-ratio:23/24;object-fit:contain;pointer-events:none;user-select:none}
+.nyancombo-member-image > img.combo-talent-badge[data-provenance="normal"]{filter:drop-shadow(0 0 4px #ffe45c) drop-shadow(0 0 9px #ffd83d)}
+.nyancombo-member-image > img.combo-talent-badge[data-provenance="ultra"]{filter:drop-shadow(0 0 4px #ff5d68) drop-shadow(0 0 10px #ff3344)}
+.combo-slot .nyancombo-member-image > img.combo-talent-badge{right:auto;left:0}

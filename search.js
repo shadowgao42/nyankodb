@@ -64,7 +64,7 @@
     "냥코탑",
     "전설의 퀘스트",
     "강습",
-    "LIVE On Stage! 꼬꼬미",
+    "포인트 이벤트 스테이지",
     "EX 스테이지",
     "지하 미궁",
     "냥코도장 스테이지",
@@ -89,7 +89,7 @@
     if (/^Q\d{3}$/i.test(id)) return "초수 토벌 스테이지";
     if (/^L\d{3}$/i.test(id)) return "지하 미궁";
     if (/^B\d{3}$/i.test(id)) return "고양이 드링크 스테이지";
-    if (/^PR\d{3}$/i.test(id)) return "LIVE On Stage! 꼬꼬미";
+    if (/^PR\d{3}$/i.test(id)) return "포인트 이벤트 스테이지";
     if (/^G\d{3}$/i.test(id)) return "냥코도 승단 시험";
     if (/^T\d{3}$/i.test(id)) return "냥코도장 스테이지";
     if (/^R\d{3}$/i.test(id)) return "랭킹 스테이지";
@@ -122,7 +122,7 @@
     if (/^Q\d{3}$/i.test(location)) return "초수 토벌 스테이지";
     if (/^L\d{3}$/i.test(location)) return "지하 미궁";
     if (/^B\d{3}$/i.test(location)) return "고양이 드링크 스테이지";
-    if (/^PR\d{3}$/i.test(location)) return "LIVE On Stage! 꼬꼬미";
+    if (/^PR\d{3}$/i.test(location)) return "포인트 이벤트 스테이지";
     if (/^G\d{3}$/i.test(location)) return "냥코도 승단 시험";
     if (/^T\d{3}$/i.test(location)) return "냥코도장 스테이지";
     if (/^R\d{3}$/i.test(location)) return "랭킹 스테이지";

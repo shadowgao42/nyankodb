@@ -8,6 +8,7 @@
   const comboUnlockCache = new WeakMap();
   let comboUnlockRevision = 0;
   let comboUnlockOwnerIds = new Set();
+  let comboSlotMembers = new Map();
   function comboUnlockContext(unitId) {
     if (!comboUnlockOwnerIds.has(unitId)) return '';
     const current = currentComboUnit();
@@ -31,10 +32,9 @@
   function comboIsUnlocked(combo) {
     if (!combo.requiredTalent) return true;
     if (comboUnlocks[String(combo.id)] !== true) return false;
-    const current = currentComboUnit();
-    if (current.unitId !== combo.requiredTalent.unitId) return true;
-    const input = root.document.querySelector(`.talent-level-range[data-talent-group="${combo.requiredTalent.group}"]`);
-    return current.form >= 3 && current.level >= 60 && Number(input?.value) > 0;
+    // Lineup acquisition is independent of the calculator's viewed form/level.
+    // Talent controls still update the same explicit unlock declaration.
+    return true;
   }
   function unlockedComboCatalog(catalog) { return catalog.filter(comboIsUnlocked); }
   function recalculateComboStatsWithoutSaving() {
@@ -85,13 +85,10 @@
         effects.append(list);
       }
     }
-    for (const input of root.document.querySelectorAll('[data-combo-unlock]')) {
-      input.checked = comboUnlocks[input.dataset.comboUnlock] === true;
-    }
     // Existing inline calculators retain their own update function.  Their
     // documented number-input handler recalculates without changing its value.
     recalculateComboStatsWithoutSaving();
-    addComboUnlockControls();
+    decorateComboSettings();
     } finally { comboUnlockRefreshing = false; }
   }
   function setComboUnlock(combo, enabled, synchronizeTalent) {
@@ -108,34 +105,86 @@
     }
     refreshComboUnlocks();
   }
-  function addComboUnlockControls() {
-    if (!comboUnlockCatalog) return;
-    for (const combo of comboUnlockCatalog.combos.filter(combo => combo.requiredTalent)) {
-      for (const actions of root.document.querySelectorAll(`.combo-result[data-combo-id="${combo.id}"] .combo-result-actions`)) {
-        const current = currentComboUnit();
-        const disabled = current.unitId === combo.requiredTalent.unitId && (current.form < 3 || current.level < 60);
-        const existing = actions.querySelector('[data-combo-unlock]');
-        if (existing) { existing.disabled = disabled; continue; }
-        const label = root.document.createElement('label');
-        label.className = 'treasure-action-button';
-        const input = root.document.createElement('input'); input.type = 'checkbox';
-        input.style.margin = '0';
-        input.dataset.comboUnlock = String(combo.id); input.checked = comboIsUnlocked(combo);
-        input.disabled = disabled;
-        input.setAttribute('aria-label', `${combo.name} 초본능 해방`);
-        const text = root.document.createElement('span'); text.textContent = '초본능 해방';
-        label.append(input, text);
-        input.addEventListener('change', () => setComboUnlock(combo, input.checked, true));
-        actions.insertBefore(label, actions.lastElementChild);
+  function talentKind(requirement) {
+    return requirement.kind || (requirement.group >= 5 ? 'ultra' : 'normal');
+  }
+  function decorateTalentMember(member, requirement, selected = false) {
+    const portrait = member.querySelector('.nyancombo-member-image');
+    if (!portrait) return;
+    let badge = member.querySelector('.combo-talent-badge');
+    if (!requirement) {
+      badge?.remove();
+      if (member.dataset.comboTalentLabel) {
+        member.dataset.tooltip = member.dataset.comboTalentTooltip;
+        member.setAttribute('aria-label', member.dataset.comboTalentLabel);
+        delete member.dataset.comboTalentLabel;
+        delete member.dataset.comboTalentTooltip;
+      }
+      return;
+    }
+    const kind = talentKind(requirement);
+    if (!badge) {
+      badge = root.document.createElement('img');
+      badge.className = 'combo-talent-badge';
+      badge.src = '../img/icon/pcoin.png';
+      badge.alt = ''; badge.width = 23; badge.height = 24;
+      portrait.append(badge);
+    }
+    badge.dataset.provenance = kind;
+    if (!member.dataset.comboTalentLabel) {
+      member.dataset.comboTalentLabel = member.getAttribute('aria-label') || member.dataset.tooltip || '';
+      member.dataset.comboTalentTooltip = member.dataset.tooltip || '';
+    }
+    const label = `${kind === 'ultra' ? '초본능' : '본능'} ${selected ? '적용' : '해방'}`;
+    member.dataset.tooltip = `${member.dataset.comboTalentTooltip} · ${label}`;
+    member.setAttribute('aria-label', `${member.dataset.comboTalentLabel} · ${label}`);
+  }
+  function decorateComboCards(container, catalog) {
+    for (const card of container.querySelectorAll('.nyancombo-card[data-combo-id]')) {
+      const combo = catalog.combos.find(combo => String(combo.id) === card.dataset.comboId);
+      for (const note of card.querySelectorAll('.combo-talent-note')) note.remove();
+      for (const input of card.querySelectorAll('[data-combo-unlock]')) input.closest('label')?.remove();
+      if (!combo?.requiredTalent) continue;
+      for (const member of card.querySelectorAll('.nyancombo-member')) {
+        const id = Number(member.getAttribute('href')?.match(/unit(\d+)\.html/)?.[1]);
+        if (id === combo.requiredTalent.unitId) decorateTalentMember(member, combo.requiredTalent);
       }
     }
   }
+  function decorateComboSettings() {
+    if (!comboUnlockCatalog) return;
+    decorateComboCards(root.document, comboUnlockCatalog);
+    // Read the rendered slot's catalog portrait, not a temporary combat roster.
+    const slots = root.document.querySelectorAll('#comboSlots .combo-slot');
+    slots.forEach(slot => {
+      const source = slot.querySelector('.nyancombo-member-image > img')?.getAttribute('src');
+      const member = comboSlotMembers.get(source);
+      const combo = comboUnlockCatalog.combos.find(combo => member?.form >= 3
+        && combo.requiredTalent?.unitId === member.unitId && comboUnlocks[String(combo.id)] === true);
+      decorateTalentMember(slot, combo?.requiredTalent, true);
+    });
+  }
   function ensureComboUnlockSupport(catalog) {
     comboUnlockCatalog = catalog;
+    comboSlotMembers = new Map(Object.values(catalog.unitForms).flat().map(member => [member.icon, member]));
     comboUnlockOwnerIds = new Set(catalog.combos.filter(combo => combo.requiredTalent).map(combo => combo.requiredTalent.unitId));
     const api = root.Nyancombo;
     if (!api || api.__beforeComboUnlockEffects) return;
-    const active = api.active, effects = api.effects;
+    const active = api.active, effects = api.effects, cycleForm = api.cycleForm;
+    api.cycleForm = (roster, index, unitForms) => {
+      const member = roster[index];
+      const combos = catalog.combos.filter(combo => combo.requiredTalent?.unitId === member?.unitId);
+      if (!combos.length) return cycleForm(roster, index, unitForms);
+      // The extra state is still the native third form. The existing unlock
+      // declarations persist it independently of raw forms and save data.
+      const selected = combos.some(combo => comboUnlocks[String(combo.id)] === true);
+      if (member.form === 3 && !selected) {
+        for (const combo of combos) setComboUnlock(combo, true, true);
+        return api.normalize(roster);
+      }
+      for (const combo of combos) setComboUnlock(combo, false, true);
+      return cycleForm(roster, index, unitForms);
+    };
     api.__beforeComboUnlockEffects = effects;
     api.active = (roster, combos) => active(roster, unlockedComboCatalog(combos));
     api.effects = (roster, combos, unitId = null) => {
@@ -157,7 +206,7 @@
       }
       return entry.result;
     };
-    comboUnlockObserver = new MutationObserver(addComboUnlockControls);
+    comboUnlockObserver = new MutationObserver(decorateComboSettings);
     comboUnlockObserver.observe(root.document.documentElement, {childList:true, subtree:true});
     root.document.addEventListener('input', event => {
       const input = event.target;
@@ -173,6 +222,13 @@
       if (combo) setComboUnlock(combo, Number(input.value) > 0, false);
     });
     root.document.addEventListener('click', event => {
+      const apply = event.target.closest?.('.combo-result .treasure-action-button');
+      if (!apply || apply.disabled) return;
+      const id = apply.closest('[data-combo-id]')?.dataset.comboId;
+      const combo = catalog.combos.find(combo => String(combo.id) === id);
+      if (combo?.requiredTalent) setComboUnlock(combo, true, true);
+    }, true);
+    root.document.addEventListener('click', event => {
       if (event.target.closest?.('[data-form][role="tab"]')) refreshComboUnlocks();
     });
     root.document.addEventListener('DOMContentLoaded', refreshComboUnlocks, {once:true});
@@ -186,6 +242,11 @@
     ensureComboUnlockSupport(catalog);
     const panel = root.document.getElementById('nyancomboPanel');
     if (!panel) return;
+    if (!root.document.getElementById('comboTalentNotesStyle')) {
+      const style = root.document.createElement('link');
+      style.id = 'comboTalentNotesStyle'; style.rel = 'stylesheet';
+      style.href = '../combo/talent-notes.css'; root.document.head.append(style);
+    }
     const list = panel.querySelector('.nyancombo-list');
     const combos = catalog.combos.filter(combo =>
       combo.members.some(member => member.unitId === unitId)).sort((a, b) => a.id - b.id);
@@ -201,7 +262,6 @@
       name.textContent = combo.name;
       const effect = root.document.createElement('p');
       effect.textContent = combo.effect.trim().replace(/\s+/g, ' ');
-      if (combo.requiredTalent) effect.textContent += ' · 초본능 해방';
       heading.append(name, effect);
       const members = root.document.createElement('div');
       members.className = 'nyancombo-members';
@@ -236,6 +296,7 @@
       fragment.append(empty);
     }
     list.replaceChildren(fragment);
+    decorateComboCards(panel, catalog);
   }
-  root.NyankoComboCatalog = { renderNativeCombos };
+  root.NyankoComboCatalog = { renderNativeCombos, decorateComboCards };
 })(window);
