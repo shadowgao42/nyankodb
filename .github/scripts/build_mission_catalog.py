@@ -17,7 +17,12 @@ def text(path):
     return path.read_text("utf-8-sig")
 
 
-def mission_names(root):
+def mission_names(root, previous_root=None):
+    # JP updates may append popup copy after the objective CSV column. Keep
+    # unchanged legacy labels stable and parse only native new/changed rows.
+    previous = {}
+    if previous_root is not None:
+        previous = {line.partition(",")[0]: line for line in text(previous_root / "resLocal/Mission_Name.csv").splitlines() if line.strip()}
     result = {}
     for line in text(root / "resLocal/Mission_Name.csv").splitlines():
         if not line.strip():
@@ -25,12 +30,15 @@ def mission_names(root):
         separator = "|" if "|" in line and line.split("|", 1)[0].isdigit() else ","
         key, _, value = line.partition(separator)
         if key.isdigit():
+            if previous_root is not None and separator == "," and previous.get(key) != line:
+                columns = next(csv.reader([line]))
+                value = columns[1] if len(columns) > 1 else ""
             result[int(key)] = value.split("|", 1)[0].strip()
     return result
 
 
-def make_catalog(roots, game, site):
-    names = {r: mission_names(root) for r, root in roots.items()}
+def make_catalog(roots, game, site, previous_jp_root=None):
+    names = {r: mission_names(root, previous_jp_root if r == "jp" else None) for r, root in roots.items()}
     enemies = {r: text(root / "resLocal/Enemyname.tsv").splitlines() for r, root in roots.items()}
     search = json.loads(text(site / "catalog.js").split("=", 1)[1].strip().removesuffix(";"))
     stages = {e["id"]: e for e in search["entries"] if e["kind"] == "stage"}
@@ -93,12 +101,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--kr-root", type=Path, required=True)
     parser.add_argument("--jp-root", type=Path, required=True)
+    parser.add_argument("--previous-jp-root", type=Path, help="Preserve unchanged JP labels; parse new/changed native CSV objectives without popup copy")
     parser.add_argument("--gacha-catalog", type=Path, required=True)
     parser.add_argument("--site", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    value = make_catalog(dict(kr=args.kr_root, jp=args.jp_root), json.loads(text(args.gacha_catalog)), args.site)
-    targets = make_targets(value, dict(kr=args.kr_root, jp=args.jp_root), args.site)
+    value = make_catalog(dict(kr=args.kr_root, jp=args.jp_root), json.loads(text(args.gacha_catalog)), args.site, args.previous_jp_root)
+    targets = make_targets(value, dict(kr=args.kr_root, jp=args.jp_root), args.site, args.previous_jp_root)
     args.output.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     write_targets(args.site / "event/mission-targets.js", targets)
     print("Mission and medal metadata exported; no existing image was replaced")

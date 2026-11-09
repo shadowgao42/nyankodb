@@ -2,12 +2,16 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 from pathlib import Path
 
 
-def make_targets(catalog, roots, site):
+def make_targets(catalog, roots, site, previous_jp_root=None):
+    previous_jp_conditions = {}
+    if previous_jp_root is not None:
+        previous_jp_conditions = {row[0]: list(map(int, row[1:])) for row in csv.reader((previous_jp_root / "DataLocal/Mission_Condition.csv").read_text("utf-8-sig").splitlines()[1:]) if row}
     search_text = (site / "catalog.js").read_text("utf-8-sig")
     search = json.loads(search_text.split("=", 1)[1].strip().removesuffix(";"))
     stages = {str(e["id"]): e for e in search["entries"] if e["kind"] == "stage"}
@@ -61,6 +65,10 @@ def make_targets(catalog, roots, site):
                         for index in option.get("Stage", [None]))
             else:
                 # Classification/score/collection formats need independent validation.
+                if (region == "jp" and previous_jp_root is not None and kind in (9, 34)
+                        and previous_jp_conditions.get(mid) != condition):
+                    unresolved.append(dict(missionId=int(mid), conditionType=kind,
+                        references=[], rawValues=values, reason="unhandled-native-condition"))
                 continue
             resolved = [resolve(map_id, index) for map_id, index in references]
             if not resolved or any(entry is None for entry in resolved):
@@ -82,10 +90,11 @@ def main():
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--kr-root", type=Path, required=True)
     parser.add_argument("--jp-root", type=Path, required=True)
+    parser.add_argument("--previous-jp-root", type=Path)
     parser.add_argument("--site", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    value = make_targets(json.loads(args.catalog.read_text("utf-8")), dict(kr=args.kr_root, jp=args.jp_root), args.site)
+    value = make_targets(json.loads(args.catalog.read_text("utf-8")), dict(kr=args.kr_root, jp=args.jp_root), args.site, args.previous_jp_root)
     write_targets(args.output, value)
     print("Mission target pages resolved from native conditions; no APK analysis performed")
 
