@@ -13,6 +13,7 @@
   <script src="../search.js" defer></script>
   <script src="rougelike-data.js" defer></script>
   <script src="rougelike-model.js" defer></script>
+  <script src="rougelike-ability-details.js" defer></script>
   <script src="rougelike-stages.js" defer></script>
   <script src="rougelike.js" defer></script>
 </head>
@@ -55,8 +56,8 @@
       <details class="settings-box practice-settings" id="practiceSettings" hidden><summary>체험 설정</summary><div class="settings-content">
         <div class="control-row"><label>체험 맵 <select id="mapSelect"></select></label></div>
         <p class="muted-note">맵 변경은 새 도전으로 시작합니다.</p>
-        <section class="ownership-settings" aria-labelledby="ownershipTitle"><div class="formation-heading"><h3 id="ownershipTitle">캐릭터 보유 여부</h3><button type="button" class="db-button" id="allOwned">모두 보유</button></div><div id="ownedUnits"></div></section>
         <div class="control-row" id="freeOptions" hidden><label>누적Pt 상한 <select id="pointCap"></select></label><label class="check-label"><input type="checkbox" id="quickConfirm"> 획득 확인창 생략</label><button type="button" class="db-button" id="practiceReset">체험 기록 초기화</button></div>
+        <section class="ownership-settings" aria-labelledby="ownershipTitle"><div class="formation-heading"><h3 id="ownershipTitle">캐릭터 보유 여부</h3><div class="button-row"><button type="button" class="db-button" id="allOwned">모두 보유</button><button type="button" class="db-button" id="clearOwned" aria-label="캐릭터 보유 여부 초기화">초기화</button></div></div><div id="ownedUnits"></div></section>
       </div></details>
 
   <section class="section manual-panel" id="practice" aria-labelledby="practiceTitle" hidden>

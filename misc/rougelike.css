@@ -228,3 +228,5 @@ button.fixed-formation-slot{width:100%;padding:0;border:0;color:var(--text);back
 .owned-unit>.picker-owned-label{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:900;text-shadow:0 1px 3px #0b1017;pointer-events:none}
 .ownership-settings .nyancombo-member:hover{transform:none}
 .ownership-settings .nyancombo-member:focus-visible{transform:none;outline:2px solid var(--accent-2);outline-offset:3px}
+
+.roguelike-guide .ability-summary:empty,.roguelike-guide .stage-reward-copy>em:empty{display:none}

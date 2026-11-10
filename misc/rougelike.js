@@ -17,7 +17,9 @@
   function unitLink(id,form=2,base=20,plus=0){return `../unit/unit${String(id).padStart(3,'0')}.html?form=${form}&level=${base}&plus=${plus}&ft=333333333&research=20.10&event=rougelike`;}
   function rarityIcon(rarity){return `<img class="rarity-icon" src="../img/i/${153+Number(rarity)}.png" alt="${esc(rarities[rarity])}" width="90" height="28">`;}
   function target(buff){return buff.TargetCharaID!==undefined?unitName(buff.TargetCharaID):buff.TargetRarity>=0?rarities[buff.TargetRarity]:'전체';}
-  function buffValue(id,level=1){
+  function buffValue(id,level=1,practice=false){
+    const detail=window.RogueAbilityDetails.summary(D,id,level,practice?state:null);
+    if(detail!==null)return detail;
     const b=D.buffs[id],skill=D.skills[b.BuffSkillID];
     if(b.BuffType===0)return `레벨 +${b.LevelUp*level}`;
     if(!skill)return b.label;
@@ -73,7 +75,7 @@
   function bonusList(values){
     const entries=Object.entries(values).filter(([,count])=>count>0);
     if(!entries.length)return '<p class="muted-note">없음</p>';
-    return `<ul class="bonus-list">${entries.map(([id,count])=>{const b=D.buffs[id];return `<li>${listedBuffImage(b,'bonus-icon')}<span><b>${esc(b.label)}</b><small>${esc(target(b))} · ${esc(buffValue(id,count))} · 획득 ${count}회</small></span></li>`;}).join('')}</ul>`;
+    return `<ul class="bonus-list">${entries.map(([id,count])=>{const b=D.buffs[id];return `<li>${listedBuffImage(b,'bonus-icon')}<span><b>${esc(b.label)}</b><span class="ability-summary">${esc(buffValue(id,count,true))}</span><small>${esc(target(b))} · 획득 ${count}회</small></span></li>`;}).join('')}</ul>`;
   }
   function renderBonus(){
     const upcoming=M.earned(D,state.points,M.mapFor(D,state));
@@ -108,7 +110,7 @@
       return `<button type="button" class="ability-card choice-card" data-tooltip="${esc(c.name)}" data-choice="${id}" aria-pressed="${state.selected===id}" aria-label="${esc(c.name)} 선택"><span class="choice-unit">${abilityImage(c.icon)}<small>Lv.${c.base}${c.plus?'+'+c.plus:''}</small></span><span>${rarityIcon(c.rarity)}</span></button>`;
     }
     const b=D.buffs[id],before=M.buffLevel(state,id);
-    return `<button type="button" class="ability-card choice-card${buffIcon(b)||b.TargetCharaID!==undefined?'':' no-icon'}" data-choice="${id}" aria-pressed="${state.selected===id}" aria-label="${esc(b.label)} 선택">${listedBuffImage(b)}<span><strong class="ability-title">${esc(b.label)}</strong><span class="ability-summary">${esc(buffValue(id,before+1))}</span><span class="ability-note">${esc(target(b))} · ${before?`Lv.${before} → ${before+1}`:'해방'}</span></span></button>`;
+    return `<button type="button" class="ability-card choice-card${buffIcon(b)||b.TargetCharaID!==undefined?'':' no-icon'}" data-choice="${id}" aria-pressed="${state.selected===id}" aria-label="${esc(b.label)} 선택">${listedBuffImage(b)}<span><strong class="ability-title">${esc(b.label)}</strong><span class="ability-summary">${esc(buffValue(id,before+1,true))}</span><span class="ability-note">${esc(target(b))} · ${before?`Lv.${before} → ${before+1}`:'해방'}</span></span></button>`;
   }
   function renderFormation(){
     hideUnitTooltip();
@@ -157,7 +159,7 @@
   function acquire(){
     const id=state.selected;if(id===null)return;
     if(state.view==='characters')confirm('캐릭터 획득',`<p>${esc(unitName(D.chars[id].CharaID))}을(를) 영입할까요?</p>`,()=>{inspectedSlot=null;M.chooseCharacter(D,state,id);render();announce(state.view==='replace'?'교체할 캐릭터를 선택하세요.':'캐릭터를 영입했습니다.');});
-    else if(state.view==='buffs')confirm('파워 업 획득',`<p>${esc(D.buffs[id].label)} · ${esc(target(D.buffs[id]))}<br>${esc(buffValue(id,M.buffLevel(state,id)+1))}</p>`,()=>{M.chooseBuff(D,state,id);render();announce('파워 업이 적용되었습니다.');});
+    else if(state.view==='buffs')confirm('파워 업 획득',`<p>${esc(D.buffs[id].label)} · ${esc(target(D.buffs[id]))}<span class="ability-summary">${esc(buffValue(id,M.buffLevel(state,id)+1,true))}</span></p>`,()=>{M.chooseBuff(D,state,id);render();announce('파워 업이 적용되었습니다.');});
   }
   function stageEnemyIcons(enemies){
     const number=value=>Number(value).toLocaleString('ko-KR',{maximumFractionDigits:5});
@@ -264,6 +266,10 @@
   $('allOwned').addEventListener('click',()=>{
     if(state.view==='clear'&&!Number.isFinite(state.lastRate))state.lastRate=M.pointRate(D,state);
     state.ownedUnits=[...new Set([...M.ownership(D,state),...ownershipCandidates()])];render('#allOwned');
+  });
+  $('clearOwned').addEventListener('click',()=>{
+    if(state.view==='clear'&&!Number.isFinite(state.lastRate))state.lastRate=M.pointRate(D,state);
+    state.ownedUnits=[];render('#clearOwned');
   });
   $('ownedUnits').addEventListener('click',event=>{
     const button=event.target.closest('button[data-owned-unit]');if(!button)return;
