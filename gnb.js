@@ -482,3 +482,24 @@
     document.addEventListener("DOMContentLoaded", mountBottomNavigation, { once: true });
   }
 })();
+
+/* Roguelike links may exceed ordinary unit level caps. Shared treasures remain protected by ft. */
+(() => {
+  const params=new URLSearchParams(location.search);
+  if(params.get('event')!=='rougelike'||params.get('ft')!=='333333333'||!/\/unit\/unit\d+\.html$/.test(location.pathname))return;
+  const base=Number(params.get('level')),plus=Number(params.get('plus'));
+  if(!Number.isInteger(base)||base<1||base>200||!Number.isInteger(plus)||plus<0||plus>5)return;
+  function applyEventLevel(){
+    if(typeof unitData==='undefined'||typeof currentData==='undefined'||typeof updateStats!=='function')return;
+    for(const form of Object.values(unitData.forms)){
+      form.maxBaseLevel=Math.max(form.maxBaseLevel,base);
+      form.maxPlusLevel=Math.max(form.maxPlusLevel,plus);
+    }
+    for(const id of ['baseLevelRange','baseLevelNumber']){const node=document.getElementById(id);if(node)node.max=String(currentData.maxBaseLevel);}
+    for(const id of ['plusLevelRange','plusLevelNumber']){const node=document.getElementById(id);if(node)node.max=String(currentData.maxPlusLevel);}
+    if(typeof maxBaseBadge!=='undefined')maxBaseBadge.textContent=String(currentData.maxBaseLevel);
+    if(typeof maxPlusBadge!=='undefined')maxPlusBadge.textContent=String(currentData.maxPlusLevel);
+    updateStats(base,plus);
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',applyEventLevel,{once:true});else applyEventLevel();
+})();

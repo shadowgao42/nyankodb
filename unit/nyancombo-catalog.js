@@ -136,8 +136,10 @@
       member.dataset.comboTalentTooltip = member.dataset.tooltip || '';
     }
     const label = `${kind === 'ultra' ? '초본능' : '본능'} ${selected ? '적용' : '해방'}`;
-    member.dataset.tooltip = `${member.dataset.comboTalentTooltip} · ${label}`;
-    member.setAttribute('aria-label', `${member.dataset.comboTalentLabel} · ${label}`);
+    const withTalent = value => selected && /(?: ·)? 제거$/.test(value)
+      ? value.replace(/(?: ·)? 제거$/, ` · ${label} · 제거`) : `${value} · ${label}`;
+    member.dataset.tooltip = withTalent(member.dataset.comboTalentTooltip);
+    member.setAttribute('aria-label', withTalent(member.dataset.comboTalentLabel));
   }
   function decorateComboCards(container, catalog) {
     for (const card of container.querySelectorAll('.nyancombo-card[data-combo-id]')) {
