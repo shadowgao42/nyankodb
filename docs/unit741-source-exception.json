@@ -1,0 +1,14 @@
+{
+  "unitId": 741,
+  "sourceRegion": "kr",
+  "appliesTo": "All generator entry paths, including explicit JP input",
+  "sourceFile": "DataLocal/unit742.csv",
+  "reason": "JP15.7 and JP16.0 contain placeholder attack8/16 and numeric names742-1/742-2; user explicitly requires KR stats",
+  "missingKoreanSource": "Fail; never fall back to JP",
+  "level50Attack": {
+    "noTreasures": 24300,
+    "allEocGold": 60750
+  },
+  "sourceSha256": "3d7df1251d3bee086f70dac6da912b4b5db4ce7bfa91f92691e0e640ee6bae3b",
+  "generator": "unit_spec_calculator.py::unit_game_root_with_japanese_fallback"
+}

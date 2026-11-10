@@ -1,0 +1,16 @@
+--- a/unit_spec_calculator.py
++++ b/unit_spec_calculator.py
+@@ -320,6 +320,13 @@
+     form: int | None = None,
+ ) -> Path:
+     """Use JP when the requested unit form is unavailable in the main build."""
++    # UNIT741 is KR-only; JP15.7/16.0 contains placeholder stats and names.
++    # Keep this override before regional fallback, including explicit JP builds.
++    if int(unit_id) == 741:
++        korean = DEFAULT_KOREAN_GAME_ROOT
++        if not unit_data_path(korean, unit_id).is_file():
++            raise FileNotFoundError("UNIT741 requires its Korean source unit742.csv")
++        return korean
+     primary = Path(game_root)
+     primary_has_form = _has_distinct_unit_form(primary, unit_id, form)
+     if primary_has_form:
