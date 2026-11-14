@@ -111,6 +111,7 @@
   function decorateTalentMember(member, requirement, selected = false) {
     const portrait = member.querySelector('.nyancombo-member-image');
     if (!portrait) return;
+    portrait.classList.toggle('combo-talent-portrait', Boolean(requirement));
     let badge = member.querySelector('.combo-talent-badge');
     if (!requirement) {
       badge?.remove();

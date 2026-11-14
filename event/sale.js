@@ -356,13 +356,18 @@
     const last = civil(target.getUTCFullYear(), target.getUTCMonth() + 1, 0).getUTCDate();
     selectDate(civil(target.getUTCFullYear(), target.getUTCMonth(), Math.min(last, selected.getUTCDate())));
   }
+  function missionGroupOrder(event) { return Number(missionView && event.members.length > 1); }
   function renderCalendar(events) {
     document.getElementById('calendarMonth').textContent = `${month.getUTCFullYear()}년 ${month.getUTCMonth() + 1}월`;
     const gridStart = month.getTime() / DAY - month.getUTCDay();
     const instances = events.flatMap(event => intervals(event).map(([start,end], index) => ({event,start,end,index})));
-    instances.sort((a,b) => (missionView ? priority[a.event.kind] - priority[b.event.kind] : Number(isDailyTicket(a.event)) - Number(isDailyTicket(b.event))) || a.start - b.start || b.end - a.end || a.event.sourceRow - b.event.sourceRow || a.index - b.index);
-    let ends = [], laneOffset = 0, ticketGroup = false;
+    instances.sort((a,b) => missionGroupOrder(a.event) - missionGroupOrder(b.event) || (missionView ? priority[a.event.kind] - priority[b.event.kind] : Number(isDailyTicket(a.event)) - Number(isDailyTicket(b.event))) || a.start - b.start || b.end - a.end || a.event.sourceRow - b.event.sourceRow || a.index - b.index);
+    let ends = [], laneOffset = 0, ticketGroup = false, missionGroup = false;
     for (const instance of instances) {
+      // Keep grouped missions below all single missions, including later starts.
+      if (!missionGroup && missionGroupOrder(instance.event)) {
+        laneOffset = ends.length; ends = []; missionGroup = true;
+      }
       // Keep the daily ticket below every other lane across the complete timeline.
       if (!ticketGroup && isDailyTicket(instance.event)) {
         laneOffset = ends.length; ends = []; ticketGroup = true;
@@ -452,7 +457,7 @@
     const filtered = (data?.regions[regionSelect.value]?.events || []).filter(e => selectedKinds.has(e.kind) && (missionView || !e.permanent || commonRewardIndex(e) >= 0));
     const events = missionView ? missionGroups(filtered) : filtered;
     renderCalendar(events);
-    const active = events.filter(e => activeOn(e,selected)).sort((a,b) => Number(isDailyTicket(a)) - Number(isDailyTicket(b)) || priority[a.kind]-priority[b.kind] || Date.parse(a.start)-Date.parse(b.start) || a.sourceRow-b.sourceRow);
+    const active = events.filter(e => activeOn(e,selected)).sort((a,b) => missionGroupOrder(a) - missionGroupOrder(b) || Number(isDailyTicket(a)) - Number(isDailyTicket(b)) || priority[a.kind]-priority[b.kind] || Date.parse(a.start)-Date.parse(b.start) || a.sourceRow-b.sourceRow);
     list.replaceChildren(...active.map(e => renderEvent(e,open.has(e.key))));
     document.getElementById('saleCount').textContent = data ? `${active.length}개 일정` : '';
     const loading = document.getElementById('calendarStatus');
