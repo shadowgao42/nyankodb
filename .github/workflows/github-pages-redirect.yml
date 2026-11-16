@@ -1,0 +1,68 @@
+name: Redirect GitHub Pages to nyanko.wiki
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/github-pages-redirect.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-redirect
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Generate redirect pages
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = r'''<!doctype html>
+          <html lang="ko">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <meta name="robots" content="noindex">
+            <title>냥코DB</title>
+          </head>
+          <body>
+            <a id="destination" href="https://nyanko.wiki/">냥코DB로 이동</a>
+            <script>
+            (() => {
+              const prefix = "/nyankodb";
+              const { hostname, pathname, search, hash } = location;
+              if (hostname !== "shadowgao42.github.io" ||
+                  !(pathname === prefix || pathname.startsWith(prefix + "/"))) return;
+              const path = pathname.slice(prefix.length) || "/";
+              const target = "https://nyanko.wiki" + path + search + hash;
+              document.getElementById("destination").href = target;
+              location.replace(target);
+            })();
+            </script>
+          </body>
+          </html>
+          '''
+          output = Path('.pages-redirect')
+          output.mkdir(exist_ok=True)
+          for name in ('index.html', '404.html'):
+              (output / name).write_text(html, encoding='utf-8')
+          PY
+      - name: Upload redirect artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .pages-redirect
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
