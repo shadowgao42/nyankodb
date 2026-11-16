@@ -9,6 +9,22 @@
   },
   "rewrites": [
     {
+      "source": "/api/search/external",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/api/notices/official",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/api/social/shop",
+      "destination": "/api/index"
+    },
+    {
+      "source": "/api/social/x",
+      "destination": "/api/index"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api/index"
     },
@@ -34,5 +50,11 @@
     "deploymentEnabled": {
       "event-schedule-data": false
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/(?:(?:a|%61)(?:p|%70)(?:i|%69)(?:/|%2[fF])(?:_.*|%5[fF].*|.*(?:\\.|%2[eE])py(?:/.*)?)|(?:a|%61)(?:c|%63)(?:c|%63)(?:o|%6[fF])(?:u|%75)(?:n|%6[eE])(?:t|%74)(?:_|%5[fF])(?:s|%73)(?:e|%65)(?:r|%72)(?:v|%76)(?:i|%69)(?:c|%63)(?:e|%65)(?:(?:/|%2[fF]).*)?)",
+      "status": 404
+    }
+  ]
 }
