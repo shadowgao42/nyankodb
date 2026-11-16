@@ -374,7 +374,10 @@
     form.dataset.sharedSearchMounted = "true";
     input.setAttribute("aria-controls", results.id);
     input.setAttribute("aria-autocomplete", "list");
+    const portalSearch = home || form.classList.contains("gnb-search");
+    if (portalSearch) input.setAttribute("enterkeyhint", "search");
     let visible = [], active = -1;
+    let keyboardSelection = false;
     let pendingRender = 0, composing = false, renderedQuery = null;
 
     function cancelRender() {
@@ -393,6 +396,7 @@
       input.setAttribute("aria-expanded", "false");
       input.removeAttribute("aria-activedescendant");
       active = -1;
+      keyboardSelection = false;
       results.querySelectorAll('[role="option"]').forEach(node => node.setAttribute("aria-selected", "false"));
     }
 
@@ -515,7 +519,7 @@
           if (home) rememberForm(entry);
           else navigate(entry);
         });
-        node.addEventListener("mousemove", () => setActive(index));
+        node.addEventListener("mousemove", () => { keyboardSelection = false; setActive(index); });
         fragment.append(node);
       });
       results.append(fragment);
@@ -527,7 +531,11 @@
     input.addEventListener("compositionend", () => { composing = false; scheduleRender(); });
     // Korean IME keeps the last syllable composing while the user pauses.
     // Show those partial queries too; only navigation waits for composition.
-    input.addEventListener("input", scheduleRender);
+    input.addEventListener("input", () => {
+      // Even punctuation/spacing edits cancel an explicit keyboard choice.
+      if (portalSearch) close();
+      scheduleRender();
+    });
     input.addEventListener("focus", scheduleRender);
     input.addEventListener("keydown", event => {
       if (composing || event.isComposing || event.keyCode === 229) return;
@@ -535,6 +543,7 @@
         event.preventDefault();
         if (renderedQuery !== compact(input.value)) render();
         setActive(active + (event.key === "ArrowDown" ? 1 : -1));
+        keyboardSelection = true;
       } else if (event.key === "Escape") close();
     });
     form.addEventListener("submit", event => {
@@ -542,6 +551,14 @@
       if (composing) return;
       // Enter may arrive before the queued frame. Never use stale matches.
       if (renderedQuery !== compact(input.value)) render();
+      if (portalSearch && (form.classList.contains("gnb-search") || !(keyboardSelection && active >= 0))) {
+        const query = input.value.trim();
+        if (!query) return;
+        const target = new URL("search", siteRoot);
+        target.searchParams.set("q", query);
+        window.location.href = target.href;
+        return;
+      }
       const entry = visible[active >= 0 ? active : 0];
       if (entry) navigate(entry);
       else {
@@ -572,7 +589,7 @@
   window.NyankoSearch = Object.freeze({ search, searchResults(value, options) {
     const found = searchResults(value, options);
     return { matches: found.matches.slice(), total: found.total, limit: resultLimit };
-  }, createIndex, identity, destination, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
+  }, createIndex, identity, destination, rememberForm, stageCategoryOrder, stageCategoryForLocation, applyStageIconSize });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mount, { once: true });
   else mount();
 })();

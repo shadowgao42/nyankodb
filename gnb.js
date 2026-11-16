@@ -233,7 +233,7 @@
         <div class="unit-search-field gnb-search-field">
           <svg class="gnb-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg>
           <input type="search" autocomplete="off" spellcheck="false"
-            aria-label="검색할 이름 또는 ID" aria-autocomplete="list" aria-expanded="false">
+            aria-label="검색할 이름 또는 ID">
           <div class="unit-search-results gnb-search-results" role="listbox" aria-label="유닛 이름 검색 결과" hidden></div>
         </div>
       </form>
@@ -421,18 +421,7 @@
       navigation.append(link);
     }
     document.body.append(navigation);
-    const sidebarHeader = document.querySelector("header[data-nyanko-gnb][data-gnb-mounted]");
-    const sidebarActions = sidebarHeader?.querySelector(".gnb-actions");
-    const sidebarForm = sidebarActions?.querySelector(".gnb-search");
-    let searchSidebar;
-    if (sidebarForm && !document.documentElement.classList.contains("event-embedded")) {
-      searchSidebar = document.createElement("aside");
-      searchSidebar.className = "db-toolbar nyanko-gnb gnb-search-sidebar";
-      searchSidebar.setAttribute("aria-label", "냥코DB 검색");
-      sidebarHeader.after(searchSidebar);
-    }
     function updateNavigationScale() {
-      const focused = sidebarForm?.contains(document.activeElement) ? document.activeElement : null;
       document.body.classList.remove("has-nyanko-bottom-navigation", "has-nyanko-sidebar");
       const originalPadding = getComputedStyle(document.body).paddingBottom;
       const originalLeftPadding = getComputedStyle(document.body).paddingLeft;
@@ -451,16 +440,26 @@
         document.body.style.setProperty("--nyanko-sidebar-base-padding", originalLeftPadding);
         document.body.style.setProperty("--nyanko-sidebar-base-right-padding", originalRightPadding);
         document.body.style.setProperty("--nyanko-sidebar-inverse-zoom", String(1 / pageZoom));
-        if (searchSidebar) {
-          const mobile = matchMedia("(max-width: 820px)").matches;
-          const destination = mobile ? sidebarActions : searchSidebar;
-          if (sidebarForm.parentElement !== destination) {
-            if (mobile) destination.prepend(sidebarForm); else destination.append(sidebarForm);
+        document.body.classList.add("has-nyanko-sidebar");
+        // Keep the DB column centered even without a visible right rail, while
+        // the top toolbar spans the left menu and the DB column together.
+        header.style.removeProperty("--gnb-desktop-overhang");
+        header.style.removeProperty("--gnb-desktop-right-overhang");
+        if (!matchMedia("(max-width: 820px)").matches) {
+          const menu = header.querySelector(".gnb-menu");
+          if (menu) {
+            const toolbarZoom = pageZoom * (Number.parseFloat(getComputedStyle(header).zoom) || 1);
+            const bounds = header.getBoundingClientRect();
+            const menuLeft = menu.getBoundingClientRect().left;
+            const overhang = Math.max(0, bounds.left - menuLeft);
+            const rightOverhang = Math.max(0, document.documentElement.clientWidth - menuLeft - bounds.right);
+            header.style.setProperty("--gnb-desktop-overhang", `${overhang / toolbarZoom}px`);
+            header.style.setProperty("--gnb-desktop-right-overhang", `${rightOverhang / toolbarZoom}px`);
+            const menuTop = header.getBoundingClientRect().bottom + window.scrollY + 12;
+            header.style.setProperty("--gnb-desktop-menu-top", `${menuTop / toolbarZoom}px`);
           }
         }
-        document.body.classList.add("has-nyanko-sidebar");
       }
-      if (focused && document.activeElement !== focused) focused.focus({ preventScroll: true });
     }
     updateNavigationScale();
     window.addEventListener("resize", updateNavigationScale);

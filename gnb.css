@@ -409,34 +409,33 @@
 /* Desktop uses the same breakpoint and inverse page zoom as the mobile bar. */
 header[data-nyanko-gnb].nyanko-gnb .gnb-desktop-link,
 header[data-nyanko-gnb].nyanko-gnb .gnb-sidebar-divider,
-header[data-nyanko-gnb][data-gnb-desktop-only],
-.gnb-search-sidebar { display: none; }
+header[data-nyanko-gnb][data-gnb-desktop-only] { display: none; }
 @media not all and (max-width: 820px) {
   body.has-nyanko-sidebar {
-    /* Unit index: 1220px content + 36px page gutters + two 228px rails, at 70%. */
+    /* Keep both rail gutters so removing the right UI does not move the DB column. */
     --nyanko-sidebar-edge: max(8.4px, calc((100vw - 1198.4px) / 2));
     --nyanko-sidebar-expand: min(50.4px, max(0px, calc(var(--nyanko-sidebar-edge) - 8.4px)));
     padding-left: calc(var(--nyanko-sidebar-base-padding, 0px) + (var(--nyanko-sidebar-edge) + 159.6px) * var(--nyanko-sidebar-inverse-zoom, 1));
     padding-right: calc(var(--nyanko-sidebar-base-right-padding, 0px) + (var(--nyanko-sidebar-edge) + 159.6px) * var(--nyanko-sidebar-inverse-zoom, 1));
   }
-  body.has-nyanko-sidebar header[data-nyanko-gnb].nyanko-gnb,
-  body.has-nyanko-sidebar .gnb-search-sidebar {
-    position: fixed; z-index: 200; top: 36px; bottom: auto;
-    display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start;
-    box-sizing: border-box; width: calc(204px + var(--nyanko-sidebar-expand) * 1.4285714286);
-    height: calc(142.8571428571dvh - 72px); gap: 18px; margin: 0; padding: 18px 14px;
+  body.has-nyanko-sidebar header[data-nyanko-gnb].nyanko-gnb {
+    display: flex; flex-direction: row; align-items: center; justify-content: space-between;
+    position: relative; z-index: 200; box-sizing: border-box;
+    width: calc(100% + var(--gnb-desktop-overhang, 0px) + var(--gnb-desktop-right-overhang, 0px));
+    margin-left: calc(-1 * var(--gnb-desktop-overhang, 0px));
     zoom: calc(var(--nyanko-sidebar-inverse-zoom, 1) * .7);
     font-family: "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
   }
-  body.has-nyanko-sidebar header[data-nyanko-gnb].nyanko-gnb {
-    left: calc((var(--nyanko-sidebar-edge) - var(--nyanko-sidebar-expand)) * 1.4285714286);
-  }
-  body.has-nyanko-sidebar .gnb-search-sidebar { right: calc((var(--nyanko-sidebar-edge) - var(--nyanko-sidebar-expand)) * 1.4285714286); }
   body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-leading { display: contents; }
-  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-brand { flex: 0 0 auto; }
   body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu {
-    display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column;
-    align-items: stretch; gap: 6px; padding: 3px; overflow-y: auto; scrollbar-width: thin;
+    position: fixed; z-index: 200; top: var(--gnb-desktop-menu-top, 110px);
+    left: calc((var(--nyanko-sidebar-edge) - var(--nyanko-sidebar-expand)) * 1.4285714286);
+    box-sizing: border-box; width: calc(204px + var(--nyanko-sidebar-expand) * 1.4285714286);
+    height: max(120px, calc(142.8571428571dvh - var(--gnb-desktop-menu-top, 110px) - 36px)); margin: 0; padding: 18px 14px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 6px;
+    overflow-y: auto; scrollbar-width: thin;
+    border: 1px solid var(--line); border-radius: 17px;
+    background: rgba(14, 19, 26, .92); box-shadow: var(--shadow);
   }
   body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-link {
     display: flex; flex: 0 0 auto; flex-direction: row; align-items: center; justify-content: flex-start;
@@ -453,18 +452,11 @@ header[data-nyanko-gnb][data-gnb-desktop-only],
   }
   body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-menu-indicator { top: 0; bottom: auto; }
   body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-actions {
-    display: flex; flex: 0 0 auto; width: 100%; flex-direction: column; align-items: stretch;
+    display: flex; flex: 1 1 auto; max-width: 560px; flex-direction: row; align-items: center;
   }
-  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search { display: flex; flex: 1; flex-direction: column; align-items: stretch; min-height: 0; width: 100%; margin: 0; }
-  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-field { display: flex; flex: 1; flex-direction: column; min-height: 0; width: 100%; }
-  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-auth { min-height: 38px; }
-  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search input { flex: none; width: 100%; }
-  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-icon { top: 19px; }
-  body.has-nyanko-sidebar .gnb-search-sidebar .gnb-search-results {
-    position: static; flex: 1; min-height: 0; width: 100%; max-height: none;
-    margin-top: 12px; padding: 0; border: 0; border-radius: 0;
-    background: transparent; box-shadow: none;
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-search {
+    display: block; flex: 1 1 auto; width: auto; min-width: 0;
   }
-  body.has-nyanko-sidebar:has(header[data-gnb-desktop-only]) > main.page { padding-top: 25.2px; }
+  body.has-nyanko-sidebar header[data-nyanko-gnb] .gnb-search input { width: 100%; }
   body.has-nyanko-sidebar:has(header[data-gnb-desktop-only]) > main.page > .brand { display: none; }
 }

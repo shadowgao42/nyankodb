@@ -5,248 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="dark">
   <title>냥코DB</title>
+  <link rel="stylesheet" href="list-page.css">
   <style>
-    :root {
-      --bg: #080b10;
-      --surface: #111720;
-      --surface-2: #171f29;
-      --line: #344252;
-      --line-strong: #526274;
-      --text: #f4f7fb;
-      --muted: #a5b1c1;
-      --accent: #ffad3d;
-      --shadow: 0 24px 70px rgba(0, 0, 0, .34);
-    }
-
-    * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--bg); }
-
-    body {
-      min-width: 0;
-      min-height: 100vh;
-      margin: 0;
-      color: var(--text);
-      font-family: "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
-      background:
-        linear-gradient(135deg, transparent 0 48%, rgba(255,255,255,.025) 48% 48.2%, transparent 48.2% 100%),
-        var(--bg);
-    }
-
-    .page {
-      width: min(100% - 32px, 1040px);
-      margin: 0 auto;
-      padding: 28px 0 44px;
-    }
-
-    .brand {
-      display: inline-block;
-      margin: 0 0 18px;
-      color: var(--text);
-      font-size: clamp(24px, 4vw, 31px);
-      font-weight: 900;
-      letter-spacing: -.06em;
-      text-decoration: none;
-    }
-
-    .brand:hover { color: #fff; }
-    .brand .db { color: var(--accent); }
-
-    .search-card,
-    .update-news-card,
-    .notice-card {
-      border: 1px solid var(--line);
-      border-radius: 17px;
-      background: linear-gradient(145deg, rgba(23,31,41,.98), rgba(14,20,28,.98));
-      box-shadow: var(--shadow);
-    }
-
-    .search-card { padding: 18px; }
-    h1, h2, p { margin: 0; }
-    h1 { font-size: clamp(22px, 3vw, 29px); letter-spacing: -.045em; }
-    h2 { font-size: 19px; letter-spacing: -.04em; }
-    .intro { margin-top: 6px; color: var(--muted); font-size: 13px; font-weight: 700; }
-
-    .search-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .search-nav {
-      display: flex;
-      flex: 0 0 auto;
-      gap: 7px;
-    }
-
-    .search-nav a,
-    button {
-      min-height: 42px;
-      border: 1px solid var(--line-strong);
-      border-radius: 9px;
-      color: var(--text);
-      background: #303a47;
-      font: inherit;
-      font-weight: 900;
-    }
-
-    .search-nav a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 16px;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .search-nav a:hover,
-    button:hover { background: #374657; }
-
-    form { display: flex; gap: 9px; margin-top: 16px; }
-
-    input {
-      width: 100%;
-      height: 42px;
-      padding: 8px 13px;
-      border: 1px solid #4d5a69;
-      border-radius: 9px;
-      outline: none;
-      color: var(--text);
-      background: #0c1118;
-      font: inherit;
-    }
-
-    input:focus {
-      border-color: #788697;
-      box-shadow: 0 0 0 2px rgba(145,158,173,.18);
-    }
-
-    button {
-      flex: 0 0 auto;
-      min-height: 42px;
-      padding: 8px 16px;
-      cursor: pointer;
-    }
-
-    .search-status {
-      min-height: 18px;
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .search-results {
-      display: grid;
-      max-height: min(72vh, 920px);
-      margin-top: 8px;
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      border-top: 1px solid var(--line);
-      scrollbar-width: thin;
-    }
-
-    .search-result {
-      display: grid;
-      grid-template-columns: 78px minmax(0, 1fr);
-      align-items: center;
-      gap: 11px;
-      min-width: 0;
-      min-height: 82px;
-      padding: 9px 12px;
-      border-bottom: 1px solid var(--line);
-      color: var(--text);
-      text-align: left;
-      text-decoration: none;
-    }
-
-    .search-result:hover {
-      background: #263240;
-      box-shadow: inset 3px 0 var(--accent);
-    }
-
-    .search-result img {
-      display: block;
-      width: 78px;
-      height: 60px;
-      object-fit: contain;
-      object-position: center;
-      background: transparent;
-    }
-
-    .search-result-copy { min-width: 0; }
-
-    .result-name {
-      display: block;
-      overflow: hidden;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 950;
-      line-height: 1.35;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .result-form {
-      display: block;
-      margin-top: 5px;
-      color: var(--accent);
-      font-size: 12px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    .update-news-card,
-    .notice-card { margin-top: 24px; overflow: hidden; }
-
-    .update-news-link {
-      display: block;
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .update-news-link:hover .notice-heading,
-    .update-news-link:focus-visible .notice-heading {
-      background: rgba(255,255,255,.035);
-    }
-
-    .update-news-link:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-    }
-
-    .update-news-icons {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 77px;
-      padding: 12px 20px;
-      overflow-x: auto;
-      scrollbar-width: thin;
-    }
-
-    .update-news-icon {
-      display: block;
-      flex: 0 0 auto;
-      width: 62px;
-      height: 49px;
-      object-fit: contain;
-      image-rendering: auto;
-    }
-
-    .update-news-empty {
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .notice-heading {
-      padding: 17px 20px;
-      border-bottom: 1px solid var(--line);
-    }
+    .home-page .results-panel { flex: none; }
+    .home-page .results-panel > .section-heading { gap:14px; min-width:0; }
+    .update-news-link { color:inherit; text-decoration:none; }
+    .update-news-link:hover .section-heading { background:rgba(255,255,255,.035); }
+    .update-news-link:focus-visible { outline:2px solid var(--accent-2); outline-offset:3px; }
+    .update-news-icons { display:flex; align-items:center; gap:8px; min-height:77px; padding:12px 18px; overflow-x:auto; scrollbar-width:thin; }
+    .update-news-icon { display:block; flex:none; width:78px; height:60px; object-fit:contain; image-rendering:pixelated; }
+    [hidden] { display: none !important; }
+    .notice-carousel { display: flex; flex-direction: column; padding: 18px; }
+    .notice-stage { order: 1; position: relative; aspect-ratio: 3.125; overflow: hidden; touch-action: pan-y; }
+    .notice-slide { position: absolute; top: 50%; left: 50%; width: 64%; display: block; color: var(--text); text-decoration: none; transform: translate(-50%, -50%); }
+    .notice-stage.is-moving .notice-slide { transition: left 360ms ease, transform 360ms ease, opacity 360ms ease; }
+    .notice-slide img { display: block; width: 100%; aspect-ratio: 2; object-fit: contain; border-radius: 9px; -webkit-user-drag: none; user-select: none; }
+    .notice-caption { order: 2; margin: 18px 0; text-align: center; font-size: 18px; line-height: 1.5; }
+    .notice-controls { order: 3; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .notice-controls button { min-width: 42px; min-height: 42px; padding: 9px 18px; font-size: 14px; font-weight: 900; color: var(--text); cursor: pointer; border: 1px solid #425267; border-radius: 10px; background: #202a37; }
+    .notice-controls button:disabled { opacity: .5; cursor: default; }
+    .notice-controls button:focus-visible, .notice-slide:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+    .notice-official-link { color: var(--text); }
+    .social-logo-link { display:inline-flex; align-items:center; justify-content:center; flex:none; width:56px; height:56px; padding:8px; text-decoration:none; }
+    .social-logo-link img { display:block; width:40px; height:40px; object-fit:contain; }
+    .social-logo-link .official-x-logo { filter:invert(1); }
+    .social-logo-link:focus-visible { outline:2px solid var(--accent-2); outline-offset:3px; }
+    .social-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,370px),1fr)); gap:12px; margin-top:12px; }
+    .home-page .social-card { min-width:0; margin-top:0; }
+    .home-page .social-grid .social-card > .section-heading { flex-direction:row; align-items:center; gap:14px; }
+    .social-content { min-width:0; padding:16px 18px; }
+    .social-embed { display:block; width:100%; max-width:100%; height:600px; border:0; margin:0; }
+    .social-status, .social-profile-link { color:var(--muted); font-size:13px; font-weight:700; line-height:1.6; }
+    .social-profile-link { display:inline-block; margin-top:12px; color:var(--text); }
+    .social-profile-link:focus-visible { outline:2px solid var(--accent-2); outline-offset:3px; }
+    .x-feed { max-width:100%; max-height:600px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; }
+    .x-feed iframe { max-width:100% !important; }
+    .x-post { padding:12px 0; border-bottom:1px solid var(--line); }
+    .x-post-author { color:var(--text); font-size:14px; font-weight:900; }
+    .x-post-text { margin-top:8px; white-space:pre-line; overflow-wrap:anywhere; color:var(--text); font-size:13px; line-height:1.6; }
+    .x-post-date { display:block; margin-top:8px; color:var(--muted); font-size:12px; }
+    .x-post a:focus-visible { outline:2px solid var(--accent-2); outline-offset:3px; }
+    .shop-updates { display:grid; grid-template-columns:minmax(0,1fr); }
+    .shop-updates .item-card { border-right:0; }
+    .shop-updates img { image-rendering:auto; }
+    .shop-title { display:block; overflow-wrap:anywhere; font-size:14px; font-weight:900; }
+    .shop-price { display:block; margin-top:5px; color:var(--muted); font-size:12px; font-weight:700; }
 
     .notice-note { padding: 12px 20px 0; color: var(--muted); font-size: 13px; }
 
-    iframe {
+    #notice-frame {
       display: block;
       width: 100%;
       height: min(74vh, 760px);
@@ -256,81 +63,80 @@
       background: #fff;
     }
 
-    @media (max-width: 650px) {
-      .page { width: min(100% - 20px, 1040px); padding-top: 18px; }
-      .search-card { padding: 15px; }
-      .search-header { display: grid; grid-template-columns: minmax(0, 1fr); }
-      .search-nav { width: 100%; min-width: 0; }
-      .search-nav a { flex: 1 1 0; min-width: 0; padding-inline: 6px; font-size: 12px; }
-      .intro { font-size: 13px; }
-      form { gap: 6px; }
-      button { padding: 0 13px; }
-      .notice-heading { padding: 15px 16px; }
-      .notice-note { padding: 11px 16px 0; }
-      .update-news-icons { padding-inline: 16px; }
-      iframe { min-height: 520px; }
+    @media (max-width:760px) {
+      .social-grid { grid-template-columns:minmax(0,1fr); }
+      .social-content { padding-inline:15px; }
+      .notice-carousel { padding:15px; }
+      .notice-caption { font-size:16px; margin:12px 0; }
+      .notice-note { padding-inline:15px; }
+      .update-news-icons { padding-inline:15px; }
     }
-      .search-result img.stage-pr-icon {
-      box-sizing: border-box;
-      padding: 0 9px;
-      image-rendering: auto;
+    @media (max-width:500px) {
+      .home-page .results-panel > .section-heading { align-items:flex-start; flex-direction:column; gap:5px; }
+      .update-news-icon { width:58px; height:48px; }
     }
   </style>
   <link rel="stylesheet" href="gnb.css">
 </head>
 <body>
-  <header data-nyanko-gnb data-gnb-desktop-only data-search-prefix="unitSearch"></header>
-  <script src="gnb.js"></script>
-  <main class="page">
-    <a class="brand" href="./" aria-label="냥코DB 홈">냥코<span class="db">DB</span></a>
-
-    <section class="search-card" aria-labelledby="unit-search-title">
-      <div class="search-header">
-        <div>
-          <h1 id="unit-search-title">검색</h1>
-        </div>
-        <nav class="search-nav" aria-label="검색 도구">
-          <a href="unit/">유닛</a>
-          <a href="enemy/">적</a>
-          <a href="item/">아이템</a>
-          <a href="stage/">스테이지</a>
-        </nav>
-      </div>
-      <form id="unit-search-form" role="search">
-        <input id="unit-search-input" type="search" autocomplete="off"
-               placeholder="이름 입력" aria-label="검색할 이름 또는 ID">
-        <button type="submit">검색</button>
-      </form>
-      <p class="search-status" id="search-status" aria-live="polite">검색 목록을 불러오는 중입니다.</p>
-      <div class="search-results" id="search-results" role="listbox" aria-label="검색 결과"></div>
-    </section>
-
-    <section class="update-news-card" aria-labelledby="update-news-title" hidden>
-      <a class="update-news-link" id="update-news-link" href="update/" aria-label="최신 업데이트 소식 보기">
-        <div class="notice-heading"><h2 id="update-news-title">업데이트 소식</h2></div>
+  <main class="page home-page">
+    <header data-nyanko-gnb data-search-prefix="unitSearch"></header>
+    <script src="gnb.js"></script>
+    <a class="update-news-card results-panel update-news-link" id="update-news-link" href="update/" aria-labelledby="update-news-title" hidden>
+        <div class="notice-heading section-heading"><h2 id="update-news-title">업데이트 소식</h2></div>
         <div class="update-news-icons" id="update-news-icons" aria-live="polite"></div>
-      </a>
-    </section>
+    </a>
 
-    <section class="notice-card" aria-labelledby="notice-title">
-      <div class="notice-heading"><h2 id="notice-title">공식 공지</h2></div>
-      <p class="notice-note">냥코 대전쟁 공식 공지입니다.</p>
+    <section class="notice-card results-panel" aria-labelledby="notice-title">
+      <div class="notice-heading section-heading"><h2 id="notice-title">공식 공지</h2></div>
+      <div class="notice-carousel" id="notice-carousel" hidden aria-roledescription="캐러셀" aria-label="공식 공지 배너">
+        <div class="notice-controls">
+          <button id="notice-prev" type="button" aria-label="이전 공지">‹</button>
+          <span id="notice-count" aria-live="off"></span>
+          <button id="notice-next" type="button" aria-label="다음 공지">›</button>
+        </div>
+        <div class="notice-stage" id="notice-stage"></div>
+        <h3 class="notice-caption" id="notice-caption"></h3>
+      </div>
+      <p class="notice-note" id="notice-fallback"><a class="notice-official-link" id="notice-official-link" target="_blank" rel="noopener noreferrer">공식 공지 보기</a></p>
       <iframe id="notice-frame" title="냥코 대전쟁 공식 공지" loading="lazy"
               referrerpolicy="no-referrer"></iframe>
     </section>
+    <div class="social-grid">
+      <section class="social-card results-panel" aria-labelledby="instagram-title">
+        <div class="section-heading"><h2 id="instagram-title">공식 인스타그램</h2><a class="social-logo-link" href="https://www.instagram.com/insta_nyanko/" target="_blank" rel="noopener noreferrer" aria-label="일본판 공식 인스타그램"><img src="img/social/instagram.webp" alt="" width="40" height="40"></a></div>
+        <div class="social-content">
+          <iframe class="social-embed" src="https://www.instagram.com/insta_nyanko/embed/" title="일본판 공식 인스타그램 게시물" loading="lazy" referrerpolicy="no-referrer"></iframe>
+          <a class="social-profile-link" href="https://www.instagram.com/insta_nyanko/" target="_blank" rel="noopener noreferrer">인스타그램에서 보기 →</a>
+        </div>
+      </section>
+      <section class="social-card results-panel" aria-labelledby="x-title">
+        <div class="section-heading"><h2 id="x-title">공식 X(트위터)</h2><a class="social-logo-link" href="https://twitter.com/PONOS_GAME" target="_blank" rel="noopener noreferrer" aria-label="일본판 공식 X(트위터)"><img class="official-x-logo" src="img/social/x.webp" alt="" width="40" height="40"></a></div>
+        <div class="social-content">
+          <p class="social-status" id="x-status" role="status">게시물을 불러오는 중입니다.</p>
+          <div class="x-feed" id="x-feed"></div>
+          <a class="social-profile-link" href="https://twitter.com/PONOS_GAME" target="_blank" rel="noopener noreferrer">X에서 보기 →</a>
+        </div>
+      </section>
+      <section class="social-card results-panel" aria-labelledby="shop-title">
+        <div class="section-heading"><h2 id="shop-title">냥코대상점</h2><a class="social-logo-link" href="https://www.nyanko-daishoten.jp/" target="_blank" rel="noopener noreferrer" aria-label="냥코대상점 일본 공식 온라인 상점"><img src="img/social/shop.png" alt="" width="40" height="40"></a></div>
+        <p class="social-content social-status" id="shop-status" role="status">신상품을 불러오는 중입니다.</p>
+        <div class="shop-updates" id="shop-updates"></div>
+        <div class="social-content"><a class="social-profile-link" href="https://www.nyanko-daishoten.jp/" target="_blank" rel="noopener noreferrer">냥코대상점에서 보기 →</a></div>
+      </section>
+    </div>
   </main>
 
   <script src="catalog.js"></script>
   <script src="search.js" defer></script>
+  <script src="home-notices.js" defer></script>
+  <script src="home-social.js" defer></script>
   <script>
     (() => {
       "use strict";
-      const NOTICE_URL = "https://nyanko-announcement.ponosgames.com/v1/notices?platform=google&clientVersion=100300&countryCode=ko&clearedStageJapan=100&clearedStageFuture=100&clearedUniverse=100&timeDifference=700";
       const updateNews = document.querySelector(".update-news-card");
       const updateNewsLink = document.getElementById("update-news-link");
       const updateNewsIcons = document.getElementById("update-news-icons");
-
-      document.getElementById("notice-frame").src = NOTICE_URL;
 
       async function latestUpdatePage() {
         // Version filenames such as 150501 and 1506 cannot be ordered as

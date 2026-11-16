@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="robots" content="noindex, follow">
+  <title>검색 · 냥코DB</title>
+  <link rel="stylesheet" href="../list-page.css">
+  <link rel="stylesheet" href="../gnb.css">
+  <link rel="stylesheet" href="search.css?v=20261116-page-arrows">
+</head>
+<body>
+  <main class="page search-page">
+    <header data-nyanko-gnb data-search-prefix="unitSearch"></header>
+    <script src="../gnb.js"></script>
+    <section class="search-panel" aria-labelledby="searchTitle">
+      <h1 id="searchTitle">검색</h1>
+      <form id="portalSearchForm" class="search-controls" role="search" action="../search" method="get">
+        <input class="search-input" id="portalSearchInput" name="q" type="search"
+               autocomplete="off" spellcheck="false" enterkeyhint="search"
+               placeholder="이름 또는 ID 입력" aria-label="검색어">
+      </form>
+      <nav id="searchTabs" class="search-tabs" aria-label="검색 종류">
+        <a data-search-type="all">전체</a>
+        <a data-search-type="db">냥코DB</a>
+        <a data-search-type="web">웹</a>
+        <a data-search-type="images">이미지</a>
+        <a data-search-type="videos">동영상</a>
+      </nav>
+    </section>
+    <section class="results-panel" id="internalResults" aria-labelledby="resultsTitle">
+      <div class="section-heading">
+        <h2 id="resultsTitle">냥코DB 검색결과</h2>
+        <p class="result-status" id="resultCount" role="status" aria-live="polite"></p>
+      </div>
+      <div id="portalResults" class="item-grid portal-results"></div>
+      <nav id="internalPages" class="search-pagination" aria-label="냥코DB 검색결과 페이지" hidden></nav>
+    </section>
+    <div id="externalSearch" hidden>
+      <section class="results-panel" aria-labelledby="webTitle">
+        <div class="section-heading"><h2 id="webTitle">웹사이트</h2><span class="result-status" id="webProvider"></span></div>
+        <p class="external-status result-status" id="webStatus" role="status">웹사이트를 검색하고 있습니다.</p>
+        <div class="portal-results" id="webResults" aria-busy="true"></div>
+      </section>
+      <section class="results-panel" aria-labelledby="imageTitle">
+        <div class="section-heading"><h2 id="imageTitle">이미지</h2><span class="result-status" id="imagesProvider"></span></div>
+        <p class="external-status result-status" id="imagesStatus" role="status">이미지를 검색하고 있습니다.</p>
+        <div class="external-grid" id="imagesResults" aria-busy="true"></div>
+        <a class="item-card portal-link search-more" id="imagesMore" hidden><span class="item-name">이미지 모두보기 →</span></a>
+      </section>
+      <section class="results-panel" aria-labelledby="videoTitle">
+        <div class="section-heading"><h2 id="videoTitle">동영상</h2><span class="result-status" id="videosProvider"></span></div>
+        <p class="external-status result-status" id="videosStatus" role="status">동영상을 검색하고 있습니다.</p>
+        <div class="external-grid" id="videosResults" aria-busy="true"></div>
+        <a class="item-card portal-link search-more" id="videosMore" hidden><span class="item-name">동영상 모두보기 →</span></a>
+      </section>
+    </div>
+    <nav id="resultPages" class="search-pagination" aria-label="검색결과 페이지" hidden></nav>
+    <noscript><p class="empty-results">냥코DB 검색결과를 보려면 JavaScript를 켜 주세요.</p></noscript>
+  </main>
+  <script src="../catalog.js"></script>
+  <script src="../search.js" defer></script>
+  <script src="pagination.js?v=20261116-page-arrows" defer></script>
+  <script src="navigation.js?v=20261116-db-async" defer></script>
+  <script src="results.js?v=20261116-db-async" defer></script>
+  <script src="external.js?v=20261116-plain-pages" defer></script>
+</body>
+</html>
