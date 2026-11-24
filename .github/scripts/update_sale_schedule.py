@@ -74,15 +74,14 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict,
         stamp = local["stamps"].get(str(item))
         game_item = GRANT_ITEMS.get(item)
         kind = "pack" if pack else "stamp" if stamp else "reward"
-        if (800 <= item < 900 and not pack) or ((900 <= item < 1000 or 35000 <= item < 36000) and not stamp):
-            raise ScheduleError(f"Sale {region}:{item} requires new pack/login metadata; previous feed preserved")
-        if 0 <= item < 300 and game_item is None:
-            raise ScheduleError(f"Sale grant {region}:{item} requires a mapping update; previous feed preserved")
-        if not pack and not stamp and game_item is None and not 11000 <= item < 12000:
+        missing_metadata = ((800 <= item < 900 and not pack)
+                            or ((900 <= item < 1000 or 35000 <= item < 36000) and not stamp)
+                            or (0 <= item < 300 and game_item is None))
+        if not pack and not stamp and game_item is None and not missing_metadata and not 11000 <= item < 12000:
             # Notice/pop-up and unlock-control entries are not item rewards.
             ignored.append(dict(row=record["row"], itemId=item, reason="not-a-pack-stamp-or-fixed-reward"))
             continue
-        if game_item is not None and record["amount"] <= 0:
+        if (game_item is not None or (missing_metadata and 0 <= item < 300)) and record["amount"] <= 0:
             raise ScheduleError("Invalid fixed reward quantity; previous sale feed preserved")
         if pack:
             name = catalog["regions"]["kr"]["packs"].get(str(item), pack)["name"]
@@ -90,6 +89,8 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict,
             name = stamp_names.get(item) or catalog["regions"]["kr"]["stamps"].get(str(item), {}).get("name") or record["title"] or "로그인 스탬프"
         elif game_item is not None:
             name = titles.get((record["categoryId"], item, record["amount"])) or record["title"] or items["regions"]["kr"]["items"][str(game_item)]["name"]
+        elif missing_metadata:
+            name = record["title"] or str(item)
         else:
             name = record["title"] or "랭킹 도장 보상"
         start, end = record["start"], record["end"]
@@ -114,6 +115,10 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict,
             reward.pop("rarity", None)
             reward["quantity"] = record["amount"]
             event["rewards"] = [reward]
+        elif missing_metadata:
+            event.update(metadataMissing=True, rewards=[dict(kind="item", id=item, name=str(item),
+                         quantity=record["amount"], icon=None, href=None, metadataMissing=True)])
+            print(f"Sale {region}:{item}: publishing schedule without reward metadata")
         else:
             code = f"R{item - 11000:03}"
             target = ROOT / f"stage/{code}/index.html"

@@ -127,20 +127,23 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
             gid = entry["id"]
             if gid < (1 if kind == "R" else 0):
                 continue
+            if sum(entry["weights"]) != 10000 or min(entry["weights"]) < 0:
+                raise ScheduleError("Invalid official gacha probabilities; previous feed preserved")
+            try:
+                raw_name, display_name = resolve_name(kind, gid, region, catalog, names)
+            except ScheduleError:
+                raw_name = display_name = f"{kind}{gid:03}"
+            resolved_names[f"{kind}:{gid}"] = display_name
+            event = dict(key=f'{rec["line"]}:{entry["slot"]}:{gid}' if kind == "R"
+                else f'{kind}:{rec["line"]}:{entry["slot"]}:{gid}', id=gid,
+                sourceRow=rec["line"], slot=entry["slot"], name=raw_name,
+                officialUrl=official_url(kind, gid, region if kind == "R" else "kr"),
+                start=rec["start"], end=rec["end"], minVersion=rec["minimum"],
+                maxVersion=rec["maximum"], message=entry["message"], weights=entry["weights"],
+                guarantees=entry["guarantees"], mask=entry["mask"], badges=[], characters=[], bonus=None)
             try:
                 option = table["options"][str(gid)]
                 pools = [pool[gid] for pool in table["pools"]]
-                if sum(entry["weights"]) != 10000 or min(entry["weights"]) < 0:
-                    raise ValueError
-                raw_name, display_name = resolve_name(kind, gid, region, catalog, names)
-                resolved_names[f"{kind}:{gid}"] = display_name
-                event = dict(key=f'{rec["line"]}:{entry["slot"]}:{gid}' if kind == "R"
-                    else f'{kind}:{rec["line"]}:{entry["slot"]}:{gid}', id=gid,
-                    sourceRow=rec["line"], slot=entry["slot"], name=raw_name,
-                    officialUrl=official_url(kind, gid, region if kind == "R" else "kr"),
-                    start=rec["start"], end=rec["end"], minVersion=rec["minimum"],
-                    maxVersion=rec["maximum"], message=entry["message"], weights=entry["weights"],
-                    guarantees=entry["guarantees"], mask=entry["mask"], badges=[], characters=[], bonus=None)
                 if kind == "R":
                     ids = pools[0]
                     counts = Counter(ids)
@@ -210,9 +213,15 @@ def make_feed(content: bytes, region: str, fetched_at: datetime, catalog: dict) 
                     filename = f"gatya_n_btn{image:02}.png" if kind == "N" else f"gatya_e_bnr{image:02}.png"
                     event.update(rewards=rewards, specialRewards=specials, specialSource=special_source,
                         specialSlotPercent=unassigned, banner=catalog["banners"].get(filename))
-                events.append(event)
             except (KeyError, IndexError, ValueError):
-                raise ScheduleError("Gacha catalog/probability mismatch; update the game catalog. Previous feed preserved") from None
+                # Keep the official schedule even when local pool metadata lags.
+                # Never publish partially calculated per-reward probabilities.
+                event.update(metadataMissing=True, characters=[], bonus=None, badges=[])
+                if kind != "R":
+                    event.update(type="normal" if kind == "N" else "event", rewards=[],
+                                 specialRewards=[], specialSource=None, specialSlotPercent=None)
+                print(f"Gacha {region}:{kind}{gid:03}: publishing schedule without pool metadata", file=sys.stderr)
+            events.append(event)
     events.sort(key=lambda event: 0 if "type" not in event else 1)
     if not events:
         raise ScheduleError("Official gacha feed contains no supported events")
