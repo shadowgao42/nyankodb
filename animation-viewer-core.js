@@ -63,7 +63,14 @@
         keys.push(values);
       }
       // Source order is significant; never sort or deduplicate tracks or keys.
-      if (keys.length) lastFrame = Math.max(lastFrame, keys[keys.length - 1][0]);
+      if (keys.length) {
+        const first = keys[0][0];
+        const last = keys[keys.length - 1][0];
+        // A finite repeat replays the interval, not the initial delay.
+        // Keep the nominal span for infinite tracks; their clock is unbounded.
+        const end = first + (last - first) * Math.max(1, repeat);
+        lastFrame = Math.max(lastFrame, end);
+      }
       if (repeat === -1) infinite = true;
       tracks.push({ part, property, repeat, keys });
     }
