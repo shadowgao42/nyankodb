@@ -16,6 +16,7 @@ from pathlib import Path
 import re
 import secrets
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -42,6 +43,12 @@ class ScheduleError(Exception):
     pass
 
 
+class ScheduleRequestError(ScheduleError):
+    def __init__(self, status, phase):
+        self.status = status
+        super().__init__(f"PONOS {phase} request failed (HTTP {status})")
+
+
 def iso(value: datetime) -> str:
     return value.astimezone(KST).isoformat(timespec="seconds")
 
@@ -57,18 +64,25 @@ def _request(url: str, data: dict | None = None, account: str = "") -> tuple[byt
             "Nyanko-Signature-Version": "1", "Nyanko-Signature-Algorithm": "HMACSHA256",
             "Nyanko-Timestamp": str(int(datetime.now(timezone.utc).timestamp())),
         })
-    try:
-        with urllib.request.urlopen(urllib.request.Request(url, data=body, headers=headers), timeout=30) as response:
-            # A feed is about 33 KB. Reject accidental HTML/error/oversized responses.
-            content = response.read(2_000_001)
-            if len(content) > 2_000_000:
-                raise ScheduleError("Official response exceeded size limit")
-            return content, dict(response.headers)
-    except urllib.error.HTTPError as error:
-        # Never log a request URL: it can contain the authentication JWT.
-        raise ScheduleError(f"PONOS request failed (HTTP {error.code})") from None
-    except (urllib.error.URLError, TimeoutError):
-        raise ScheduleError("PONOS connection failed or timed out") from None
+    phase = "authentication" if url.startswith(AUTH_BASE) else "event feed" if "nyanko-events." in url else "service"
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, data=body, headers=headers), timeout=30) as response:
+                # A feed is about 33 KB. Reject accidental HTML/error/oversized responses.
+                content = response.read(2_000_001)
+                if len(content) > 2_000_000:
+                    raise ScheduleError("Official response exceeded size limit")
+                return content, dict(response.headers)
+        except urllib.error.HTTPError as error:
+            # Never log the URL, body or headers: they can contain credentials/JWTs.
+            if error.code not in (408, 429, 500, 502, 503, 504) or attempt == 2:
+                raise ScheduleRequestError(error.code, phase) from None
+            print(f"PONOS {phase}: HTTP {error.code}; retrying", file=sys.stderr)
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            if attempt == 2:
+                raise ScheduleError(f"PONOS {phase} connection failed or timed out") from None
+            print(f"PONOS {phase}: connection interrupted; retrying", file=sys.stderr)
+        time.sleep((2, 5)[attempt])
 
 
 def _json_request(url: str, data: dict | None = None, account: str = "") -> dict:
@@ -106,17 +120,24 @@ def fetch_sale(auth: dict, game_version: int | None = None, region: str = "kr",
     account, password = auth.get("accountCode"), auth.get("password")
     if not isinstance(account, str) or not account or not isinstance(password, str) or not password:
         raise ScheduleError("PONOS_EVENT_AUTH requires accountCode and password")
-    result = _json_request(AUTH_BASE + "tokens", {
-        "accountCode": account, "password": password, "nonce": secrets.token_hex(16),
-        "clientInfo": {"client": {"countryCode": config["countryCode"], "version": str(game_version)},
-                       "device": {"model": "XQ-BC52"}, "os": {"type": "android", "version": "13"}},
-    }, account).get("payload")
-    if not isinstance(result, dict):
-        raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
-    token = result.get("token")
-    if not isinstance(token, str) or not token:
-        raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
-    return _request(config["source"].replace("sale.tsv", resource) + "?jwt=" + urllib.parse.quote(token, safe=""))
+    for attempt in range(3):
+        try:
+            result = _json_request(AUTH_BASE + "tokens", {
+                "accountCode": account, "password": password, "nonce": secrets.token_hex(16),
+                "clientInfo": {"client": {"countryCode": config["countryCode"], "version": str(game_version)},
+                               "device": {"model": "XQ-BC52"}, "os": {"type": "android", "version": "13"}},
+            }, account).get("payload")
+            if not isinstance(result, dict):
+                raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
+            token = result.get("token")
+            if not isinstance(token, str) or not token:
+                raise ScheduleError("PONOS reader authentication failed; renew the private reader secret")
+            return _request(config["source"].replace("sale.tsv", resource) + "?jwt=" + urllib.parse.quote(token, safe=""))
+        except ScheduleRequestError as error:
+            if error.status != 401 or attempt == 2:
+                raise
+            print(f"PONOS {region}/{resource}: HTTP 401; obtaining a new token ({attempt + 1}/2)", file=sys.stderr)
+            time.sleep((2, 5)[attempt])
 
 
 def minutes(value: int) -> int:

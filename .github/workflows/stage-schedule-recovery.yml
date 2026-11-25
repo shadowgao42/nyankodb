@@ -1,0 +1,32 @@
+name: Recover official schedule automation
+
+on:
+  schedule:
+    - cron: '4,9,14,19,24,29,34,39,44,49,54,59 * * * *'
+  workflow_run:
+    workflows: ['Scheduled official KR stage refresh']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: official-stage-schedule-independent-recovery
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    if: ${{ vars.STAGE_SCHEDULE_AUTOMATION == 'enabled' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: .github/scripts
+      - name: Recover a stopped or stalled schedule chain
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/schedule_automation.py recover

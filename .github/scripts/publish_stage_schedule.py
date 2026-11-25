@@ -9,8 +9,11 @@ import os
 from pathlib import Path
 import re
 import sys
+import time
 import urllib.error
 import urllib.request
+
+from schedule_github_api import GitHubAPI, GitHubError
 
 BRANCH = "event-schedule-data"
 
@@ -196,47 +199,45 @@ def main():
     repo = os.environ["GITHUB_REPOSITORY"]
     if not re.fullmatch(r"[\w.-]+/[\w.-]+", repo):
         raise RuntimeError("Invalid repository")
-    base = f"https://api.github.com/repos/{repo}"
-
-    def api(path, data=None, allow_missing=False):
-        request = urllib.request.Request(base + ("/" + path if path else ""),
-            data=None if data is None else json.dumps(data).encode(),
-            headers={"Authorization": "Bearer " + os.environ["GH_TOKEN"],
-                     "Accept": "application/vnd.github+json", "User-Agent": "NyankoDB-stage-schedule",
-                     "Content-Type": "application/json", "X-GitHub-Api-Version": "2022-11-28"})
-        if data is not None:
-            request.method = "PUT" if path.startswith("contents/") else "POST"
+    api = GitHubAPI()
+    for attempt in range(4):
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
-                return json.load(response)
-        except urllib.error.HTTPError as error:
-            if allow_missing and error.code == 404:
-                return None
-            raise RuntimeError(f"GitHub data publication failed (HTTP {error.code})") from None
-
-    # Contents API changes only this file and preserves every other remote path.
-    if api("git/ref/heads/" + BRANCH, allow_missing=True) is None:
-        default = api("")["default_branch"]
-        head = api("git/ref/heads/" + default)["object"]["sha"]
-        api("git/refs", {"ref": "refs/heads/" + BRANCH, "sha": head})
-    previous = api(f"contents/{filename}?ref={BRANCH}", allow_missing=True)
-    if instant(feed.get("fetchedAt")) is not None:
-        history = None
-        if previous:
-            blob = previous
-            if not blob.get("content") and blob.get("size", 0) > 1000000:
-                blob = api("git/blobs/" + previous["sha"])
-            if blob.get("content"):
-                history = json.loads(base64.b64decode(blob["content"]))
-        merged = retain_history(feed, [history, bundled_history(kind, feed["region"])])
-        if merged != feed:
-            content = (json.dumps(merged, ensure_ascii=False, separators=(",", ":")) + "\n").encode()
-    body = {"message": f"Update official {feed['region'].upper()} {kind} schedule", "branch": BRANCH,
-            "content": base64.b64encode(content).decode()}
-    if previous:
-        body["sha"] = previous["sha"]
-    api("contents/" + filename, body)
-    print("Published official schedule JSON on " + BRANCH)
+            # Reconcile state before each write, including an ambiguous failed PUT.
+            if api("git/ref/heads/" + BRANCH, allow_missing=True) is None:
+                default = api("")["default_branch"]
+                head = api("git/ref/heads/" + default)["object"]["sha"]
+                api("git/refs", {"ref": "refs/heads/" + BRANCH, "sha": head})
+            previous = api(f"contents/{filename}?ref={BRANCH}", allow_missing=True)
+            history = None
+            if previous and instant(feed.get("fetchedAt")) is not None:
+                blob = previous
+                if not blob.get("content") and blob.get("size", 0) > 0:
+                    blob = api("git/blobs/" + previous["sha"])
+                if blob.get("content"):
+                    history = json.loads(base64.b64decode(blob["content"]))
+            if isinstance(history, dict):
+                old_at, new_at = instant(history.get("fetchedAt")), instant(feed.get("fetchedAt"))
+                if old_at and new_at and old_at > new_at:
+                    print("Preserved a newer published schedule: " + filename)
+                    return
+            merged = retain_history(feed, [history, bundled_history(kind, feed["region"])])
+            candidate = content if merged == feed else (json.dumps(merged, ensure_ascii=False, separators=(",", ":")) + "\n").encode()
+            sha = hashlib.sha1(b"blob " + str(len(candidate)).encode() + b"\0" + candidate).hexdigest()
+            if previous and previous.get("sha") == sha:
+                print("Schedule already published: " + filename)
+                return
+            body = {"message": f"Update official {feed['region'].upper()} {kind} schedule", "branch": BRANCH,
+                    "content": base64.b64encode(candidate).decode()}
+            if previous:
+                body["sha"] = previous["sha"]
+            api("contents/" + filename, body, method="PUT")
+            print("Published official schedule JSON on " + BRANCH)
+            return
+        except GitHubError as error:
+            if attempt == 3 or not (error.transient or error.status in (409, 422)):
+                raise
+            print(f"Schedule publication: HTTP {error.status}; rechecking remote state ({attempt + 1}/3)", file=sys.stderr)
+            time.sleep(max((2, 5, 10)[attempt], error.retry_after))
 
 
 if __name__ == "__main__":

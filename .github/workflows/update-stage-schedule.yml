@@ -17,6 +17,9 @@ on:
       - '.github/workflows/stage-schedule-timer.yml'
       - '.github/scripts/update_stage_schedule.py'
       - '.github/scripts/publish_stage_schedule.py'
+      - '.github/scripts/schedule_github_api.py'
+      - '.github/scripts/schedule_automation.py'
+      - '.github/workflows/stage-schedule-recovery.yml'
       - '.github/scripts/update_gacha_schedule.py'
       - '.github/scripts/gacha_discounts.py'
       - '.github/scripts/update_sale_schedule.py'
@@ -37,7 +40,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     environment:
       name: ${{ inputs.delay_refresh && 'official-kr-stage-schedule-5min' || 'official-kr-stage-schedule-direct' }}
     steps:
@@ -50,6 +53,7 @@ jobs:
         env:
           PONOS_EVENT_AUTH: ${{ secrets.PONOS_EVENT_AUTH }}
         run: |
+          echo "started_at=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
           # Each command authenticates the shared reader. Avoid overlapping token renewals.
           if python .github/scripts/update_stage_schedule.py --region kr --output "$RUNNER_TEMP/stage-schedule-kr.json" --source-output "$RUNNER_TEMP/stage-source-kr.tsv"; then
             echo "kr_ok=true" >> "$GITHUB_OUTPUT"
@@ -124,3 +128,8 @@ jobs:
       - name: Check all eight collections
         if: ${{ always() && (steps.collect.outputs.kr_ok != 'true' || steps.collect.outputs.jp_ok != 'true' || steps.collect.outputs.gacha_kr_ok != 'true' || steps.collect.outputs.gacha_jp_ok != 'true' || steps.collect.outputs.sale_kr_ok != 'true' || steps.collect.outputs.sale_jp_ok != 'true' || steps.collect.outputs.mission_kr_ok != 'true' || steps.collect.outputs.mission_jp_ok != 'true') }}
         run: exit 1
+      - name: Verify all eight published feeds
+        if: ${{ always() && steps.collect.outputs.started_at != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/schedule_automation.py verify --since '${{ steps.collect.outputs.started_at }}'
