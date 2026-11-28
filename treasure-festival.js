@@ -221,6 +221,8 @@
     button.addEventListener("click", event => {
       if (!active) return;
       event.preventDefault(); event.stopImmediatePropagation(); choices.set(choiceKey(), !isEnabled()); window.renderRewards();
+      if (typeof closeRewardTooltips === "function") closeRewardTooltips(button);
+      button.dataset.tooltipOpen = "true";
     }, true);
     subscribe(() => {
       const current = state(family), nextActive = current.state === "active";
@@ -230,6 +232,7 @@
         if (wasActive && !active) {
           document.getElementById("treasureChanceIcon").setAttribute("src", originalIcon);
           button.setAttribute("aria-label", originalLabel); button.dataset.tooltip = originalTooltip;
+          delete button.dataset.tooltipOpen;
         }
         window.renderRewards();
       } else decorate();
