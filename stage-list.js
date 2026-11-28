@@ -4,6 +4,8 @@
   const source = document.currentScript;
   function mount({ catalog, input = null, results, status, scroll = null, allowedStageHrefs = null, idPrefix = "stage", getFilter = () => null, toggleAll = null, decorateStageLink = null, selectionOnly = false, locationLinks = true }) {
     const search = window.NyankoSearch;
+    const stageIndex = results.id === "stageResults" && /^\/stage\/(?:index\.html)?$/.test(location.pathname);
+    const locationPromotions = stageIndex && locationLinks && !selectionOnly;
     const filtered = allowedStageHrefs !== null, allowed = filtered ? new Set(allowedStageHrefs) : null;
     const categoryOrder = search.stageCategoryOrder, categoryFor = search.stageCategoryForLocation;
     const formatter = new Intl.NumberFormat("ko-KR"), collator = new Intl.Collator("en", { numeric: true });
@@ -56,7 +58,12 @@
       const name = document.createElement("span"); name.className = "stage-name"; name.textContent = entry.name;
       const identity = document.createElement("span"); identity.className = "stage-identity"; identity.textContent = `STAGE ${entry.id}`;
       const count = document.createElement("span"); count.className = "stage-card-count"; count.textContent = `${formatter.format(stageCount)}개 스테이지`;
-      identity.append(count); copy.append(name, identity); link.append(copy); return link;
+      identity.append(count); copy.append(name, identity); link.append(copy);
+      if (locationPromotions) {
+        link.dataset.stageLocationCode = entry.href.split("/")[1];
+        window.NyankoTreasureFestival?.decorateLocation(link);
+      }
+      return link;
     }
     function createLocation({ entry, matchingStages }, query) {
       const stages = matchingStages.length ? matchingStages : stagesByLocation.get(entry.href) || [];

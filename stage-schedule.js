@@ -7,26 +7,29 @@
   };
   const MAX_AGE = 30 * 60 * 1000;
   const POLL_MS = 60 * 1000;
+  const sharedFeeds = new Map();
   const MAP_BASES = { A:24000, B:14000, C:2000, CA:27000, D:16000, DM:30000, EX:4000,
     G:37000, H:25000, L:33000, M:12000, NA:13000, ND:34000, PR:39000, Q:31000,
     R:11000, S:1000, SR:36000, T:6000, V:7000 };
+  const festivalIds = { eoc:100, itf:101, cotc:104 };
+  const halfEnergyIds = { EoC1:3000, EoC2:3001, EoC3:3002, W04:3003, W05:3004, W06:3005,
+    Space07:3006, Space08:3007, Space09:3008, legend:-1, uncanny:-2, legendZero:-3 };
   function eventMapId(code) {
     const match = /^([A-Z]+)(\d{3})$/.exec(code);
     return match && Object.hasOwn(MAP_BASES, match[1]) ? MAP_BASES[match[1]] + Number(match[2]) : null;
   }
 
-  function parseFeed(feed, mapCode, region = "kr", festival = false) {
+  function parseCalendar(feed, mapCode, region, expectedId, section) {
     const config = Object.hasOwn(REGIONS, region) ? REGIONS[region] : null;
     if (!config || feed?.schemaVersion !== 1 || feed.region !== region || feed.timezone !== config.timezone || feed.source?.url !== config.source) {
       throw new Error("Invalid official calendar export");
     }
     const fetchedAt = Date.parse(feed.fetchedAt);
     const validUntil = Date.parse(feed.validUntil);
-    const expectedId = festival ? ({eoc:100, itf:101, cotc:104}[mapCode] ?? null) : eventMapId(mapCode);
-    const selectedMaps = festival ? feed.treasureFestivals?.maps : feed.maps;
-    if (festival && feed.treasureFestivals != null && (feed.treasureFestivals.schemaVersion !== 1
+    const selectedMaps = section ? feed[section]?.maps : feed.maps;
+    if (section && feed[section] != null && (feed[section].schemaVersion !== 1
         || !selectedMaps || typeof selectedMaps !== "object" || Array.isArray(selectedMaps))) {
-      throw new Error("Invalid treasure festival calendar");
+      throw new Error(section === "treasureFestivals" ? "Invalid treasure festival calendar" : "Invalid half-energy calendar");
     }
     const map = selectedMaps?.[mapCode] ?? { eventMapId:expectedId, windows:[], sourceRows:[] };
     if (!Number.isFinite(fetchedAt) || !Number.isFinite(validUntil) || validUntil <= fetchedAt || validUntil - fetchedAt > MAX_AGE ||
@@ -43,6 +46,11 @@
       return { start, end };
     });
     return { fetchedAt, validUntil, windows, hasSchedule: map.sourceRows.length > 0 };
+  }
+
+  function parseFeed(feed, mapCode, region = "kr", festival = false) {
+    if (festival) return parseCalendar(feed, mapCode, region, festivalIds[mapCode] ?? null, "treasureFestivals");
+    return parseCalendar(feed, mapCode, region, eventMapId(mapCode));
   }
 
   function stateAt(calendar, now) {
@@ -93,9 +101,28 @@
       url.pathname = `/shadowgao42/nyankodb/refs/heads/event-schedule-data/${filename}`;
     }
     url.searchParams.set("t", String(Math.floor(Date.now() / POLL_MS)));
-    const response = await root.fetch(url, { cache: "no-store", credentials: "omit", signal });
-    if (!response.ok) throw new Error("Calendar unavailable");
-    return response.json();
+    async function request() {
+      const response = await root.fetch(url, { cache: "no-store", credentials: "omit", signal });
+      if (!response.ok) throw new Error("Calendar unavailable");
+      return response.json();
+    }
+    const doc = root.document;
+    if (!doc?.getElementById("stageScheduleScript") || !doc.getElementById("treasureFestivalScript")) return request();
+
+    // Map and promotion timers share the same regional export on a stage page.
+    let shared = sharedFeeds.get(region);
+    if (shared?.url !== url.href || shared.signal?.aborted || Date.now() - shared.started > 2000) {
+      shared = {url: url.href, signal, started: Date.now(), result: request()};
+      sharedFeeds.set(region, shared);
+    }
+    try {
+      const feed = await shared.result;
+      if (signal?.aborted) throw new Error("Calendar request aborted");
+      return feed;
+    } catch (error) {
+      if (sharedFeeds.get(region) === shared) sharedFeeds.delete(region);
+      throw error;
+    }
   }
 
   function attach(script, doc = root.document) {
@@ -165,7 +192,10 @@
     } };
   }
 
-  const api = { parseFeed, stateAt, duration, label, formatPeriod, eventMapId, fetchFeed, attach, parseFestivalFeed: (feed, family, region = "kr") => parseFeed(feed, family, region, true) };
+  const api = { parseFeed, stateAt, duration, label, formatPeriod, eventMapId, fetchFeed, attach,
+    parseFestivalFeed: (feed, family, region = "kr") => parseFeed(feed, family, region, true),
+    parseHalfEnergyFeed: (feed, code, region = "kr") => parseCalendar(feed, code, region,
+      (Object.hasOwn(halfEnergyIds, code) ? halfEnergyIds[code] : eventMapId(code)), "halfEnergy") };
   if (typeof module === "object" && module.exports) module.exports = api;
   else {
     root.NyankoStageSchedule = api;

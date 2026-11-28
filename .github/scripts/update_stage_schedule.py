@@ -37,6 +37,16 @@ MAX_WINDOWS_PER_MAP = 32
 GAME_VERSION = REGIONS["kr"]["gameVersion"]  # Authentication version; schedules include all versions.
 FRESHNESS_SECONDS = 1800
 REGULAR_MINIMUM_DAYS = 365
+HALF_ENERGY_EVENT_IDS = {
+    "EoC1": 3000, "EoC2": 3001, "EoC3": 3002,
+    "W04": 3003, "W05": 3004, "W06": 3005,
+    "Space07": 3006, "Space08": 3007, "Space09": 3008,
+    "legend": -1, "uncanny": -2, "legendZero": -3,
+}
+HALF_ENERGY_MARKER = 102
+HALF_ENERGY_OPEN_MAP_PREFIXES = frozenset(("A", "C", "CA", "D", "G", "H", "L", "M", "PR", "Q", "R", "S", "SR", "T", "V"))
+HALF_ENERGY_GLOBAL_MAP_PREFIXES = HALF_ENERGY_OPEN_MAP_PREFIXES | {"DM", "EX", "RE"}
+SALE_PROMOTION_IDS = frozenset((102, 103, 112))
 
 
 class ScheduleError(Exception):
@@ -361,6 +371,47 @@ def is_recurring_record(record: dict) -> bool:
     )
 
 
+def intersect_windows(discounts, openings):
+    matches = []
+    for start, end in discounts:
+        for opens, closes in openings:
+            if closes <= start:
+                continue
+            if opens >= end:
+                break
+            matches.append([max(start, opens), min(end, closes)])
+    return matches
+
+
+def half_energy_calendar(records, site_map_ids, day_start, game_version, day_horizon):
+    # JP 16.0 treats 102 as a marker for targets in the same sale row. For the
+    # event-map families, the main game also requires the map to be open.
+    promotions = [row for row in records if HALF_ENERGY_MARKER in row["mapIds"]]
+    openings = [row for row in records if SALE_PROMOTION_IDS.isdisjoint(row["mapIds"])]
+    selected_ids = {target for row in promotions for target in row["mapIds"]}
+    maps = {}
+    for code, event_id in (site_map_ids | HALF_ENERGY_EVENT_IDS).items():
+        ordinary = re.fullmatch(r"([A-Z]+)\d{3}", code)
+        prefix = ordinary[1] if ordinary else ""
+        if prefix == "B":
+            continue
+        global_target = code in HALF_ENERGY_EVENT_IDS or prefix in HALF_ENERGY_GLOBAL_MAP_PREFIXES
+        if event_id not in selected_ids and not (global_target and -4 in selected_ids):
+            continue
+        matching = [
+            {**row, "mapIds": [event_id]}
+            for row in promotions
+            if event_id in row["mapIds"] or (global_target and -4 in row["mapIds"])
+        ]
+        windows, rows = expand_windows(matching, event_id, day_start, game_version, day_horizon)
+        if prefix in HALF_ENERGY_OPEN_MAP_PREFIXES and windows:
+            opened, _ = expand_windows(openings, event_id, day_start, game_version, day_horizon)
+            windows = intersect_windows(windows, opened)
+        if windows:
+            maps[code] = {"eventMapId": event_id, "sourceRows": rows, "windows": windows}
+    return {"schemaVersion": 1, "maps": maps}
+
+
 def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | None = None,
               region: str = "kr") -> dict:
     config = REGIONS[region]
@@ -377,7 +428,8 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
     event_records = [record for record in records if not is_regular_record(record)]
     regular_records = [record for record in records if is_regular_record(record)]
     recurring_records = [record for record in records if is_recurring_record(record)]
-    for code, map_id in load_site_map_ids().items():
+    site_map_ids = load_site_map_ids()
+    for code, map_id in site_map_ids.items():
         windows, rows = expand_windows(records, map_id, now, game_version)
         if windows:
             maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows[:MAX_WINDOWS_PER_MAP]}
@@ -396,12 +448,16 @@ def make_feed(content: bytes, headers: dict, now: datetime, game_version: int | 
         if windows:
             recurring_maps[code] = {"eventMapId": map_id, "sourceRows": rows, "windows": windows}
     # Special official sale IDs are not stage maps; keep their original IDs separately.
-    festivals = {}
-    for family, event_id in {"eoc": 100, "itf": 101, "cotc": 104}.items():
-        windows, rows = expand_windows(records, event_id, day_start, game_version, day_horizon)
-        festivals[family] = {"eventMapId": event_id, "sourceRows": rows, "windows": windows}
+    def promotion_calendar(event_ids, source_records):
+        promotion_maps = {}
+        for code, event_id in event_ids.items():
+            windows, rows = expand_windows(source_records, event_id, day_start, game_version, day_horizon)
+            promotion_maps[code] = {"eventMapId": event_id, "sourceRows": rows, "windows": windows}
+        return {"schemaVersion": 1, "maps": promotion_maps}
+
     return {
-        "treasureFestivals": {"schemaVersion": 1, "maps": festivals},
+        "treasureFestivals": promotion_calendar({"eoc": 100, "itf": 101, "cotc": 104}, records),
+        "halfEnergy": half_energy_calendar(records, site_map_ids, day_start, game_version, day_horizon),
         "schemaVersion": 1, "region": region, "timezone": config["timezone"], "gameVersion": game_version,
         "fetchedAt": iso(now), "validUntil": iso(now + timedelta(seconds=FRESHNESS_SECONDS)),
         "source": {"url": config["source"], "sha256": hashlib.sha256(content).hexdigest(),
